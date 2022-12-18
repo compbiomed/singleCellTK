@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.4</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -637,12 +640,12 @@ feature ID type to display in the table can also be changed.</p>
 <code class="sourceCode R"><span><span class="va">DEG</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDEGTopTable.html">getDEGTopTable</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"c1_2_VS_c5"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DEG</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##        Gene   Log2_FC       Pvalue          FDR group1MeanExp group2MeanExp</span></span>
-<span><span class="co">## 10608   LTB 1.1264965 6.754884e-43 1.053054e-39      2.474387      1.347890</span></span>
-<span><span class="co">## 29915  JUNB 0.8900972 9.865921e-31 6.591644e-28      3.116122      2.226025</span></span>
-<span><span class="co">## 20398  LDHB 0.7723192 7.738507e-44 1.333385e-40      1.939164      1.166845</span></span>
-<span><span class="co">## 5522  RPL32 0.6061814 2.730154e-64 8.125436e-61      4.613614      4.007433</span></span>
-<span><span class="co">## 23081   FOS 0.5978641 2.252030e-16 6.093138e-14      2.641626      2.043762</span></span>
-<span><span class="co">## 18502 RPS13 0.5829358 1.815492e-36 1.917277e-33      3.223682      2.640746</span></span>
+<span><span class="co">## 10608   LTB 1.1264965 6.754884e-43 1.163902e-39      2.474387      1.347890</span></span>
+<span><span class="co">## 29915  JUNB 0.8900972 9.865923e-31 7.340695e-28      3.116122      2.226025</span></span>
+<span><span class="co">## 20398  LDHB 0.7723192 7.738507e-44 1.490254e-40      1.939164      1.166845</span></span>
+<span><span class="co">## 5522  RPL32 0.6061814 2.730154e-64 8.937979e-61      4.613614      4.007433</span></span>
+<span><span class="co">## 23081   FOS 0.5978641 2.253412e-16 6.706565e-14      2.641626      2.043762</span></span>
+<span><span class="co">## 18502 RPS13 0.5829358 1.813796e-36 2.120716e-33      3.223682      2.640746</span></span>
 <span><span class="co">##       group1ExprPerc group2ExprPerc</span></span>
 <span><span class="co">## 10608      0.9417122      0.6206897</span></span>
 <span><span class="co">## 29915      0.9526412      0.8275862</span></span>
@@ -728,12 +731,12 @@ reference online</em>, American Cancer Society, 2014. doi: <a href="https://doi.
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>

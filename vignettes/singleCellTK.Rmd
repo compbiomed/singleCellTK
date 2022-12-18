@@ -18,6 +18,9 @@ author:
 - name: Salam Abdullatif
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
+- name: Nida Pervaiz
+  affiliation: 
+  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
 - name: David Jenkins
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA

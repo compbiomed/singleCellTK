@@ -52,18 +52,7 @@ Assuming that the data has been uploaded via the Upload tab of the toolkit, the 
 4. Set the scaling factor which represents the numeric value by which the data values are multiplied before log transformation. Default is set to `10000`.
 5. Press the 'Normalize' button to start the normalization process.
 
-**2. Scale Data** <br>
-Once normalization is complete, data needs to be scaled and centered accordingly. `Seurat` uses `linear` (linear model), `poisson` (generalized linear model) or `negbinom` (generalized linear model) as a regression model.
-
-![](ui_screenshots/seurat/seurat_2_scale_annotated.png) <br>
-
-1. Open up the 'Scale Data' tab.
-2. Select model for scaling from `linear`, `poisson` or `negbinom`.
-3. Select if you only want to scale data or center it as well.
-4. Input maximum scaled data value. This is the maximum value to which the data will be scaled to.
-5. Press 'Scale' button to start processing.
-
-**3. Highly Variable Genes** <br>
+**2. Highly Variable Genes** <br>
 Identification of the highly variable genes is core to the `Seurat` workflow and these highly variable genes are used throughout the remaining workflow. `Seurat` provides three methods for variable genes identification i.e. `vst` (uses local polynomial regression to fit a relationship between log of variance and log of mean), `mean.var.plot` (uses mean and dispersion to divide features into bins) and `dispersion` (uses highest dispersion values only).
 
 ![](ui_screenshots/seurat/seurat_3_hvg_annotated.png) <br>
@@ -76,7 +65,7 @@ Identification of the highly variable genes is core to the `Seurat` workflow and
 6. Displays the top most highly variable genes as selected in (5).
 7. Graph that plots each gene and its relationship based upon the selected model in (2), and identifies if a gene is highly variable or not.
 
-**4. Dimensionality Reduction** <br>
+**3. Dimensionality Reduction** <br>
 `Seurat` workflow offers `PCA` or `ICA` for dimensionality reduction and the components from these methods can be used in the downstream analysis. Moreover, several plots are available for the user to inspect the output of the dimensionality reduction such as the standard 'PCA Plot', 'Elbow Plot', 'Jackstraw Plot' and 'Heatmap Plot'.
 
 ![](ui_screenshots/seurat/seurat_4_dimensionalityReduction_annotated_1.png) <br>
@@ -93,7 +82,7 @@ Identification of the highly variable genes is core to the `Seurat` workflow and
 8. The plot area from where all computed plots can be viewed by the user.
 9. Heatmap plot has various options available for the users to customize the plot. Since a plot is computed against each component, a user-defined number of components can be selected against. Moreover, for viewing quality, a number of columns can be selected in which the plots should be shown.
 
-**5. tSNE/UMAP** <br>
+**4. tSNE/UMAP** <br>
 'tSNE' and 'UMAP' can be computed and plotted once components are available from 'Dimensionality Reduction' tab.
 
 ![](ui_screenshots/seurat/seurat_5_tsneUmap.png) <br>
@@ -106,7 +95,7 @@ Identification of the highly variable genes is core to the `Seurat` workflow and
 6. Press 'Run tSNE' or 'Run UMAP' button to start processing.
 7. 'tSNE' or 'UMAP' plot depending upon the selected computation.
 
-**6. Clustering** <br>
+**5. Clustering** <br>
 Cluster labels can be generated for all cells/samples using one of the computed reduction method. Plots are automatically re-computed with cluster labels. The available algorithms for clustering as provided by `Seurat` include `original Louvain algorithm`, `Louvain algorithm with multilevel refinement` and `SLM algorithm`.
 
 ![](ui_screenshots/seurat/seurat_6_clustering.png) <br>
@@ -120,7 +109,7 @@ Cluster labels can be generated for all cells/samples using one of the computed 
 7. Press 'Find Clusters' button to start processing.
 8. Re-computed plots with cluster labels. Only those plots are available that have previously been computed.
 
-**7. Find Markers** <br>
+**6. Find Markers** <br>
 'Find Markers' tab can be used to identify and visualize the marker genes using on of the provided visualization methods. The tab offers identification of markers between two selected phenotype groups or between all groups and can be decided at the time of the computation. Furthermore, markers that are conserved between two phenotype groups can also be identified. Visualizations such as Ridge Plot, Violin Plot, Feature Plot and Heatmap Plot can be used to visualize the individual marker genes. 
 
 ![](ui_screenshots/seurat/seurat_7_findmarkers_1.png) <br>
@@ -147,7 +136,7 @@ Cluster labels can be generated for all cells/samples using one of the computed 
 ![](ui_screenshots/seurat/seurat_7_findmarkers_6.png) <br>
 12. Selected marker genes from the table are plotted with gene plots.
 
-**8. Downstream Analysis** <br>
+**7. Downstream Analysis** <br>
 Once all steps of the Seurat workflow are completed, users can further analyze the data by directly going to the various downstream analysis options (Differential Expression, Marker Selection & Pathway Analysis) from within the Seurat workflow.
 
 ![](ui_screenshots/seurat/seurat_7_findmarkers_7.png) <br>

@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.4</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -441,15 +444,15 @@ include for each clsuter.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getFindMarkerTopTable.html">getFindMarkerTopTable</a></span><span class="op">(</span><span class="va">sce</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, topN <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##          Gene   Log2_FC        Pvalue           FDR cluster clusterExprPerc</span></span>
-<span><span class="co">## 8764     IL7R 0.8117772  4.180664e-79  4.562219e-75       1       0.7500000</span></span>
-<span><span class="co">## 309761  NOSIP 0.5887454  2.681549e-48  1.125494e-45       2       0.6821561</span></span>
-<span><span class="co">## 1956   S100A9 4.3853548 1.686234e-262 5.520393e-258       3       0.9977064</span></span>
-<span><span class="co">## 30657   CD79A 2.2532545 9.589851e-192 3.139525e-187       4       0.9257143</span></span>
-<span><span class="co">## 26825    CCL5 3.0924934 7.429786e-188 2.432363e-183       5       0.9712644</span></span>
-<span><span class="co">## 106091   LST1 2.8683989 1.035264e-124 3.389247e-120       6       1.0000000</span></span>
-<span><span class="co">## 310761   NKG7 4.2398710 8.586372e-104  2.811007e-99       7       1.0000000</span></span>
-<span><span class="co">## 288182   CST3 3.2975861  2.308760e-20  1.511684e-16       8       1.0000000</span></span>
-<span><span class="co">## 7697     PPBP 5.9620589  3.332310e-08  1.747705e-04       9       1.0000000</span></span>
+<span><span class="co">## 8764     IL7R 0.8117772  9.627633e-63  5.253157e-59       1       0.7500000</span></span>
+<span><span class="co">## 309761  NOSIP 0.5887454  1.941718e-38  6.553399e-36       2       0.6821561</span></span>
+<span><span class="co">## 1956   S100A9 4.3853548 2.397248e-207 3.924055e-203       3       0.9977064</span></span>
+<span><span class="co">## 30657   CD79A 2.2532545 1.452148e-151 1.188511e-147       4       0.9257143</span></span>
+<span><span class="co">## 26825    CCL5 3.0924934 1.691729e-148 5.538382e-144       5       0.9712644</span></span>
+<span><span class="co">## 106091   LST1 2.8683989  1.038405e-98  1.133177e-94       6       1.0000000</span></span>
+<span><span class="co">## 310761   NKG7 4.2398710  3.256027e-82  1.065958e-77       7       1.0000000</span></span>
+<span><span class="co">## 288182   CST3 3.2975861  2.221917e-16  1.039159e-12       8       1.0000000</span></span>
+<span><span class="co">## 7697     PPBP 5.9620589  9.423341e-07  2.504757e-03       9       1.0000000</span></span>
 <span><span class="co">##        ControlExprPerc clusterAveExpr</span></span>
 <span><span class="co">## 8764        0.31156265       1.266208</span></span>
 <span><span class="co">## 309761      0.36716132       1.069871</span></span>
@@ -489,12 +492,12 @@ document.getElementById("ia-button").click();
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>

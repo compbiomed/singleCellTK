@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.4</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -308,22 +311,7 @@ to <code>10000</code>.</li>
 <li>Press the ‘Normalize’ button to start the normalization
 process.</li>
 </ol>
-<p><strong>2. Scale Data</strong> <br> Once normalization is complete,
-data needs to be scaled and centered accordingly. <code>Seurat</code>
-uses <code>linear</code> (linear model), <code>poisson</code>
-(generalized linear model) or <code>negbinom</code> (generalized linear
-model) as a regression model.</p>
-<p><img src="ui_screenshots/seurat/seurat_2_scale_annotated.png"><br></p>
-<ol style="list-style-type: decimal">
-<li>Open up the ‘Scale Data’ tab.</li>
-<li>Select model for scaling from <code>linear</code>,
-<code>poisson</code> or <code>negbinom</code>.</li>
-<li>Select if you only want to scale data or center it as well.</li>
-<li>Input maximum scaled data value. This is the maximum value to which
-the data will be scaled to.</li>
-<li>Press ‘Scale’ button to start processing.</li>
-</ol>
-<p><strong>3. Highly Variable Genes</strong> <br> Identification of the
+<p><strong>2. Highly Variable Genes</strong> <br> Identification of the
 highly variable genes is core to the <code>Seurat</code> workflow and
 these highly variable genes are used throughout the remaining workflow.
 <code>Seurat</code> provides three methods for variable genes
@@ -348,7 +336,7 @@ genes to display in (6).</li>
 selected model in (2), and identifies if a gene is highly variable or
 not.</li>
 </ol>
-<p><strong>4. Dimensionality Reduction</strong> <br><code>Seurat</code>
+<p><strong>3. Dimensionality Reduction</strong> <br><code>Seurat</code>
 workflow offers <code>PCA</code> or <code>ICA</code> for dimensionality
 reduction and the components from these methods can be used in the
 downstream analysis. Moreover, several plots are available for the user
@@ -383,7 +371,7 @@ user-defined number of components can be selected against. Moreover, for
 viewing quality, a number of columns can be selected in which the plots
 should be shown.</li>
 </ol>
-<p><strong>5. tSNE/UMAP</strong> <br> ‘tSNE’ and ‘UMAP’ can be computed
+<p><strong>4. tSNE/UMAP</strong> <br> ‘tSNE’ and ‘UMAP’ can be computed
 and plotted once components are available from ‘Dimensionality
 Reduction’ tab.</p>
 <p><img src="ui_screenshots/seurat/seurat_5_tsneUmap.png"><br></p>
@@ -399,7 +387,7 @@ from the ‘Dimensionality Reduction’ tab.</li>
 <li>Press ‘Run tSNE’ or ‘Run UMAP’ button to start processing.</li>
 <li>‘tSNE’ or ‘UMAP’ plot depending upon the selected computation.</li>
 </ol>
-<p><strong>6. Clustering</strong> <br> Cluster labels can be generated
+<p><strong>5. Clustering</strong> <br> Cluster labels can be generated
 for all cells/samples using one of the computed reduction method. Plots
 are automatically re-computed with cluster labels. The available
 algorithms for clustering as provided by <code>Seurat</code> include
@@ -426,7 +414,7 @@ from the ‘Dimensionality Reduction’ tab.</li>
 <li>Re-computed plots with cluster labels. Only those plots are
 available that have previously been computed.</li>
 </ol>
-<p><strong>7. Find Markers</strong> <br> ‘Find Markers’ tab can be used
+<p><strong>6. Find Markers</strong> <br> ‘Find Markers’ tab can be used
 to identify and visualize the marker genes using on of the provided
 visualization methods. The tab offers identification of markers between
 two selected phenotype groups or between all groups and can be decided
@@ -458,7 +446,7 @@ can be selected by clicking on the relevant rows of the table.</p>
 <p><img src="ui_screenshots/seurat/seurat_7_findmarkers_6.png"><br>
 12. Selected marker genes from the table are plotted with gene
 plots.</p>
-<p><strong>8. Downstream Analysis</strong> <br> Once all steps of the
+<p><strong>7. Downstream Analysis</strong> <br> Once all steps of the
 Seurat workflow are completed, users can further analyze the data by
 directly going to the various downstream analysis options (Differential
 Expression, Marker Selection &amp; Pathway Analysis) from within the
@@ -549,8 +537,8 @@ previously be computed by <code><a href="../reference/runSeuratJackStraw.html">r
 <p><img src="seurat_curated_workflow_files/figure-html/seurat_dm-1.png" width="700"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSeuratElbow.html">plotSeuratElbow</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span><span class="op">)</span></span></code></pre></div>
-<div id="htmlwidget-0cf886ff5f1e17fca7d7" style="width:700px;height:432.632880098888px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0cf886ff5f1e17fca7d7">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"y":[5.99268011092252,3.89205340015971,3.09417865627179,2.98287677132568,2.59396720438834,2.51624730666284,2.05122735982297,1.78258449871969,1.60032154496538,1.47698484803538,1.45417814531191,1.43912901380949,1.41557396436057,1.35384663930408,1.35189900465498,1.33127753915262,1.30790393651404,1.26308416718621,1.26098768652334,1.22113026578106],"text":["Dimension: 1 <br />Standard Deviation: 6 <br />Is Significant? ","Dimension: 2 <br />Standard Deviation: 3.9 <br />Is Significant? ","Dimension: 3 <br />Standard Deviation: 3.1 <br />Is Significant? ","Dimension: 4 <br />Standard Deviation: 3 <br />Is Significant? ","Dimension: 5 <br />Standard Deviation: 2.6 <br />Is Significant? ","Dimension: 6 <br />Standard Deviation: 2.5 <br />Is Significant? ","Dimension: 7 <br />Standard Deviation: 2.1 <br />Is Significant? ","Dimension: 8 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 9 <br />Standard Deviation: 1.6 <br />Is Significant? ","Dimension: 10 <br />Standard Deviation: 1.5 <br />Is Significant? ","Dimension: 11 <br />Standard Deviation: 1.5 <br />Is Significant? ","Dimension: 12 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 13 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 14 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 15 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 16 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 17 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 18 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 19 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 20 <br />Standard Deviation: 1.2 <br />Is Significant? "],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":31.049537260322,"r":9.29846409298464,"b":54.2359216521858,"l":40.5147364051474},"font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.0499999999999999,20.95],"tickmode":"array","ticktext":["5","10","15","20"],"tickvals":[5,10,15,20],"categoryorder":"array","categoryarray":["5","10","15","20"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"PC","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.982552773523985,6.23125760317959],"tickmode":"array","ticktext":["1","2","3","4","5","6"],"tickvals":[1,2,3,4,5,6],"categoryorder":"array","categoryarray":["1","2","3","4","5","6"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Standard Deviation","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"e688ef30fba":{"x":{},"y":{},"type":"scatter"}},"cur_data":"e688ef30fba","visdat":{"e688ef30fba":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div id="htmlwidget-c37ccba3223f3e131e12" style="width:700px;height:432.632880098888px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c37ccba3223f3e131e12">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"y":[5.99280757437374,3.89865887943431,3.09962241891215,2.98412091213844,2.59488896833432,2.51782799253777,2.05319936536837,1.78457818350319,1.60195578701288,1.48233360491445,1.45865931400389,1.44354985047103,1.41643055088348,1.35849096361149,1.35200175707471,1.34033794717087,1.31142636206865,1.26546512080161,1.26314811290837,1.22426546656138],"text":["Dimension: 1 <br />Standard Deviation: 6 <br />Is Significant? ","Dimension: 2 <br />Standard Deviation: 3.9 <br />Is Significant? ","Dimension: 3 <br />Standard Deviation: 3.1 <br />Is Significant? ","Dimension: 4 <br />Standard Deviation: 3 <br />Is Significant? ","Dimension: 5 <br />Standard Deviation: 2.6 <br />Is Significant? ","Dimension: 6 <br />Standard Deviation: 2.5 <br />Is Significant? ","Dimension: 7 <br />Standard Deviation: 2.1 <br />Is Significant? ","Dimension: 8 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 9 <br />Standard Deviation: 1.6 <br />Is Significant? ","Dimension: 10 <br />Standard Deviation: 1.5 <br />Is Significant? ","Dimension: 11 <br />Standard Deviation: 1.5 <br />Is Significant? ","Dimension: 12 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 13 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 14 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 15 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 16 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 17 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 18 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 19 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 20 <br />Standard Deviation: 1.2 <br />Is Significant? "],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":31.049537260322,"r":9.29846409298464,"b":54.2359216521858,"l":40.5147364051474},"font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.0499999999999999,20.95],"tickmode":"array","ticktext":["5","10","15","20"],"tickvals":[5,10,15,20],"categoryorder":"array","categoryarray":["5","10","15","20"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"PC","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.985838361170758,6.23123467976436],"tickmode":"array","ticktext":["1","2","3","4","5","6"],"tickvals":[1,2,3,4,5,6],"categoryorder":"array","categoryarray":["1","2","3","4","5","6"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Standard Deviation","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"c6fd2ba0842a":{"x":{},"y":{},"type":"scatter"}},"cur_data":"c6fd2ba0842a","visdat":{"c6fd2ba0842a":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratJackStraw.html">runSeuratJackStraw</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, dims <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotSeuratJackStraw.html">plotSeuratJackStraw</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, dims <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
 <p><img src="seurat_curated_workflow_files/figure-html/seurat_dm-3.png" width="700"></p>
@@ -591,11 +579,11 @@ i.e. <code>"pca"</code> or <code>"ica"</code>), <code>dims</code>
 <pre><code><span><span class="co">## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Number of nodes: 2700</span></span>
-<span><span class="co">## Number of edges: 92363</span></span>
+<span><span class="co">## Number of edges: 92282</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Running Louvain algorithm...</span></span>
-<span><span class="co">## Maximum modularity in 10 random starts: 0.8492</span></span>
-<span><span class="co">## Number of communities: 13</span></span>
+<span><span class="co">## Maximum modularity in 10 random starts: 0.8499</span></span>
+<span><span class="co">## Number of communities: 12</span></span>
 <span><span class="co">## Elapsed time: 0 seconds</span></span></code></pre>
 <p><code><a href="../reference/plotSeuratReduction.html">plotSeuratReduction()</a></code> can then be used to plot all
 reductions previously computed with cluster labels:</p>
@@ -619,12 +607,12 @@ the cells included in one group vs cells included in the second group
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindMarkers.html">runSeuratFindMarkers</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, allGroup <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">metadata</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[[</span><span class="st">"seuratMarkers"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    gene.id        p_val  avg_log2FC pct.1 pct.2    p_val_adj cluster1 cluster2</span></span>
-<span><span class="co">## 1     LDHB 7.614561e-90  -12.284908 0.970 0.603 2.492855e-85        0      all</span></span>
-<span><span class="co">## 2    RPS27 2.423354e-82  -13.670544 1.000 0.992 7.933575e-78        0      all</span></span>
-<span><span class="co">## 3    RPS12 9.560784e-71   39.664034 1.000 0.991 3.130009e-66        0      all</span></span>
-<span><span class="co">## 4    RPS25 3.290708e-70   -3.711453 1.000 0.975 1.077312e-65        0      all</span></span>
-<span><span class="co">## 5    RPL31 2.954646e-68    3.195258 0.998 0.965 9.672921e-64        0      all</span></span>
-<span><span class="co">## 6 HLA-DRB1 1.872619e-67 -141.399358 0.121 0.533 6.130579e-63        0      all</span></span></code></pre>
+<span><span class="co">## 1     LDHB 6.723941e-93  -12.450184 0.961 0.597 2.201284e-88        0      all</span></span>
+<span><span class="co">## 2    RPS27 4.999599e-92  -13.835820 1.000 0.992 1.636769e-87        0      all</span></span>
+<span><span class="co">## 3    RPS25 1.349111e-78   -3.879179 1.000 0.974 4.416720e-74        0      all</span></span>
+<span><span class="co">## 4 HLA-DRB1 1.898270e-76 -141.449776 0.118 0.543 6.214557e-72        0      all</span></span>
+<span><span class="co">## 5    RPL31 3.722289e-76    3.255473 0.996 0.965 1.218603e-71        0      all</span></span>
+<span><span class="co">## 6  HLA-DRA 5.214260e-73 -331.445887 0.271 0.628 1.707044e-68        0      all</span></span></code></pre>
 <p>The marker genes identified can be visualized through one of the
 available plots from <code>ridge plot</code>, <code>violin plot</code>,
 <code>feature plot</code>, <code>dot plot</code> and
@@ -702,12 +690,12 @@ Methods</em>, vol. 17, no. 2, pp. 137–145, Feb. 2020, doi: <a href="https://do
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>
