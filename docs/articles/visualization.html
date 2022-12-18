@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.4</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -377,8 +380,8 @@ the UMAP of this dataset, with clusters labeled by color.</p>
 <code class="sourceCode R"><span><span class="co"># Have a check on the summary of the clustering result</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">Seurat_louvain_Resolution0.8</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">##   0   1   2   3   4   5   6   7   8   9  10  11  12 </span></span>
-<span><span class="co">## 495 370 349 339 222 209 195 157 117 106  99  28  14</span></span></code></pre>
+<span><span class="co">##   0   1   2   3   4   5   6   7   8   9  10  11 </span></span>
+<span><span class="co">## 543 374 348 284 262 204 200 189 158  99  27  12</span></span></code></pre>
 </details><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratUMAP.html">runSeuratUMAP</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span>, colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, legendTitle <span class="op">=</span> <span class="st">"Seurat Cluster"</span>, title <span class="op">=</span> <span class="st">"Clustering on UMAP"</span><span class="op">)</span></span></code></pre></div>
@@ -438,12 +441,12 @@ document.getElementById("ia-button").click();
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>

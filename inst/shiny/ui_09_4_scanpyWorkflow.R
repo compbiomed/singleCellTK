@@ -213,7 +213,7 @@ shinyPanelScanpy <- fluidPage(
                                                     numericInput(inputId = "scanpy_nNeighbors", label = "Set no. of neigbours:", value = 15),
                                                     # materialSwitch(inputId = "scanpy_group.singletons", label = "Group singletons?", value = TRUE),
                                                     # htmlOutput(outputId = "scanpy_display_message_clustering", inline = FALSE),
-                                                    selectInput(inputId = "scanpy_corr_method", label = "Select clustering algorithm: ", choices = list("pearson" = "pearson",
+                                                    selectInput(inputId = "scanpy_corr_method", label = "Select correlation metric: ", choices = list("pearson" = "pearson",
                                                                                                                                                           "kendall" = "kendall",
                                                                                                                                                         "spearman" = "spearman")),
                                                     actionButton(inputId = "scanpy_find_clusters_button", "Find Clusters")

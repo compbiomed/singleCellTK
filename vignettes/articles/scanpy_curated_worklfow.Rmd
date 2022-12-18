@@ -1,6 +1,6 @@
 ---
 title: "Scanpy Curated Workflow"
-author: "Nida Pervaiz, Irzam Sarfaraz"
+author: "Nida Pervaiz, Irzam Sarfraz"
 output:
   html_document:
     toc: true
@@ -47,71 +47,76 @@ Assuming that the data has been uploaded via the Upload tab of the toolkit, the 
 
 1. Open up the 'Normalize' tab by clicking on it.
 2. Select the `assay` to normalize from the dropdown menu.
-3. Press the 'Normalize' button to start the normalization process.
+3. Specific parameters
+4. Press the 'Normalize' button to start the normalization process.
 
-**2. Scale Data** <br>
-Once normalization is complete, data needs to be scaled and centered accordingly. `Scanpy` scales data to unit variance and zero mean.
+![](ui_screenshots/scanpy/scanpy_1_normalize_annotated.png) <br>
 
-1. Open up the 'Scale Data' tab.
-2. Select the `assay` to scale from the dropdown menu.
-3. Press 'Scale' button to start processing.
-
-**3. Highly Variable Genes** <br>
+**2. Highly Variable Genes** <br>
 Identification of the highly variable genes is core to the `Scanpy` workflow and these highly variable genes are used throughout the remaining workflow. `Scanpy` provides three methods for variable genes identification i.e. `seurat`, `cell_ranger` and `seurat_v3`.
 
 1. Open up the 'Highly Variable Genes' tab.
 2. Select method for computation of highly variable genes from `seurat`, `cell_ranger` and `seurat_v3`.
 3. Input the number of genes that should be identified as variable. Default is `2000`.
-4. Press 'Find HVG' button to compute the variable genes.
-5. Graph that plots each gene and its relationship based upon the selected model in (2), and identifies if a gene is highly variable or not.
+4. Specify parameters.
+5. Press 'Find HVG' button to compute the variable genes.
+6. Graph that plots each gene and its relationship based upon the selected model in (2), and identifies if a gene is highly variable or not.
 
-**4. Dimensionality Reduction** <br>
+![](ui_screenshots/scanpy/scanpy_3_hvg_annotated.png) <br>
+
+**3. Dimensionality Reduction** <br>
 `Scanpy` workflow offers `PCA` for dimensionality reduction and the components from the method can be used in the downstream analysis. Moreover, several plots are available for the user to inspect the output of the dimensionality reduction such as the standard 'PCA Plot', 'PCA Gene Ranking' and 'PCA Variance'.
 
 1. Open up the 'Dimensionality Reduction' tab.
-2. Select 'PCA' computation. 
-3. Input the number of components to compute. Default value is `50`.
-4. Select the plots that should be computed with the overall processing. The standard 'PCA Plot' will be computed at all times, while the remaining can be turned off if not required.
-5. Press the 'Run PCA' button to start processing.
-6. Select the number of computed components that should be used in the downstream analysis e.g. in 'tSNE/UMAP' computation or with 'Clustering'. 
-7. The plot area from where all computed plots can be viewed by the user.
+2. Select method for computation of PCA.
+3. Input the number of components to compute.
+4. Press the 'Run PCA' button to start processing.
+5. Select the number of computed components that should be used in the downstream analysis e.g. in 'tSNE/UMAP' computation or with 'Clustering'. 
+6. The plot area from where all computed plots can be viewed by the user.
+
+![](ui_screenshots/scanpy/scanpy_dimensionalityReduction_annotated.png) <br>
 
 
-**5. tSNE/UMAP** <br>
+**4. tSNE/UMAP** <br>
 'tSNE' and 'UMAP' can be computed and plotted once components are available from 'Dimensionality Reduction' tab.
 
 1. Open up the 'tSNE/UMAP' tab.
 2. Select 'tSNE' or 'UMAP' sub-tab.
 3. Select a reduction method. Only methods that are computed previously in the 'Dimensionality Reduction' tab are available.
-4. Information displayed to the user that how many components from the selected reduction method will be used. This value can only be changed from the 'Dimensionality Reduction' tab.
+4. Set parameters.
 5. Press 'Run tSNE' or 'Run UMAP' button to start processing.
 6. 'tSNE' or 'UMAP' plot depending upon the selected computation.
 
-**6. Clustering** <br>
+![](ui_screenshots/scanpy/scanpy_tsneUmap.png) <br>
+
+**5. Clustering** <br>
 Cluster labels can be generated for all cells/samples using one of the computed reduction method. Plots are automatically re-computed with cluster labels. The available algorithms for clustering as provided by `Scanpy` include `louvain` and `leiden`.
 
 1. Open up the 'Clustering' tab.
-2. Select a previously computed reduction method.
+2. Select number of components to use from PCA previously computed.
 3. Select clustering algorithm from `louvain` and `leiden`.
-4. Set resolution parameter value for the algorithm.
-5. Information displayed to the user that how many components from the selected reduction method will be used. This value can only be changed from the 'Dimensionality Reduction' tab.
-6. Press 'Find Clusters' button to start processing.
-7. Re-computed plots with cluster labels. Only those plots are available that have previously been computed.
+4. Set parameters.
+5. Press 'Find Clusters' button to start processing.
+6. Re-computed plots with cluster labels. Only those plots are available that have previously been computed.
 
-**7. Find Markers** <br>
+![](ui_screenshots/scanpy/scanpy_6_clustering.png) <br>
+
+**6. Find Markers** <br>
 'Find Markers' tab can be used to identify and visualize the marker genes using on of the provided visualization methods. The tab offers identification of markers between two selected phenotype groups or between all groups and can be decided at the time of the computation. Furthermore, markers that are conserved between two phenotype groups can also be identified. Visualizations such as Dot Plot, Violin Plot, Matrix Plot and Heatmap Plot can be used to visualize the individual marker genes. 
 
-1. Select if you want to identify marker genes against all groups in a biological variable or between two pre-defined groups. Additionally, users can select the last option to identify the marker genes that are conserved between two groups.
-2. Select number of genes to show. Default is `10`.
-3. Press "Find Markers" button to run marker identification.
-4. Identified marker genes are populated in the table.
+1. Select "Find Markers" tab.
+2. Select if you want to identify marker genes against all groups in a biological variable or between two pre-defined groups.
+3. Set parameters.
+4. Press "Find Markers" button to run marker identification.
 5. Filters can be applied on the table.
+
+![](ui_screenshots/scanpy/scanpy_findmarkers_1.png) <br>
 
 6. Heatmap plot can be visualized for all genes populated in the table against all biological groups in the selected phenotype variable.
 
+![](ui_screenshots/scanpy/scanpy_findmarkers_2.png) <br>
 
-
-**8. Downstream Analysis** <br>
+**7. Downstream Analysis** <br>
 Once all steps of the Scanpy workflow are completed, users can further analyze the data by directly going to the various downstream analysis options (Differential Expression, Marker Selection & Pathway Analysis) from within the Scanpy workflow.
 
 
@@ -156,7 +161,7 @@ Parameters for `runScanpyFindHVG()` include `useAssay` (specify the name of the 
 ```{r "scanpy_hvg", warning=FALSE, message=FALSE}
 sce <- runScanpyFindHVG(inSCE = sce, useAssay = "scanpyScaledData", method = "seurat")
 g <- getTopHVG(sce, method = "seurat", hvgNumber = 500)
-altExp(sce, altExpName) <- sce[g, ]
+altExp(sce, "scanpyHVG500") <- sce[g, ]
 
 plotScanpyHVG(sce)
 ```
@@ -165,7 +170,7 @@ plotScanpyHVG(sce)
 PCA can be computed using the `runScanpyPCA()` function. Plots can be visualized using `plotScanpyPCA()`, `plotScanpyPCAGeneRanking()` and `plotScanpyPCAVariance()`.
 
 ```{r "scanpy_dm", warning=FALSE, message=FALSE}
-sce <- runScanpyPCA(inSCE = sce, useAssay = "scanpyNormData", reducedDimName = "scanpyPCA", nPCs = 20)
+sce <- runScanpyPCA(inSCE = sce, useAssay = "scanpyNormData", reducedDimName = "scanpyPCA")
 plotScanpyPCA(inSCE = sce, reducedDimName = "scanpyPCA")
 plotScanpyPCAGeneRanking(inSCE = sce)
 plotScanpyPCAVariance(inSCE = sce, nPCs = 20)
@@ -175,33 +180,37 @@ plotScanpyPCAVariance(inSCE = sce, nPCs = 20)
 `runScanpyTSNE()` and `runScanpyUMAP()` can be used to compute tSNE/UMAP statistics and store into the input object. Parameters to both functions include `inSCE` (input SCE object), `useReduction` (specify the reduction to use i.e. `"pca"`), `reducedDimName` (name of this new reduction) and `dims` (number of dims to use). `plotScanpyEmbedding()` can be used to visualize the results.
 
 ```{r "scanpy_tsne_umap", warning=FALSE, message=FALSE}
-sce <- runScanpyTSNE(inSCE = sce, useReduction = "scanpyPCA", reducedDimName = "scanpyUMAP", dims = 10)
+sce <- runScanpyTSNE(inSCE = sce, useReduction = "scanpyPCA", reducedDimName = "scanpyUMAP")
 ```
+
 ```{r, warning=FALSE, message=FALSE}
-sce <- runScanpyUMAP(inSCE = sce, useReduction = "scanpyPCA", reducedDimName = "scanpyTSNE", dims = 10)
+sce <- runScanpyUMAP(inSCE = sce, useReduction = "scanpyPCA", reducedDimName = "scanpyTSNE")
 ```
+
 ```{r, warning=FALSE}
+plotScanpyEmbedding(sce, reducedDimName = "scanpyTSNE")
 plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP")
 ```
 
 **6. Clustering** <br>
 `runScanpyFindClusters()` function can be used to compute the clusters, which can later be plotted through the `plotScanpyEmbedding()` method with cluster labels. The parameters to the function include `inSCE` (input SCE object), `useAssay` (name of the scaled assay), `useReduction` (specify which reduction to use i.e. `"scanpyPCA"`), `dims` (number of dims to use) and the algorithm (either `"louvain"` or `"leiden"`).
 ```{r "scanpy_clustering", warning=FALSE, message=FALSE}
-sce <- runScanpyFindClusters(inSCE = sce, useAssay = "scanpyScaledData", useReduction = "scanpyPCA", dims = 10, algorithm = "louvain")
+sce <- runScanpyFindClusters(inSCE = sce, useAssay = "scanpyScaledData", useReduction = "scanpyPCA", algorithm = "leiden")
 ```
 
 `plotScanpyEmbedding()` can then be used to plot all reductions previously computed with cluster labels:
 ```{r "scanpy_cluster_plots", warning=FALSE, message=FALSE}
-plotScanpyEmbedding(sce, reducedDimName = "scanpyPCA", color = 'Scanpy_louvain_1')
-plotScanpyEmbedding(sce, reducedDimName = "scanpyTSNE", color = 'Scanpy_louvain_1')
-plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_louvain_1')
+plotScanpyEmbedding(sce, reducedDimName = "scanpyPCA", color = 'Scanpy_leiden_1')
+plotScanpyEmbedding(sce, reducedDimName = "scanpyTSNE", color = 'Scanpy_leiden_1')
+plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_leiden_1')
 ```
 
 **7. Find Markers** <br>
 Marker genes can be identified using the `runScanpyFindMarkers()` function. This function can use one specified column from `colData` of the input object from which the user can select the groups versus which marker genes need to be obtained. User can either compare all group of cells versus the rest or can can manually specify the cells included in one group vs cells included in the second group (`group1` and `group2` parameter). 
 ```{r "scanpy_findMarkers", warning=FALSE, message=FALSE}
-sce <- runScanpyFindMarkers(inSCE = sce, colDataName = "Scanpy_louvain_1")
+sce <- runScanpyFindMarkers(inSCE = sce, colDataName = "Scanpy_leiden_1")
 print(head(metadata(sce)[["scanpyMarkers"]]))
+
 ```
 
 The marker genes identified can be visualized through one of the available plots from `matrix plot`, `violin plot`, `dot plot` and `heatmap plot`. 
@@ -209,9 +218,9 @@ The marker genes identified can be visualized through one of the available plots
 ```{r "scanpy_genePlots", warning=FALSE, message=FALSE}
 plotScanpyMarkerGenes(sce, groups = '0')
 plotScanpyMarkerGenesViolin(sce, groups = '0')
-plotScanpyMarkerGenesHeatmap(sce, groupBy = 'Scanpy_louvain_1')
-plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_louvain_1')
-plotScanpyMarkerGenesMatrixPlot(sce, groupBy = 'Scanpy_louvain_1')
+plotScanpyMarkerGenesHeatmap(sce, groupBy = 'Scanpy_leiden_1')
+plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_leiden_1')
+plotScanpyMarkerGenesMatrixPlot(sce, groupBy = 'Scanpy_leiden_1')
 ```
 
 ````{=html} 

@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.4</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -561,20 +564,20 @@ branch paths and all of them can be retrieved within a list object:</p>
 feature expression, looks like:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tableList</span><span class="op">$</span><span class="va">`6`</span></span></code></pre></div>
-<pre><code><span><span class="co">## DataFrame with 12 rows and 3 columns</span></span>
-<span><span class="co">##              logFC     p.value         FDR</span></span>
-<span><span class="co">##          &lt;numeric&gt;   &lt;numeric&gt;   &lt;numeric&gt;</span></span>
-<span><span class="co">## GPX1     -0.161598 7.72253e-08 4.82474e-05</span></span>
-<span><span class="co">## RBP7     -0.131954 3.57329e-07 1.84926e-04</span></span>
-<span><span class="co">## CD14     -0.143327 2.95415e-06 1.33774e-03</span></span>
-<span><span class="co">## S100A12  -0.121480 5.04022e-06 1.90967e-03</span></span>
-<span><span class="co">## FOLR3    -0.106884 1.15951e-05 3.93798e-03</span></span>
-<span><span class="co">## ...            ...         ...         ...</span></span>
-<span><span class="co">## LYZ     -0.1007743 5.10931e-05   0.0132210</span></span>
-<span><span class="co">## QPCT    -0.0691165 1.00350e-04   0.0227209</span></span>
-<span><span class="co">## TSPO    -0.1225684 1.17562e-04   0.0260747</span></span>
-<span><span class="co">## IL8     -0.1241204 1.38549e-04   0.0289568</span></span>
-<span><span class="co">## BST1    -0.0769784 1.84220e-04   0.0357519</span></span></code></pre>
+<pre><code><span><span class="co">## DataFrame with 12 rows and 4 columns</span></span>
+<span><span class="co">##              logFC    logFC.1     p.value         FDR</span></span>
+<span><span class="co">##          &lt;numeric&gt;  &lt;numeric&gt;   &lt;numeric&gt;   &lt;numeric&gt;</span></span>
+<span><span class="co">## GPX1     -0.161598  -0.161598 7.72253e-08 4.82474e-05</span></span>
+<span><span class="co">## RBP7     -0.131954  -0.131954 3.57329e-07 1.84926e-04</span></span>
+<span><span class="co">## CD14     -0.143327  -0.143327 2.95415e-06 1.33774e-03</span></span>
+<span><span class="co">## S100A12  -0.121480  -0.121480 5.04022e-06 1.90967e-03</span></span>
+<span><span class="co">## FOLR3    -0.106884  -0.106884 1.15951e-05 3.93798e-03</span></span>
+<span><span class="co">## ...            ...        ...         ...         ...</span></span>
+<span><span class="co">## LYZ     -0.1007743 -0.1007743 5.10931e-05   0.0132210</span></span>
+<span><span class="co">## QPCT    -0.0691165 -0.0691165 1.00350e-04   0.0227209</span></span>
+<span><span class="co">## TSPO    -0.1225684 -0.1225684 1.17562e-04   0.0260747</span></span>
+<span><span class="co">## IL8     -0.1241204 -0.1241204 1.38549e-04   0.0289568</span></span>
+<span><span class="co">## BST1    -0.0769784 -0.0769784 1.84220e-04   0.0357519</span></span></code></pre>
 </details><details><summary><b>Show recomputed pseudotime rooting from the cluster</b></summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANClusterPseudo.html">plotTSCANClusterPseudo</a></span><span class="op">(</span><span class="va">sce</span>, useCluster <span class="op">=</span> <span class="va">useCluster</span>, useReducedDim <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="trajectoryAnalysis_files/figure-html/tscanClusterPseudo-1.png" width="700" style="display: block; margin: auto;"></p>
@@ -614,12 +617,12 @@ vol. 44, 2016, doi: <a href="https://doi.org/10.1093/nar/gkw430" class="external
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>

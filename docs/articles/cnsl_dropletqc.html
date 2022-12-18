@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.4</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -322,9 +325,9 @@ function <code><a href="../reference/runDropletQC.html">runDropletQC()</a></code
 algorithms will be run.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDropletQC.html">runDropletQC</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Tue Oct 25 16:08:34 2022 ... Running 'perCellQCMetrics'</span></span></code></pre>
-<pre><code><span><span class="co">## Tue Oct 25 16:08:35 2022 ... Running 'emptyDrops'</span></span></code></pre>
-<pre><code><span><span class="co">## Tue Oct 25 16:08:48 2022 ... Running 'barcodeRanks'</span></span></code></pre>
+<pre><code><span><span class="co">## Sun Dec 18 01:17:39 2022 ... Running 'perCellQCMetrics'</span></span></code></pre>
+<pre><code><span><span class="co">## Sun Dec 18 01:17:40 2022 ... Running 'emptyDrops'</span></span></code></pre>
+<pre><code><span><span class="co">## Sun Dec 18 01:18:10 2022 ... Running 'barcodeRanks'</span></span></code></pre>
 <p>If users choose to only run a specific set of algorithms, they can
 specify which to run with the <code>algorithms</code> parameter.</p>
 <p>After running QC functions with SCTK, the output will be stored in
@@ -335,60 +338,60 @@ object.</p>
 <pre><code><span><span class="co">## DataFrame with 5 rows and 16 columns</span></span>
 <span><span class="co">##                         sample            Barcode       sum  detected</span></span>
 <span><span class="co">##                    &lt;character&gt;        &lt;character&gt; &lt;numeric&gt; &lt;integer&gt;</span></span>
-<span><span class="co">## AACCGCGGTTGAGGTG-1      pbmc4k AACCGCGGTTGAGGTG-1         1         1</span></span>
-<span><span class="co">## CAAGAAAAGTCCAGGA-1      pbmc4k CAAGAAAAGTCCAGGA-1         2         2</span></span>
-<span><span class="co">## TCTCTAAAGCGCCTCA-1      pbmc4k TCTCTAAAGCGCCTCA-1         0         0</span></span>
-<span><span class="co">## ATTATCCAGCGTCAAG-1      pbmc4k ATTATCCAGCGTCAAG-1         4         4</span></span>
-<span><span class="co">## GAGCAGAGTCCAACTA-1      pbmc4k GAGCAGAGTCCAACTA-1         0         0</span></span>
+<span><span class="co">## AGATCTGCAGCGTTCG-1      pbmc4k AGATCTGCAGCGTTCG-1         1         1</span></span>
+<span><span class="co">## GTCTCGTAGACTACAA-1      pbmc4k GTCTCGTAGACTACAA-1         0         0</span></span>
+<span><span class="co">## ACTTGTTAGTGGGCTA-1      pbmc4k ACTTGTTAGTGGGCTA-1         0         0</span></span>
+<span><span class="co">## TATTACCTCACAACGT-1      pbmc4k TATTACCTCACAACGT-1         0         0</span></span>
+<span><span class="co">## GTATCTTAGTCGAGTG-1      pbmc4k GTATCTTAGTCGAGTG-1         0         0</span></span>
 <span><span class="co">##                    percent.top_50 percent.top_100 percent.top_200</span></span>
 <span><span class="co">##                         &lt;numeric&gt;       &lt;numeric&gt;       &lt;numeric&gt;</span></span>
-<span><span class="co">## AACCGCGGTTGAGGTG-1            100             100             100</span></span>
-<span><span class="co">## CAAGAAAAGTCCAGGA-1            100             100             100</span></span>
-<span><span class="co">## TCTCTAAAGCGCCTCA-1            NaN             NaN             NaN</span></span>
-<span><span class="co">## ATTATCCAGCGTCAAG-1            100             100             100</span></span>
-<span><span class="co">## GAGCAGAGTCCAACTA-1            NaN             NaN             NaN</span></span>
+<span><span class="co">## AGATCTGCAGCGTTCG-1            100             100             100</span></span>
+<span><span class="co">## GTCTCGTAGACTACAA-1            NaN             NaN             NaN</span></span>
+<span><span class="co">## ACTTGTTAGTGGGCTA-1            NaN             NaN             NaN</span></span>
+<span><span class="co">## TATTACCTCACAACGT-1            NaN             NaN             NaN</span></span>
+<span><span class="co">## GTATCTTAGTCGAGTG-1            NaN             NaN             NaN</span></span>
 <span><span class="co">##                    percent.top_500     total dropletUtils_emptyDrops_total</span></span>
 <span><span class="co">##                          &lt;numeric&gt; &lt;numeric&gt;                     &lt;integer&gt;</span></span>
-<span><span class="co">## AACCGCGGTTGAGGTG-1             100         1                             1</span></span>
-<span><span class="co">## CAAGAAAAGTCCAGGA-1             100         2                             2</span></span>
-<span><span class="co">## TCTCTAAAGCGCCTCA-1             NaN         0                             0</span></span>
-<span><span class="co">## ATTATCCAGCGTCAAG-1             100         4                             4</span></span>
-<span><span class="co">## GAGCAGAGTCCAACTA-1             NaN         0                             0</span></span>
+<span><span class="co">## AGATCTGCAGCGTTCG-1             100         1                             1</span></span>
+<span><span class="co">## GTCTCGTAGACTACAA-1             NaN         0                             0</span></span>
+<span><span class="co">## ACTTGTTAGTGGGCTA-1             NaN         0                             0</span></span>
+<span><span class="co">## TATTACCTCACAACGT-1             NaN         0                             0</span></span>
+<span><span class="co">## GTATCTTAGTCGAGTG-1             NaN         0                             0</span></span>
 <span><span class="co">##                    dropletUtils_emptyDrops_logprob</span></span>
 <span><span class="co">##                                          &lt;numeric&gt;</span></span>
-<span><span class="co">## AACCGCGGTTGAGGTG-1                              NA</span></span>
-<span><span class="co">## CAAGAAAAGTCCAGGA-1                              NA</span></span>
-<span><span class="co">## TCTCTAAAGCGCCTCA-1                              NA</span></span>
-<span><span class="co">## ATTATCCAGCGTCAAG-1                              NA</span></span>
-<span><span class="co">## GAGCAGAGTCCAACTA-1                              NA</span></span>
+<span><span class="co">## AGATCTGCAGCGTTCG-1                              NA</span></span>
+<span><span class="co">## GTCTCGTAGACTACAA-1                              NA</span></span>
+<span><span class="co">## ACTTGTTAGTGGGCTA-1                              NA</span></span>
+<span><span class="co">## TATTACCTCACAACGT-1                              NA</span></span>
+<span><span class="co">## GTATCTTAGTCGAGTG-1                              NA</span></span>
 <span><span class="co">##                    dropletUtils_emptyDrops_pvalue</span></span>
 <span><span class="co">##                                         &lt;numeric&gt;</span></span>
-<span><span class="co">## AACCGCGGTTGAGGTG-1                             NA</span></span>
-<span><span class="co">## CAAGAAAAGTCCAGGA-1                             NA</span></span>
-<span><span class="co">## TCTCTAAAGCGCCTCA-1                             NA</span></span>
-<span><span class="co">## ATTATCCAGCGTCAAG-1                             NA</span></span>
-<span><span class="co">## GAGCAGAGTCCAACTA-1                             NA</span></span>
+<span><span class="co">## AGATCTGCAGCGTTCG-1                             NA</span></span>
+<span><span class="co">## GTCTCGTAGACTACAA-1                             NA</span></span>
+<span><span class="co">## ACTTGTTAGTGGGCTA-1                             NA</span></span>
+<span><span class="co">## TATTACCTCACAACGT-1                             NA</span></span>
+<span><span class="co">## GTATCTTAGTCGAGTG-1                             NA</span></span>
 <span><span class="co">##                    dropletUtils_emptyDrops_limited dropletUtils_emptyDrops_fdr</span></span>
 <span><span class="co">##                                          &lt;logical&gt;                   &lt;numeric&gt;</span></span>
-<span><span class="co">## AACCGCGGTTGAGGTG-1                              NA                          NA</span></span>
-<span><span class="co">## CAAGAAAAGTCCAGGA-1                              NA                          NA</span></span>
-<span><span class="co">## TCTCTAAAGCGCCTCA-1                              NA                          NA</span></span>
-<span><span class="co">## ATTATCCAGCGTCAAG-1                              NA                          NA</span></span>
-<span><span class="co">## GAGCAGAGTCCAACTA-1                              NA                          NA</span></span>
+<span><span class="co">## AGATCTGCAGCGTTCG-1                              NA                          NA</span></span>
+<span><span class="co">## GTCTCGTAGACTACAA-1                              NA                          NA</span></span>
+<span><span class="co">## ACTTGTTAGTGGGCTA-1                              NA                          NA</span></span>
+<span><span class="co">## TATTACCTCACAACGT-1                              NA                          NA</span></span>
+<span><span class="co">## GTATCTTAGTCGAGTG-1                              NA                          NA</span></span>
 <span><span class="co">##                    dropletUtils_BarcodeRank_Knee</span></span>
 <span><span class="co">##                                        &lt;integer&gt;</span></span>
-<span><span class="co">## AACCGCGGTTGAGGTG-1                             0</span></span>
-<span><span class="co">## CAAGAAAAGTCCAGGA-1                             0</span></span>
-<span><span class="co">## TCTCTAAAGCGCCTCA-1                             0</span></span>
-<span><span class="co">## ATTATCCAGCGTCAAG-1                             0</span></span>
-<span><span class="co">## GAGCAGAGTCCAACTA-1                             0</span></span>
+<span><span class="co">## AGATCTGCAGCGTTCG-1                             0</span></span>
+<span><span class="co">## GTCTCGTAGACTACAA-1                             0</span></span>
+<span><span class="co">## ACTTGTTAGTGGGCTA-1                             0</span></span>
+<span><span class="co">## TATTACCTCACAACGT-1                             0</span></span>
+<span><span class="co">## GTATCTTAGTCGAGTG-1                             0</span></span>
 <span><span class="co">##                    dropletUtils_BarcodeRank_Inflection</span></span>
 <span><span class="co">##                                              &lt;integer&gt;</span></span>
-<span><span class="co">## AACCGCGGTTGAGGTG-1                                   0</span></span>
-<span><span class="co">## CAAGAAAAGTCCAGGA-1                                   0</span></span>
-<span><span class="co">## TCTCTAAAGCGCCTCA-1                                   0</span></span>
-<span><span class="co">## ATTATCCAGCGTCAAG-1                                   0</span></span>
-<span><span class="co">## GAGCAGAGTCCAACTA-1                                   0</span></span></code></pre>
+<span><span class="co">## AGATCTGCAGCGTTCG-1                                   0</span></span>
+<span><span class="co">## GTCTCGTAGACTACAA-1                                   0</span></span>
+<span><span class="co">## ACTTGTTAGTGGGCTA-1                                   0</span></span>
+<span><span class="co">## TATTACCTCACAACGT-1                                   0</span></span>
+<span><span class="co">## GTATCTTAGTCGAGTG-1                                   0</span></span></code></pre>
 <div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:80%; ">
 <table class="table table" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -446,13 +449,13 @@ dropletUtils_BarcodeRank_Inflection
 <tbody>
 <tr>
 <td style="text-align:left;">
-AACCGCGGTTGAGGTG-1
+AGATCTGCAGCGTTCG-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-AACCGCGGTTGAGGTG-1
+AGATCTGCAGCGTTCG-1
 </td>
 <td style="text-align:right;">
 1
@@ -499,66 +502,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-CAAGAAAAGTCCAGGA-1
+GTCTCGTAGACTACAA-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-CAAGAAAAGTCCAGGA-1
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-TCTCTAAAGCGCCTCA-1
-</td>
-<td style="text-align:left;">
-pbmc4k
-</td>
-<td style="text-align:left;">
-TCTCTAAAGCGCCTCA-1
+GTCTCGTAGACTACAA-1
 </td>
 <td style="text-align:right;">
 0
@@ -605,37 +555,37 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-ATTATCCAGCGTCAAG-1
+ACTTGTTAGTGGGCTA-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-ATTATCCAGCGTCAAG-1
+ACTTGTTAGTGGGCTA-1
 </td>
 <td style="text-align:right;">
-4
+0
 </td>
 <td style="text-align:right;">
-4
+0
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-4
+0
 </td>
 <td style="text-align:right;">
-4
+0
 </td>
 <td style="text-align:right;">
 NA
@@ -658,13 +608,66 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-GAGCAGAGTCCAACTA-1
+TATTACCTCACAACGT-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-GAGCAGAGTCCAACTA-1
+TATTACCTCACAACGT-1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GTATCTTAGTCGAGTG-1
+</td>
+<td style="text-align:left;">
+pbmc4k
+</td>
+<td style="text-align:left;">
+GTATCTTAGTCGAGTG-1
 </td>
 <td style="text-align:right;">
 0
@@ -925,7 +928,7 @@ documentation</a> for detail.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#After filtering:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 33694   309</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 33694   286</span></span></code></pre>
 <p>We can compare the average total UMI counts per cell before and after
 cell filtration:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
@@ -943,87 +946,93 @@ documentation</a>.</p>
  <details><summary><b>Session Information</b></summary><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.2.1 (2022-06-23)</span></span>
-<span><span class="co">## Platform: aarch64-apple-darwin20 (64-bit)</span></span>
-<span><span class="co">## Running under: macOS Monterey 12.6</span></span>
+<span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
+<span><span class="co">## Running under: CentOS Linux 7 (Core)</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
-<span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/lib/libRblas.0.dylib</span></span>
-<span><span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/lib/libRlapack.dylib</span></span>
+<span><span class="co">## BLAS:   /share/pkg.7/r/4.2.1/install/lib64/R/lib/libRblas.so</span></span>
+<span><span class="co">## LAPACK: /share/pkg.7/r/4.2.1/install/lib64/R/lib/libRlapack.so</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## locale:</span></span>
-<span><span class="co">## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span></span>
+<span><span class="co">##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></span>
+<span><span class="co">##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span></span>
+<span><span class="co">##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span></span>
+<span><span class="co">##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span></span>
+<span><span class="co">##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span></span>
+<span><span class="co">## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attached base packages:</span></span>
 <span><span class="co">## [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span></span>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">##  [1] BiocFileCache_2.5.2         dbplyr_2.2.1               </span></span>
-<span><span class="co">##  [3] dplyr_1.0.10                singleCellTK_2.7.3         </span></span>
-<span><span class="co">##  [5] DelayedArray_0.23.2         Matrix_1.5-1               </span></span>
-<span><span class="co">##  [7] SingleCellExperiment_1.19.1 SummarizedExperiment_1.27.3</span></span>
-<span><span class="co">##  [9] Biobase_2.57.1              GenomicRanges_1.49.1       </span></span>
-<span><span class="co">## [11] GenomeInfoDb_1.33.15        IRanges_2.31.2             </span></span>
-<span><span class="co">## [13] S4Vectors_0.35.4            BiocGenerics_0.43.4        </span></span>
-<span><span class="co">## [15] MatrixGenerics_1.9.1        matrixStats_0.62.0         </span></span>
+<span><span class="co">##  [1] BiocFileCache_2.4.0         dbplyr_2.2.0               </span></span>
+<span><span class="co">##  [3] dplyr_1.0.9                 singleCellTK_2.7.4         </span></span>
+<span><span class="co">##  [5] DelayedArray_0.22.0         Matrix_1.4-2               </span></span>
+<span><span class="co">##  [7] SingleCellExperiment_1.18.0 SummarizedExperiment_1.26.1</span></span>
+<span><span class="co">##  [9] Biobase_2.56.0              GenomicRanges_1.48.0       </span></span>
+<span><span class="co">## [11] GenomeInfoDb_1.32.2         IRanges_2.30.0             </span></span>
+<span><span class="co">## [13] S4Vectors_0.34.0            BiocGenerics_0.42.0        </span></span>
+<span><span class="co">## [15] MatrixGenerics_1.8.0        matrixStats_0.62.0         </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] ggbeeswarm_0.6.0          colorspace_2.0-3         </span></span>
-<span><span class="co">##   [3] rprojroot_2.0.3           GSVAdata_1.33.0          </span></span>
-<span><span class="co">##   [5] scuttle_1.7.4             XVector_0.37.1           </span></span>
-<span><span class="co">##   [7] BiocNeighbors_1.15.1      fs_1.5.2                 </span></span>
-<span><span class="co">##   [9] rstudioapi_0.14           farver_2.1.1             </span></span>
-<span><span class="co">##  [11] ggrepel_0.9.1             bit64_4.0.5              </span></span>
-<span><span class="co">##  [13] fansi_1.0.3               xml2_1.3.3               </span></span>
-<span><span class="co">##  [15] codetools_0.2-18          R.methodsS3_1.8.2        </span></span>
-<span><span class="co">##  [17] sparseMatrixStats_1.9.0   cachem_1.0.6             </span></span>
-<span><span class="co">##  [19] knitr_1.40                scater_1.25.7            </span></span>
-<span><span class="co">##  [21] jsonlite_1.8.3            png_0.1-7                </span></span>
-<span><span class="co">##  [23] R.oo_1.25.0               HDF5Array_1.25.2         </span></span>
-<span><span class="co">##  [25] compiler_4.2.1            httr_1.4.4               </span></span>
-<span><span class="co">##  [27] dqrng_0.3.0               assertthat_0.2.1         </span></span>
-<span><span class="co">##  [29] fastmap_1.1.0             limma_3.53.10            </span></span>
-<span><span class="co">##  [31] cli_3.4.1                 BiocSingular_1.13.1      </span></span>
-<span><span class="co">##  [33] htmltools_0.5.3           tools_4.2.1              </span></span>
-<span><span class="co">##  [35] rsvd_1.0.5                gtable_0.3.1             </span></span>
-<span><span class="co">##  [37] glue_1.6.2                GenomeInfoDbData_1.2.9   </span></span>
-<span><span class="co">##  [39] rappdirs_0.3.3            Rcpp_1.0.9               </span></span>
-<span><span class="co">##  [41] jquerylib_0.1.4           pkgdown_2.0.6            </span></span>
-<span><span class="co">##  [43] vctrs_0.5.0               rhdf5filters_1.9.0       </span></span>
-<span><span class="co">##  [45] svglite_2.1.0             DelayedMatrixStats_1.19.2</span></span>
-<span><span class="co">##  [47] xfun_0.34                 stringr_1.4.1            </span></span>
-<span><span class="co">##  [49] rvest_1.0.3               beachmat_2.13.4          </span></span>
-<span><span class="co">##  [51] lifecycle_1.0.3           irlba_2.3.5.1            </span></span>
-<span><span class="co">##  [53] gtools_3.9.3              edgeR_3.39.6             </span></span>
-<span><span class="co">##  [55] zlibbioc_1.43.0           scales_1.2.1             </span></span>
-<span><span class="co">##  [57] ragg_1.2.4                parallel_4.2.1           </span></span>
-<span><span class="co">##  [59] rhdf5_2.41.1              yaml_2.3.6               </span></span>
-<span><span class="co">##  [61] curl_4.3.3                memoise_2.0.1            </span></span>
-<span><span class="co">##  [63] reticulate_1.26           gridExtra_2.3            </span></span>
-<span><span class="co">##  [65] ggplot2_3.3.6             sass_0.4.2               </span></span>
-<span><span class="co">##  [67] stringi_1.7.8             RSQLite_2.2.18           </span></span>
-<span><span class="co">##  [69] highr_0.9                 desc_1.4.2               </span></span>
-<span><span class="co">##  [71] ScaledMatrix_1.5.1        filelock_1.0.2           </span></span>
-<span><span class="co">##  [73] BiocParallel_1.31.14      rlang_1.0.6              </span></span>
-<span><span class="co">##  [75] pkgconfig_2.0.3           systemfonts_1.0.4        </span></span>
-<span><span class="co">##  [77] bitops_1.0-7              evaluate_0.17            </span></span>
-<span><span class="co">##  [79] lattice_0.20-45           purrr_0.3.5              </span></span>
-<span><span class="co">##  [81] Rhdf5lib_1.19.2           labeling_0.4.2           </span></span>
-<span><span class="co">##  [83] cowplot_1.1.1             bit_4.0.4                </span></span>
-<span><span class="co">##  [85] tidyselect_1.2.0          magrittr_2.0.3           </span></span>
-<span><span class="co">##  [87] R6_2.5.1                  generics_0.1.3           </span></span>
-<span><span class="co">##  [89] fishpond_2.3.21           DBI_1.1.3                </span></span>
-<span><span class="co">##  [91] pillar_1.8.1              withr_2.5.0              </span></span>
-<span><span class="co">##  [93] svMisc_1.2.3              RCurl_1.98-1.9           </span></span>
-<span><span class="co">##  [95] tibble_3.1.8              DropletUtils_1.17.3      </span></span>
-<span><span class="co">##  [97] utf8_1.2.2                rmarkdown_2.17           </span></span>
-<span><span class="co">##  [99] viridis_0.6.2             locfit_1.5-9.6           </span></span>
-<span><span class="co">## [101] grid_4.2.1                blob_1.2.3               </span></span>
-<span><span class="co">## [103] webshot_0.5.4             digest_0.6.30            </span></span>
-<span><span class="co">## [105] R.utils_2.12.0            textshaping_0.3.6        </span></span>
-<span><span class="co">## [107] munsell_0.5.0             kableExtra_1.3.4         </span></span>
-<span><span class="co">## [109] beeswarm_0.4.0            viridisLite_0.4.1        </span></span>
-<span><span class="co">## [111] vipor_0.4.5               bslib_0.4.0</span></span></code></pre>
+<span><span class="co">##   [1] ggbeeswarm_0.6.0          colorspace_2.1-0         </span></span>
+<span><span class="co">##   [3] ellipsis_0.3.2            rprojroot_2.0.3          </span></span>
+<span><span class="co">##   [5] GSVAdata_1.32.0           scuttle_1.6.2            </span></span>
+<span><span class="co">##   [7] XVector_0.36.0            BiocNeighbors_1.14.0     </span></span>
+<span><span class="co">##   [9] fs_1.5.2                  rstudioapi_0.13          </span></span>
+<span><span class="co">##  [11] farver_2.1.0              ggrepel_0.9.1            </span></span>
+<span><span class="co">##  [13] bit64_4.0.5               fansi_1.0.3              </span></span>
+<span><span class="co">##  [15] xml2_1.3.3                codetools_0.2-18         </span></span>
+<span><span class="co">##  [17] R.methodsS3_1.8.2         sparseMatrixStats_1.8.0  </span></span>
+<span><span class="co">##  [19] cachem_1.0.6              knitr_1.39               </span></span>
+<span><span class="co">##  [21] scater_1.24.0             jsonlite_1.8.0           </span></span>
+<span><span class="co">##  [23] png_0.1-7                 R.oo_1.25.0              </span></span>
+<span><span class="co">##  [25] HDF5Array_1.24.1          compiler_4.2.1           </span></span>
+<span><span class="co">##  [27] httr_1.4.3                dqrng_0.3.0              </span></span>
+<span><span class="co">##  [29] assertthat_0.2.1          fastmap_1.1.0            </span></span>
+<span><span class="co">##  [31] limma_3.52.2              cli_3.4.1                </span></span>
+<span><span class="co">##  [33] BiocSingular_1.12.0       htmltools_0.5.2          </span></span>
+<span><span class="co">##  [35] tools_4.2.1               rsvd_1.0.5               </span></span>
+<span><span class="co">##  [37] gtable_0.3.0              glue_1.6.2               </span></span>
+<span><span class="co">##  [39] GenomeInfoDbData_1.2.8    rappdirs_0.3.3           </span></span>
+<span><span class="co">##  [41] Rcpp_1.0.8.3              jquerylib_0.1.4          </span></span>
+<span><span class="co">##  [43] pkgdown_2.0.5             vctrs_0.5.1              </span></span>
+<span><span class="co">##  [45] rhdf5filters_1.8.0        svglite_2.1.0            </span></span>
+<span><span class="co">##  [47] DelayedMatrixStats_1.18.0 xfun_0.31                </span></span>
+<span><span class="co">##  [49] stringr_1.4.0             rvest_1.0.2              </span></span>
+<span><span class="co">##  [51] beachmat_2.12.0           lifecycle_1.0.3          </span></span>
+<span><span class="co">##  [53] irlba_2.3.5               gtools_3.9.3             </span></span>
+<span><span class="co">##  [55] edgeR_3.38.1              zlibbioc_1.42.0          </span></span>
+<span><span class="co">##  [57] scales_1.2.0              ragg_1.2.2               </span></span>
+<span><span class="co">##  [59] parallel_4.2.1            rhdf5_2.40.0             </span></span>
+<span><span class="co">##  [61] yaml_2.3.5                curl_4.3.2               </span></span>
+<span><span class="co">##  [63] gridExtra_2.3             memoise_2.0.1            </span></span>
+<span><span class="co">##  [65] reticulate_1.25           ggplot2_3.4.0            </span></span>
+<span><span class="co">##  [67] sass_0.4.1                stringi_1.7.6            </span></span>
+<span><span class="co">##  [69] RSQLite_2.2.14            highr_0.9                </span></span>
+<span><span class="co">##  [71] desc_1.4.1                ScaledMatrix_1.4.0       </span></span>
+<span><span class="co">##  [73] filelock_1.0.2            BiocParallel_1.30.3      </span></span>
+<span><span class="co">##  [75] rlang_1.0.6               pkgconfig_2.0.3          </span></span>
+<span><span class="co">##  [77] systemfonts_1.0.4         bitops_1.0-7             </span></span>
+<span><span class="co">##  [79] evaluate_0.15             lattice_0.20-45          </span></span>
+<span><span class="co">##  [81] purrr_0.3.4               Rhdf5lib_1.18.2          </span></span>
+<span><span class="co">##  [83] labeling_0.4.2            cowplot_1.1.1            </span></span>
+<span><span class="co">##  [85] bit_4.0.4                 tidyselect_1.1.2         </span></span>
+<span><span class="co">##  [87] magrittr_2.0.3            R6_2.5.1                 </span></span>
+<span><span class="co">##  [89] generics_0.1.2            fishpond_2.2.0           </span></span>
+<span><span class="co">##  [91] DBI_1.1.3                 withr_2.5.0              </span></span>
+<span><span class="co">##  [93] pillar_1.7.0              svMisc_1.2.3             </span></span>
+<span><span class="co">##  [95] RCurl_1.98-1.7            tibble_3.1.7             </span></span>
+<span><span class="co">##  [97] crayon_1.5.1              DropletUtils_1.16.0      </span></span>
+<span><span class="co">##  [99] utf8_1.2.2                rmarkdown_2.14           </span></span>
+<span><span class="co">## [101] viridis_0.6.2             locfit_1.5-9.5           </span></span>
+<span><span class="co">## [103] grid_4.2.1                blob_1.2.3               </span></span>
+<span><span class="co">## [105] webshot_0.5.3             digest_0.6.29            </span></span>
+<span><span class="co">## [107] R.utils_2.11.0            textshaping_0.3.6        </span></span>
+<span><span class="co">## [109] munsell_0.5.0             kableExtra_1.3.4         </span></span>
+<span><span class="co">## [111] viridisLite_0.4.0         beeswarm_0.4.0           </span></span>
+<span><span class="co">## [113] vipor_0.4.5               bslib_0.3.1</span></span></code></pre>
 </details>
 </div>
 </div>
@@ -1041,12 +1050,12 @@ documentation</a>.</p>
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>
