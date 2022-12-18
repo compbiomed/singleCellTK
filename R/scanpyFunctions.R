@@ -368,10 +368,9 @@ plotScanpyHVG <- function(inSCE,
 runScanpyPCA <- function(inSCE,
                          useAssay = "scanpyNormData",
                          reducedDimName = "scanpyPCA",
-                         nPCs = 50L,
+                         nPCs = 20,
                          algorithm = c("arpack", "randomized", "auto", "lobpcg"),
                          use_highly_variable = TRUE){
-  
   params <- as.list(environment())
   params$inSCE <- NULL
   
@@ -394,7 +393,7 @@ runScanpyPCA <- function(inSCE,
   
   sc$tl$pca(scanpyObject, 
             svd_solver= algorithm, 
-            n_comps = nPCs, 
+            n_comps = as.integer(nPCs), 
             use_highly_variable = use_highly_variable)
   
   metadata(inSCE)$scanpy$PCA <- scanpyObject
@@ -587,8 +586,8 @@ runScanpyFindClusters <- function(inSCE,
   }
   
   sc$pp$neighbors(scanpyObject, 
-                  n_neighbors = nNeighbors, 
-                  n_pcs = dims,
+                  n_neighbors = as.integer(nNeighbors), 
+                  n_pcs = as.integer(dims),
                   use_rep = useReduction)
   
   if (algorithm == "louvain") {
@@ -599,7 +598,7 @@ runScanpyFindClusters <- function(inSCE,
   } else if (algorithm == "leiden") {
     sc$tl$leiden(adata = scanpyObject,
                  key_added = colDataName,
-                 n_iterations = niterations)
+                 n_iterations = as.integer(niterations))
   } 
   
   metadata(inSCE)$scanpy$obj <- scanpyObject
@@ -861,7 +860,7 @@ runScanpyFindMarkers <- function(inSCE,
                           groups = group1,
                           reference = group2,
                           method = test, 
-                          n_genes = nGenes,
+                          n_genes = as.integer(nGenes),
                           corr_method = corr_method,
                           layer = useAssay)
   

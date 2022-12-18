@@ -159,9 +159,8 @@ Highly variable genes can be identified by first using the `runScanpyFindHVG()` 
 Parameters for `runScanpyFindHVG()` include `useAssay` (specify the name of the scaled assay, defaults to `"scanpyScaledData"`) and `method()` (specify the method to use for variable genes computation, defaults to `"seurat"`). The `getTopHVG` function can be used to select the top most variable genes and store it back in the SCE as an altExp
 
 ```{r "scanpy_hvg", warning=FALSE, message=FALSE}
-sce <- runScanpyFindHVG(inSCE = sce, useAssay = "scanpyScaledData", method = "seurat")
-g <- getTopHVG(sce, method = "seurat", hvgNumber = 500)
-altExp(sce, "scanpyHVG500") <- sce[g, ]
+sce <- runScanpyFindHVG(inSCE = sce, useAssay = "scanpyScaledData", method = "seurat", minMean = 0.0125, maxMean = 3, maxDisp = 0.5)
+print(getTopHVG(sce, method = "seurat", hvgNumber = 10))
 
 plotScanpyHVG(sce)
 ```
@@ -170,7 +169,7 @@ plotScanpyHVG(sce)
 PCA can be computed using the `runScanpyPCA()` function. Plots can be visualized using `plotScanpyPCA()`, `plotScanpyPCAGeneRanking()` and `plotScanpyPCAVariance()`.
 
 ```{r "scanpy_dm", warning=FALSE, message=FALSE}
-sce <- runScanpyPCA(inSCE = sce, useAssay = "scanpyNormData", reducedDimName = "scanpyPCA")
+sce <- runScanpyPCA(inSCE = sce, useAssay = "scanpyNormData", reducedDimName = "scanpyPCA", nPCs = 20, algorithm = "auto", use_highly_variable = TRUE)
 plotScanpyPCA(inSCE = sce, reducedDimName = "scanpyPCA")
 plotScanpyPCAGeneRanking(inSCE = sce)
 plotScanpyPCAVariance(inSCE = sce, nPCs = 20)
@@ -180,35 +179,35 @@ plotScanpyPCAVariance(inSCE = sce, nPCs = 20)
 `runScanpyTSNE()` and `runScanpyUMAP()` can be used to compute tSNE/UMAP statistics and store into the input object. Parameters to both functions include `inSCE` (input SCE object), `useReduction` (specify the reduction to use i.e. `"pca"`), `reducedDimName` (name of this new reduction) and `dims` (number of dims to use). `plotScanpyEmbedding()` can be used to visualize the results.
 
 ```{r "scanpy_tsne_umap", warning=FALSE, message=FALSE}
-sce <- runScanpyTSNE(inSCE = sce, useReduction = "scanpyPCA", reducedDimName = "scanpyUMAP")
+sce <- runScanpyTSNE(inSCE = sce, useReduction = "scanpyPCA", reducedDimName = "scanpyTSNE")
 ```
 
 ```{r, warning=FALSE, message=FALSE}
-sce <- runScanpyUMAP(inSCE = sce, useReduction = "scanpyPCA", reducedDimName = "scanpyTSNE")
+# sce <- runScanpyUMAP(inSCE = sce, useReduction = "scanpyPCA", reducedDimName = "scanpyUMAP")
 ```
 
 ```{r, warning=FALSE}
 plotScanpyEmbedding(sce, reducedDimName = "scanpyTSNE")
-plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP")
+# plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP")
 ```
 
 **6. Clustering** <br>
 `runScanpyFindClusters()` function can be used to compute the clusters, which can later be plotted through the `plotScanpyEmbedding()` method with cluster labels. The parameters to the function include `inSCE` (input SCE object), `useAssay` (name of the scaled assay), `useReduction` (specify which reduction to use i.e. `"scanpyPCA"`), `dims` (number of dims to use) and the algorithm (either `"louvain"` or `"leiden"`).
 ```{r "scanpy_clustering", warning=FALSE, message=FALSE}
-sce <- runScanpyFindClusters(inSCE = sce, useAssay = "scanpyScaledData", useReduction = "scanpyPCA", algorithm = "leiden")
+sce <- runScanpyFindClusters(inSCE = sce, useAssay = "scanpyNormData", useReduction = "scanpyPCA", algorithm = "leiden", resolution = 0.8, nNeighbors = 15, dims = 10, cor_method = "pearson")
 ```
 
 `plotScanpyEmbedding()` can then be used to plot all reductions previously computed with cluster labels:
 ```{r "scanpy_cluster_plots", warning=FALSE, message=FALSE}
-plotScanpyEmbedding(sce, reducedDimName = "scanpyPCA", color = 'Scanpy_leiden_1')
-plotScanpyEmbedding(sce, reducedDimName = "scanpyTSNE", color = 'Scanpy_leiden_1')
-plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_leiden_1')
+plotScanpyEmbedding(sce, reducedDimName = "scanpyPCA", color = 'Scanpy_leiden_0.8')
+plotScanpyEmbedding(sce, reducedDimName = "scanpyTSNE", color = 'Scanpy_leiden_0.8')
+# plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_leiden_0.8')
 ```
 
 **7. Find Markers** <br>
 Marker genes can be identified using the `runScanpyFindMarkers()` function. This function can use one specified column from `colData` of the input object from which the user can select the groups versus which marker genes need to be obtained. User can either compare all group of cells versus the rest or can can manually specify the cells included in one group vs cells included in the second group (`group1` and `group2` parameter). 
 ```{r "scanpy_findMarkers", warning=FALSE, message=FALSE}
-sce <- runScanpyFindMarkers(inSCE = sce, colDataName = "Scanpy_leiden_1")
+sce <- runScanpyFindMarkers(inSCE = sce, colDataName = "Scanpy_leiden_0.8", nGenes = 10, test = "t-test", corr_method = "benjamini-hochberg")
 print(head(metadata(sce)[["scanpyMarkers"]]))
 
 ```
@@ -218,9 +217,9 @@ The marker genes identified can be visualized through one of the available plots
 ```{r "scanpy_genePlots", warning=FALSE, message=FALSE}
 plotScanpyMarkerGenes(sce, groups = '0')
 plotScanpyMarkerGenesViolin(sce, groups = '0')
-plotScanpyMarkerGenesHeatmap(sce, groupBy = 'Scanpy_leiden_1')
-plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_leiden_1')
-plotScanpyMarkerGenesMatrixPlot(sce, groupBy = 'Scanpy_leiden_1')
+plotScanpyMarkerGenesHeatmap(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
+# plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
+# plotScanpyMarkerGenesMatrixPlot(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
 ```
 
 ````{=html} 

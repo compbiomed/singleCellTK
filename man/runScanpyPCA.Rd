@@ -10,7 +10,7 @@ runScanpyPCA(
   inSCE,
   useAssay = "scanpyNormData",
   reducedDimName = "scanpyPCA",
-  nPCs = 50L,
+  nPCs = 20,
   algorithm = c("arpack", "randomized", "auto", "lobpcg"),
   use_highly_variable = TRUE
 )
