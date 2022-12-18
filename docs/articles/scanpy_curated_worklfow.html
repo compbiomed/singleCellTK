@@ -457,18 +457,20 @@ method to use for variable genes computation, defaults to
 to select the top most variable genes and store it back in the SCE as an
 altExp</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyFindHVG.html">runScanpyFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyScaledData"</span>, method <span class="op">=</span> <span class="st">"seurat"</span><span class="op">)</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"seurat"</span>, hvgNumber <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html" class="external-link">altExp</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"scanpyHVG500"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sce</span><span class="op">[</span><span class="va">g</span>, <span class="op">]</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/plotScanpyHVG.html">plotScanpyHVG</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyFindHVG.html">runScanpyFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyScaledData"</span>, method <span class="op">=</span> <span class="st">"seurat"</span>, minMean <span class="op">=</span> <span class="fl">0.0125</span>, maxMean <span class="op">=</span> <span class="fl">3</span>, maxDisp <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"seurat"</span>, hvgNumber <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##  [1] "SAMD11"        "RP5-902P8.12"  "RP5-902P8.10"  "TAS1R3"       </span></span>
+<span><span class="co">##  [5] "MORN1"         "PRDM16"        "TP73"          "RP5-1092A11.5"</span></span>
+<span><span class="co">##  [9] "RP1-286D6.5"   "LINC01134"</span></span></code></pre>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScanpyHVG.html">plotScanpyHVG</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
 <p><strong>4. Dimensionality Reduction</strong> <br> PCA can be computed
 using the <code><a href="../reference/runScanpyPCA.html">runScanpyPCA()</a></code> function. Plots can be visualized
 using <code><a href="../reference/plotScanpyPCA.html">plotScanpyPCA()</a></code>,
 <code><a href="../reference/plotScanpyPCAGeneRanking.html">plotScanpyPCAGeneRanking()</a></code> and
 <code><a href="../reference/plotScanpyPCAVariance.html">plotScanpyPCAVariance()</a></code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyPCA.html">runScanpyPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyNormData"</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyPCA"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyPCA.html">runScanpyPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyNormData"</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyPCA"</span>, nPCs <span class="op">=</span> <span class="fl">20</span>, algorithm <span class="op">=</span> <span class="st">"auto"</span>, use_highly_variable <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotScanpyPCA.html">plotScanpyPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyPCA"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotScanpyPCAGeneRanking.html">plotScanpyPCAGeneRanking</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotScanpyPCAVariance.html">plotScanpyPCAVariance</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, nPCs <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
@@ -481,16 +483,15 @@ and store into the input object. Parameters to both functions include
 <code>dims</code> (number of dims to use).
 <code><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding()</a></code> can be used to visualize the
 results.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyTSNE.html">runScanpyTSNE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"scanpyPCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyUMAP"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyUMAP.html">runScanpyUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"scanpyPCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyTSNE"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyTSNE.html">runScanpyTSNE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"scanpyPCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyTSNE"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># sce &lt;- runScanpyUMAP(inSCE = sce, useReduction = "scanpyPCA", reducedDimName = "scanpyUMAP")</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyTSNE"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Using the <span style="color: #00BB00;">'counts'</span> assay as the <span style="color: #00BB00;">X matrix</span></span></span></code></pre>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyUMAP"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Using the <span style="color: #00BB00;">'counts'</span> assay as the <span style="color: #00BB00;">X matrix</span></span></span></code></pre>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP")</span></span></code></pre></div>
 <p><strong>6. Clustering</strong> <br><code><a href="../reference/runScanpyFindClusters.html">runScanpyFindClusters()</a></code> function can be used to compute the
 clusters, which can later be plotted through the
 <code><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding()</a></code> method with cluster labels. The
@@ -500,14 +501,14 @@ object), <code>useAssay</code> (name of the scaled assay),
 i.e. <code>"scanpyPCA"</code>), <code>dims</code> (number of dims to
 use) and the algorithm (either <code>"louvain"</code> or
 <code>"leiden"</code>).</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyFindClusters.html">runScanpyFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyScaledData"</span>, useReduction <span class="op">=</span> <span class="st">"scanpyPCA"</span>, algorithm <span class="op">=</span> <span class="st">"leiden"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyFindClusters.html">runScanpyFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyNormData"</span>, useReduction <span class="op">=</span> <span class="st">"scanpyPCA"</span>, algorithm <span class="op">=</span> <span class="st">"leiden"</span>, resolution <span class="op">=</span> <span class="fl">0.8</span>, nNeighbors <span class="op">=</span> <span class="fl">15</span>, dims <span class="op">=</span> <span class="fl">10</span>, cor_method <span class="op">=</span> <span class="st">"pearson"</span><span class="op">)</span></span></code></pre></div>
 <p><code><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding()</a></code> can then be used to plot all
 reductions previously computed with cluster labels:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyPCA"</span>, color <span class="op">=</span> <span class="st">'Scanpy_leiden_1'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyTSNE"</span>, color <span class="op">=</span> <span class="st">'Scanpy_leiden_1'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyUMAP"</span>, color <span class="op">=</span> <span class="st">'Scanpy_leiden_1'</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyPCA"</span>, color <span class="op">=</span> <span class="st">'Scanpy_leiden_0.8'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyTSNE"</span>, color <span class="op">=</span> <span class="st">'Scanpy_leiden_0.8'</span><span class="op">)</span></span>
+<span><span class="co"># plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_leiden_0.8')</span></span></code></pre></div>
 <p><strong>7. Find Markers</strong> <br> Marker genes can be identified
 using the <code><a href="../reference/runScanpyFindMarkers.html">runScanpyFindMarkers()</a></code> function. This function
 can use one specified column from <code>colData</code> of the input
@@ -516,25 +517,25 @@ genes need to be obtained. User can either compare all group of cells
 versus the rest or can can manually specify the cells included in one
 group vs cells included in the second group (<code>group1</code> and
 <code>group2</code> parameter).</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyFindMarkers.html">runScanpyFindMarkers</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colDataName <span class="op">=</span> <span class="st">"Scanpy_leiden_1"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyFindMarkers.html">runScanpyFindMarkers</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colDataName <span class="op">=</span> <span class="st">"Scanpy_leiden_0.8"</span>, nGenes <span class="op">=</span> <span class="fl">10</span>, test <span class="op">=</span> <span class="st">"t-test"</span>, corr_method <span class="op">=</span> <span class="st">"benjamini-hochberg"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">metadata</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[[</span><span class="st">"scanpyMarkers"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##      Gene findMarker_cluster Log2_FC       Pvalue   zscore</span></span>
-<span><span class="co">## 1    CD74                  0     NaN 3.181764e-12 8.668309</span></span>
-<span><span class="co">## 2   RPL10                  0     NaN 2.275873e-12 8.662704</span></span>
-<span><span class="co">## 3   CD79B                  0     NaN 6.043821e-12 8.558722</span></span>
-<span><span class="co">## 4  RPL18A                  0     NaN 7.384019e-12 8.489214</span></span>
-<span><span class="co">## 5 HLA-DRA                  0     NaN 1.602091e-11 8.348946</span></span>
-<span><span class="co">## 6   RPS23                  0     NaN 1.703665e-11 8.332580</span></span></code></pre>
+<pre><code><span><span class="co">##     Gene findMarker_cluster Log2_FC        Pvalue   zscore</span></span>
+<span><span class="co">## 01   B2M                  0     NaN 1.814976e-176 33.40264</span></span>
+<span><span class="co">## 02  IL32                  0     NaN  1.701241e-42 15.30292</span></span>
+<span><span class="co">## 03  CD3D                  0     NaN  3.646191e-29 12.39396</span></span>
+<span><span class="co">## 04 HLA-A                  0     NaN  1.001826e-28 12.19502</span></span>
+<span><span class="co">## 05 HLA-C                  0     NaN  9.789058e-22 10.57444</span></span>
+<span><span class="co">## 06  CCL5                  0     NaN  6.406081e-21 10.41492</span></span></code></pre>
 <p>The marker genes identified can be visualized through one of the
 available plots from <code>matrix plot</code>, <code>violin plot</code>,
 <code>dot plot</code> and <code>heatmap plot</code>.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScanpyMarkerGenes.html">plotScanpyMarkerGenes</a></span><span class="op">(</span><span class="va">sce</span>, groups <span class="op">=</span> <span class="st">'0'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotScanpyMarkerGenesViolin.html">plotScanpyMarkerGenesViolin</a></span><span class="op">(</span><span class="va">sce</span>, groups <span class="op">=</span> <span class="st">'0'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/plotScanpyMarkerGenesHeatmap.html">plotScanpyMarkerGenesHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, groupBy <span class="op">=</span> <span class="st">'Scanpy_leiden_1'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/plotScanpyMarkerGenesDotPlot.html">plotScanpyMarkerGenesDotPlot</a></span><span class="op">(</span><span class="va">sce</span>, groupBy <span class="op">=</span> <span class="st">'Scanpy_leiden_1'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/plotScanpyMarkerGenesMatrixPlot.html">plotScanpyMarkerGenesMatrixPlot</a></span><span class="op">(</span><span class="va">sce</span>, groupBy <span class="op">=</span> <span class="st">'Scanpy_leiden_1'</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plotScanpyMarkerGenesHeatmap.html">plotScanpyMarkerGenesHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, groupBy <span class="op">=</span> <span class="st">'Scanpy_leiden_0.8'</span>, nGenes <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co"># plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)</span></span>
+<span><span class="co"># plotScanpyMarkerGenesMatrixPlot(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)</span></span></code></pre></div>
       </div>
 <script>
 document.getElementById("ia-button").click();
