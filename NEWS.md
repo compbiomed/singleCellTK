@@ -1,3 +1,7 @@
+Changes in Version 2.8.0 (2022-12-19)
+================================================================================
+* Updated version to match Bioconductor version
+
 Changes in Version 2.7.3 (2022-10-25)
 ================================================================================
 * Fixed bugs related to dependency updates
