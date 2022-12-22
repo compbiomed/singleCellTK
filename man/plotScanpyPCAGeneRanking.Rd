@@ -25,6 +25,8 @@ plotScanpyPCAGeneRanking
 data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
+sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
 sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 plotScanpyPCAGeneRanking(sce)
 }

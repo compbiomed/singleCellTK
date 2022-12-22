@@ -183,12 +183,12 @@ sce <- runScanpyTSNE(inSCE = sce, useReduction = "scanpyPCA", reducedDimName = "
 ```
 
 ```{r, warning=FALSE, message=FALSE}
-# sce <- runScanpyUMAP(inSCE = sce, useReduction = "scanpyPCA", reducedDimName = "scanpyUMAP")
+sce <- runScanpyUMAP(inSCE = sce, useReduction = "scanpyPCA", reducedDimName = "scanpyUMAP")
 ```
 
 ```{r, warning=FALSE}
 plotScanpyEmbedding(sce, reducedDimName = "scanpyTSNE")
-# plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP")
+plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP")
 ```
 
 **6. Clustering** <br>
@@ -201,7 +201,7 @@ sce <- runScanpyFindClusters(inSCE = sce, useAssay = "scanpyNormData", useReduct
 ```{r "scanpy_cluster_plots", warning=FALSE, message=FALSE}
 plotScanpyEmbedding(sce, reducedDimName = "scanpyPCA", color = 'Scanpy_leiden_0.8')
 plotScanpyEmbedding(sce, reducedDimName = "scanpyTSNE", color = 'Scanpy_leiden_0.8')
-# plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_leiden_0.8')
+plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_leiden_0.8')
 ```
 
 **7. Find Markers** <br>
@@ -218,8 +218,8 @@ The marker genes identified can be visualized through one of the available plots
 plotScanpyMarkerGenes(sce, groups = '0')
 plotScanpyMarkerGenesViolin(sce, groups = '0')
 plotScanpyMarkerGenesHeatmap(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
-# plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
-# plotScanpyMarkerGenesMatrixPlot(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
+plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
+plotScanpyMarkerGenesMatrixPlot(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
 ```
 
 ````{=html} 
