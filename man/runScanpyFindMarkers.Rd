@@ -7,7 +7,7 @@
 runScanpyFindMarkers(
   inSCE,
   nGenes = NULL,
-  useAssay = "scanpyScaledData",
+  useAssay = "scanpyNormData",
   colDataName,
   group1 = "all",
   group2 = "rest",
@@ -22,7 +22,7 @@ runScanpyFindMarkers(
 Defaults to all genes.}
 
 \item{useAssay}{Specify the name of the assay to use for computation
-of marker genes. It is recommended to use scaled assay.}
+of marker genes. It is recommended to use log normalized assay.}
 
 \item{colDataName}{colData to use as the key of the observations grouping to 
 consider.}
