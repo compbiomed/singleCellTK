@@ -218,8 +218,8 @@ The marker genes identified can be visualized through one of the available plots
 plotScanpyMarkerGenes(sce, groups = '0')
 plotScanpyMarkerGenesViolin(sce, groups = '0')
 plotScanpyMarkerGenesHeatmap(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
-plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
-plotScanpyMarkerGenesMatrixPlot(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
+#plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
+#plotScanpyMarkerGenesMatrixPlot(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
 ```
 
 ````{=html} 
