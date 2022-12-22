@@ -881,15 +881,10 @@ runScanpyFindMarkers <- function(inSCE,
   
   #store results in a temporary sce object
   tmpSCE <- SingleCellExperiment(
-    assays = list(counts = as.matrix(assay(inSCE, useAssay))))
+    assays = list(counts = counts(sce), temp = as.matrix(assay(inSCE, useAssay))))
   # store back colData from sce into the tmpSCE colData slot
   colData(tmpSCE)[colDataName] <- as.character(colData(inSCE)[[colDataName]])
-  # remove NA values from counts and replace with zero so can be used properly
-  # by dgCMatrix
-  counts <- assay(tmpSCE, "counts")
-  counts[is.na(counts)] <- 0
-  #store back counts
-  assay(tmpSCE, "counts") <- counts
+  rowData(tmpSCE)$id <- rownames(inSCE)
   
   scanpyObject <- zellkonverter::SCE2AnnData(sce = tmpSCE)
   if(!is.null(nGenes)){
@@ -902,7 +897,7 @@ runScanpyFindMarkers <- function(inSCE,
                           method = test, 
                           n_genes = nGenes,
                           corr_method = corr_method,
-                          layer = NULL)
+                          layer = "temp")
   
   py <- reticulate::py
   py$scanpyObject <- scanpyObject
