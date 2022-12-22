@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -297,10 +297,10 @@
 <h4 id="running-sctk-qc-pipeline-using-docker-image">Running SCTK-QC pipeline using docker image<a class="anchor" aria-label="anchor" href="#running-sctk-qc-pipeline-using-docker-image"></a>
 </h4>
 <p>The Docker image can be obtained by running:</p>
-<pre><code>docker pull campbio/sctk_qc:2.7.4</code></pre>
+<pre><code>docker pull campbio/sctk_qc:2.8.1</code></pre>
 <p>The usage of each argument is the same as running command line analysis. Here is an example code to perform QC on CellRangerV3 data with SCTK docker:</p>
 <pre><code>docker run --rm -v /path/to/data:/SCTK_docker \
-  -it campbio/sctk_qc:2.7.4 \
+  -it campbio/sctk_qc:2.8.1 \
   -b /SCTK_docker/cellranger_folder \
   -P CellRangerV3 \
   -s SampleName \
@@ -315,11 +315,11 @@
 <h4 id="running-sctk-qc-pipeline-docker-image-with-singularity">Running SCTK-QC pipeline docker image with singularity<a class="anchor" aria-label="anchor" href="#running-sctk-qc-pipeline-docker-image-with-singularity"></a>
 </h4>
 <p>Users who have not used <a href="https://sylabs.io/guides/2.6/user-guide/introduction.html" class="external-link">Singularity</a> before can install it following the instruction <a href="https://sylabs.io/guides/3.1/user-guide/installation.html" class="external-link">here</a>. The Singularity image for SCTK-QC can be easily built using Docker Hub as a source:</p>
-<pre><code>singularity pull docker://campbio/sctk_qc:2.7.4</code></pre>
+<pre><code>singularity pull docker://campbio/sctk_qc:2.8.1</code></pre>
 <p>The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is <a href="https://sylabs.io/guides/3.1/user-guide/bind_paths_and_mounts.html" class="external-link">automatically overlaid</a>.</p>
 <p>It’s recommended to re-set the home directory when you run singularity. Singularity will mount <code>\$HOME</code> path on your file system by default, which might contain your personal R/Python library folder. If we don’t re-set the home to mount, singularity will try to use R/Python libraries which are not built within the singularity image and cause some conflicts. You can point to some “sanitized home”, which is different from <code>\$HOME</code> path on your machine, using argument <code>-H</code>/<code>--home</code> <a href="https://sylabs.io/guides/3.1/user-guide/bind_paths_and_mounts.html" class="external-link">(see more information)</a>. Or you can disable the <code>\$HOME</code> binding by setting the argument <code>--no-home</code>. Besides, you can use argument <code>--bind</code>/<code>-B</code> to specify your own mount volume, which is the path that contains the dataset and will be used to store the output of QC pipeline. The example is shown as below:</p>
 <pre><code>singularity run --home=/PathToSanitizedHome \
-  --bind /PathToData:/data sctk_qc_2.7.4.sif \
+  --bind /PathToData:/data sctk_qc_2.8.1.sif \
   -b /SCTK_docker/cellranger_folder \
   -P CellRangerV3 \
   -s SampleName \
@@ -339,7 +339,7 @@
 #$ -l cpu_arch=broadwell|haswell|skylake|cascadelake
 
 singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run'
-  --bind /PathToData:/data sctk_qc_2.7.4.sif \
+  --bind /PathToData:/data sctk_qc_2.8.1.sif \
   -b /SCTK_docker/cellranger_folder \
   -P CellRangerV3 \
   -s SampleName \
