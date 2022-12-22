@@ -35,6 +35,8 @@ plotScanpyMarkerGenes
 data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
+sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
 sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 sce <- runScanpyFindClusters(sce, useAssay = "counts")
 sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
