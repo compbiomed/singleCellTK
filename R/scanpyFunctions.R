@@ -879,24 +879,19 @@ runScanpyFindMarkers <- function(inSCE,
   test <- match.arg(test)
   corr_method <- match.arg(corr_method)
   
-  #store results back in altExp slot of sce object
-  newAssayName = "scanpyMarkers"
-  altExp(inSCE, newAssayName) <-
-    SingleCellExperiment(list(
-      counts = as.matrix(assays(inSCE)[[useAssay]])))
-  SummarizedExperiment::assayNames(altExp(inSCE, newAssayName)) <-
-    newAssayName
-  # store back colData from sce into the altExp slot
-  colData(altExp(inSCE, newAssayName))[colDataName] <- 
-    as.character(colData(inSCE)[[colDataName]])
+  #store results in a temporary sce object
+  tmpSCE <- SingleCellExperiment(
+    assays = list(counts = as.matrix(assay(inSCE, useAssay))))
+  # store back colData from sce into the tmpSCE colData slot
+  colData(tmpSCE)[colDataName] <- as.character(colData(inSCE)[[colDataName]])
   # remove NA values from counts and replace with zero so can be used properly
   # by dgCMatrix
-  counts <- assay(altExp(inSCE, newAssayName), newAssayName)
+  counts <- assay(tmpSCE, "counts")
   counts[is.na(counts)] <- 0
   #store back counts
-  assay(altExp(inSCE, newAssayName), newAssayName) <- counts
+  assay(tmpSCE, "counts") <- counts
   
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = altExp(inSCE, newAssayName))
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = tmpSCE)
   if(!is.null(nGenes)){
     nGenes = as.integer(nGenes)
   }
