@@ -235,12 +235,11 @@
 
       
 
-      </header><div class="row">
+      </header><script src="02_a_la_carte_workflow_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>A La Carte Workflow Tutorial - PBMC3K</h1>
-                        <h4 data-toc-skip class="author">Yichen
-Wang</h4>
+                        <h4 data-toc-skip class="author">Yichen Wang</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/02_a_la_carte_workflow.Rmd" class="external-link"><code>vignettes/articles/02_a_la_carte_workflow.Rmd</code></a></small>
@@ -255,28 +254,14 @@ Wang</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Single Cell Toolkit (singleCellTK, SCTK) is a package that works on
-single-cell RNA-seq (scRNAseq) dataset. SCTK allows users to import
-multiple datasets, perform quality control and a series of
-preprocessing, get clustering on cells and markers of clusters, and run
-various downstream analysis. Meanwhile, SCTK also wraps curated
-workflows for <a href="https://www.camplab.net/celda/" class="external-link">celda</a> and <a href="https://satijalab.org/seurat/" class="external-link">Seurat</a>.</p>
-<p>This tutorial takes the real-world scRNAseq dataset as an example,
-which consists of 2,700 Peripheral Blood Mononuclear Cells (PBMCs)
-collected from a healthy donor, namingly PBMC3K. This dataset is
-available from 10X Genomics and can be found on the 10X website.</p>
-<p>Before heading into the next steps, we assume that users have already
-loaded SCTK, imported and QC’ed the PBMC3K data, following the <a href="01_import_and_qc_tutorial.html">Import and QC Tutorial</a>.</p>
+<p>Single Cell Toolkit (singleCellTK, SCTK) is a package that works on single-cell RNA-seq (scRNAseq) dataset. SCTK allows users to import multiple datasets, perform quality control and a series of preprocessing, get clustering on cells and markers of clusters, and run various downstream analysis. Meanwhile, SCTK also wraps curated workflows for <a href="https://www.camplab.net/celda/" class="external-link">celda</a> and <a href="https://satijalab.org/seurat/" class="external-link">Seurat</a>.</p>
+<p>This tutorial takes the real-world scRNAseq dataset as an example, which consists of 2,700 Peripheral Blood Mononuclear Cells (PBMCs) collected from a healthy donor, namingly PBMC3K. This dataset is available from 10X Genomics and can be found on the 10X website.</p>
+<p>Before heading into the next steps, we assume that users have already loaded SCTK, imported and QC’ed the PBMC3K data, following the <a href="01_import_and_qc_tutorial.html">Import and QC Tutorial</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="normalization">Normalization<a class="anchor" aria-label="anchor" href="#normalization"></a>
 </h2>
-<p>After removing cells of low quality, we next need to normalize the
-feature expression matrix. In this tutorial, we apply a global-scaling
-normalization method from <a href="https://bioconductor.org/packages/release/bioc/html/scater.html" class="external-link">scater</a>,
-<code>"logNormCounts"</code>. It normalizes the feature expression for
-each cell by the total expression, multiplies this by a scale factor,
-and log-transforms the result.</p>
+<p>After removing cells of low quality, we next need to normalize the feature expression matrix. In this tutorial, we apply a global-scaling normalization method from <a href="https://bioconductor.org/packages/release/bioc/html/scater.html" class="external-link">scater</a>, <code>"logNormCounts"</code>. It normalizes the feature expression for each cell by the total expression, multiplies this by a scale factor, and log-transforms the result.</p>
 <p>For detail about all normalization methods, please refer to the <a href="normalization.html">Normalization Documentation</a></p>
 <!--Remember to change tabset id-->
 <div class="tabset" id="tabset1">
@@ -289,47 +274,26 @@ and log-transforms the result.</p>
 <div class="tabcontent ia">
 <p><img src="ui_screenshots/ui_tutorial/norm.png" alt="norm"><br></p>
 <ol style="list-style-type: decimal">
-<li>Users should enter the section for normalization from the
-<strong>“Normalization &amp; Batch Correction”</strong> tab at the top
-navigation panel.</li>
-<li>In the <strong>“Normalization”</strong> sub-tab, choose the method
-<code>"Scater - LogNormCounts"</code> from the left panel.</li>
-<li>Users can directly press the <strong>“Run”</strong> button at the
-bottom right without taking any more action.</li>
+<li>Users should enter the section for normalization from the <strong>“Normalization &amp; Batch Correction”</strong> tab at the top navigation panel.</li>
+<li>In the <strong>“Normalization”</strong> sub-tab, choose the method <code>"Scater - LogNormCounts"</code> from the left panel.</li>
+<li>Users can directly press the <strong>“Run”</strong> button at the bottom right without taking any more action.</li>
 </ol>
 </div>
 <div class="tabcontent console">
-<p>SCTK has a generic wrapper function for various types of
-normalization, called <code><a href="../reference/runNormalization.html">runNormalization()</a></code>.</p>
+<p>SCTK has a generic wrapper function for various types of normalization, called <code><a href="../reference/runNormalization.html">runNormalization()</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, outAssayName <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
 <span>                        normalizationMethod <span class="op">=</span> <span class="st">"logNormCounts"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-<p>SCTK also supports a number of batch correction methods. Here we
-don’t present the workflow because PBMC3k dataset only has one batch.
-For examples, please refer to the <a href="batch_correction.html">document of batch correction</a>.</p>
-<p>We also recommend performing the scaling method to standardize the
-variance, and this results in a better PCA. The UI and console function
-allow users to perform scaling on the expression assay. However, we
-don’t recommend directly apply this to the full-sized expression matrix
-because the memory usage will be large. To accomplish this, we suggest
-finding the highly variable genes first in the next section, and only
-scaling the subset of the expression matrix as instructed.</p>
+<p>SCTK also supports a number of batch correction methods. Here we don’t present the workflow because PBMC3k dataset only has one batch. For examples, please refer to the <a href="batch_correction.html">document of batch correction</a>.</p>
+<p>We also recommend performing the scaling method to standardize the variance, and this results in a better PCA. The UI and console function allow users to perform scaling on the expression assay. However, we don’t recommend directly apply this to the full-sized expression matrix because the memory usage will be large. To accomplish this, we suggest finding the highly variable genes first in the next section, and only scaling the subset of the expression matrix as instructed.</p>
 </div>
 <div class="section level2">
 <h2 id="variable-feature-selection">Variable Feature Selection<a class="anchor" aria-label="anchor" href="#variable-feature-selection"></a>
 </h2>
-<p>Selecting highly variable genes (HVG) for downstream analyses is
-recommended, since a subset of variable features enhances the biological
-signal for community detection and reduces amount of data being used
-which hence speeds up the computation. SCTK wraps the methods used in <a href="https://satijalab.org/seurat/" class="external-link">Seurat</a> and <a href="https://bioconductor.org/packages/release/bioc/html/scran.html" class="external-link">Scran</a>.
-We recommend keeping at least 2,000-5,000 HVGs. In this tutorial, we use
-the “modelGeneVar” method from Scarn, and select the top 2,000
-genes.</p>
-<p>SCTK requires at least two steps to create the HVG subset. The first
-step performs variability calculation and stores the metrics, and the
-second step selects top genes basing on the ranking of the metrics.</p>
+<p>Selecting highly variable genes (HVG) for downstream analyses is recommended, since a subset of variable features enhances the biological signal for community detection and reduces amount of data being used which hence speeds up the computation. SCTK wraps the methods used in <a href="https://satijalab.org/seurat/" class="external-link">Seurat</a> and <a href="https://bioconductor.org/packages/release/bioc/html/scran.html" class="external-link">Scran</a>. We recommend keeping at least 2,000-5,000 HVGs. In this tutorial, we use the “modelGeneVar” method from Scarn, and select the top 2,000 genes.</p>
+<p>SCTK requires at least two steps to create the HVG subset. The first step performs variability calculation and stores the metrics, and the second step selects top genes basing on the ranking of the metrics.</p>
 <!--Remember to change tabset id-->
 <div class="tabset" id="tabset2">
 <div class="tab">
@@ -341,56 +305,25 @@ second step selects top genes basing on the ranking of the metrics.</p>
 <div class="tabcontent ia">
 <p><img src="ui_screenshots/ui_tutorial/hvg1.png" alt="hvg1"><br></p>
 <ol style="list-style-type: decimal">
-<li>Users should enter the feature selection tab from the top navigation
-bar as instructed in the screenshot. And then the <strong>“Feature
-Selection”</strong> sub-tab.</li>
-<li>For the first step, in the top-left panel <strong>“1. Compute
-variability metric”</strong>, select the method via <strong>“Select
-method for calculating variability of features”</strong>. The assay to
-be used will be automatically updated on selection, since different
-method has different recommended assay type.</li>
-<li>Click on button <strong>“Run”</strong> to calculate the
-variability.</li>
+<li>Users should enter the feature selection tab from the top navigation bar as instructed in the screenshot. And then the <strong>“Feature Selection”</strong> sub-tab.</li>
+<li>For the first step, in the top-left panel <strong>“1. Compute variability metric”</strong>, select the method via <strong>“Select method for calculating variability of features”</strong>. The assay to be used will be automatically updated on selection, since different method has different recommended assay type.</li>
+<li>Click on button <strong>“Run”</strong> to calculate the variability.</li>
 </ol>
-<p>After calculation, the panel for selecting the top features,
-<strong>“2. Select number of variable features”</strong> becomes
-enabled. A scatter plot of features, with axes of variance and mean,
-will also be shown on the right panel <strong>“Plot”</strong>.</p>
+<p>After calculation, the panel for selecting the top features, <strong>“2. Select number of variable features”</strong> becomes enabled. A scatter plot of features, with axes of variance and mean, will also be shown on the right panel <strong>“Plot”</strong>.</p>
 <p><img src="ui_screenshots/ui_tutorial/hvg2.png" alt="hvg2"><br></p>
 <ol start="4" style="list-style-type: decimal">
-<li>In the bottom-left panel <strong>“2. Select number of variable
-features”</strong>, users now only need to click on the button
-<strong>“Run”</strong> to finish the selection for this tutorial.</li>
+<li>In the bottom-left panel <strong>“2. Select number of variable features”</strong>, users now only need to click on the button <strong>“Run”</strong> to finish the selection for this tutorial.</li>
 </ol>
-<p>After selection, the plot will be again updated, with highlighted red
-dots representing the selected features, texts labeling a smaller number
-(adjustable in the dropdown) of features with the top variability among
-the selected ones. The names of highlighted features are also updated in
-a text box at the bottom of the plotting region.</p>
+<p>After selection, the plot will be again updated, with highlighted red dots representing the selected features, texts labeling a smaller number (adjustable in the dropdown) of features with the top variability among the selected ones. The names of highlighted features are also updated in a text box at the bottom of the plotting region.</p>
 <p>Note that:</p>
 <ul>
-<li>The metrics to be used for selection will only be available after
-calculation in the first panel.</li>
-<li>In the dropdown box at the top of the plotting region, users can
-choose to label the selected subset on a different metric scatter
-plot.</li>
-<li>When analyzing users’ own data, if the text labels of features being
-shown are Ensembl IDs (i.e. starts with things like “ENSG000”), users
-can change the display ID type with <strong>“Choose feature
-label”</strong>. This works only when the annotation is available in
-imported feature metadata. We strongly recommend users go back to the
-<strong>“Data” -&gt; “Import Single Cell Data”</strong> page, scroll
-down to the bottom, and set the display ID type at <strong>“Set feature
-names to be displayed in downstream visualization”</strong>, so the
-change works globally through out SCTK.</li>
+<li>The metrics to be used for selection will only be available after calculation in the first panel.</li>
+<li>In the dropdown box at the top of the plotting region, users can choose to label the selected subset on a different metric scatter plot.</li>
+<li>When analyzing users’ own data, if the text labels of features being shown are Ensembl IDs (i.e. starts with things like “ENSG000”), users can change the display ID type with <strong>“Choose feature label”</strong>. This works only when the annotation is available in imported feature metadata. We strongly recommend users go back to the <strong>“Data” -&gt; “Import Single Cell Data”</strong> page, scroll down to the bottom, and set the display ID type at <strong>“Set feature names to be displayed in downstream visualization”</strong>, so the change works globally through out SCTK.</li>
 </ul>
 </div>
 <div class="tabcontent console">
-<p>For calculating the feature variablity, users can use either the
-wrapper function of each method (<code><a href="../reference/runSeuratFindHVG.html">runSeuratFindHVG()</a></code>,
-<code><a href="../reference/runModelGeneVar.html">runModelGeneVar()</a></code>) or using the generic wrapper
-<code><a href="../reference/runFeatureSelection.html">runFeatureSelection()</a></code> with argument <code>method</code>
-specified.</p>
+<p>For calculating the feature variablity, users can use either the wrapper function of each method (<code><a href="../reference/runSeuratFindHVG.html">runSeuratFindHVG()</a></code>, <code><a href="../reference/runModelGeneVar.html">runModelGeneVar()</a></code>) or using the generic wrapper <code><a href="../reference/runFeatureSelection.html">runFeatureSelection()</a></code> with argument <code>method</code> specified.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runModelGeneVar.html">runModelGeneVar</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"modelGeneVar"</span>, hvgNumber <span class="op">=</span> <span class="fl">2000</span>, featureSubsetName <span class="op">=</span> <span class="st">"hvg2000"</span><span class="op">)</span></span></code></pre></div>
@@ -400,8 +333,7 @@ specified.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hvg</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] "LYZ"     "S100A9"  "FTL"     "HLA-DRA" "CD74"    "CST3"    "S100A8" </span></span>
 <span><span class="co">##  [8] "FTH1"    "NKG7"    "TYROBP"</span></span></code></pre>
-<p>The variability metrics and the top variable feature selection can
-also be visualized:</p>
+<p>The variability metrics and the top variable feature selection can also be visualized:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTopHVG.html">plotTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"modelGeneVar"</span>, hvgNumber <span class="op">=</span> <span class="fl">2000</span>, labelsCount <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/plotTopHVG-1.png" width="700"></p>
@@ -411,18 +343,9 @@ also be visualized:</p>
 <div class="section level2">
 <h2 id="dimension-reduction">Dimension Reduction<a class="anchor" aria-label="anchor" href="#dimension-reduction"></a>
 </h2>
-<p>The next step is performing a principal component analysis (PCA),
-which creates new uncorrelated variables that successively maximize
-variance and finally increases the data interpretability and at the same
-time minimizes the information loss.</p>
-<p>With the HVG selected from the previous step, we will perform PCA
-using the method from <a href="http://bioconductor.org/packages/release/bioc/html/scater.html" class="external-link">Scater</a>.
-As mentioned in the <a href="#normalization">Normalization section</a>,
-we will also have the selected HVG scaled in this step.</p>
-<p>SCTK also supports Seurat’s PCA and ICA method, which do a similar
-job. Please see: <a href="seurat_curated_workflow.html">Seurat Curated
-Workflow</a>, and <a href="dimensionality_reduction.html">Dimension
-Reduction Documentation</a>.</p>
+<p>The next step is performing a principal component analysis (PCA), which creates new uncorrelated variables that successively maximize variance and finally increases the data interpretability and at the same time minimizes the information loss.</p>
+<p>With the HVG selected from the previous step, we will perform PCA using the method from <a href="http://bioconductor.org/packages/release/bioc/html/scater.html" class="external-link">Scater</a>. As mentioned in the <a href="#normalization">Normalization section</a>, we will also have the selected HVG scaled in this step.</p>
+<p>SCTK also supports Seurat’s PCA and ICA method, which do a similar job. Please see: <a href="seurat_curated_workflow.html">Seurat Curated Workflow</a>, and <a href="dimensionality_reduction.html">Dimension Reduction Documentation</a>.</p>
 <!--Remember to change tabset id-->
 <div class="tabset" id="tabset3">
 <div class="tab">
@@ -434,18 +357,13 @@ Reduction Documentation</a>.</p>
 <div class="tabcontent ia">
 <p><img src="ui_screenshots/ui_tutorial/pca_entry.png" alt="pca_entry"><br></p>
 <ol style="list-style-type: decimal">
-<li>Enter the main tab as instructed in the screenshot above. If users
-are following the previous steps in this tutorial, then we are already
-here.</li>
-<li>Enter the sub-tab for dimension reduction via
-<strong>“Dimensionality Reduction”</strong>
+<li>Enter the main tab as instructed in the screenshot above. If users are following the previous steps in this tutorial, then we are already here.</li>
+<li>Enter the sub-tab for dimension reduction via <strong>“Dimensionality Reduction”</strong>
 </li>
 </ol>
 <p><img src="ui_screenshots/ui_tutorial/pca_param.png" alt="pca_entry"><br></p>
 <ol start="3" style="list-style-type: decimal">
-<li>All of the parameters have been automatically updated for the most
-commonly seen scenario. Users can directly click on button
-<strong>“Run”</strong> for this tutorial.</li>
+<li>All of the parameters have been automatically updated for the most commonly seen scenario. Users can directly click on button <strong>“Run”</strong> for this tutorial.</li>
 </ol>
 <p>What we actually set for the parameters:</p>
 <ul>
@@ -453,37 +371,17 @@ commonly seen scenario. Users can directly click on button
 <li>Subset features basing on the selection in the previous section</li>
 <li>opt to scale the feature subset</li>
 </ul>
-<p>Besides the scatter plot of the top two components for all cells, the
-switches also add an elbow plot and heatmap for visualization</p>
+<p>Besides the scatter plot of the top two components for all cells, the switches also add an elbow plot and heatmap for visualization</p>
 <p><img src="ui_screenshots/ui_tutorial/pca_plots.png" alt="pca_entry"><br></p>
-<p>After running, the plots will be updated on the right side. The elbow
-plot and heatmaps are internally calculated by Seurat functions.</p>
-<p>The elbow plot is a heuristic method for determining the
-dimensionality to be used for downstream analysis. It is a ranking of
-principle components based on the percentage of variance explained by
-each one. In this example, we can observe an “elbow” around PC9-10,
-suggesting that the majority of true signal is captured in the first 10
-PCs.</p>
-<p>The heatmap allows for easy exploration of the primary sources of
-heterogeneity in a dataset, and can be useful when trying to decide
-which PCs to include for further downstream analyses. Both cells and
-features are ordered according to their PCA scores. Please refer to <a href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#perform-linear-dimensional-reduction-1" class="external-link">Seurat’s
-tutorial</a> for more explanation on these two visualization
-approaches.</p>
+<p>After running, the plots will be updated on the right side. The elbow plot and heatmaps are internally calculated by Seurat functions.</p>
+<p>The elbow plot is a heuristic method for determining the dimensionality to be used for downstream analysis. It is a ranking of principle components based on the percentage of variance explained by each one. In this example, we can observe an “elbow” around PC9-10, suggesting that the majority of true signal is captured in the first 10 PCs.</p>
+<p>The heatmap allows for easy exploration of the primary sources of heterogeneity in a dataset, and can be useful when trying to decide which PCs to include for further downstream analyses. Both cells and features are ordered according to their PCA scores. Please refer to <a href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#perform-linear-dimensional-reduction-1" class="external-link">Seurat’s tutorial</a> for more explanation on these two visualization approaches.</p>
 </div>
 <div class="tabcontent console">
-<p>Here we use the wrapper function <code><a href="../reference/scaterPCA.html">scaterPCA()</a></code>. The name
-of transformed normalized expression matrix can be passed to
-<code>useAssay</code> (by default <code>useAssay = "logcounts"</code>),
-and the name of the HVG subset should be passed to
-<code>useFeatureSubset</code>. The scaling will be done by Scater by
-setting <code>scale = TRUE</code> (default). The output PCs will be
-updated in the <code>reducedDims</code> slot of the SCE object, named by
-<code>"PCA"</code> by default.</p>
+<p>Here we use the wrapper function <code><a href="../reference/scaterPCA.html">scaterPCA()</a></code>. The name of transformed normalized expression matrix can be passed to <code>useAssay</code> (by default <code>useAssay = "logcounts"</code>), and the name of the HVG subset should be passed to <code>useFeatureSubset</code>. The scaling will be done by Scater by setting <code>scale = TRUE</code> (default). The output PCs will be updated in the <code>reducedDims</code> slot of the SCE object, named by <code>"PCA"</code> by default.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterPCA.html">scaterPCA</a></span><span class="op">(</span><span class="va">sce</span>, useFeatureSubset <span class="op">=</span> <span class="st">"hvg2000"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></code></pre></div>
-<p>Afterwards, users can make scatter plots to visualize the top
-dimensions that explains the most variance of the original data:</p>
+<p>Afterwards, users can make scatter plots to visualize the top dimensions that explains the most variance of the original data:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/plotPCA-1.png" width="700"></p>
@@ -493,15 +391,8 @@ dimensions that explains the most variance of the original data:</p>
 <div class="section level2">
 <h2 id="d-embedding">2D Embedding<a class="anchor" aria-label="anchor" href="#d-embedding"></a>
 </h2>
-<p>Uniform Manifold Approximation and Projection (UMAP) and
-t-distributed Stochastic Neighbor Embedding (tSNE) are the most commonly
-used methods to visualize the relationships between the cells in a 2-D
-embedding. UMAP gives a better presentation of the global structure and
-is more efficient, while tSNE performs better in preserving the local
-structure.</p>
-<p>In this tutorial, we calculate a UMAP embedding from the principal
-components generated in the previous step. We will use only 10
-dimensions out of the 50 dimensions generated.</p>
+<p>Uniform Manifold Approximation and Projection (UMAP) and t-distributed Stochastic Neighbor Embedding (tSNE) are the most commonly used methods to visualize the relationships between the cells in a 2-D embedding. UMAP gives a better presentation of the global structure and is more efficient, while tSNE performs better in preserving the local structure.</p>
+<p>In this tutorial, we calculate a UMAP embedding from the principal components generated in the previous step. We will use only 10 dimensions out of the 50 dimensions generated.</p>
 <!--Remember to change tabset id-->
 <div class="tabset" id="tabset4">
 <div class="tab">
@@ -513,68 +404,34 @@ dimensions out of the 50 dimensions generated.</p>
 <div class="tabcontent ia">
 <p><img src="ui_screenshots/ui_tutorial/umap_entry.png" alt="umap_entry"><br></p>
 <ol style="list-style-type: decimal">
-<li>Users should be at the same main tab as performing dimension
-reduction with PCA.</li>
-<li>Click on the last sub-tab <strong>“Embedding”</strong> to access the
-functionality for this section.</li>
+<li>Users should be at the same main tab as performing dimension reduction with PCA.</li>
+<li>Click on the last sub-tab <strong>“Embedding”</strong> to access the functionality for this section.</li>
 </ol>
 <p><img src="ui_screenshots/ui_tutorial/umap_run.png" alt="umap_run"><br></p>
 <ol start="3" style="list-style-type: decimal">
-<li>Select the name of the PCA matrix we generated in the previous
-section, from the selection input <strong>“Select Input
-Matrix”</strong>.</li>
-<li>While users feel reasonable with other parameters, users can click
-on button <strong>“Run”</strong> to start the UMAP calculation.</li>
+<li>Select the name of the PCA matrix we generated in the previous section, from the selection input <strong>“Select Input Matrix”</strong>.</li>
+<li>While users feel reasonable with other parameters, users can click on button <strong>“Run”</strong> to start the UMAP calculation.</li>
 </ol>
-<p>After done, a scatter plot of all cells on the UMAP dimension will be
-shown on the right panel.</p>
+<p>After done, a scatter plot of all cells on the UMAP dimension will be shown on the right panel.</p>
 </div>
 <div class="tabcontent console">
-<p>A UMAP can be generated with the function <code><a href="../reference/runUMAP.html">runUMAP()</a></code>,
-which is a wrapper of <code><a href="https://rdrr.io/pkg/scater/man/runUMAP.html" class="external-link">scater::calculateUMAP()</a></code> method. We
-will now use <code>useReducedDim</code> argument to pass the PCA
-embedding just generated to the function. The result will be saved in
-<code>reducedDim</code> slot.</p>
-<p>Users can also create the tSNE embedding with <code><a href="../reference/runTSNE.html">runTSNE()</a></code>
-function, which works in a similar way as <code><a href="../reference/runUMAP.html">runUMAP()</a></code></p>
+<p>A UMAP can be generated with the function <code><a href="../reference/runUMAP.html">runUMAP()</a></code>, which is a wrapper of <code><a href="https://rdrr.io/pkg/scater/man/runUMAP.html" class="external-link">scater::calculateUMAP()</a></code> method. We will now use <code>useReducedDim</code> argument to pass the PCA embedding just generated to the function. The result will be saved in <code>reducedDim</code> slot.</p>
+<p>Users can also create the tSNE embedding with <code><a href="../reference/runTSNE.html">runTSNE()</a></code> function, which works in a similar way as <code><a href="../reference/runUMAP.html">runUMAP()</a></code></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">sce</span>, initialDims <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/plotUMAP-1.png" width="700"></p>
-<p>Note that we have another two functions <code><a href="../reference/runUMAP.html">runQuickUMAP()</a></code>
-and <code><a href="../reference/runTSNE.html">runQuickTSNE()</a></code>, which wrap the two functions mentioned
-above, respectively, and run directly from raw count matrix with all
-steps in the workflow automated internally. They can help with fast
-visualization at the beginning of an analysis.</p>
+<p>Note that we have another two functions <code><a href="../reference/runUMAP.html">runQuickUMAP()</a></code> and <code><a href="../reference/runTSNE.html">runQuickTSNE()</a></code>, which wrap the two functions mentioned above, respectively, and run directly from raw count matrix with all steps in the workflow automated internally. They can help with fast visualization at the beginning of an analysis.</p>
 </div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="clustering">Clustering<a class="anchor" aria-label="anchor" href="#clustering"></a>
 </h2>
-<p>SCTK supports clustering cells with Shared Nearest Neighbors (SNN)
-graph based methods and K-Means algorithm. For SNN graph based methods,
-we wrap the graph constructor from <code>scran</code> library, and have
-options of algorithms from <code>igraph</code> that can perform
-clustering on the graph. Alternatively, in the <a href="seurat_curated_workflow.html">Seurat Curated Workflow</a>, the
-Seurat’s SNN graph construction and community detection method are also
-wrapped as one method.</p>
-<p>In this tutorial, we use the scran SNN graph approach, with the
-community detection algorithm set as Louvain. We will use the top 10
-components for identifying the clusters. Though we have generated the
-UMAP representation in the previous section (also using 10 PCs), users
-are always allowed to test clustering with different numbers of PCs. In
-this case, we strongly suggest regenerating the UMAP with the consistent
-number of PCs, so that the UMAP can best reflect the information
-included in the PCs.</p>
-<p>For the scran SNN graph approach, the parameter <code>k</code> can
-always be tweaked as it affects the connectivity of the graph. When
-<code>k</code> is larger, stronger connection will be constructed across
-the cells, thus larger and fewer clusters will be identified. Parameter
-<code>weightType</code> allows for different shared neighbor weighting
-schemes. In this tutorial, we use <code>"jaccard"</code> as it provides
-consistency with Seurat methods.</p>
+<p>SCTK supports clustering cells with Shared Nearest Neighbors (SNN) graph based methods and K-Means algorithm. For SNN graph based methods, we wrap the graph constructor from <code>scran</code> library, and have options of algorithms from <code>igraph</code> that can perform clustering on the graph. Alternatively, in the <a href="seurat_curated_workflow.html">Seurat Curated Workflow</a>, the Seurat’s SNN graph construction and community detection method are also wrapped as one method.</p>
+<p>In this tutorial, we use the scran SNN graph approach, with the community detection algorithm set as Louvain. We will use the top 10 components for identifying the clusters. Though we have generated the UMAP representation in the previous section (also using 10 PCs), users are always allowed to test clustering with different numbers of PCs. In this case, we strongly suggest regenerating the UMAP with the consistent number of PCs, so that the UMAP can best reflect the information included in the PCs.</p>
+<p>For the scran SNN graph approach, the parameter <code>k</code> can always be tweaked as it affects the connectivity of the graph. When <code>k</code> is larger, stronger connection will be constructed across the cells, thus larger and fewer clusters will be identified. Parameter <code>weightType</code> allows for different shared neighbor weighting schemes. In this tutorial, we use <code>"jaccard"</code> as it provides consistency with Seurat methods.</p>
 <!--Remember to change tabset id-->
 <div class="tabset" id="tabset5">
 <div class="tab">
@@ -586,40 +443,22 @@ consistency with Seurat methods.</p>
 <div class="tabcontent ia">
 <p><img src="ui_screenshots/ui_tutorial/cluster_entry.png" alt="cluster_entry"><br></p>
 <ol style="list-style-type: decimal">
-<li>Users should enter the clustering tab via the top navigation bar as
-instructed in the screenshot above.</li>
+<li>Users should enter the clustering tab via the top navigation bar as instructed in the screenshot above.</li>
 </ol>
 <p><img src="ui_screenshots/ui_tutorial/cluster_run.png" alt="cluster_run"><br></p>
 <ol start="2" style="list-style-type: decimal">
-<li>Select the same PCA matrix as we’ve done in the 2D Embedding
-section, at the selection input <strong>“Select Input
-Matrix”</strong>
+<li>Select the same PCA matrix as we’ve done in the 2D Embedding section, at the selection input <strong>“Select Input Matrix”</strong>
 </li>
-<li>Tweak the parameters as we described in the introduction of this
-section.</li>
-<li>Click on button <strong>“Run”</strong> to start clustering the
-data.</li>
+<li>Tweak the parameters as we described in the introduction of this section.</li>
+<li>Click on button <strong>“Run”</strong> to start clustering the data.</li>
 </ol>
-<p>Upon completing clustering, a scatter plot of cells on a
-low-dimensional representation with cluster labeling colored on each
-cell will be shown on the right. However, we use the dimensions used for
-calculation as the default. For the best visualization, we suggest users
-change the dimensions to the 2D embedding obtained from the same
-components (of the same PCA matrix) as used for clustering.</p>
+<p>Upon completing clustering, a scatter plot of cells on a low-dimensional representation with cluster labeling colored on each cell will be shown on the right. However, we use the dimensions used for calculation as the default. For the best visualization, we suggest users change the dimensions to the 2D embedding obtained from the same components (of the same PCA matrix) as used for clustering.</p>
 <ol start="5" style="list-style-type: decimal">
-<li>In the dropdown panel of the plotting region, select the UMAP we
-previously generated from <strong>“Use Reduction”</strong>, and then
-click on button <strong>“Update”</strong>.</li>
+<li>In the dropdown panel of the plotting region, select the UMAP we previously generated from <strong>“Use Reduction”</strong>, and then click on button <strong>“Update”</strong>.</li>
 </ol>
 </div>
 <div class="tabcontent console">
-<p>With <code><a href="../reference/runScranSNN.html">runScranSNN()</a></code> function, the dimension reduction
-matrix can be specified through argument <code>useReducedDim</code>, and
-the cluster label assignment will be updated in the <code>colData</code>
-slot, and the variable will be named by argument
-<code>clusterName</code>. The default graph clustering algorithm is
-Louvain, while we also provide options including Leiden, Walktrap and
-etc. (from <code>igraph</code>).</p>
+<p>With <code><a href="../reference/runScranSNN.html">runScranSNN()</a></code> function, the dimension reduction matrix can be specified through argument <code>useReducedDim</code>, and the cluster label assignment will be updated in the <code>colData</code> slot, and the variable will be named by argument <code>clusterName</code>. The default graph clustering algorithm is Louvain, while we also provide options including Leiden, Walktrap and etc. (from <code>igraph</code>).</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"PCA"</span>, clusterName <span class="op">=</span> <span class="st">"cluster"</span>, nComp <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>                   weightType <span class="op">=</span> <span class="st">"jaccard"</span>, k <span class="op">=</span> <span class="fl">14</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></code></pre></div>
@@ -629,23 +468,13 @@ etc. (from <code>igraph</code>).</p>
 <p><img src="02_a_la_carte_workflow_files/figure-html/plotCluster-1.png" width="700"></p>
 </div>
 </div>
-<p>In the other curated workflow that SCTK wraps (<a href="celda_curated_workflow.html">Celda Curated Workflow</a>), we use a
-Bayesian hierarchical model that can bi-cluster features into modules
-and observations into subpopulations. For detail of this method, please
-refer to the <a href="https://www.camplab.net/celda/" class="external-link">Celda
-Documentation</a>.</p>
+<p>In the other curated workflow that SCTK wraps (<a href="celda_curated_workflow.html">Celda Curated Workflow</a>), we use a Bayesian hierarchical model that can bi-cluster features into modules and observations into subpopulations. For detail of this method, please refer to the <a href="https://www.camplab.net/celda/" class="external-link">Celda Documentation</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="marker-detection">Marker Detection<a class="anchor" aria-label="anchor" href="#marker-detection"></a>
 </h2>
-<p>Users can next perform marker detection process with the cluster
-labels, or any other types of reasonable grouping of similar biological
-state of cells stored in the cell metadata. SCTK iteratively finds
-markers for each cluster by running differential expression (DE)
-analysis on the cluster against all the other clusters.</p>
-<p>Although we selected the variable features and reduced the
-dimensionality of the original expression matrix, here we will get back
-to the transformed normalized counts of all features.</p>
+<p>Users can next perform marker detection process with the cluster labels, or any other types of reasonable grouping of similar biological state of cells stored in the cell metadata. SCTK iteratively finds markers for each cluster by running differential expression (DE) analysis on the cluster against all the other clusters.</p>
+<p>Although we selected the variable features and reduced the dimensionality of the original expression matrix, here we will get back to the transformed normalized counts of all features.</p>
 <!--Remember to change tabset id-->
 <div class="tabset" id="tabset6">
 <div class="tab">
@@ -657,34 +486,20 @@ to the transformed normalized counts of all features.</p>
 <div class="tabcontent ia">
 <p><img src="ui_screenshots/ui_tutorial/marker_entry.png" alt="marker_entry"><br></p>
 <ol style="list-style-type: decimal">
-<li>Click on the <strong>“Differential Expression &amp; Cell Type
-Labeling”</strong> tab at the top navigation bar.</li>
-<li>In the dropdown, click <strong>“Find Marker”</strong> to enter this
-tab, as instructed in the screenshot above.</li>
+<li>Click on the <strong>“Differential Expression &amp; Cell Type Labeling”</strong> tab at the top navigation bar.</li>
+<li>In the dropdown, click <strong>“Find Marker”</strong> to enter this tab, as instructed in the screenshot above.</li>
 </ol>
 <p><img src="ui_screenshots/ui_tutorial/marker_run.png" alt="marker_run"><br></p>
 <ol start="3" style="list-style-type: decimal">
-<li>Users need to check if the proper log-normalized assay data is
-chosen at selection <strong>“Select assay”</strong>. SCTK usually push a
-recommended one to the top, but sometimes alternatives of the same type
-can be in the place. Also, users need to select the cluster label
-variable at selection <strong>“Cluster Annotation”</strong>.</li>
+<li>Users need to check if the proper log-normalized assay data is chosen at selection <strong>“Select assay”</strong>. SCTK usually push a recommended one to the top, but sometimes alternatives of the same type can be in the place. Also, users need to select the cluster label variable at selection <strong>“Cluster Annotation”</strong>.</li>
 <li>Click on <strong>“Run”</strong> button to start the analysis.</li>
 </ol>
-<p>After the analysis is done, the result would be presented in the
-right main panel, with a marker heatmap and the table of statistical
-metrics. Users can tweak the displaying parameters of each through the
-dropdown menu or filter module, respectively.</p>
+<p>After the analysis is done, the result would be presented in the right main panel, with a marker heatmap and the table of statistical metrics. Users can tweak the displaying parameters of each through the dropdown menu or filter module, respectively.</p>
 </div>
 <div class="tabcontent console">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runFindMarker.html">runFindMarker</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span><span class="op">)</span></span></code></pre></div>
-<p>By running <code><a href="../reference/runFindMarker.html">runFindMarker()</a></code>, SCTK stores a
-<code>data.frame</code> of marker table to the <code>matadata</code>
-slot of the SCE object. The marker table will include all detected
-markers for each cluster and statistical values associated to each
-marker. To fetch the table, users can use the command below, and even
-add filtering parameters.</p>
+<p>By running <code><a href="../reference/runFindMarker.html">runFindMarker()</a></code>, SCTK stores a <code>data.frame</code> of marker table to the <code>matadata</code> slot of the SCE object. The marker table will include all detected markers for each cluster and statistical values associated to each marker. To fetch the table, users can use the command below, and even add filtering parameters.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">topMarkers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getFindMarkerTopTable.html">getFindMarkerTopTable</a></span><span class="op">(</span><span class="va">sce</span>, topN <span class="op">=</span> <span class="fl">1</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, </span>
 <span>                                    fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>, minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, </span>
@@ -710,12 +525,7 @@ add filtering parameters.</p>
 <span><span class="co">## 310761      0.25687702       4.781861</span></span>
 <span><span class="co">## 288182      0.39113680       4.371755</span></span>
 <span><span class="co">## 7697        0.02406417       5.989445</span></span></code></pre>
-<p>For visualization, SCTK has a specific heatmap plotting function for
-detected markers. The heatmap will take the log-normalized feature
-expression matrix for the values (scaled when plotting), and subset the
-features to only the top markers of each cluster. For the organization
-of the heatmap, the function groups the markers by the belonging to the
-clusters, and groups the cells, obviously, by clusters.</p>
+<p>For visualization, SCTK has a specific heatmap plotting function for detected markers. The heatmap will take the log-normalized feature expression matrix for the values (scaled when plotting), and subset the features to only the top markers of each cluster. For the organization of the heatmap, the function groups the markers by the belonging to the clusters, and groups the cells, obviously, by clusters.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotFindMarkerHeatmap.html">plotFindMarkerHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, topN <span class="op">=</span> <span class="fl">5</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0.5</span>, </span>
 <span>                      fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>, minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, </span>
@@ -724,35 +534,14 @@ clusters, and groups the cells, obviously, by clusters.</p>
 <p><img src="02_a_la_carte_workflow_files/figure-html/markerHeatmap-1.png" width="864"></p>
 </div>
 </div>
-<p>As we can observe from the marker heatmaps above, most of the
-clusters can be easily differentiated by the top marker genes of each
-cluster. However, “cluster 1” and “cluster 2”are seemingly having less
-difference between each other than compared to other cell clusters, in
-terms of the marker genes presented in the heatmap (top 5 markers for
-each cluster). To further explore the differential expression between
-them, we could do a cluster-by-cluster DE analysis in the next
-section.</p>
+<p>As we can observe from the marker heatmaps above, most of the clusters can be easily differentiated by the top marker genes of each cluster. However, “cluster 1” and “cluster 2”are seemingly having less difference between each other than compared to other cell clusters, in terms of the marker genes presented in the heatmap (top 5 markers for each cluster). To further explore the differential expression between them, we could do a cluster-by-cluster DE analysis in the next section.</p>
 </div>
 <div class="section level2">
 <h2 id="differential-expression-analysis">Differential Expression Analysis<a class="anchor" aria-label="anchor" href="#differential-expression-analysis"></a>
 </h2>
-<p>Beyond finding the markers for each cluster, usually people are also
-interested in the differential expression between specific clusters and
-even groups of clusters. SCTK provides a relatively flexible way for
-conducting such analysis.</p>
-<p>There are multiple ways to specify the groups of cells to be
-compared: by either directly specifying indices of cells, or selecting
-groups of cells with a categorical variable annotated in the cell
-metadata. However, when running DE analysis, SCTK requires a relatively
-sophisticated inputs for naming the analyses, including the names of the
-two groups, and the name of one analysis, though these are not necessary
-for calling the algorithms alone. By requiring these, the results of the
-analyses can be stored with human readable identifiers and within one
-single data container (SCE object), and can be more manageable. See the
-<a href="differential_expression.html">DE documentation</a> for the
-detail.</p>
-<p>Continued from the previous section, we will now set “cluster 1” and
-“cluster 2” as the two groups to perform the analysis.</p>
+<p>Beyond finding the markers for each cluster, usually people are also interested in the differential expression between specific clusters and even groups of clusters. SCTK provides a relatively flexible way for conducting such analysis.</p>
+<p>There are multiple ways to specify the groups of cells to be compared: by either directly specifying indices of cells, or selecting groups of cells with a categorical variable annotated in the cell metadata. However, when running DE analysis, SCTK requires a relatively sophisticated inputs for naming the analyses, including the names of the two groups, and the name of one analysis, though these are not necessary for calling the algorithms alone. By requiring these, the results of the analyses can be stored with human readable identifiers and within one single data container (SCE object), and can be more manageable. See the <a href="differential_expression.html">DE documentation</a> for the detail.</p>
+<p>Continued from the previous section, we will now set “cluster 1” and “cluster 2” as the two groups to perform the analysis.</p>
 <!--Remember to change tabset id-->
 <div class="tabset" id="tabset7">
 <div class="tab">
@@ -764,81 +553,38 @@ detail.</p>
 <div class="tabcontent ia">
 <p><img src="ui_screenshots/ui_tutorial/de_entry.png" alt="de_entry"><br><img src="ui_screenshots/ui_tutorial/de_run.png" alt="de_run"><br></p>
 <ol style="list-style-type: decimal">
-<li>Click on the <strong>“Differential Expression &amp; Cell Type
-Labeling”</strong> tab at the top navigation bar, and then click on
-<strong>“Differential Expression”</strong> to enter the tab</li>
-<li>At the first section, check for the log-normalized assay to use for
-the DE test, at selection <strong>“Select assay”</strong>.</li>
+<li>Click on the <strong>“Differential Expression &amp; Cell Type Labeling”</strong> tab at the top navigation bar, and then click on <strong>“Differential Expression”</strong> to enter the tab</li>
+<li>At the first section, check for the log-normalized assay to use for the DE test, at selection <strong>“Select assay”</strong>.</li>
 <li>Name the two groups involved in an single analysis.</li>
-<li>In this tutorial, we set the condition by using a categorical cell
-metadata (as selecting “By annotations” at the top). Now users will need
-to select the variable that stands for the cluster labeling, as
-selection <strong>“Choose Annotation Class”</strong>
+<li>In this tutorial, we set the condition by using a categorical cell metadata (as selecting “By annotations” at the top). Now users will need to select the variable that stands for the cluster labeling, as selection <strong>“Choose Annotation Class”</strong>
 </li>
-<li>After setting the cluster variable, users can now choose the
-cluster(s) for each condition. Multiple selection for each condition is
-enabled in case users want to perform the DE analysis on any alternative
-grouping.</li>
-<li>Name this single analysis. This is required for SCTK to clearly
-store and present the results of multiple analyses.</li>
-<li>Finally, click on <strong>“Run”</strong> to start the DE
-analysis.</li>
+<li>After setting the cluster variable, users can now choose the cluster(s) for each condition. Multiple selection for each condition is enabled in case users want to perform the DE analysis on any alternative grouping.</li>
+<li>Name this single analysis. This is required for SCTK to clearly store and present the results of multiple analyses.</li>
+<li>Finally, click on <strong>“Run”</strong> to start the DE analysis.</li>
 </ol>
-<p>After running, The visualization section at the bottom of this tab
-will be automatically updated. SCTK provides a heatmap, a table of
-statistic metrics, a volcano plot, a violin plot and a regression plot
-for visualization. Users can tweak the display option through the
-dropdown menu of a plot or the filtering module of the table.</p>
+<p>After running, The visualization section at the bottom of this tab will be automatically updated. SCTK provides a heatmap, a table of statistic metrics, a volcano plot, a violin plot and a regression plot for visualization. Users can tweak the display option through the dropdown menu of a plot or the filtering module of the table.</p>
 <p><img src="ui_screenshots/ui_tutorial/de_vis.png" alt="de_vis"><br></p>
 </div>
 <div class="tabcontent console">
-<p><code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code> is a generic function for performing
-differential expression (DE) analysis between two selected groups of
-cells. This is also used by <code><a href="../reference/runFindMarker.html">runFindMarker()</a></code>. By running DE
-analysis, the function will take the expression assay with all features
-and perform statistical analysis to discover quantitative changes in
-expression levels between selected groups.</p>
+<p><code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code> is a generic function for performing differential expression (DE) analysis between two selected groups of cells. This is also used by <code><a href="../reference/runFindMarker.html">runFindMarker()</a></code>. By running DE analysis, the function will take the expression assay with all features and perform statistical analysis to discover quantitative changes in expression levels between selected groups.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
 <span>                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>,</span>
 <span>                     groupName1 <span class="op">=</span> <span class="st">"cluster1"</span>, groupName2 <span class="op">=</span> <span class="st">"cluster2"</span>, </span>
 <span>                     analysisName <span class="op">=</span> <span class="st">"cluster1_VS_2"</span><span class="op">)</span></span></code></pre></div>
-<p>Similarly to the marker detection section, SCTK also has a DE
-analysis specific heatmap plotting function,
-<code><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap()</a></code>. Here, users can just easily enter the
-<code>analysisName</code> specified for one run and the function will
-automatically arrange the output. The heatmap is also splitted into a
-“checker board”, by the “conditions” (i.e. the groups selected when
-running <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code>) and the “regulation” (i.e. “up” if
-the log2 fold change is positive in “group1” against “group2”).</p>
+<p>Similarly to the marker detection section, SCTK also has a DE analysis specific heatmap plotting function, <code><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap()</a></code>. Here, users can just easily enter the <code>analysisName</code> specified for one run and the function will automatically arrange the output. The heatmap is also splitted into a “checker board”, by the “conditions” (i.e. the groups selected when running <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code>) and the “regulation” (i.e. “up” if the log2 fold change is positive in “group1” against “group2”).</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"cluster1_VS_2"</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0.3</span>, rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/deHeatmap-1.png" width="700"></p>
 </div>
 </div>
-<p>Besides using a feature expression assay for DE analysis, SCTK also
-allows using matrices stored in the low-dimensional representation slot
-of the data container (<code>useReducedDim</code> argument of
-<code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code>). For example, when users perform a pathway
-analysis and get a score matrix (stored in <code>reducedDims</code>
-slot), DE analysis can be performed on this score matrix. See <a href="#performing-de-analysis-on-pathway-analysis-scores">example</a>.</p>
+<p>Besides using a feature expression assay for DE analysis, SCTK also allows using matrices stored in the low-dimensional representation slot of the data container (<code>useReducedDim</code> argument of <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code>). For example, when users perform a pathway analysis and get a score matrix (stored in <code>reducedDims</code> slot), DE analysis can be performed on this score matrix. See <a href="#performing-de-analysis-on-pathway-analysis-scores">example</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="cell-type-labeling">Cell Type Labeling<a class="anchor" aria-label="anchor" href="#cell-type-labeling"></a>
 </h2>
-<p>SCTK adopts <a href="https://bioconductor.org/packages/release/bioc/html/SingleR.html" class="external-link">SingleR</a>
-method for labeling the cell types. Briefly, this method labels each
-cell (or cluster) in users’ datasets basing on similarity to a reference
-datasets. SingleR has recommended some datasets, so we enable quick
-loading of these references. Please see <a href="cell_type_labeling.html">Cell Type Labeling Documentation</a> for
-detail.</p>
-<p>Choosing a reference from the recommended builtin references would
-also require some prior knowledge of user data. <strong>Users should
-choose a reference that covers the cell types possibly existing in the
-user dataset</strong>. SingleR works by scoring the similarity to each
-cell type and assigning a cell type by the highest score, regardless of
-how low the score is. A beta cell from pancreas data could even be
-wrongly labeled as a platelet if using a blood cell reference.</p>
+<p>SCTK adopts <a href="https://bioconductor.org/packages/release/bioc/html/SingleR.html" class="external-link">SingleR</a> method for labeling the cell types. Briefly, this method labels each cell (or cluster) in users’ datasets basing on similarity to a reference datasets. SingleR has recommended some datasets, so we enable quick loading of these references. Please see <a href="cell_type_labeling.html">Cell Type Labeling Documentation</a> for detail.</p>
+<p>Choosing a reference from the recommended builtin references would also require some prior knowledge of user data. <strong>Users should choose a reference that covers the cell types possibly existing in the user dataset</strong>. SingleR works by scoring the similarity to each cell type and assigning a cell type by the highest score, regardless of how low the score is. A beta cell from pancreas data could even be wrongly labeled as a platelet if using a blood cell reference.</p>
 <!--Remember to change tabset id-->
 <div class="tabset" id="tabset8">
 <div class="tab">
@@ -850,46 +596,23 @@ wrongly labeled as a platelet if using a blood cell reference.</p>
 <div class="tabcontent ia">
 <p><img src="ui_screenshots/ui_tutorial/celltype_entry.png" alt="celltype_entry"><br><img src="ui_screenshots/ui_tutorial/celltype_run.png" alt="celltype_run"><br></p>
 <ol style="list-style-type: decimal">
-<li>Click on the <strong>“Differential Expression &amp; Cell Type
-Labeling”</strong> tab at the top navigation bar, and then click on
-<strong>“Cell Type Labeling”</strong> to enter the tab.</li>
-<li>Though this is optional, users could change the labeling level from
-“main” to “fine” at selection <strong>“Labeling level”</strong>. This
-option refers to what cell type annotation in the reference dataset the
-user dataset should be mapped to. It is also important to check the
-option <strong>“Feature type”</strong>, which asks for the default
-feature ID type.</li>
-<li>Users can click on <strong>“Run”</strong> to start the labeling at
-this point.</li>
+<li>Click on the <strong>“Differential Expression &amp; Cell Type Labeling”</strong> tab at the top navigation bar, and then click on <strong>“Cell Type Labeling”</strong> to enter the tab.</li>
+<li>Though this is optional, users could change the labeling level from “main” to “fine” at selection <strong>“Labeling level”</strong>. This option refers to what cell type annotation in the reference dataset the user dataset should be mapped to. It is also important to check the option <strong>“Feature type”</strong>, which asks for the default feature ID type.</li>
+<li>Users can click on <strong>“Run”</strong> to start the labeling at this point.</li>
 </ol>
 <p>Users can visualize the labeling via a UMAP, by going back to the <a href="#clustering">clustering tab</a>.</p>
 <p><img src="ui_screenshots/ui_tutorial/celltype_vis.png" alt="celltype_vis"><br></p>
 <ol start="4" style="list-style-type: decimal">
-<li>In the right main visualization panel of the clustering tab, choose
-<strong>“Select from All Present Annotation”</strong>.</li>
-<li>Select the variable that SingleR just produced. There will be three
-types of labeling, ending with <code>first.labels</code>,
-<code>labels</code> or <code>pruned.labels</code>.</li>
-<li>Click on <strong>“Update”</strong> to show the SingleR labels on the
-UMAP</li>
+<li>In the right main visualization panel of the clustering tab, choose <strong>“Select from All Present Annotation”</strong>.</li>
+<li>Select the variable that SingleR just produced. There will be three types of labeling, ending with <code>first.labels</code>, <code>labels</code> or <code>pruned.labels</code>.</li>
+<li>Click on <strong>“Update”</strong> to show the SingleR labels on the UMAP</li>
 </ol>
 </div>
 <div class="tabcontent console">
-<p>The recommended reference can be chosen by specifying the
-abbreviation name of them in argument <code>useBltinRef</code>. Please
-click on the function name for usage detail.</p>
+<p>The recommended reference can be chosen by specifying the abbreviation name of them in argument <code>useBltinRef</code>. Please click on the function name for usage detail.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSingleR.html">runSingleR</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, level <span class="op">=</span> <span class="st">"fine"</span><span class="op">)</span></span></code></pre></div>
-<p>The result of labeling will again be saved to <code>colData</code>
-slot of the SCE object. There will be multiple types of information
-being stored, including a scoring matrix named by
-<code>"SingleR_{ref}_{level}_scores"</code>, where <code>{ref}</code>
-refers to the reference selected, <code>{level}</code> refers to the
-<code>level</code> argument being passed to the function. And three
-<code>"SingleR_{ref}_{level}_{typeOfLabels}"</code> columns, where
-<code>{typeOfLabels}</code> includes <code>first.labels</code>,
-<code>labels</code>, <code>pruned.labels</code>. For the difference,
-please refer to <code><a href="https://rdrr.io/pkg/SingleR/man/classifySingleR.html" class="external-link">?SingleR::classifySingleR</a></code>.</p>
+<p>The result of labeling will again be saved to <code>colData</code> slot of the SCE object. There will be multiple types of information being stored, including a scoring matrix named by <code>"SingleR_{ref}_{level}_scores"</code>, where <code>{ref}</code> refers to the reference selected, <code>{level}</code> refers to the <code>level</code> argument being passed to the function. And three <code>"SingleR_{ref}_{level}_{typeOfLabels}"</code> columns, where <code>{typeOfLabels}</code> includes <code>first.labels</code>, <code>labels</code>, <code>pruned.labels</code>. For the difference, please refer to <code><a href="https://rdrr.io/pkg/SingleR/man/classifySingleR.html" class="external-link">?SingleR::classifySingleR</a></code>.</p>
 <p>We can also plot the labeling on to the UMAP we got previously.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"SingleR_hpca_fine_pruned.labels"</span>,</span>
@@ -901,17 +624,7 @@ please refer to <code><a href="https://rdrr.io/pkg/SingleR/man/classifySingleR.h
 <div class="section level2">
 <h2 id="differential-abundance">Differential Abundance<a class="anchor" aria-label="anchor" href="#differential-abundance"></a>
 </h2>
-<p>The goal of the differential abundance analysis is to determine if
-categorical variables such as phenotype or sample (e.g. treatment or
-control) are enriched in different cell clusters using the Fisher’s
-exact test (FET). Any categorical variables in <code>colData(sce)</code>
-can be used by passing the variable name to argument
-<code>cluster</code> or <code>variable</code>. Categories in the
-phenotype variable (used for <code>variable</code>) can be passed to
-<code>case</code> or <code>control</code>. For this example, we try to
-examine whether there are any <a href="#clustering">cell clusters</a>
-enriched in an annotated cell type <a href="#cell-type-labeling">using
-SingleR</a>.</p>
+<p>The goal of the differential abundance analysis is to determine if categorical variables such as phenotype or sample (e.g. treatment or control) are enriched in different cell clusters using the Fisher’s exact test (FET). Any categorical variables in <code>colData(sce)</code> can be used by passing the variable name to argument <code>cluster</code> or <code>variable</code>. Categories in the phenotype variable (used for <code>variable</code>) can be passed to <code>case</code> or <code>control</code>. For this example, we try to examine whether there are any <a href="#clustering">cell clusters</a> enriched in an annotated cell type <a href="#cell-type-labeling">using SingleR</a>.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Returns a vector where TRUE for a type of NK cell</span></span>
 <span><span class="va">isNKCell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/startsWith.html" class="external-link">startsWith</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">SingleR_hpca_fine_pruned.labels</span>, <span class="st">"NK_cell"</span><span class="op">)</span></span>
@@ -926,8 +639,7 @@ SingleR</a>.</p>
 <span>                        variable <span class="op">=</span> <span class="st">"cell_type"</span>, </span>
 <span>                        case <span class="op">=</span> <span class="st">"NK_cell"</span>, control <span class="op">=</span> <span class="st">"T_cell"</span>,</span>
 <span>                        analysisName <span class="op">=</span> <span class="st">"NK_VS_T"</span><span class="op">)</span></span></code></pre></div>
-<p>Users can get the table of result with the method below, using the
-<code>analysisName</code> specified when running the analysis.</p>
+<p>Users can get the table of result with the method below, using the <code>analysisName</code> specified when running the analysis.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getDiffAbundanceResults.html">getDiffAbundanceResults</a></span><span class="op">(</span><span class="va">sce</span>, analysisName <span class="op">=</span> <span class="st">"NK_VS_T"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -1088,11 +800,7 @@ SingleR</a>.</p>
 </tr>
 </tbody>
 </table>
-<p>Alternatively, users can choose to directly make a plot using the two
-variables and the function <code><a href="../reference/plotClusterAbundance.html">plotClusterAbundance()</a></code> will
-automatically calculate the statistic and visualize the result. The
-proportion or count of each category in each cluster will be displayed
-in stacked bar plots:</p>
+<p>Alternatively, users can choose to directly make a plot using the two variables and the function <code><a href="../reference/plotClusterAbundance.html">plotClusterAbundance()</a></code> will automatically calculate the statistic and visualize the result. The proportion or count of each category in each cluster will be displayed in stacked bar plots:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotClusterAbundance.html">plotClusterAbundance</a></span><span class="op">(</span><span class="va">sce</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span>, variable <span class="op">=</span> <span class="st">"cell_type"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/plotClusterAbundance-1.png" width="700"></p>
@@ -1100,17 +808,8 @@ in stacked bar plots:</p>
 <div class="section level2">
 <h2 id="pathway-analysis">Pathway Analysis<a class="anchor" aria-label="anchor" href="#pathway-analysis"></a>
 </h2>
-<p>For the purpose of gene set enrichment (GSE) analysis, SCTK imports
-VAM and GSVA as options. Both of them work by loading some user-defined
-gene sets (<a href="import_genesets.html">more about loading gene
-sets</a>), and calculating the enrichment score of each gene set in each
-cell. Here we will go through calling VAM to inspect the enrichment of
-the hallmark gene sets available in <a href="https://www.gsea-msigdb.org/gsea/msigdb/" class="external-link">MSigDB database</a>.
-Please refer to the <a href="pathwayAnalysis.html">document</a> for the
-detail of running pathway analysis with VAM or GSVA.</p>
-<p>SCTK also supports GSEA method from EnrichR, which queries a given
-gene list and finds the significant overlap against the curated gene
-sets from multiple gene set libraries. For detail, please refer to <a href="enrichR.html">EnrichR Documentation</a>.</p>
+<p>For the purpose of gene set enrichment (GSE) analysis, SCTK imports VAM and GSVA as options. Both of them work by loading some user-defined gene sets (<a href="import_genesets.html">more about loading gene sets</a>), and calculating the enrichment score of each gene set in each cell. Here we will go through calling VAM to inspect the enrichment of the hallmark gene sets available in <a href="https://www.gsea-msigdb.org/gsea/msigdb/" class="external-link">MSigDB database</a>. Please refer to the <a href="pathwayAnalysis.html">document</a> for the detail of running pathway analysis with VAM or GSVA.</p>
+<p>SCTK also supports GSEA method from EnrichR, which queries a given gene list and finds the significant overlap against the curated gene sets from multiple gene set libraries. For detail, please refer to <a href="enrichR.html">EnrichR Documentation</a>.</p>
 <!--Remember to change tabset id-->
 <div class="tabset" id="tabset10">
 <div class="tab">
@@ -1122,62 +821,35 @@ sets from multiple gene set libraries. For detail, please refer to <a href="enri
 <div class="tabcontent ia">
 <p><img src="ui_screenshots/ui_tutorial/pathway_entry.png" alt="pathway_entry"><br><img src="ui_screenshots/ui_tutorial/pathway_run.png" alt="pathway_run"><br></p>
 <ol style="list-style-type: decimal">
-<li>Click on the <strong>“Enrichment &amp; Pathway Analysis”</strong>
-tab at the top navigation bar, and then click on <strong>“Pathway
-Activity”</strong> to enter the tab.</li>
-<li>Select the assay to be used for the pathway analysis at the
-selection <strong>“Select assay”</strong>. A log-normalized assay is
-recommended.</li>
-<li>Select a gene set collection of interest at the selection
-<strong>“Select Geneset Collection”</strong>. If no option is available
-here, users can click on the link <strong>“Import Gene Sets”</strong>
-next to it to be prompt to the tab for importing gene set. (See
-documentation for <a href="import_genesets.html">how to import gene
-sets</a>)</li>
+<li>Click on the <strong>“Enrichment &amp; Pathway Analysis”</strong> tab at the top navigation bar, and then click on <strong>“Pathway Activity”</strong> to enter the tab.</li>
+<li>Select the assay to be used for the pathway analysis at the selection <strong>“Select assay”</strong>. A log-normalized assay is recommended.</li>
+<li>Select a gene set collection of interest at the selection <strong>“Select Geneset Collection”</strong>. If no option is available here, users can click on the link <strong>“Import Gene Sets”</strong> next to it to be prompt to the tab for importing gene set. (See documentation for <a href="import_genesets.html">how to import gene sets</a>)</li>
 <li>Click on <strong>“Run”</strong> button to start the analysis.</li>
 </ol>
-<p>After finished, a violin plot will be shown in the right main panel.
-By default, SCTK shows scores in all cells for the first gene set in the
-selected collection, in a single violin plot. With options in the
-dropdown menu, users can choose to shown the scores of a different gene
-set at seletion <strong>“Select Geneset”</strong>, or group the scores
-by the cluster labels by choosing the cluster variable at the selection
-<strong>“Select condition of interest to group data”</strong>. After
-tweaking the options, click on button <strong>“Update Plot”</strong> to
-apply the changes.</p>
+<p>After finished, a violin plot will be shown in the right main panel. By default, SCTK shows scores in all cells for the first gene set in the selected collection, in a single violin plot. With options in the dropdown menu, users can choose to shown the scores of a different gene set at seletion <strong>“Select Geneset”</strong>, or group the scores by the cluster labels by choosing the cluster variable at the selection <strong>“Select condition of interest to group data”</strong>. After tweaking the options, click on button <strong>“Update Plot”</strong> to apply the changes.</p>
 </div>
 <div class="tabcontent console">
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importGeneSetsFromMSigDB.html">importGeneSetsFromMSigDB</a></span><span class="op">(</span><span class="va">sce</span>, categoryIDs <span class="op">=</span> <span class="st">"H"</span>, species <span class="op">=</span> <span class="st">"Homo sapiens"</span><span class="op">)</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runVAM.html">runVAM</a></span><span class="op">(</span><span class="va">sce</span>, geneSetCollectionName <span class="op">=</span> <span class="st">"H"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span></code></pre></div>
-<p>To visualize the result, we simply adopt a violin plot to show the
-distribution of the CDF scores of the cells, which can be, optionally,
-grouped by the cluster labels.</p>
+<p>To visualize the result, we simply adopt a violin plot to show the distribution of the CDF scores of the cells, which can be, optionally, grouped by the cluster labels.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hallmark</span> <span class="op">&lt;-</span> <span class="st">"HALLMARK_INFLAMMATORY_RESPONSE"</span></span>
 <span><span class="fu"><a href="../reference/plotPathway.html">plotPathway</a></span><span class="op">(</span><span class="va">sce</span>, resultName <span class="op">=</span> <span class="st">"VAM_H_CDF"</span>, geneset <span class="op">=</span> <span class="va">hallmark</span>, groupBy <span class="op">=</span> <span class="st">"cluster"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/visVAM-1.png" width="700"></p>
-<p>Note that available options for argument <code>resultName</code> and
-<code>geneset</code> can be printed with getter functions below.</p>
+<p>Note that available options for argument <code>resultName</code> and <code>geneset</code> can be printed with getter functions below.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getPathwayResultNames.html">getPathwayResultNames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/getGenesetNamesFromCollection.html">getGenesetNamesFromCollection</a></span><span class="op">(</span><span class="va">sce</span>, geneSetCollectionName <span class="op">=</span> <span class="st">"H"</span><span class="op">)</span></span></code></pre></div>
 <blockquote>
-<p>Note: In the current version of SCTK, the returned score matrices
-from either VAM or GSVA are stored in the <code>reducedDims</code> slot,
-since the feature dimensions are for the gene sets instead of the genes
-or subsets of genes. In the future, SCTK will adopt other types of data
-container for simpler operation on different types of feature sets.</p>
+<p>Note: In the current version of SCTK, the returned score matrices from either VAM or GSVA are stored in the <code>reducedDims</code> slot, since the feature dimensions are for the gene sets instead of the genes or subsets of genes. In the future, SCTK will adopt other types of data container for simpler operation on different types of feature sets.</p>
 </blockquote>
 </div>
 </div>
 <div class="section level3">
 <h3 id="performing-de-analysis-on-pathway-analysis-scores">Performing DE Analysis on Pathway Analysis Scores<a class="anchor" aria-label="anchor" href="#performing-de-analysis-on-pathway-analysis-scores"></a>
 </h3>
-<p>SCTK allows users to select the score matrix from pathway analysis to
-perform differential expression analysis. In this process, each geneset
-will be treated as the feature, and comparison groups can still be set
-in the same way as introduced in <a href="#differential-expression-analysis">DE analysis section</a>.</p>
+<p>SCTK allows users to select the score matrix from pathway analysis to perform differential expression analysis. In this process, each geneset will be treated as the feature, and comparison groups can still be set in the same way as introduced in <a href="#differential-expression-analysis">DE analysis section</a>.</p>
 <!--Remember to change tabset id-->
 <div class="tabset" id="tabset11">
 <div class="tab">
@@ -1187,39 +859,23 @@ in the same way as introduced in <a href="#differential-expression-analysis">DE 
 </div>
 
 <div class="tabcontent ia">
-<p>Please refer to the <a href="#differential-expression-analysis">DE
-analysis section</a> for how to reach the tab for performing DE
-analysis.</p>
+<p>Please refer to the <a href="#differential-expression-analysis">DE analysis section</a> for how to reach the tab for performing DE analysis.</p>
 <p><img src="ui_screenshots/ui_tutorial/pathway_de.png" alt="pathway_de"><br></p>
 <ol style="list-style-type: decimal">
-<li>At the selection <strong>“Select assay”</strong>, scroll down and
-find the section called “redDims”. From here, select the matrix for the
-VAM score.</li>
+<li>At the selection <strong>“Select assay”</strong>, scroll down and find the section called “redDims”. From here, select the matrix for the VAM score.</li>
 <li>Enter the analysis settings as introduced before.</li>
 <li>Click on button <strong>“Run”</strong>.</li>
 </ol>
-<p>The same result presentation methods will be shown at the bottom of
-this tab. Users might need to check the console log message at this
-point if the heatmap is not shown. The default log2 fold-change cutoff
-works for the log-normalized gene expression value, and is usually too
-high for the pathway analysis score to keep any gene sets. Therefore, we
-recommend users to open the dropdown menu and set the log2 fold-change
-cutoff to a value around <code>0.03</code> to update the heatmap.</p>
+<p>The same result presentation methods will be shown at the bottom of this tab. Users might need to check the console log message at this point if the heatmap is not shown. The default log2 fold-change cutoff works for the log-normalized gene expression value, and is usually too high for the pathway analysis score to keep any gene sets. Therefore, we recommend users to open the dropdown menu and set the log2 fold-change cutoff to a value around <code>0.03</code> to update the heatmap.</p>
 </div>
 <div class="tabcontent console">
-<p>To run DE analysis with matrix in the <code>reducedDims</code> slot,
-users only need to simply specify the matrix name to argument
-<code>useReducedDim</code> (<code>useAssay</code> will be ignored in
-this case).</p>
+<p>To run DE analysis with matrix in the <code>reducedDims</code> slot, users only need to simply specify the matrix name to argument <code>useReducedDim</code> (<code>useAssay</code> will be ignored in this case).</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, useReducedDim <span class="op">=</span> <span class="st">"VAM_H_CDF"</span>,</span>
 <span>                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">6</span><span class="op">)</span>,</span>
 <span>                     groupName1 <span class="op">=</span> <span class="st">"T_cells"</span>, groupName2 <span class="op">=</span> <span class="st">"monocytes"</span>, </span>
 <span>                     analysisName <span class="op">=</span> <span class="st">"T_cells_VS_monocytes_VAM_H_CDF"</span>, overwrite<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code></pre></div>
-<p>As the nature of the pathway analysis score is different from a
-log-normalized gene expression value, the default cutoff for log2
-fold-change is likely to rule out all gene sets in this case. Therefore,
-we need to manually set a rather small value for this cutoff.</p>
+<p>As the nature of the pathway analysis score is different from a log-normalized gene expression value, the default cutoff for log2 fold-change is likely to rule out all gene sets in this case. Therefore, we need to manually set a rather small value for this cutoff.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"T_cells_VS_monocytes_VAM_H_CDF"</span>, rowTitle <span class="op">=</span> <span class="st">"Geneset"</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/pathwayDEHeatmap-1.png" width="864"></p>
@@ -1260,7 +916,7 @@ for (var i = 0; i < ia_buttons.length; i++){
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

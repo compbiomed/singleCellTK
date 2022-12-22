@@ -205,7 +205,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runScanpyFindMarkers</span><span class="op">(</span></span>
 <span>  <span class="va">inSCE</span>,</span>
 <span>  nGenes <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  useAssay <span class="op">=</span> <span class="st">"scanpyScaledData"</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"scanpyNormData"</span>,</span>
 <span>  <span class="va">colDataName</span>,</span>
 <span>  group1 <span class="op">=</span> <span class="st">"all"</span>,</span>
 <span>  group2 <span class="op">=</span> <span class="st">"rest"</span>,</span>
@@ -227,7 +227,7 @@ Defaults to all genes.</p></dd>
 
 <dt>useAssay</dt>
 <dd><p>Specify the name of the assay to use for computation
-of marker genes. It is recommended to use scaled assay.</p></dd>
+of marker genes. It is recommended to use log normalized assay.</p></dd>
 
 
 <dt>colDataName</dt>
@@ -269,6 +269,7 @@ populated in a data.frame stored inside metadata slot.</p>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runScanpyNormalizeData.html">runScanpyNormalizeData</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runScanpyScaleData.html">runScanpyScaleData</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyNormData"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runScanpyFindHVG.html">runScanpyFindHVG</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyScaledData"</span>, method <span class="op">=</span> <span class="st">"seurat"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runScanpyPCA.html">runScanpyPCA</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runScanpyFindClusters.html">runScanpyFindClusters</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, algorithm <span class="op">=</span> <span class="st">"louvain"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runScanpyFindMarkers</span><span class="op">(</span><span class="va">sce</span>, colDataName <span class="op">=</span> <span class="st">"Scanpy_louvain_1"</span> <span class="op">)</span></span></span>
@@ -287,7 +288,7 @@ populated in a data.frame stored inside metadata slot.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

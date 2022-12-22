@@ -360,27 +360,35 @@ decontaminated counts will be added as an assay called 'decontXCounts'.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runDecontX</span><span class="op">(</span><span class="va">sce</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>,<span class="fl">20</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sun Dec 18 16:41:40 2022 ... Running 'DecontX'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:11 2022 ... Running 'DecontX'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting DecontX</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sun Dec 18 16:41:40 2022 .. Analyzing all cells</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sun Dec 18 16:41:40 2022 .... Generating UMAP and estimating cell types</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:11 2022 .. Analyzing all cells</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:11 2022 .... Generating UMAP and estimating cell types</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by ‘spam’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by ‘spam’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by ‘spam’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sun Dec 18 16:41:44 2022 .... Estimating contamination</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sun Dec 18 16:41:44 2022 ...... Completed iteration: 10 | converge: 0.01124</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sun Dec 18 16:41:44 2022 ...... Completed iteration: 20 | converge: 0.003968</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sun Dec 18 16:41:44 2022 ...... Completed iteration: 30 | converge: 0.001326</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sun Dec 18 16:41:44 2022 ...... Completed iteration: 40 | converge: 0.001148</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sun Dec 18 16:41:44 2022 ...... Completed iteration: 49 | converge: 0.0009803</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sun Dec 18 16:41:44 2022 .. Calculating final decontaminated matrix</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:16 2022 .... Estimating contamination</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:16 2022 ...... Completed iteration: 10 | converge: 0.01749</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:16 2022 ...... Completed iteration: 20 | converge: 0.007662</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:16 2022 ...... Completed iteration: 30 | converge: 0.004958</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:16 2022 ...... Completed iteration: 40 | converge: 0.003703</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:16 2022 ...... Completed iteration: 50 | converge: 0.00228</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:16 2022 ...... Completed iteration: 60 | converge: 0.001732</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:16 2022 ...... Completed iteration: 70 | converge: 0.00162</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:16 2022 ...... Completed iteration: 80 | converge: 0.001494</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:16 2022 ...... Completed iteration: 90 | converge: 0.001375</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:16 2022 ...... Completed iteration: 100 | converge: 0.001265</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:16 2022 ...... Completed iteration: 110 | converge: 0.001168</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:16 2022 ...... Completed iteration: 120 | converge: 0.001077</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:16 2022 ...... Completed iteration: 130 | converge: 0.000996</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Dec 22 15:30:16 2022 .. Calculating final decontaminated matrix</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 4.707094 secs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 4.588275 secs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 </code></pre></div>
     </div>
@@ -396,7 +404,7 @@ decontaminated counts will be added as an assay called 'decontXCounts'.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
