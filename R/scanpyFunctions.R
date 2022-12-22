@@ -844,7 +844,7 @@ plotScanpyEmbedding <- function(inSCE,
 #' @param nGenes The number of genes that appear in the returned tables. 
 #' Defaults to all genes.
 #' @param useAssay Specify the name of the assay to use for computation
-#'  of marker genes. It is recommended to use scaled assay. 
+#'  of marker genes. It is recommended to use log normalized assay. 
 #' @param colDataName colData to use as the key of the observations grouping to 
 #' consider.
 #' @param group1 Name of group1. Subset of groups, to which comparison shall be 
@@ -870,7 +870,7 @@ plotScanpyEmbedding <- function(inSCE,
 #' @export
 runScanpyFindMarkers <- function(inSCE,
                                  nGenes = NULL,
-                                 useAssay = "scanpyScaledData",
+                                 useAssay = "scanpyNormData",
                                  colDataName,
                                  group1 = "all",
                                  group2 = "rest",
@@ -879,15 +879,30 @@ runScanpyFindMarkers <- function(inSCE,
   test <- match.arg(test)
   corr_method <- match.arg(corr_method)
   
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  #store results in a temporary sce object
+  tmpSCE <- SingleCellExperiment(
+    assays = list(counts = as.matrix(assay(inSCE, useAssay))))
+  # store back colData from sce into the tmpSCE colData slot
+  colData(tmpSCE)[colDataName] <- as.character(colData(inSCE)[[colDataName]])
+  # remove NA values from counts and replace with zero so can be used properly
+  # by dgCMatrix
+  counts <- assay(tmpSCE, "counts")
+  counts[is.na(counts)] <- 0
+  #store back counts
+  assay(tmpSCE, "counts") <- counts
+  
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = tmpSCE)
+  if(!is.null(nGenes)){
+    nGenes = as.integer(nGenes)
+  }
   sc$tl$rank_genes_groups(scanpyObject, 
                           groupby = colDataName, 
                           groups = group1,
                           reference = group2,
                           method = test, 
-                          n_genes = as.integer(nGenes),
+                          n_genes = nGenes,
                           corr_method = corr_method,
-                          layer = useAssay)
+                          layer = NULL)
   
   py <- reticulate::py
   py$scanpyObject <- scanpyObject
@@ -916,7 +931,7 @@ runScanpyFindMarkers <- function(inSCE,
   markerGenesTable <- cbind(markerGenesNames, Log2_FC, Pvalue, zscore)
   
   S4Vectors::metadata(inSCE)$"findMarkerScanpyObject" <- scanpyObject
-  S4Vectors::metadata(inSCE)$scanpyMarkers <- markerGenesTable
+  S4Vectors::metadata(inSCE)$scanpyMarkersTable <- markerGenesTable
   return(inSCE)
 }
 
