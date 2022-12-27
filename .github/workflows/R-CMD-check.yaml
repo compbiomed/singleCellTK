@@ -73,7 +73,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: rcmdcheck
+          extra-packages: any::rcmdcheck
           needs: check
 
       - name: Install XQuartz on macOS
