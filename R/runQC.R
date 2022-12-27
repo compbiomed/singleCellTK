@@ -205,7 +205,7 @@ runCellQC <- function(inSCE,
         bgBatch = bgBatch),
         paramsList[["soupX_bg"]]))      
     } else {
-      warning("'background' is NULL. Skip 'decontX_bg' algorithm. ")
+      warning("'background' is NULL. Skip 'soupX_bg' algorithm. ")
     }
   }
   return(inSCE)
