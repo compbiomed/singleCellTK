@@ -82,11 +82,9 @@ runScanpyNormalizeData <- function(inSCE,
   
   inSCE <-
     .updateAssaySCEFromScanpy(inSCE, scanpyObject, normAssayName)
-  metadata(inSCE)$scanpy$obj <- scanpyObject
   metadata(inSCE)$scanpy$normValues <- normValue$X
-  metadata(inSCE)$scanpy$normAssay <- normAssayName
   colData(inSCE)$n_counts <- 
-    as.factor(unlist(metadata(inSCE)$scanpy$obj$obs['n_counts']))
+    as.factor(unlist(scanpyObject$obs['n_counts']))
   
   inSCE <- expSetDataTag(inSCE = inSCE,
                          assayType = "normalized",
@@ -116,10 +114,8 @@ runScanpyScaleData <- function(inSCE,
   sc$pp$scale(scanpyObject, max_value=10)
   inSCE <-
     .updateAssaySCEFromScanpy(inSCE, scanpyObject, scaledAssayName, "X")
-  metadata(inSCE)$scanpy$obj <- scanpyObject
-  metadata(inSCE)$scanpy$scaledAssay <- scaledAssayName
-  rowData(inSCE)$"Scanpy_mean" <- metadata(inSCE)$scanpy$obj$var$mean 
-  rowData(inSCE)$"Scanpy_std" <- metadata(inSCE)$scanpy$obj$var$std 
+  rowData(inSCE)$"Scanpy_mean" <- scanpyObject$var$mean 
+  rowData(inSCE)$"Scanpy_std" <- scanpyObject$var$std 
   
   inSCE <- expSetDataTag(inSCE = inSCE,
                          assayType = "scaled",
@@ -215,21 +211,24 @@ runScanpyFindHVG <- function(inSCE,
                                 min_disp = minDisp,
                                 max_disp = maxDisp)
     
-    metadata(inSCE)$scanpy$hvg <- scanpyObject
-    rowData(inSCE)$scanpy_variableFeatures_seurat_dispersion <-
-      metadata(inSCE)$scanpy$hvg["var"][["dispersions"]]
-    rowData(inSCE)$scanpy_variableFeatures_seurat_dispersionScaled <-
-      metadata(inSCE)$scanpy$hvg["var"][["dispersions_norm"]]    
-    rowData(inSCE)$scanpy_variableFeatures_seurat_mean <-
-      metadata(inSCE)$scanpy$hvg["var"][["means"]]  
+    tmpSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject)
+    metadata(inSCE)$hvg <- metadata(tmpSCE)['hvg'][['hvg']]   
+    rowData(inSCE)$dispersions <-
+      unlist(rowData(tmpSCE)['dispersions'])
+    rowData(inSCE)$dispersions_norm <-
+      unlist(rowData(tmpSCE)['dispersions_norm'])   
+    rowData(inSCE)$means <-
+      unlist(rowData(tmpSCE)['means'])  
+    rowData(inSCE)$highly_variable <-
+      unlist(rowData(tmpSCE)['highly_variable'])
     
     metadata(inSCE)$sctk$runFeatureSelection$seurat <-
       list(
         useAssay = useAssay,
         rowData = c(
-          "scanpy_variableFeatures_seurat_dispersion",
-          "scanpy_variableFeatures_seurat_dispersionScaled",
-          "scanpy_variableFeatures_seurat_mean"
+          "dispersions",
+          "dispersions_norm",
+          "means"
         )
       )
   } 
@@ -244,34 +243,35 @@ runScanpyFindHVG <- function(inSCE,
                                 min_disp = minDisp,
                                 max_disp = maxDisp)
     
-    metadata(inSCE)$scanpy$hvg <- scanpyObject
+    tmpSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject)
+    metadata(inSCE)$hvg <- metadata(tmpSCE)['hvg'][['hvg']] 
     if (!altExp) {
-      rowData(inSCE)$scanpy_variableFeatures_cr_dispersion <-
-        metadata(inSCE)$scanpy$hvg["var"][["dispersions"]]
-      rowData(inSCE)$scanpy_variableFeatures_cr_dispersionScaled <-
-        metadata(inSCE)$scanpy$hvg["var"][["dispersions_norm"]]    
-      rowData(inSCE)$scanpy_variableFeatures_cr_mean <-
-        metadata(inSCE)$scanpy$hvg["var"][["means"]] 
+      rowData(inSCE)$dispersions <-
+        unlist(rowData(tmpSCE)['dispersions'])
+      rowData(inSCE)$dispersions_norm <-
+        unlist(rowData(tmpSCE)['dispersions_norm'])    
+      rowData(inSCE)$means <-
+        unlist(rowData(tmpSCE)['means']) 
       
     }
     else{
       scanpyToSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject)
       altExpRows <- match(rownames(inSCE), rownames(scanpyToSCE))
-      rowData(inSCE)$scanpy_variableFeatures_cr_dispersion <-
-        metadata(inSCE)$scanpy$hvg["var"][["dispersions"]][altExpRows]
-      rowData(inSCE)$scanpy_variableFeatures_cr_dispersionScaled <-
-        metadata(inSCE)$scanpy$hvg["var"][["dispersions_norm"]] [altExpRows]   
-      rowData(inSCE)$scanpy_variableFeatures_cr_mean <-
-        metadata(inSCE)$scanpy$hvg["var"][["means"]][altExpRows]
+      rowData(inSCE)$dispersions <-
+        unlist(rowData(tmpSCE)['dispersions'])[altExpRows]
+      rowData(inSCE)$dispersions_norm <-
+        unlist(rowData(tmpSCE)['dispersions_norm'])[altExpRows]   
+      rowData(inSCE)$means <-
+        unlist(rowData(tmpSCE)['means'])[altExpRows]
     }
     
     metadata(inSCE)$sctk$runFeatureSelection$cell_ranger <-
       list(
         useAssay = useAssay,
         rowData = c(
-          "scanpy_variableFeatures_cr_dispersion",
-          "scanpy_variableFeatures_cr_dispersionScaled",
-          "scanpy_variableFeatures_cr_mean"
+          "dispersions",
+          "dispersions_norm",
+          "means"
         )
       )
   }
@@ -285,20 +285,22 @@ runScanpyFindHVG <- function(inSCE,
                                 min_disp = minDisp,
                                 max_disp = maxDisp)
     
-    metadata(inSCE)$scanpy$hvg <- scanpyObject
-    rowData(inSCE)$scanpy_variableFeatures_seuratv3_variances <-
-      metadata(inSCE)$scanpy$hvg["var"][["variances"]]
-    rowData(inSCE)$scanpy_variableFeatures_seuratv3_variancesScaled <-
-      metadata(inSCE)$scanpy$hvg["var"][["variances_norm"]]    
-    rowData(inSCE)$scanpy_variableFeatures_seuratv3_mean <-
-      metadata(inSCE)$scanpy$hvg["var"][["means"]]  
+    tmpSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject)
+    metadata(inSCE)$hvg <- metadata(tmpSCE)['hvg'][['hvg']] 
+    
+    rowData(inSCE)$variances <-
+      unlist(rowData(tmpSCE)['variances'])
+    rowData(inSCE)$variances_norm <-
+      unlist(rowData(tmpSCE)['variances_norm'])   
+    rowData(inSCE)$means <-
+      unlist(rowData(tmpSCE)['means'])
     metadata(inSCE)$sctk$runFeatureSelection$seurat_v3 <-
       list(
         useAssay = useAssay,
         rowData = c(
-          "scanpy_variableFeatures_seuratv3_variances",
-          "scanpy_variableFeatures_seuratv3_variancesScaled",
-          "scanpy_variableFeatures_seuratv3_mean"
+          "variances",
+          "variances_norm",
+          "means"
         )
       )
   }
@@ -315,22 +317,21 @@ runScanpyFindHVG <- function(inSCE,
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "counts")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
 #' plotScanpyHVG(sce)
 #' }
 #' @return plot object
 #' @export
-#findhvg stored in scanpy$hvg rather than scanpy$obj. plot function made
 plotScanpyHVG <- function(inSCE,
                           log = FALSE){
   
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
-  if(is.null(scanpyObject$uns['scanpy']$hvg)){
+  if(is.null(scanpyObject$uns['hvg'])){
     stop(
-      " High variable genes not found. Kindly run 'runScanpyFindHVG' first "
+      " High variable genes not found. Please run the 'runScanpyFindHVG' first."
     )
   }
-  return(sc$pl$highly_variable_genes(scanpyObject$uns['scanpy']$hvg,
+  return(sc$pl$highly_variable_genes(scanpyObject,
                                      log = log))
 }
 
@@ -388,17 +389,12 @@ runScanpyPCA <- function(inSCE,
   }
   
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
-  if(use_highly_variable == TRUE){
-    scanpyObject$var['highly_variable'] <- 
-      scanpyObject$uns['scanpy']$hvg$var$highly_variable
-  }
-  
   sc$tl$pca(scanpyObject, 
             svd_solver= algorithm, 
             n_comps = as.integer(nPCs), 
             use_highly_variable = use_highly_variable)
   
-  metadata(inSCE)$scanpy$PCA <- scanpyObject
+  inSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject)
   
   temp <- scanpyObject$obsm['X_pca']
   #colnames(temp) <- paste0(rep("PC", ncol(temp)), seq(ncol(10)))
@@ -443,13 +439,10 @@ plotScanpyPCA <- function(inSCE,
   
   if(!reducedDimName %in% reducedDimNames(inSCE)){
     stop(
-      "PCA results not found. Perform runScanpyPCA first. "
+      "PCA results not found. Please run the 'runScanpyPCA' function first."
     )
   }
-  #As scanpyPCA function will find the X_pca variable where it originally 
-  #stores the result, thereby we should have the results saved by that variable
-  #name
-  reducedDim (inSCE, "X_pca") <- reducedDim(inSCE, reducedDimName)
+  
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
   return(sc$pl$pca(scanpyObject,
                    color = color,
@@ -480,7 +473,7 @@ plotScanpyPCAGeneRanking <- function(inSCE,
                                      PC_comp = "1,2,3",
                                      includeLowest = TRUE){
   
-  scanpyObject <- metadata(inSCE)$scanpy$PCA
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
   return(sc$pl$pca_loadings(scanpyObject,
                             components = PC_comp,
                             include_lowest = includeLowest))
@@ -506,7 +499,7 @@ plotScanpyPCAGeneRanking <- function(inSCE,
 plotScanpyPCAVariance <- function(inSCE,
                                   nPCs = 20,
                                   log = FALSE){
-  scanpyObject <- metadata(inSCE)$scanpy$PCA
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
   return(sc$pl$pca_variance_ratio(scanpyObject,
                                   n_pcs = as.integer(nPCs),
                                   log = log))
@@ -554,7 +547,7 @@ plotScanpyPCAVariance <- function(inSCE,
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
 #' }
 #' @return Updated sce object which now contains the computed clusters
@@ -611,7 +604,6 @@ runScanpyFindClusters <- function(inSCE,
                  n_iterations = as.integer(niterations))
   } 
   
-  metadata(inSCE)$scanpy$obj <- scanpyObject
   colData(inSCE)[[colDataName]] <-
     as.factor(unlist(scanpyObject$obs[colDataName]))
   S4Vectors::metadata(inSCE)$scanpy[algorithm] <- colDataName
@@ -653,7 +645,7 @@ runScanpyFindClusters <- function(inSCE,
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
 #' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
 #' }
@@ -704,8 +696,7 @@ runScanpyUMAP <- function(inSCE,
              gamma = gamma,
              spread = spread)
   
-  metadata(inSCE)$scanpy$obj <- scanpyObject
-  
+
   temp <- scanpyObject$obsm['X_umap']
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
@@ -738,7 +729,7 @@ runScanpyUMAP <- function(inSCE,
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
 #' sce <- runScanpyTSNE(sce, useReduction = "scanpyPCA")
 #' }
@@ -781,8 +772,7 @@ runScanpyTSNE <- function(inSCE,
                perplexity = perplexity)
   }
   
-  metadata(inSCE)$scanpy$obj <- scanpyObject
-  
+
   temp <- scanpyObject$obsm['X_tsne']
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
@@ -821,7 +811,8 @@ plotScanpyEmbedding <- function(inSCE,
   
   if(!reducedDimName %in% reducedDimNames(inSCE)){
     stop(
-      "Embedding result not found. Kindly implement embedding algorithms first"
+      "Embedding result not found. Please run the 'runScanpyUMAP' or 
+      'runScanpyTSNE' first."
     )
   }
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
@@ -861,7 +852,7 @@ plotScanpyEmbedding <- function(inSCE,
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts", algorithm = "louvain")
 #' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
 #' }
@@ -959,7 +950,7 @@ plotScanpyMarkerGenes <- function(inSCE,
                                   sharey = FALSE){
   
   if(is.null(metadata(inSCE)[["findMarkerScanpyObject"]])){
-    stop("marker genes not found. Kindly run runScanpyFindMarkers function first")
+    stop("Marker genes not found. Please run the 'runScanpyFindMarkers' function first.")
   }
   scanpyObject <- metadata(inSCE)[["findMarkerScanpyObject"]]
   return(sc$pl$rank_genes_groups(scanpyObject, 
@@ -997,7 +988,7 @@ plotScanpyMarkerGenesViolin <- function(inSCE,
                                         nGenes = 10){
   
   if(is.null(metadata(inSCE)["findMarkerScanpyObject"])){
-    stop("marker genes not found. Kindly run runScanpyFindMarkers function first")
+    stop("Marker genes not found. Please run the 'runScanpyFindMarkers' function first.")
   }
   scanpyObject <- metadata(inSCE)[["findMarkerScanpyObject"]]
   return(sc$pl$rank_genes_groups_violin(scanpyObject,
@@ -1040,7 +1031,7 @@ plotScanpyMarkerGenesHeatmap <- function(inSCE,
                                          log2fcThreshold = NULL){
   
   if(is.null(metadata(inSCE)["findMarkerScanpyObject"])){
-    stop("marker genes not found. Kindly run runScanpyFindMarkers function first")
+    stop("Marker genes not found. Please run the 'runScanpyFindMarkers' function first.")
   }
   scanpyObject <- metadata(inSCE)[["findMarkerScanpyObject"]]
   
@@ -1122,7 +1113,7 @@ plotScanpyMarkerGenesDotPlot <- function(inSCE,
                                          colorBarTitle = "log fold change"){
   
   if(is.null(metadata(inSCE)["findMarkerScanpyObject"])){
-    stop("marker genes not found. Kindly run runScanpyFindMarkers function first")
+    stop("Marker genes not found. Please run the 'runScanpyFindMarkers' function first.")
   }
   scanpyObject <- metadata(inSCE)[["findMarkerScanpyObject"]]
   
@@ -1217,7 +1208,7 @@ plotScanpyMarkerGenesMatrixPlot <- function(inSCE,
                                             colorBarTitle = "log fold change"){
   
   if(is.null(metadata(inSCE)["findMarkerScanpyObject"])){
-    stop("marker genes not found. Kindly run runScanpyFindMarkers function first")
+    stop("Marker genes not found. Please run the 'runScanpyFindMarkers' function first.")
   }
   scanpyObject <- metadata(inSCE)[["findMarkerScanpyObject"]]
   

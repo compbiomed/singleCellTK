@@ -22,7 +22,7 @@ data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-sce <- runScanpyFindHVG(sce, useAssay = "counts")
+sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
 plotScanpyHVG(sce)
 }
 }
