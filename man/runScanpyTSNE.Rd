@@ -22,7 +22,7 @@ runScanpyTSNE(
 \item{useAssay}{Specify name of assay to use. Default is \code{NULL}, so
 \code{useReduction} param will be used instead.}
 
-\item{useReduction}{selected reduction algorithm to use for computing tSNE.
+\item{useReduction}{selected reduction method to use for computing tSNE.
 Default \code{"pca"}.}
 
 \item{reducedDimName}{Name of new reducedDims object containing Scanpy tSNE

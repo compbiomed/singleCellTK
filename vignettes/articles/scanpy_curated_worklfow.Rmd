@@ -90,11 +90,11 @@ Identification of the highly variable genes is core to the `Scanpy` workflow and
 ![](ui_screenshots/scanpy/scanpy_tsneUmap.png) <br>
 
 **5. Clustering** <br>
-Cluster labels can be generated for all cells/samples using one of the computed reduction method. Plots are automatically re-computed with cluster labels. The available algorithms for clustering as provided by `Scanpy` include `louvain` and `leiden`.
+Cluster labels can be generated for all cells/samples using one of the computed reduction method. Plots are automatically re-computed with cluster labels. The available methods for clustering as provided by `Scanpy` include `louvain` and `leiden`.
 
 1. Open up the 'Clustering' tab.
 2. Select number of components to use from PCA previously computed.
-3. Select clustering algorithm from `louvain` and `leiden`.
+3. Select clustering method from `louvain` and `leiden`.
 4. Set parameters.
 5. Press 'Find Clusters' button to start processing.
 6. Re-computed plots with cluster labels. Only those plots are available that have previously been computed.
@@ -169,7 +169,7 @@ plotScanpyHVG(sce)
 PCA can be computed using the `runScanpyPCA()` function. Plots can be visualized using `plotScanpyPCA()`, `plotScanpyPCAGeneRanking()` and `plotScanpyPCAVariance()`.
 
 ```{r "scanpy_dm", warning=FALSE, message=FALSE}
-sce <- runScanpyPCA(inSCE = sce, useAssay = "scanpyNormData", reducedDimName = "scanpyPCA", nPCs = 20, algorithm = "auto", use_highly_variable = TRUE)
+sce <- runScanpyPCA(inSCE = sce, useAssay = "scanpyNormData", reducedDimName = "scanpyPCA", nPCs = 20, method = "auto", use_highly_variable = TRUE)
 plotScanpyPCA(inSCE = sce, reducedDimName = "scanpyPCA")
 plotScanpyPCAGeneRanking(inSCE = sce)
 plotScanpyPCAVariance(inSCE = sce, nPCs = 20)
@@ -192,9 +192,9 @@ plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP")
 ```
 
 **6. Clustering** <br>
-`runScanpyFindClusters()` function can be used to compute the clusters, which can later be plotted through the `plotScanpyEmbedding()` method with cluster labels. The parameters to the function include `inSCE` (input SCE object), `useAssay` (name of the scaled assay), `useReduction` (specify which reduction to use i.e. `"scanpyPCA"`), `dims` (number of dims to use) and the algorithm (either `"louvain"` or `"leiden"`).
+`runScanpyFindClusters()` function can be used to compute the clusters, which can later be plotted through the `plotScanpyEmbedding()` method with cluster labels. The parameters to the function include `inSCE` (input SCE object), `useAssay` (name of the scaled assay), `useReduction` (specify which reduction to use i.e. `"scanpyPCA"`), `dims` (number of dims to use) and the method (either `"louvain"` or `"leiden"`).
 ```{r "scanpy_clustering", warning=FALSE, message=FALSE}
-sce <- runScanpyFindClusters(inSCE = sce, useAssay = "scanpyNormData", useReduction = "scanpyPCA", algorithm = "leiden", resolution = 0.8, nNeighbors = 15, dims = 10, cor_method = "pearson")
+sce <- runScanpyFindClusters(inSCE = sce, useAssay = "scanpyNormData", useReduction = "scanpyPCA", method = "leiden", resolution = 0.8, nNeighbors = 15, dims = 10, cor_method = "pearson")
 ```
 
 `plotScanpyEmbedding()` can then be used to plot all reductions previously computed with cluster labels:

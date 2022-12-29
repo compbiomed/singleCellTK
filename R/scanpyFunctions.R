@@ -349,7 +349,7 @@ plotScanpyHVG <- function(inSCE,
 #' Default \code{scanpyPCA}.
 #' @param nPCs numeric value of how many components to compute. Default
 #' \code{20}.
-#' @param algorithm selected method to use for computation of pca. 
+#' @param method selected method to use for computation of pca. 
 #' One of \code{'arpack'}, \code{'randomized'}, \code{'auto'} or \code{'lobpcg'}.
 #' Default \code{"arpack"}.
 #' @param use_highly_variable boolean value of whether to use highly variable 
@@ -372,12 +372,12 @@ runScanpyPCA <- function(inSCE,
                          useAssay = "scanpyNormData",
                          reducedDimName = "scanpyPCA",
                          nPCs = 20,
-                         algorithm = c("arpack", "randomized", "auto", "lobpcg"),
+                         method = c("arpack", "randomized", "auto", "lobpcg"),
                          use_highly_variable = TRUE){
   params <- as.list(environment())
   params$inSCE <- NULL
   
-  algorithm <- match.arg(algorithm)
+  method <- match.arg(method)
   if (missing(useAssay)) {
     useAssay <- SummarizedExperiment::assayNames(inSCE)[1]
     message(
@@ -388,13 +388,23 @@ runScanpyPCA <- function(inSCE,
     )
   }
   
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, 
+                                             X_name = useAssay,
+                                             assays = FALSE,
+                                             colData = FALSE,
+                                             rowData = TRUE,
+                                             varm = TRUE,
+                                             reducedDims = TRUE,
+                                             metadata = TRUE,
+                                             colPairs = FALSE,
+                                             rowPairs = FALSE,
+                                             skip_assays = FALSE)
   sc$tl$pca(scanpyObject, 
-            svd_solver= algorithm, 
+            svd_solver= method, 
             n_comps = as.integer(nPCs), 
             use_highly_variable = use_highly_variable)
   
-  inSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject)
+  metadata(inSCE)$scanpy$PCA <- scanpyObject
   
   temp <- scanpyObject$obsm['X_pca']
   #colnames(temp) <- paste0(rep("PC", ncol(temp)), seq(ncol(10)))
@@ -442,7 +452,7 @@ plotScanpyPCA <- function(inSCE,
       "PCA results not found. Please run the 'runScanpyPCA' function first."
     )
   }
-  
+  reducedDim (inSCE, "X_pca") <- reducedDim(inSCE, reducedDimName)
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
   return(sc$pl$pca(scanpyObject,
                    color = color,
@@ -473,7 +483,7 @@ plotScanpyPCAGeneRanking <- function(inSCE,
                                      PC_comp = "1,2,3",
                                      includeLowest = TRUE){
   
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  scanpyObject <- metadata(inSCE)$scanpy$PCA
   return(sc$pl$pca_loadings(scanpyObject,
                             components = PC_comp,
                             include_lowest = includeLowest))
@@ -499,7 +509,7 @@ plotScanpyPCAGeneRanking <- function(inSCE,
 plotScanpyPCAVariance <- function(inSCE,
                                   nPCs = 20,
                                   log = FALSE){
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  scanpyObject <- metadata(inSCE)$scanpy$PCA
   return(sc$pl$pca_variance_ratio(scanpyObject,
                                   n_pcs = as.integer(nPCs),
                                   log = log))
@@ -524,15 +534,15 @@ plotScanpyPCAVariance <- function(inSCE,
 #' more local data being preserved. Default \code{15L}.
 #' @param dims numeric value of how many components to use for computing
 #' clusters. Default \code{10}.
-#' @param algorithm selected algorithm to compute clusters. One of "louvain",
+#' @param method selected method to compute clusters. One of "louvain",
 #' and "leiden". Default \code{louvain}.
 #' @param colDataName Specify the name to give to this clustering result. 
 #'  Default is \code{NULL} that will generate a meaningful name automatically.
 #' @param resolution A parameter value controlling the coarseness of the 
 #' clustering. Higher values lead to more clusters Default \code{1}.
-#' @param niterations How many iterations of the Leiden clustering algorithm to 
+#' @param niterations How many iterations of the Leiden clustering method to 
 #' perform. Positive values above 2 define the total number of iterations to 
-#' perform, -1 has the algorithm run until it reaches its optimal clustering.
+#' perform, -1 has the method run until it reaches its optimal clustering.
 #' @param flavor Choose between to packages for computing the clustering. 
 #' @param use_weights Boolean. Use weights from knn graph.
 #' @param cor_method correlation method to use. Options are ‘pearson’, 
@@ -557,7 +567,7 @@ runScanpyFindClusters <- function(inSCE,
                                   useReduction = "scanpyPCA",
                                   nNeighbors = 15L,
                                   dims = 2L,
-                                  algorithm = c("louvain", "leiden"),
+                                  method = c("louvain", "leiden"),
                                   colDataName = NULL,
                                   resolution = 1,
                                   niterations = -1,
@@ -566,7 +576,7 @@ runScanpyFindClusters <- function(inSCE,
                                   cor_method = 'pearson',
                                   inplace = TRUE,
                                   externalReduction = NULL) {
-  algorithm <- match.arg(algorithm)
+  method <- match.arg(method)
   useReduction <- useReduction
   if (missing(useAssay)) {
     useAssay <- SummarizedExperiment::assayNames(inSCE)[1]
@@ -585,7 +595,7 @@ runScanpyFindClusters <- function(inSCE,
   } 
   
   if(is.null(colDataName)){
-    colDataName = paste0("Scanpy", "_", algorithm, "_", resolution) 
+    colDataName = paste0("Scanpy", "_", method, "_", resolution) 
   }
   
   sc$pp$neighbors(scanpyObject, 
@@ -593,12 +603,12 @@ runScanpyFindClusters <- function(inSCE,
                   n_pcs = as.integer(dims),
                   use_rep = useReduction)
   
-  if (algorithm == "louvain") {
+  if (method == "louvain") {
     sc$tl$louvain(adata = scanpyObject,
                   key_added = colDataName,
                   flavor = flavor,
                   use_weights = use_weights)
-  } else if (algorithm == "leiden") {
+  } else if (method == "leiden") {
     sc$tl$leiden(adata = scanpyObject,
                  key_added = colDataName,
                  n_iterations = as.integer(niterations))
@@ -606,7 +616,7 @@ runScanpyFindClusters <- function(inSCE,
   
   colData(inSCE)[[colDataName]] <-
     as.factor(unlist(scanpyObject$obs[colDataName]))
-  S4Vectors::metadata(inSCE)$scanpy[algorithm] <- colDataName
+  S4Vectors::metadata(inSCE)$scanpy[method] <- colDataName
   
   return(inSCE)
 }
@@ -713,7 +723,7 @@ runScanpyUMAP <- function(inSCE,
 #' @param inSCE (sce) object on which to compute the tSNE
 #' @param useAssay Specify name of assay to use. Default is \code{NULL}, so
 #' \code{useReduction} param will be used instead.
-#' @param useReduction selected reduction algorithm to use for computing tSNE.
+#' @param useReduction selected reduction method to use for computing tSNE.
 #' Default \code{"pca"}.
 #' @param reducedDimName Name of new reducedDims object containing Scanpy tSNE
 #' Default \code{scanpyTSNE}.
@@ -853,7 +863,7 @@ plotScanpyEmbedding <- function(inSCE,
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
 #' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindClusters(sce, useAssay = "counts", algorithm = "louvain")
+#' sce <- runScanpyFindClusters(sce, useAssay = "counts", method = "louvain")
 #' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
 #' }
 #' @return A \code{SingleCellExperiment} object that contains marker genes

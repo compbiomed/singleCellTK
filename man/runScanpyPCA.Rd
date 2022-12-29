@@ -11,7 +11,7 @@ runScanpyPCA(
   useAssay = "scanpyNormData",
   reducedDimName = "scanpyPCA",
   nPCs = 20,
-  algorithm = c("arpack", "randomized", "auto", "lobpcg"),
+  method = c("arpack", "randomized", "auto", "lobpcg"),
   use_highly_variable = TRUE
 )
 }
@@ -27,7 +27,7 @@ Default \code{scanpyPCA}.}
 \item{nPCs}{numeric value of how many components to compute. Default
 \code{20}.}
 
-\item{algorithm}{selected method to use for computation of pca. 
+\item{method}{selected method to use for computation of pca. 
 One of \code{'arpack'}, \code{'randomized'}, \code{'auto'} or \code{'lobpcg'}.
 Default \code{"arpack"}.}
 

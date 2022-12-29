@@ -12,7 +12,7 @@ runScanpyFindClusters(
   useReduction = "scanpyPCA",
   nNeighbors = 15L,
   dims = 2L,
-  algorithm = c("louvain", "leiden"),
+  method = c("louvain", "leiden"),
   colDataName = NULL,
   resolution = 1,
   niterations = -1,
@@ -40,7 +40,7 @@ more local data being preserved. Default \code{15L}.}
 \item{dims}{numeric value of how many components to use for computing
 clusters. Default \code{10}.}
 
-\item{algorithm}{selected algorithm to compute clusters. One of "louvain",
+\item{method}{selected method to compute clusters. One of "louvain",
 and "leiden". Default \code{louvain}.}
 
 \item{colDataName}{Specify the name to give to this clustering result. 
@@ -49,9 +49,9 @@ Default is \code{NULL} that will generate a meaningful name automatically.}
 \item{resolution}{A parameter value controlling the coarseness of the 
 clustering. Higher values lead to more clusters Default \code{1}.}
 
-\item{niterations}{How many iterations of the Leiden clustering algorithm to 
+\item{niterations}{How many iterations of the Leiden clustering method to 
 perform. Positive values above 2 define the total number of iterations to 
-perform, -1 has the algorithm run until it reaches its optimal clustering.}
+perform, -1 has the method run until it reaches its optimal clustering.}
 
 \item{flavor}{Choose between to packages for computing the clustering.}
 
