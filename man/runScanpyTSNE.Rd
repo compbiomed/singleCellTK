@@ -9,7 +9,7 @@ into the sce object}
 runScanpyTSNE(
   inSCE,
   useAssay = NULL,
-  useReduction = "scanpyPCA",
+  useReducedDim = "scanpyPCA",
   reducedDimName = "scanpyTSNE",
   dims = 10L,
   perplexity = 15L,
@@ -20,9 +20,9 @@ runScanpyTSNE(
 \item{inSCE}{(sce) object on which to compute the tSNE}
 
 \item{useAssay}{Specify name of assay to use. Default is \code{NULL}, so
-\code{useReduction} param will be used instead.}
+\code{useReducedDim} param will be used instead.}
 
-\item{useReduction}{selected reduction method to use for computing tSNE.
+\item{useReducedDim}{selected reduction method to use for computing tSNE.
 Default \code{"pca"}.}
 
 \item{reducedDimName}{Name of new reducedDims object containing Scanpy tSNE
@@ -49,10 +49,10 @@ into the sce object
 data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-sce <- runScanpyFindClusters(sce, useAssay = "counts")
-sce <- runScanpyTSNE(sce, useReduction = "scanpyPCA")
+sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
+sce <- runScanpyTSNE(sce, useReducedDim = "scanpyPCA")
 }
 }
