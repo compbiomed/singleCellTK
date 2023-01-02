@@ -84,15 +84,15 @@ runDimReduce <- function(inSCE,
                           useAssay = useAssay, 
                           reducedDimName = reducedDimName, 
                           nPCs = nComponents, 
-                          algorithm = "auto", 
+                          method = "auto", 
                           use_highly_variable = FALSE
                           )
   } else if (method == "scanpyTSNE"){
     inSCE <- runScanpyTSNE(inSCE = inSCE, useAssay = useAssay,
-                           useReduction = useReducedDim, reducedDimName = reducedDimName, ...)
+                           useReducedDim = useReducedDim, reducedDimName = reducedDimName, ...)
   } else if (method == "scanpyUMAP"){
     inSCE <- runScanpyUMAP(inSCE = inSCE, useAssay = useAssay, 
-                           useReduction = useReducedDim, reducedDimName = reducedDimName, ...)
+                           useReducedDim = useReducedDim, reducedDimName = reducedDimName, ...)
   } else if (method == "rTSNE") {
     inSCE <- runTSNE(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
                      useReducedDim = useReducedDim,

@@ -133,7 +133,8 @@ runScanpyScaleData <- function(inSCE,
 #' @param inSCE (sce) object to compute highly variable genes from and to store
 #' back to it
 #' @param useAssay Specify the name of the assay to use for computation
-#'  of variable genes. It is recommended to use a raw counts assay with the
+#'  of variable genes. It is recommended to use log normalized data, except when 
+#'  flavor='seurat_v3', in which counts data is expected.
 #' @param method selected method to use for computation of highly variable
 #' genes. One of \code{'seurat'}, \code{'cell_ranger'}, or \code{'seurat_v3'}.
 #' Default \code{"seurat"}.
@@ -159,8 +160,7 @@ runScanpyScaleData <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-#' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' g <- getTopHVG(sce, method = "seurat", hvgNumber = 500)
 #' }
 #' @return Updated \code{SingleCellExperiment} object with highly variable genes
@@ -170,7 +170,7 @@ runScanpyScaleData <- function(inSCE,
 #' @importFrom SummarizedExperiment rowData rowData<-
 #' @importFrom S4Vectors metadata<-
 runScanpyFindHVG <- function(inSCE,
-                             useAssay = "scanpyScaledData",
+                             useAssay = "scanpyNormData",
                              method = c("seurat", "cell_ranger", "seurat_v3"),
                              altExpName = "featureSubset",
                              altExp = FALSE,
@@ -181,15 +181,7 @@ runScanpyFindHVG <- function(inSCE,
                              maxDisp = Inf) {
   
   method <- match.arg(method)
-  if (missing(useAssay)) {
-    useAssay <- SummarizedExperiment::assayNames(inSCE)[1]
-    message(
-      "'useAssay' parameter missing. Using the first available assay ",
-      "instead: '",
-      useAssay,
-      "'"
-    )
-  }
+  
   if (!altExp) {
     scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, 
                                                X_name = useAssay)
@@ -316,8 +308,7 @@ runScanpyFindHVG <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-#' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' plotScanpyHVG(sce)
 #' }
 #' @return plot object
@@ -358,9 +349,9 @@ plotScanpyHVG <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-#' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
 #' }
 #' @return Updated \code{SingleCellExperiment} object which now contains the
 #' computed principal components
@@ -369,7 +360,7 @@ plotScanpyHVG <- function(inSCE,
 #' @importFrom S4Vectors metadata<-
 #' 
 runScanpyPCA <- function(inSCE,
-                         useAssay = "scanpyNormData",
+                         useAssay = "scanpyScaledData",
                          reducedDimName = "scanpyPCA",
                          nPCs = 20,
                          method = c("arpack", "randomized", "auto", "lobpcg"),
@@ -378,15 +369,6 @@ runScanpyPCA <- function(inSCE,
   params$inSCE <- NULL
   
   method <- match.arg(method)
-  if (missing(useAssay)) {
-    useAssay <- SummarizedExperiment::assayNames(inSCE)[1]
-    message(
-      "'useAssay' parameter missing. Using the first available assay ",
-      "instead: '",
-      useAssay,
-      "'"
-    )
-  }
   
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, 
                                              X_name = useAssay,
@@ -434,9 +416,9 @@ runScanpyPCA <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-#' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
 #' plotScanpyPCA(sce)
 #' }
 #' @return plot object
@@ -472,9 +454,9 @@ plotScanpyPCA <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-#' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
 #' plotScanpyPCAGeneRanking(sce)
 #' }
 #' @return plot object
@@ -499,9 +481,9 @@ plotScanpyPCAGeneRanking <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-#' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
 #' plotScanpyPCAVariance(sce)
 #' }
 #' @return plot object
@@ -526,7 +508,7 @@ plotScanpyPCAVariance <- function(inSCE,
 #' @param inSCE (sce) object from which clusters should be computed and stored
 #' in
 #' @param useAssay Assay containing scaled counts to use for clustering.
-#' @param useReduction Reduction method to use for computing clusters. 
+#' @param useReducedDim Reduction method to use for computing clusters. 
 #' Default \code{"pca"}.
 #' @param nNeighbors The size of local neighborhood (in terms of number of 
 #' neighboring data points) used for manifold approximation. Larger values 
@@ -555,16 +537,16 @@ plotScanpyPCAVariance <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+#' sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
 #' }
 #' @return Updated sce object which now contains the computed clusters
 #' @export
 runScanpyFindClusters <- function(inSCE,
                                   useAssay = "scanpyScaledData",
-                                  useReduction = "scanpyPCA",
+                                  useReducedDim = "scanpyPCA",
                                   nNeighbors = 15L,
                                   dims = 2L,
                                   method = c("louvain", "leiden"),
@@ -577,21 +559,12 @@ runScanpyFindClusters <- function(inSCE,
                                   inplace = TRUE,
                                   externalReduction = NULL) {
   method <- match.arg(method)
-  useReduction <- useReduction
-  if (missing(useAssay)) {
-    useAssay <- SummarizedExperiment::assayNames(inSCE)[1]
-    message(
-      "'useAssay' parameter missing. Using the first available assay ",
-      "instead: '",
-      useAssay,
-      "'"
-    )
-  }
+
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,  X_name = useAssay)
   
   if (!is.null(externalReduction)) {
     scanpyObject$obsm <- list(pca = externalReduction)
-    useReduction <- "pca"
+    useReducedDim <- "pca"
   } 
   
   if(is.null(colDataName)){
@@ -601,7 +574,7 @@ runScanpyFindClusters <- function(inSCE,
   sc$pp$neighbors(scanpyObject, 
                   n_neighbors = as.integer(nNeighbors), 
                   n_pcs = as.integer(dims),
-                  use_rep = useReduction)
+                  use_rep = useReducedDim)
   
   if (method == "louvain") {
     sc$tl$louvain(adata = scanpyObject,
@@ -630,8 +603,8 @@ runScanpyFindClusters <- function(inSCE,
 #' into the sce object
 #' @param inSCE (sce) object on which to compute the UMAP
 #' @param useAssay Specify name of assay to use. Default is \code{NULL}, so
-#' \code{useReduction} param will be used instead.
-#' @param useReduction Reduction to use for computing UMAP. 
+#' \code{useReducedDim} param will be used instead.
+#' @param useReducedDim Reduction to use for computing UMAP. 
 #' Default is \code{"pca"}.
 #' @param reducedDimName Name of new reducedDims object containing Scanpy UMAP
 #' Default \code{scanpyUMAP}.
@@ -653,18 +626,18 @@ runScanpyFindClusters <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
-#' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+#' sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
+#' sce <- runScanpyUMAP(sce, useReducedDim = "scanpyPCA")
 #' }
 #' @return Updated sce object with UMAP computations stored
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
 runScanpyUMAP <- function(inSCE,
                           useAssay = NULL,
-                          useReduction = "scanpyPCA",
+                          useReducedDim = "scanpyPCA",
                           reducedDimName = "scanpyUMAP",
                           dims = 10L,  
                           minDist = 0.5,
@@ -680,12 +653,12 @@ runScanpyUMAP <- function(inSCE,
   if(!is.null(useAssay)){
     scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
   } else{
-    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, reducedDims = useReduction)
+    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, reducedDims = useReducedDim)
   }
   
   if (!is.null(externalReduction)) {
     scanpyObject$obsm <- list(pca = externalReduction)
-    useReduction <- "pca"
+    useReducedDim <- "pca"
   } 
   
   if(!is.null(useAssay)){
@@ -696,7 +669,7 @@ runScanpyUMAP <- function(inSCE,
     sc$pp$neighbors(scanpyObject, 
                     n_neighbors = nNeighbors, 
                     n_pcs = dims,
-                    use_rep = useReduction)
+                    use_rep = useReducedDim)
   }
   
   sc$tl$umap(scanpyObject, 
@@ -722,8 +695,8 @@ runScanpyUMAP <- function(inSCE,
 #' into the sce object
 #' @param inSCE (sce) object on which to compute the tSNE
 #' @param useAssay Specify name of assay to use. Default is \code{NULL}, so
-#' \code{useReduction} param will be used instead.
-#' @param useReduction selected reduction method to use for computing tSNE.
+#' \code{useReducedDim} param will be used instead.
+#' @param useReducedDim selected reduction method to use for computing tSNE.
 #' Default \code{"pca"}.
 #' @param reducedDimName Name of new reducedDims object containing Scanpy tSNE
 #' Default \code{scanpyTSNE}.
@@ -737,18 +710,18 @@ runScanpyUMAP <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
-#' sce <- runScanpyTSNE(sce, useReduction = "scanpyPCA")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+#' sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
+#' sce <- runScanpyTSNE(sce, useReducedDim = "scanpyPCA")
 #' }
 #' @return Updated sce object with tSNE computations stored
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
 runScanpyTSNE <- function(inSCE,
                           useAssay = NULL,
-                          useReduction = "scanpyPCA", 
+                          useReducedDim = "scanpyPCA", 
                           reducedDimName = "scanpyTSNE",
                           dims = 10L,
                           perplexity = 15L,
@@ -760,13 +733,13 @@ runScanpyTSNE <- function(inSCE,
   if(!is.null(useAssay)){
     scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
   } else{
-    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, reducedDims = useReduction)
+    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, reducedDims = useReducedDim)
   }
   
   
   if (!is.null(externalReduction)) {
     scanpyObject$obsm <- list(pca = externalReduction)
-    useReduction <- "pca"
+    useReducedDim <- "pca"
   }
   
   if(!is.null(useAssay)){
@@ -778,7 +751,7 @@ runScanpyTSNE <- function(inSCE,
   else{
     sc$tl$tsne(scanpyObject, 
                n_pcs = dims,
-               use_rep = useReduction, 
+               use_rep = useReducedDim, 
                perplexity = perplexity)
   }
   
@@ -804,11 +777,11 @@ runScanpyTSNE <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
-#' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+#' sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
+#' sce <- runScanpyUMAP(sce, useReducedDim = "scanpyPCA")
 #' plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_louvain_1')
 #' }
 #' @return plot object
@@ -860,10 +833,10 @@ plotScanpyEmbedding <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindClusters(sce, useAssay = "counts", method = "louvain")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+#' sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
 #' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
 #' }
 #' @return A \code{SingleCellExperiment} object that contains marker genes
@@ -882,7 +855,7 @@ runScanpyFindMarkers <- function(inSCE,
   
   #store results in a temporary sce object
   tmpSCE <- SingleCellExperiment(
-    assays = list(counts = counts(sce), temp = as.matrix(assay(inSCE, useAssay))))
+    assays = list(counts = counts(inSCE), temp = as.matrix(assay(inSCE, useAssay))))
   # store back colData from sce into the tmpSCE colData slot
   colData(tmpSCE)[colDataName] <- as.character(colData(inSCE)[[colDataName]])
   rowData(tmpSCE)$id <- rownames(inSCE)
@@ -944,10 +917,10 @@ runScanpyFindMarkers <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+#' sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
 #' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
 #' plotScanpyMarkerGenes(sce, groups = '0')
 #' }
@@ -983,10 +956,10 @@ plotScanpyMarkerGenes <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+#' sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
 #' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
 #' plotScanpyMarkerGenesViolin(sce, groups = '0')
 #' }
@@ -1024,10 +997,10 @@ plotScanpyMarkerGenesViolin <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+#' sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
 #' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
 #' plotScanpyMarkerGenesHeatmap(sce, groupBy = 'Scanpy_louvain_1')
 #' }
@@ -1100,10 +1073,10 @@ plotScanpyMarkerGenesHeatmap <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+#' sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
 #' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
 #' plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_louvain_1')
 #' }
@@ -1195,10 +1168,10 @@ plotScanpyMarkerGenesDotPlot <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+#' sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
 #' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
 #' plotScanpyMarkerGenesMatrixPlot(sce, groupBy = 'Scanpy_louvain_1')
 #' }
@@ -1282,11 +1255,11 @@ plotScanpyMarkerGenesMatrixPlot <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
-#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+#' sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
+#' sce <- runScanpyUMAP(sce, useReducedDim = "scanpyPCA")
 #' markers <- c("MALAT1" ,"RPS27" ,"CST3")
 #' plotScanpyHeatmap(sce, features = markers, groupBy = 'Scanpy_louvain_1')
 #' }
@@ -1342,11 +1315,11 @@ plotScanpyHeatmap <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
-#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+#' sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
+#' sce <- runScanpyUMAP(sce, useReducedDim = "scanpyPCA")
 #' markers <- c("MALAT1" ,"RPS27" ,"CST3")
 #' plotScanpyDotPlot(sce, features = markers, groupBy = 'Scanpy_louvain_1')
 #' }
@@ -1391,11 +1364,11 @@ plotScanpyDotPlot <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-#' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
-#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+#' sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
+#' sce <- runScanpyUMAP(sce, useReducedDim = "scanpyPCA")
 #' markers <- c("MALAT1" ,"RPS27" ,"CST3")
 #' plotScanpyViolin(sce, features = markers, groupBy = "Scanpy_louvain_1")
 #' }

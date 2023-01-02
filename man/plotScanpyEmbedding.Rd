@@ -35,11 +35,11 @@ plotScanpyEmbedding
 data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-sce <- runScanpyFindClusters(sce, useAssay = "counts")
-sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
+sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
+sce <- runScanpyUMAP(sce, useReducedDim = "scanpyPCA")
 plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_louvain_1')
 }
 }
