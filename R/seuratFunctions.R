@@ -281,7 +281,7 @@ runSeuratFindHVG <- function(inSCE,
 #' components within the sce object
 #' @param inSCE (sce) object on which to compute PCA
 #' @param useAssay Assay containing scaled counts to use in PCA. Default
-#' \code{"seuratScaledData"}.
+#' \code{"seuratNormData"}.
 #' @param reducedDimName Name of new reducedDims object containing Seurat PCA.
 #' Default \code{seuratPCA}.
 #' @param nPCs numeric value of how many components to compute. Default
@@ -310,6 +310,7 @@ runSeuratFindHVG <- function(inSCE,
 #' \dontrun{
 #' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
 #' sce <- runSeuratFindHVG(sce, useAssay = "counts")
+#' sce <- setTopHVG(sce, method = "vst", featureSubsetName = "featureSubset")
 #' sce <- runSeuratScaleData(sce, useAssay = "counts")
 #' sce <- runSeuratPCA(sce, useAssay = "counts")
 #' }
@@ -320,8 +321,8 @@ runSeuratFindHVG <- function(inSCE,
 #' @importFrom S4Vectors metadata<-
 runSeuratPCA <-
   function(inSCE,
-           useAssay = "seuratScaledData",
-           useFeatureSubset = NULL,
+           useAssay = "seuratNormData",
+           useFeatureSubset = "featureSubset",
            scale = TRUE,
            reducedDimName = "seuratPCA",
            nPCs = 20,

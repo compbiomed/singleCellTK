@@ -8,8 +8,8 @@ components within the sce object}
 \usage{
 runSeuratPCA(
   inSCE,
-  useAssay = "seuratScaledData",
-  useFeatureSubset = NULL,
+  useAssay = "seuratNormData",
+  useFeatureSubset = "featureSubset",
   scale = TRUE,
   reducedDimName = "seuratPCA",
   nPCs = 20,
@@ -21,7 +21,7 @@ runSeuratPCA(
 \item{inSCE}{(sce) object on which to compute PCA}
 
 \item{useAssay}{Assay containing scaled counts to use in PCA. Default
-\code{"seuratScaledData"}.}
+\code{"seuratNormData"}.}
 
 \item{useFeatureSubset}{Subset of feature to use for dimension reduction. A
 character string indicating a \code{rowData} variable that stores the logical
@@ -67,6 +67,7 @@ data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runSeuratNormalizeData(sce, useAssay = "counts")
 sce <- runSeuratFindHVG(sce, useAssay = "counts")
+sce <- setTopHVG(sce, method = "vst", featureSubsetName = "featureSubset")
 sce <- runSeuratScaleData(sce, useAssay = "counts")
 sce <- runSeuratPCA(sce, useAssay = "counts")
 }

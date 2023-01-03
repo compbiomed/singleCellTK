@@ -7392,6 +7392,10 @@ shinyServer(function(input, output, session) {
                                       hvgNumber = as.numeric(input$hvg_no_features))
 
     }
+    vals$counts <- setTopHVG(inSCE = vals$counts, 
+                             method = input$hvg_method, 
+                             hvgNumber = as.numeric(input$hvg_no_features), 
+                             featureSubsetName = "featureSubset")
     vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, varFeatures = FALSE)
     message(paste0(date(), " ... Plotting HVG"))
     output$plot_hvg <- renderPlotly({
