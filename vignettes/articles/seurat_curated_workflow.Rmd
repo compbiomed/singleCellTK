@@ -35,11 +35,11 @@ To view detailed instructions on how to use the workflow, please select 'Interac
 <div id="interactive" class="tabcontent">
 ````
 
-In this tutorial example, we illustrate all the steps of the curated workflow and focus on the options available to manipulate and customize the steps of the workflow as per user requirements. To initiate the `Seurat` workflow, click on the 'Curated Workflows' from the top menu and select `Seurat`:
+In this tutorial example, we illustrate all the steps of the curated workflow and focus on the options available to manipulate and customize the steps of the workflow as per user requirements. This tutorial takes the real-world scRNAseq dataset as an example, which consists of 2,700 Peripheral Blood Mononuclear Cells (PBMCs) collected from a healthy donor, namingly PBMC3K. This dataset is available from 10X Genomics and can be found on the 10X website. To initiate the `Seurat` workflow, click on the 'Curated Workflows' from the top menu and select `Seurat`:
 
 ![](ui_screenshots/seurat/seurat_menu.png) <br>
 
-NOTE: This tutorial assumes that the data has already been uploaded via the upload tab of the toolkit and filtered before using the workflow. 
+NOTE: Before heading into the next steps, we assume that users have already loaded SCTK, imported and QC'ed the PBMC3K data, following the [Import and QC Tutorial](01_import_and_qc_tutorial.html).
 
 **1. Normalize Data** <br>
 Assuming that the data has been uploaded via the Upload tab of the toolkit, the first step for the analysis of the data is the Normalization of data. For this purpose, any assay available in the uploaded data can be used against one of the three methods of normalization available through `Seurat` i.e. `LogNormalize`, `CLR` (Centered Log Ratio) or `RC` (Relative Counts).
@@ -152,7 +152,7 @@ All methods provided by SCTK for Seurat workflow use a `SingleCellExperiment` ob
 Using a sample dataset:
 ```{r "seurat_import", warning=FALSE,  message=FALSE}
 library(singleCellTK)
-sce <- importExampleData('pbmc3k')
+sce <- readRDS("tutorial_pbmc3k_qc.rds")
 print(sce)
 ```
 
