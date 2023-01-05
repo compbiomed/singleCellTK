@@ -7392,6 +7392,10 @@ shinyServer(function(input, output, session) {
                                       hvgNumber = as.numeric(input$hvg_no_features))
 
     }
+    vals$counts <- setTopHVG(inSCE = vals$counts, 
+                             method = input$hvg_method, 
+                             hvgNumber = as.numeric(input$hvg_no_features), 
+                             featureSubsetName = "featureSubset")
     vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, varFeatures = FALSE)
     message(paste0(date(), " ... Plotting HVG"))
     output$plot_hvg <- renderPlotly({
@@ -9497,8 +9501,8 @@ shinyServer(function(input, output, session) {
       # # we automatically detect seurat HVG from the object when `useFeatureSubset
       # # = NULL`, so no need to specify this now.
       vals$counts <- runScanpyPCA(inSCE = vals$counts,
-                                  useAssay = "scanpyNormData",
-                                  algorithm = input$scanpy_pca_method,
+                                  useAssay = "scanpyNormData", 
+                                  method = input$scanpy_pca_method,
                                   nPCs = input$scanpy_pca_no_components,
                                   reducedDimName = "scanpyPCA",
                                   use_highly_variable = TRUE)
@@ -9762,8 +9766,8 @@ shinyServer(function(input, output, session) {
                                               useAssay = "scanpyScaledData",
                                               useReduction = "scanpyPCA",
                                               nNeighbors = input$scanpy_nNeighbors,
-                                              dims = input$scanpy_reduction_clustering_count,
-                                              algorithm = input$scanpy_algorithm.use,
+                                              dims = input$scanpy_reduction_clustering_count, 
+                                              method = input$scanpy_algorithm.use,
                                               resolution = input$scanpy_resolution_clustering,
                                               niterations = -1,
                                               cor_method = input$scanpy_corr_method)

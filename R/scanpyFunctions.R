@@ -181,12 +181,33 @@ runScanpyFindHVG <- function(inSCE,
                              maxDisp = Inf) {
   
   method <- match.arg(method)
-  
+  fullSCE_cellranger <- NULL
+  if (missing(useAssay)) {
+    useAssay <- SummarizedExperiment::assayNames(inSCE)[1]
+    message(
+      "'useAssay' parameter missing. Using the first available assay ",
+      "instead: '",
+      useAssay,
+      "'"
+    )
+  }
   if (!altExp) {
+    if (method == "cell_ranger"){
+      # for cell_ranger method only
+      fullSCE_cellranger <- inSCE
+      inSCE <- inSCE[which(rowSums(assay(inSCE, useAssay)) > 0), ]
+      #############################
+    }
     scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, 
                                                X_name = useAssay)
   }
   else{
+    if (method == "cell_ranger"){
+      # for cell_ranger method only
+      tempSCE <- inSCE
+      inSCE <- altExp(inSCE, altExpName)[which(rowSums(assay(altExp(inSCE, altExpName), useAssay)) > 0), ]
+      #############################
+    }
     scanpyObject <- zellkonverter::SCE2AnnData(sce = altExp(inSCE, altExpName), 
                                                X_name = useAssay)
     
@@ -266,6 +287,13 @@ runScanpyFindHVG <- function(inSCE,
           "means"
         )
       )
+    
+    mergedRowData <- merge(rowData(fullSCE_cellranger), rowData(inSCE)[, metadata(inSCE)$sctk$runFeatureSelection$cell_ranger$rowData],
+          by = 'row.names', all = TRUE)
+    row.names(mergedRowData) <- mergedRowData$Row.names
+    mergedRowData$Row.names <- NULL
+    rowData(fullSCE_cellranger) <- mergedRowData
+    inSCE <- fullSCE_cellranger
   }
   
   else if (method == "seurat_v3") {

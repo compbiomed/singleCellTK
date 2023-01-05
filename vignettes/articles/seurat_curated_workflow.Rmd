@@ -180,6 +180,7 @@ Parameters for `runSeuratFindHVG()` include `useAssay` (specify the name of the 
 
 ```{r "seurat_hvg", warning=FALSE, message=FALSE}
 sce <- runSeuratFindHVG(inSCE = sce, useAssay = "counts", method = "vst")
+sce <- setTopHVG(inSCE = sce, method = "vst", featureSubsetName = "featureSubset")
 print(getTopHVG(inSCE = sce, method = "vst", hvgNumber = 10))
 plotSeuratHVG(sce, labelPoints = 10)
 ```
@@ -188,7 +189,7 @@ plotSeuratHVG(sce, labelPoints = 10)
 PCA or ICA can be computed using the `runSeuratPCA()` and `runSeuratICA()` functions respectively. Plots can be visualized using `plotSeuratReduction()`, `plotSeuratElbow()`, `plotSeuratJackStraw()` (must previously be computed by `runSeuratJackStraw()`) and `runSeuratHeatmap()`.
 
 ```{r "seurat_dm", warning=FALSE, message=FALSE}
-sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "seuratPCA", nPCs = 20)
+sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratNormData", reducedDimName = "seuratPCA", nPCs = 20, useFeatureSubset = "featureSubset", scale = TRUE)
 plotSeuratReduction(inSCE = sce, useReduction = "pca")
 plotSeuratElbow(inSCE = sce)
 sce <- runSeuratJackStraw(inSCE = sce, useAssay = "seuratScaledData", dims = 20)
@@ -199,11 +200,11 @@ runSeuratHeatmap(inSCE = sce, useAssay = "seuratScaledData", useReduction = "pca
 **5. tSNE/UMAP** <br>
 `runSeuratTSNE()` and `runSeuratUMAP()` can be used to compute tSNE/UMAP statistics and store into the input object. Parameters to both functions include `inSCE` (input SCE object), `useReduction` (specify the reduction to use i.e. `"pca"` or `"ica"`), `reducedDimName` (name of this new reduction) and `dims` (number of dims to use). `plotSeuratReduction()` can be used to visualize the results.
 ```{r "seurat_tsne_umap", warning=FALSE, message=FALSE}
-sce <- runSeuratTSNE(inSCE = sce, useReduction = "pca", reducedDimName = "seuratTSNE", dims = 10)
+sce <- runSeuratTSNE(inSCE = sce, useReduction = "pca", reducedDimName = "seuratTSNE", dims = 10, perplexity = 30, seed = 1)
 plotSeuratReduction(sce, "tsne")
 ```
 ```{r, warning=FALSE, message=FALSE}
-sce <- runSeuratUMAP(inSCE = sce, useReduction = "pca", reducedDimName = "seuratUMAP", dims = 10)
+sce <- runSeuratUMAP(inSCE = sce, useReduction = "pca", reducedDimName = "seuratUMAP", dims = 10, seed = 42)
 ```
 ```{r, warning=FALSE}
 plotSeuratReduction(sce, "umap")

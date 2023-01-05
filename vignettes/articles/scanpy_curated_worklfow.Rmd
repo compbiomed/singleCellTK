@@ -208,7 +208,7 @@ plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_leiden_0
 Marker genes can be identified using the `runScanpyFindMarkers()` function. This function can use one specified column from `colData` of the input object from which the user can select the groups versus which marker genes need to be obtained. User can either compare all group of cells versus the rest or can can manually specify the cells included in one group vs cells included in the second group (`group1` and `group2` parameter). 
 ```{r "scanpy_findMarkers", warning=FALSE, message=FALSE}
 sce <- runScanpyFindMarkers(inSCE = sce, colDataName = "Scanpy_leiden_0.8", nGenes = 10, test = "t-test", corr_method = "benjamini-hochberg")
-print(head(metadata(sce)[["scanpyMarkers"]]))
+print(head(metadata(sce)[["scanpyMarkersTable"]]))
 
 ```
 
