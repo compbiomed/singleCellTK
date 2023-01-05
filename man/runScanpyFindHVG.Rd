@@ -7,7 +7,7 @@ Find highly variable genes and store in the input sce object}
 \usage{
 runScanpyFindHVG(
   inSCE,
-  useAssay = "scanpyScaledData",
+  useAssay = "scanpyNormData",
   method = c("seurat", "cell_ranger", "seurat_v3"),
   altExpName = "featureSubset",
   altExp = FALSE,
@@ -23,7 +23,8 @@ runScanpyFindHVG(
 back to it}
 
 \item{useAssay}{Specify the name of the assay to use for computation
-of variable genes. It is recommended to use a raw counts assay with the}
+of variable genes. It is recommended to use log normalized data, except when 
+flavor='seurat_v3', in which counts data is expected.}
 
 \item{method}{selected method to use for computation of highly variable
 genes. One of \code{'seurat'}, \code{'cell_ranger'}, or \code{'seurat_v3'}.
@@ -67,8 +68,7 @@ Find highly variable genes and store in the input sce object
 data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
+sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 g <- getTopHVG(sce, method = "seurat", hvgNumber = 500)
 }
 }

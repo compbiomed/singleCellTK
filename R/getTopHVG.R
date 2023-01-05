@@ -66,7 +66,12 @@ getTopHVG <- function(inSCE,
     } else {
         metrics <- .dfFromHVGMetric(inSCE, method)
         metrics <- metrics[order(-metrics$v_rank),]
-        metrics <- metrics[metrics$v_rank > 0, ]
+        if (method == "seurat"){
+          metrics <- metrics[metrics$v_plot > 0, ]
+        }
+        else{
+          metrics <- metrics[metrics$v_rank > 0, ]
+        }
         if (method == "mean.var.plot") {
             means.use <- (metrics$mean > 0.1) & (metrics$mean < 8)
             dispersions.use <- (metrics$v_plot > 1) & (metrics$v_plot < Inf)
@@ -173,9 +178,9 @@ setTopHVG <- function(inSCE,
                  "before using this function!")
         }
     }else if (method == "seurat_v3") {
-      m <- "scanpy_variableFeatures_seuratv3_mean"
-      v_rank <- "scanpy_variableFeatures_seuratv3_variances"
-      v_plot <- "scanpy_variableFeatures_seuratv3_variancesScaled"
+      m <- "means"
+      v_rank <- "variances"
+      v_plot <- "variances_norm"
       if (is.null(rowData(inSCE)[[v_rank]]) ||
           is.null(rowData(inSCE)[[m]]) ||
           is.null(rowData(inSCE)[[v_plot]])) {
@@ -184,9 +189,9 @@ setTopHVG <- function(inSCE,
              "before using this function!")
       }
     }else if (method == "cell_ranger") {
-      m <- "scanpy_variableFeatures_cr_mean"
-      v_rank <- "scanpy_variableFeatures_cr_dispersion"
-      v_plot <- "scanpy_variableFeatures_cr_dispersionScaled"
+      m <- "means"
+      v_rank <- "dispersions"
+      v_plot <- "dispersions_norm"
       if (is.null(rowData(inSCE)[[v_rank]]) ||
           is.null(rowData(inSCE)[[m]]) ||
           is.null(rowData(inSCE)[[v_plot]])) {
@@ -195,9 +200,9 @@ setTopHVG <- function(inSCE,
              "before using this function!")
       }
     }else if (method == "seurat") {
-      m <- "scanpy_variableFeatures_seurat_mean"
-      v_rank <- "scanpy_variableFeatures_seurat_dispersion"
-      v_plot <- "scanpy_variableFeatures_seurat_dispersionScaled"
+      m <- "means"
+      v_rank <- "dispersions"
+      v_plot <- "dispersions_norm"
       if (is.null(rowData(inSCE)[[v_rank]]) ||
           is.null(rowData(inSCE)[[m]]) ||
           is.null(rowData(inSCE)[[v_plot]])) {

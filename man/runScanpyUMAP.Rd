@@ -9,7 +9,7 @@ into the sce object}
 runScanpyUMAP(
   inSCE,
   useAssay = NULL,
-  useReduction = "scanpyPCA",
+  useReducedDim = "scanpyPCA",
   reducedDimName = "scanpyUMAP",
   dims = 10L,
   minDist = 0.5,
@@ -24,9 +24,9 @@ runScanpyUMAP(
 \item{inSCE}{(sce) object on which to compute the UMAP}
 
 \item{useAssay}{Specify name of assay to use. Default is \code{NULL}, so
-\code{useReduction} param will be used instead.}
+\code{useReducedDim} param will be used instead.}
 
-\item{useReduction}{Reduction to use for computing UMAP. 
+\item{useReducedDim}{Reduction to use for computing UMAP. 
 Default is \code{"pca"}.}
 
 \item{reducedDimName}{Name of new reducedDims object containing Scanpy UMAP
@@ -65,10 +65,10 @@ into the sce object
 data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-sce <- runScanpyFindClusters(sce, useAssay = "counts")
-sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
+sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
+sce <- runScanpyUMAP(sce, useReducedDim = "scanpyPCA")
 }
 }

@@ -9,7 +9,7 @@ object}
 runScanpyFindClusters(
   inSCE,
   useAssay = "scanpyScaledData",
-  useReduction = "scanpyPCA",
+  useReducedDim = "scanpyPCA",
   nNeighbors = 15L,
   dims = 2L,
   method = c("louvain", "leiden"),
@@ -29,7 +29,7 @@ in}
 
 \item{useAssay}{Assay containing scaled counts to use for clustering.}
 
-\item{useReduction}{Reduction method to use for computing clusters. 
+\item{useReducedDim}{Reduction method to use for computing clusters. 
 Default \code{"pca"}.}
 
 \item{nNeighbors}{The size of local neighborhood (in terms of number of 
@@ -78,9 +78,9 @@ object
 data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
-sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
-sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
-sce <- runScanpyFindClusters(sce, useAssay = "counts")
+sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
 }
 }
