@@ -215,7 +215,7 @@ into the sce object</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runScanpyTSNE</span><span class="op">(</span></span>
 <span>  <span class="va">inSCE</span>,</span>
 <span>  useAssay <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  useReduction <span class="op">=</span> <span class="st">"scanpyPCA"</span>,</span>
+<span>  useReducedDim <span class="op">=</span> <span class="st">"scanpyPCA"</span>,</span>
 <span>  reducedDimName <span class="op">=</span> <span class="st">"scanpyTSNE"</span>,</span>
 <span>  dims <span class="op">=</span> <span class="fl">10L</span>,</span>
 <span>  perplexity <span class="op">=</span> <span class="fl">15L</span>,</span>
@@ -231,11 +231,11 @@ into the sce object</p>
 
 <dt>useAssay</dt>
 <dd><p>Specify name of assay to use. Default is <code>NULL</code>, so
-<code>useReduction</code> param will be used instead.</p></dd>
+<code>useReducedDim</code> param will be used instead.</p></dd>
 
 
-<dt>useReduction</dt>
-<dd><p>selected reduction algorithm to use for computing tSNE.
+<dt>useReducedDim</dt>
+<dd><p>selected reduction method to use for computing tSNE.
 Default <code>"pca"</code>.</p></dd>
 
 
@@ -271,11 +271,11 @@ other libraries. Default <code>NULL</code>.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runScanpyNormalizeData.html">runScanpyNormalizeData</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runScanpyFindHVG.html">runScanpyFindHVG</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyNormData"</span>, method <span class="op">=</span> <span class="st">"seurat"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runScanpyScaleData.html">runScanpyScaleData</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyNormData"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runScanpyFindHVG.html">runScanpyFindHVG</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyScaledData"</span>, method <span class="op">=</span> <span class="st">"seurat"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runScanpyPCA.html">runScanpyPCA</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runScanpyFindClusters.html">runScanpyFindClusters</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runScanpyTSNE</span><span class="op">(</span><span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"scanpyPCA"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runScanpyPCA.html">runScanpyPCA</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyScaledData"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runScanpyFindClusters.html">runScanpyFindClusters</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"scanpyPCA"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runScanpyTSNE</span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"scanpyPCA"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
