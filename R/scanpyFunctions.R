@@ -265,6 +265,8 @@ runScanpyFindHVG <- function(inSCE,
         unlist(rowData(tmpSCE)['dispersions_norm'])    
       rowData(inSCE)$means <-
         unlist(rowData(tmpSCE)['means']) 
+      rowData(inSCE)$highly_variable <-
+        unlist(rowData(tmpSCE)['highly_variable'])
       
     }
     else{
@@ -276,6 +278,8 @@ runScanpyFindHVG <- function(inSCE,
         unlist(rowData(tmpSCE)['dispersions_norm'])[altExpRows]   
       rowData(inSCE)$means <-
         unlist(rowData(tmpSCE)['means'])[altExpRows]
+      rowData(inSCE)$highly_variable <-
+        unlist(rowData(tmpSCE)['highly_variable'])
     }
     
     metadata(inSCE)$sctk$runFeatureSelection$cell_ranger <-
@@ -284,7 +288,8 @@ runScanpyFindHVG <- function(inSCE,
         rowData = c(
           "dispersions",
           "dispersions_norm",
-          "means"
+          "means",
+          "highly_variable"
         )
       )
     
@@ -314,6 +319,8 @@ runScanpyFindHVG <- function(inSCE,
       unlist(rowData(tmpSCE)['variances_norm'])   
     rowData(inSCE)$means <-
       unlist(rowData(tmpSCE)['means'])
+    rowData(inSCE)$highly_variable <-
+      unlist(rowData(tmpSCE)['highly_variable'])
     metadata(inSCE)$sctk$runFeatureSelection$seurat_v3 <-
       list(
         useAssay = useAssay,
