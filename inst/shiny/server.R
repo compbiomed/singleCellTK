@@ -9431,7 +9431,7 @@ shinyServer(function(input, output, session) {
     {
       req(vals$counts)
       message(paste0(date(), " ... Finding High Variable Genes"))
-      
+      useAssay <- NULL
       vals$counts <- runScanpyScaleData(inSCE = vals$counts,
                                         useAssay = "scanpyNormData")
       
@@ -9443,8 +9443,14 @@ shinyServer(function(input, output, session) {
         maxDisp <- input$scanpy_maxDisp
       }
       
+      if(input$scanpy_hvg_method == "cell_ranger"){
+        useAssay <- "scanpyNormData"
+      } else{
+        useAssay <- "scanpyScaledData"
+      }
+      
         vals$counts <- runScanpyFindHVG(inSCE = vals$counts,
-                                        useAssay = "scanpyScaledData",
+                                        useAssay = useAssay,
                                         method = input$scanpy_hvg_method,
                                         hvgNumber = input$scanpy_hvg_no_features,
                                         minMean = input$scanpy_minMean,
@@ -9683,8 +9689,8 @@ shinyServer(function(input, output, session) {
       req(vals$counts)
       # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_tsne_method]])){
         message(paste0(date(), " ... Running tSNE"))
-        vals$counts <- runScanpyTSNE(inSCE = vals$counts,
-                                     useReduction = "scanpyPCA",
+        vals$counts <- runScanpyTSNE(inSCE = vals$counts, 
+                                     useReducedDim = "scanpyPCA",
                                      reducedDimName = "scanpyTSNE",
                                      dims = 10L,
                                      perplexity = input$scanpy_perplexity_tsne)
@@ -9717,8 +9723,8 @@ shinyServer(function(input, output, session) {
        req(vals$counts)
       # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_umap_method]])){
          message(paste0(date(), " ... Running UMAP"))
-         vals$counts <- runScanpyUMAP(inSCE = vals$counts,
-                                      useReduction = "scanpyPCA",
+         vals$counts <- runScanpyUMAP(inSCE = vals$counts, 
+                                      useReducedDim = "scanpyPCA",
                                       reducedDimName = "scanpyUMAP",
                                       dims = input$scanpy_reduction_umap_count,  
                                       minDist = input$scanpy_min_dist_umap,
@@ -9763,8 +9769,8 @@ shinyServer(function(input, output, session) {
 
          message(paste0(date(), " ... Clustering Dataset"))
          vals$counts <- runScanpyFindClusters(inSCE = vals$counts,
-                                              useAssay = "scanpyScaledData",
-                                              useReduction = "scanpyPCA",
+                                              useAssay = "scanpyScaledData", 
+                                              useReducedDim = "scanpyPCA",
                                               nNeighbors = input$scanpy_nNeighbors,
                                               dims = input$scanpy_reduction_clustering_count, 
                                               method = input$scanpy_algorithm.use,

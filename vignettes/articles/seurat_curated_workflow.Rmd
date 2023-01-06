@@ -180,7 +180,7 @@ Parameters for `runSeuratFindHVG()` include `useAssay` (specify the name of the 
 
 ```{r "seurat_hvg", warning=FALSE, message=FALSE}
 sce <- runSeuratFindHVG(inSCE = sce, useAssay = "counts", method = "vst")
-sce <- setTopHVG(inSCE = sce, method = "vst", featureSubsetName = "featureSubset")
+# sce <- setTopHVG(inSCE = sce, method = "vst", featureSubsetName = "featureSubset") # updated above function
 print(getTopHVG(inSCE = sce, method = "vst", hvgNumber = 10))
 plotSeuratHVG(sce, labelPoints = 10)
 ```
@@ -189,7 +189,7 @@ plotSeuratHVG(sce, labelPoints = 10)
 PCA or ICA can be computed using the `runSeuratPCA()` and `runSeuratICA()` functions respectively. Plots can be visualized using `plotSeuratReduction()`, `plotSeuratElbow()`, `plotSeuratJackStraw()` (must previously be computed by `runSeuratJackStraw()`) and `runSeuratHeatmap()`.
 
 ```{r "seurat_dm", warning=FALSE, message=FALSE}
-sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratNormData", reducedDimName = "seuratPCA", nPCs = 20, useFeatureSubset = "featureSubset", scale = TRUE)
+sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratNormData", reducedDimName = "seuratPCA", nPCs = 20, scale = TRUE)
 plotSeuratReduction(inSCE = sce, useReduction = "pca")
 plotSeuratElbow(inSCE = sce)
 sce <- runSeuratJackStraw(inSCE = sce, useAssay = "seuratScaledData", dims = 20)
