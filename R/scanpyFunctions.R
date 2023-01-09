@@ -258,6 +258,7 @@ runScanpyFindHVG <- function(inSCE,
     
     tmpSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject)
     metadata(inSCE)$hvg <- metadata(tmpSCE)['hvg'][['hvg']] 
+    metadata(fullSCE_cellranger)$hvg <- metadata(tmpSCE)['hvg'][['hvg']] 
     if (!altExp) {
       rowData(inSCE)$dispersions <-
         unlist(rowData(tmpSCE)['dispersions'])

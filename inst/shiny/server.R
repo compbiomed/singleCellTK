@@ -9479,7 +9479,7 @@ shinyServer(function(input, output, session) {
   
   output$scanpy_hvg_output <- renderText({
     req(vals$counts)
-    if(!is.null(metadata(vals$counts)$scanpy$hvg)){
+    if(!is.null(metadata(vals$counts)$hvg)){
       isolate({
         getTopHVG(inSCE = vals$counts, 
                   method = input$scanpy_hvg_method, 
