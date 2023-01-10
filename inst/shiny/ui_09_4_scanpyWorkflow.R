@@ -244,8 +244,9 @@ shinyPanelScanpy <- fluidPage(
                                                       inputId = "scanpyFindMarkerType",
                                                       label = "Select type of markers to identify:",
                                                       choices = c(
-                                                        "markers between all groups" = "scanpyMarkerAll",
-                                                        "markers differentially expressed between two selected groups" = "scanpyMarkerDiffExp"
+                                                        "markers between all groups" = "scanpyMarkerAll"
+                                                        # ,
+                                                        # "markers differentially expressed between two selected groups" = "scanpyMarkerDiffExp"
                                                       )
                                                     ),
                                                     selectInput(
@@ -276,12 +277,12 @@ shinyPanelScanpy <- fluidPage(
                                                       label = "Multiple testing correction method:",
                                                       choices = c("benjamini-hochberg", "bonferroni")
                                                     ),
-                                                    numericInput(
-                                                      inputId = "scanpyFindMarkerNGenes",
-                                                      label = "No. of genes to return per group:", 
-                                                      value = 1000, 
-                                                      step = 1
-                                                    ),
+                                                    # numericInput(
+                                                    #   inputId = "scanpyFindMarkerNGenes",
+                                                    #   label = "No. of genes to return per group:", 
+                                                    #   value = 1000, 
+                                                    #   step = 1
+                                                    # ),
                                                     actionButton(inputId = "scanpyFindMarkerRun", "Find Markers")
                                               )
                                        )

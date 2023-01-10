@@ -9431,7 +9431,7 @@ shinyServer(function(input, output, session) {
     {
       req(vals$counts)
       message(paste0(date(), " ... Finding High Variable Genes"))
-      
+      useAssay <- NULL
       vals$counts <- runScanpyScaleData(inSCE = vals$counts,
                                         useAssay = "scanpyNormData")
       
@@ -9443,8 +9443,14 @@ shinyServer(function(input, output, session) {
         maxDisp <- input$scanpy_maxDisp
       }
       
+      if(input$scanpy_hvg_method == "cell_ranger"){
+        useAssay <- "scanpyNormData"
+      } else{
+        useAssay <- "scanpyScaledData"
+      }
+      
         vals$counts <- runScanpyFindHVG(inSCE = vals$counts,
-                                        useAssay = "scanpyScaledData",
+                                        useAssay = useAssay,
                                         method = input$scanpy_hvg_method,
                                         hvgNumber = input$scanpy_hvg_no_features,
                                         minMean = input$scanpy_minMean,
@@ -9473,7 +9479,7 @@ shinyServer(function(input, output, session) {
   
   output$scanpy_hvg_output <- renderText({
     req(vals$counts)
-    if(!is.null(metadata(vals$counts)$scanpy$hvg)){
+    if(!is.null(metadata(vals$counts)$hvg)){
       isolate({
         getTopHVG(inSCE = vals$counts, 
                   method = input$scanpy_hvg_method, 
@@ -9683,8 +9689,8 @@ shinyServer(function(input, output, session) {
       req(vals$counts)
       # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_tsne_method]])){
         message(paste0(date(), " ... Running tSNE"))
-        vals$counts <- runScanpyTSNE(inSCE = vals$counts,
-                                     useReduction = "scanpyPCA",
+        vals$counts <- runScanpyTSNE(inSCE = vals$counts, 
+                                     useReducedDim = "scanpyPCA",
                                      reducedDimName = "scanpyTSNE",
                                      dims = 10L,
                                      perplexity = input$scanpy_perplexity_tsne)
@@ -9717,8 +9723,8 @@ shinyServer(function(input, output, session) {
        req(vals$counts)
       # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_umap_method]])){
          message(paste0(date(), " ... Running UMAP"))
-         vals$counts <- runScanpyUMAP(inSCE = vals$counts,
-                                      useReduction = "scanpyPCA",
+         vals$counts <- runScanpyUMAP(inSCE = vals$counts, 
+                                      useReducedDim = "scanpyPCA",
                                       reducedDimName = "scanpyUMAP",
                                       dims = input$scanpy_reduction_umap_count,  
                                       minDist = input$scanpy_min_dist_umap,
@@ -9763,8 +9769,8 @@ shinyServer(function(input, output, session) {
 
          message(paste0(date(), " ... Clustering Dataset"))
          vals$counts <- runScanpyFindClusters(inSCE = vals$counts,
-                                              useAssay = "scanpyScaledData",
-                                              useReduction = "scanpyPCA",
+                                              useAssay = "scanpyScaledData", 
+                                              useReducedDim = "scanpyPCA",
                                               nNeighbors = input$scanpy_nNeighbors,
                                               dims = input$scanpy_reduction_clustering_count, 
                                               method = input$scanpy_algorithm.use,
@@ -9907,10 +9913,12 @@ shinyServer(function(input, output, session) {
       
       if(input$scanpyFindMarkerType == "scanpyMarkerAll"){
         vals$counts <- runScanpyFindMarkers(inSCE = vals$counts,
-                                            nGenes = input$scanpyFindMarkerNGenes,
+   #                                         nGenes = input$scanpyFindMarkerNGenes, #causes error with gene plots
                                             colDataName = input$scanpyFindMarkerSelectPhenotype,
                                             test = input$scanpyFindMarkerTest, 
-                                            corr_method = input$scanpyFindMarkerCorrMethod)
+                                            corr_method = input$scanpyFindMarkerCorrMethod, 
+                                            group1 = c("all"), 
+                                            group2 = "rest")
       }
       else{
         vals$counts <- runScanpyFindMarkers(inSCE = vals$counts,
@@ -10185,19 +10193,17 @@ shinyServer(function(input, output, session) {
     output$scanpyFindMarkerMatrixPlot <- renderPlot({
       plotScanpyMarkerGenesMatrixPlot(inSCE = vals$counts, 
                                       groupBy = input$scanpyFindMarkerSelectPhenotype, 
-                                      features = df$Gene,
-                                      nGenes = NULL)
+                                      features = df$Gene)
     })
     output$scanpyFindMarkerDotPlot <- renderPlot({
-      plotScanpyMarkerGenesDotPlot(inSCE = vals$counts, features = df$Gene, 
+      plotScanpyMarkerGenesDotPlot(inSCE = vals$counts,
                                    groupBy = input$scanpyFindMarkerSelectPhenotype,
-                                   nGenes = NULL)
+                                   features = df$Gene)
     })
     output$scanpyFindMarkerHeatmapPlot <- renderPlot({
       plotScanpyMarkerGenesHeatmap(inSCE = vals$counts, 
                                    groupBy = input$scanpyFindMarkerSelectPhenotype, 
-                                   features = df$Gene, 
-                                   nGenes = NULL)
+                                   features = df$Gene)
     })
   })
   

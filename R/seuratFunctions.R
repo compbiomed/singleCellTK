@@ -273,6 +273,10 @@ runSeuratFindHVG <- function(inSCE,
         )
       )
   }
+  
+  # create a feature subset
+  inSCE <- setTopHVG(inSCE = inSCE, method = method, hvgNumber = hvgNumber, featureSubsetName = "featureSubset")
+  
   return(inSCE)
 }
 
