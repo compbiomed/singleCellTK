@@ -9913,10 +9913,12 @@ shinyServer(function(input, output, session) {
       
       if(input$scanpyFindMarkerType == "scanpyMarkerAll"){
         vals$counts <- runScanpyFindMarkers(inSCE = vals$counts,
-                                            nGenes = input$scanpyFindMarkerNGenes,
+   #                                         nGenes = input$scanpyFindMarkerNGenes, #causes error with gene plots
                                             colDataName = input$scanpyFindMarkerSelectPhenotype,
                                             test = input$scanpyFindMarkerTest, 
-                                            corr_method = input$scanpyFindMarkerCorrMethod)
+                                            corr_method = input$scanpyFindMarkerCorrMethod, 
+                                            group1 = c("all"), 
+                                            group2 = "rest")
       }
       else{
         vals$counts <- runScanpyFindMarkers(inSCE = vals$counts,
@@ -10191,19 +10193,17 @@ shinyServer(function(input, output, session) {
     output$scanpyFindMarkerMatrixPlot <- renderPlot({
       plotScanpyMarkerGenesMatrixPlot(inSCE = vals$counts, 
                                       groupBy = input$scanpyFindMarkerSelectPhenotype, 
-                                      features = df$Gene,
-                                      nGenes = NULL)
+                                      features = df$Gene)
     })
     output$scanpyFindMarkerDotPlot <- renderPlot({
-      plotScanpyMarkerGenesDotPlot(inSCE = vals$counts, features = df$Gene, 
+      plotScanpyMarkerGenesDotPlot(inSCE = vals$counts,
                                    groupBy = input$scanpyFindMarkerSelectPhenotype,
-                                   nGenes = NULL)
+                                   features = df$Gene)
     })
     output$scanpyFindMarkerHeatmapPlot <- renderPlot({
       plotScanpyMarkerGenesHeatmap(inSCE = vals$counts, 
                                    groupBy = input$scanpyFindMarkerSelectPhenotype, 
-                                   features = df$Gene, 
-                                   nGenes = NULL)
+                                   features = df$Gene)
     })
   })
   
