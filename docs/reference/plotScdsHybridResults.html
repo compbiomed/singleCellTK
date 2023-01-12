@@ -417,7 +417,7 @@ the relative widths for each plot.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package<span class="op">=</span><span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runUMAP.html">runQuickUMAP</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Jan  4 20:58:54 2023 ... Computing Scater UMAP for sample 'pbmc_4k'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jan 10 16:52:35 2023 ... Computing Scater UMAP for sample 'pbmc_4k'.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by ‘spam’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
@@ -425,7 +425,7 @@ the relative widths for each plot.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by ‘spam’</span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runCxdsBcdsHybrid.html">runCxdsBcdsHybrid</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Jan  4 20:58:59 2023 ... Running 'cxds_bcds_hybrid'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jan 10 16:52:39 2023 ... Running 'cxds_bcds_hybrid'</span>
 <span class="r-in"><span><span class="fu">plotScdsHybridResults</span><span class="op">(</span>inSCE<span class="op">=</span><span class="va">sce</span>, reducedDimName<span class="op">=</span><span class="st">"UMAP"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plotScdsHybridResults-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
