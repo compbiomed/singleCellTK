@@ -25,6 +25,7 @@ runUMAP(
   minDist = 0.01,
   spread = 1,
   seed = NULL,
+  verbose = TRUE,
   BPPARAM = SerialParam()
 )
 
@@ -120,6 +121,8 @@ information.}
 
 \item{seed}{Random seed for reproducibility of UMAP results.
 Default \code{NULL} will use global seed in use by the R environment.}
+
+\item{verbose}{Logical. Whether to print log messages. Default \code{TRUE}.}
 
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying whether
 the PCA should be parallelized.}
