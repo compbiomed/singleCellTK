@@ -85,6 +85,9 @@
     <loc>/articles/pathwayAnalysis.html</loc>
   </url>
   <url>
+    <loc>/articles/scanpy_curated_worklfow.html</loc>
+  </url>
+  <url>
     <loc>/articles/seurat_curated_workflow.html</loc>
   </url>
   <url>
@@ -481,6 +484,45 @@
     <loc>/reference/plotScDblFinderResults.html</loc>
   </url>
   <url>
+    <loc>/reference/plotScanpyDotPlot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyEmbedding.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyHVG.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyHeatmap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyMarkerGenes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyMarkerGenesDotPlot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyMarkerGenesHeatmap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyMarkerGenesMatrixPlot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyMarkerGenesViolin.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyPCA.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyPCAGeneRanking.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyPCAVariance.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyViolin.html</loc>
+  </url>
+  <url>
     <loc>/reference/plotScdsHybridResults.html</loc>
   </url>
   <url>
@@ -689,6 +731,30 @@
   </url>
   <url>
     <loc>/reference/runScDblFinder.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runScanpyFindClusters.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runScanpyFindHVG.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runScanpyFindMarkers.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runScanpyNormalizeData.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runScanpyPCA.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runScanpyScaleData.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runScanpyTSNE.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runScanpyUMAP.html</loc>
   </url>
   <url>
     <loc>/reference/runScranSNN.html</loc>

@@ -1,0 +1,233 @@
+---
+title: "Scanpy Curated Workflow"
+author: "Nida Pervaiz, Irzam Sarfraz"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+bibliography: references.bib
+csl: ieee.csl
+---
+
+```{r develSetting, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+```
+## Introduction
+**singleCellTK** integrates functions from [**Scanpy**](https://scanpy.readthedocs.io) 
+Scanpy is a scalable toolkit for analyzing single-cell gene expression data built jointly with anndata. It includes preprocessing, visualization, clustering, trajectory inference and differential expression testing. The Python-based implementation efficiently deals with datasets of more than one million cells. 
+It is an easy to use streamlined workflow using both the shiny user interface as well as the R console. The shiny application contains a separate tab that lets the users run the steps of the workflow in a sequential manner with ability to visualize through interactive plots from within the application. On the R console, the toolkit offers wrapper functions that use the [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) [@Amezquita2020] object as the input and the output. All computations from the wrapper functions are stored within this object for further manipulation.
+
+To view detailed instructions on how to use the workflow, please select 'Interactive Analysis' for using the workflow in shiny application or 'Console Analysis' for using these methods on R console from the tabs below:
+
+````{=html}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+````
+
+
+## Workflow Guide
+
+````{=html}
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
+  <button class="tablinks" onclick="openTab(event, 'console')" id="console-button">Console Analysis</button>
+</div>
+
+<div id="interactive" class="tabcontent">
+````
+
+In this tutorial example, we illustrate all the steps of the curated workflow and focus on the options available to manipulate and customize the steps of the workflow as per user requirements. To initiate the `Scanpy` workflow, click on the 'Curated Workflows' from the top menu and select `Scanpy`:
+
+NOTE: This tutorial assumes that the data has already been uploaded via the upload tab of the toolkit and filtered before using the workflow. 
+
+**1. Normalize Data** <br>
+Assuming that the data has been uploaded via the Upload tab of the toolkit, the first step for the analysis of the data is the Normalization of data. For this purpose, any assay available in the uploaded data can be used.
+
+1. Open up the 'Normalize' tab by clicking on it.
+2. Select the `assay` to normalize from the dropdown menu.
+3. Specific parameters
+4. Press the 'Normalize' button to start the normalization process.
+
+![](ui_screenshots/scanpy/scanpy_1_normalize_annotated.png) <br>
+
+**2. Highly Variable Genes** <br>
+Identification of the highly variable genes is core to the `Scanpy` workflow and these highly variable genes are used throughout the remaining workflow. `Scanpy` provides three methods for variable genes identification i.e. `seurat`, `cell_ranger` and `seurat_v3`.
+
+1. Open up the 'Highly Variable Genes' tab.
+2. Select method for computation of highly variable genes from `seurat`, `cell_ranger` and `seurat_v3`.
+3. Input the number of genes that should be identified as variable. Default is `2000`.
+4. Specify parameters.
+5. Press 'Find HVG' button to compute the variable genes.
+6. Graph that plots each gene and its relationship based upon the selected model in (2), and identifies if a gene is highly variable or not.
+
+![](ui_screenshots/scanpy/scanpy_3_hvg_annotated.png) <br>
+
+**3. Dimensionality Reduction** <br>
+`Scanpy` workflow offers `PCA` for dimensionality reduction and the components from the method can be used in the downstream analysis. Moreover, several plots are available for the user to inspect the output of the dimensionality reduction such as the standard 'PCA Plot', 'PCA Gene Ranking' and 'PCA Variance'.
+
+1. Open up the 'Dimensionality Reduction' tab.
+2. Select method for computation of PCA.
+3. Input the number of components to compute.
+4. Press the 'Run PCA' button to start processing.
+5. Select the number of computed components that should be used in the downstream analysis e.g. in 'tSNE/UMAP' computation or with 'Clustering'. 
+6. The plot area from where all computed plots can be viewed by the user.
+
+![](ui_screenshots/scanpy/scanpy_dimensionalityReduction_annotated.png) <br>
+
+
+**4. tSNE/UMAP** <br>
+'tSNE' and 'UMAP' can be computed and plotted once components are available from 'Dimensionality Reduction' tab.
+
+1. Open up the 'tSNE/UMAP' tab.
+2. Select 'tSNE' or 'UMAP' sub-tab.
+3. Select a reduction method. Only methods that are computed previously in the 'Dimensionality Reduction' tab are available.
+4. Set parameters.
+5. Press 'Run tSNE' or 'Run UMAP' button to start processing.
+6. 'tSNE' or 'UMAP' plot depending upon the selected computation.
+
+![](ui_screenshots/scanpy/scanpy_tsneUmap.png) <br>
+
+**5. Clustering** <br>
+Cluster labels can be generated for all cells/samples using one of the computed reduction method. Plots are automatically re-computed with cluster labels. The available methods for clustering as provided by `Scanpy` include `louvain` and `leiden`.
+
+1. Open up the 'Clustering' tab.
+2. Select number of components to use from PCA previously computed.
+3. Select clustering method from `louvain` and `leiden`.
+4. Set parameters.
+5. Press 'Find Clusters' button to start processing.
+6. Re-computed plots with cluster labels. Only those plots are available that have previously been computed.
+
+![](ui_screenshots/scanpy/scanpy_6_clustering.png) <br>
+
+**6. Find Markers** <br>
+'Find Markers' tab can be used to identify and visualize the marker genes using on of the provided visualization methods. The tab offers identification of markers between two selected phenotype groups or between all groups and can be decided at the time of the computation. Furthermore, markers that are conserved between two phenotype groups can also be identified. Visualizations such as Dot Plot, Violin Plot, Matrix Plot and Heatmap Plot can be used to visualize the individual marker genes. 
+
+1. Select "Find Markers" tab.
+2. Select if you want to identify marker genes against all groups in a biological variable or between two pre-defined groups.
+3. Set parameters.
+4. Press "Find Markers" button to run marker identification.
+5. Filters can be applied on the table.
+
+![](ui_screenshots/scanpy/scanpy_findmarkers_1.png) <br>
+
+6. Heatmap plot can be visualized for all genes populated in the table against all biological groups in the selected phenotype variable.
+
+![](ui_screenshots/scanpy/scanpy_findmarkers_2.png) <br>
+
+**7. Downstream Analysis** <br>
+Once all steps of the Scanpy workflow are completed, users can further analyze the data by directly going to the various downstream analysis options (Differential Expression, Marker Selection & Pathway Analysis) from within the Scanpy workflow.
+
+
+
+````{=html}
+</div>
+<div id="console" class="tabcontent">
+````
+
+All methods provided by SCTK for Scanpy workflow use a `SingleCellExperiment` object both as an input and output.
+
+Using a sample dataset:
+```{r "scanpy_import", warning=FALSE,  message=FALSE}
+library(singleCellTK)
+sce <- importExampleData('pbmc3k')
+print(sce)
+```
+
+**1. Normalize Data** <br>
+Once raw data is uploaded and stored in a `SingleCellExperiment` object, `runScanpyNormalizeData()` function can be used to normalize the data. The method returns a `SingleCellExperiment` object with normalized data stored as a new assay in the input object. 
+
+Parameters to this function include `useAssay` (specify the assay that should be normalized), `normAssayName` (specify the new name of the normalized assay, defaults to `"scanpyNormData"`), `targetSum` (defaults to `1`) and `maxFraction` (defaults to `0.05`).
+
+```{r "scanpy_normalize", warning=FALSE, message=FALSE}
+sce <- runScanpyNormalizeData(inSCE = sce, useAssay = "counts", normAssayName = "scanpyNormData")
+```
+
+**2. Scale Data** <br>
+Normalized data can be scaled by using the `runScanpyScaleData()` function that takes input a `SingleCellExperiment` object that has been normalized previously by the `runScanpyNormalizeData()` function. Scaled assay is stored back in the input object. 
+
+Parameters include `useAssay` (specify the name of normalized assay) and `scaledAssayName` (specify the new name for scaled assay, defaults to `"scanpyScaledData"`).
+
+```{r "scanpy_scale", warning=FALSE, message=FALSE}
+sce <- runScanpyScaleData(inSCE = sce, useAssay = "scanpyNormData", scaledAssayName = "scanpyScaledData")
+```
+
+**3. Highly Variable Genes** <br>
+Highly variable genes can be identified by first using the `runScanpyFindHVG()` function that computes that statistics against a selected HVG method in the rowData of input object. The variable genes can be visualized using the `plotScanpyHVG()` method. <br> 
+
+Parameters for `runScanpyFindHVG()` include `useAssay` (specify the name of the log normalized assay, defaults to `"scanpyNormData"`) and `method()` (specify the method to use for variable genes computation, defaults to `"seurat"`). The `getTopHVG` function can be used to select the top most variable genes and store it back in the SCE as an altExp
+
+```{r "scanpy_hvg", warning=FALSE, message=FALSE}
+sce <- runScanpyFindHVG(inSCE = sce, useAssay = "scanpyNormData", method = "seurat", minMean = 0.0125, maxMean = 3, maxDisp = 0.5)
+print(getTopHVG(sce, method = "seurat", hvgNumber = 10))
+
+plotScanpyHVG(sce)
+```
+
+**4. Dimensionality Reduction** <br>
+PCA can be computed using the `runScanpyPCA()` function. Plots can be visualized using `plotScanpyPCA()`, `plotScanpyPCAGeneRanking()` and `plotScanpyPCAVariance()`.
+
+```{r "scanpy_dm", warning=FALSE, message=FALSE}
+sce <- runScanpyPCA(inSCE = sce, useAssay = "scanpyScaledData", reducedDimName = "scanpyPCA", nPCs = 20, method = "auto", use_highly_variable = TRUE)
+plotScanpyPCA(inSCE = sce, reducedDimName = "scanpyPCA")
+plotScanpyPCAGeneRanking(inSCE = sce)
+plotScanpyPCAVariance(inSCE = sce, nPCs = 20)
+```
+
+**5. tSNE/UMAP** <br>
+`runScanpyTSNE()` and `runScanpyUMAP()` can be used to compute tSNE/UMAP statistics and store into the input object. Parameters to both functions include `inSCE` (input SCE object), `useReducedDim` (specify the reduction to use i.e. `"pca"`), `reducedDimName` (name of this new reduction) and `dims` (number of dims to use). `plotScanpyEmbedding()` can be used to visualize the results.
+
+```{r "scanpy_tsne_umap", warning=FALSE, message=FALSE}
+sce <- runScanpyTSNE(inSCE = sce, useReducedDim = "scanpyPCA", reducedDimName = "scanpyTSNE")
+```
+
+```{r, warning=FALSE, message=FALSE}
+sce <- runScanpyUMAP(inSCE = sce, useReducedDim = "scanpyPCA", reducedDimName = "scanpyUMAP")
+```
+
+```{r, warning=FALSE, , message=FALSE}
+plotScanpyEmbedding(sce, reducedDimName = "scanpyTSNE")
+plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP")
+```
+
+**6. Clustering** <br>
+`runScanpyFindClusters()` function can be used to compute the clusters, which can later be plotted through the `plotScanpyEmbedding()` method with cluster labels. The parameters to the function include `inSCE` (input SCE object), `useAssay` (name of the scaled assay), `useReducedDim` (specify which reduction to use i.e. `"scanpyPCA"`), `dims` (number of dims to use) and the method (either `"louvain"` or `"leiden"`).
+```{r "scanpy_clustering", warning=FALSE, message=FALSE}
+sce <- runScanpyFindClusters(inSCE = sce, useAssay = "scanpyScaledData", useReducedDim = "scanpyPCA", method = "leiden", resolution = 0.8, nNeighbors = 15, dims = 10, cor_method = "pearson")
+```
+
+`plotScanpyEmbedding()` can then be used to plot all reductions previously computed with cluster labels:
+```{r "scanpy_cluster_plots", warning=FALSE, message=FALSE}
+plotScanpyEmbedding(sce, reducedDimName = "scanpyPCA", color = 'Scanpy_leiden_0.8')
+plotScanpyEmbedding(sce, reducedDimName = "scanpyTSNE", color = 'Scanpy_leiden_0.8')
+plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_leiden_0.8')
+```
+
+**7. Find Markers** <br>
+Marker genes can be identified using the `runScanpyFindMarkers()` function. This function can use one specified column from `colData` of the input object from which the user can select the groups versus which marker genes need to be obtained. User can either compare all group of cells versus the rest or can can manually specify the cells included in one group vs cells included in the second group (`group1` and `group2` parameter). 
+```{r "scanpy_findMarkers", warning=FALSE, message=FALSE}
+sce <- runScanpyFindMarkers(inSCE = sce, colDataName = "Scanpy_leiden_0.8", nGenes = 10, test = "t-test", corr_method = "benjamini-hochberg")
+print(head(metadata(sce)[["scanpyMarkersTable"]]))
+
+```
+
+The marker genes identified can be visualized through one of the available plots from `matrix plot`, `violin plot`, `dot plot` and `heatmap plot`. 
+
+```{r "scanpy_genePlots", warning=FALSE, message=FALSE}
+plotScanpyMarkerGenes(sce, groups = '0')
+plotScanpyMarkerGenesViolin(sce, groups = '0')
+plotScanpyMarkerGenesHeatmap(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
+#plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
+#plotScanpyMarkerGenesMatrixPlot(sce, groupBy = 'Scanpy_leiden_0.8', nGenes = 10)
+```
+
+````{=html} 
+      </div>
+<script>
+document.getElementById("ia-button").click();
+</script>
+</body>
+````
+
+## References

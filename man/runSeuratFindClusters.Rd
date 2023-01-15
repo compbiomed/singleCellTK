@@ -8,7 +8,7 @@ object}
 \usage{
 runSeuratFindClusters(
   inSCE,
-  useAssay = "seuratScaledData",
+  useAssay = "seuratNormData",
   useReduction = c("pca", "ica"),
   dims = 10,
   algorithm = c("louvain", "multilevel", "SLM"),
