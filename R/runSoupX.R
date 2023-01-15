@@ -75,15 +75,15 @@
 #' sample appended to \code{rowData} slot; and other computational metrics at
 #' \code{getSoupX(inSCE)}. Replace "soupX" to "soupX_bg" when \code{background}
 #' is used.
+#' @seealso plotSoupXResults
 #' @export
 #' @author Yichen Wang
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' \dontrun{
 #' # SoupX does not work for toy example,
 #' sce <- importExampleData("pbmc3k")
 #' sce <- runSoupX(sce, sample = "sample")
+#' plotSoupXResults(sce, sample = "sample")
 #' }
 runSoupX <- function(inSCE,
                      sample = NULL,
@@ -338,8 +338,7 @@ runSoupX <- function(inSCE,
             stop("Invalid cluster specification")
         }
     } else {
-        message(paste0(date(), " ... Cluster info not given, "))
-        message(paste0(date(), " ...   generating with Scran SNN method."))
+        message(paste0(date(), " ... Cluster info not supplied. Generating clusters with Scran SNN"))
         suppressMessages({
             c <- scran::quickCluster(inSCE, assay.type = useAssay,
                                      method = "igraph")
@@ -359,9 +358,8 @@ runSoupX <- function(inSCE,
 
     out <- SoupX::adjustCounts(sc, method = adjustMethod,
                                roundToInt = roundToInt, tol = tol, pCut = pCut)
-    message(paste0(date(), " ... Generating UMAP"))
     inSCE <- runQuickUMAP(inSCE, useAssay = useAssay, sample = NULL,
-                          reducedDimName = "sampleUMAP")
+                          reducedDimName = "sampleUMAP", verbose = FALSE)
     return(list(sc = sc, out = out,
                 umap = SingleCellExperiment::reducedDim(inSCE, "sampleUMAP")))
 }
@@ -380,13 +378,11 @@ runSoupX <- function(inSCE,
 #' @param value Dedicated list object of SoupX results.
 #' @return For getter method, a list with SoupX results for specified samples.
 #' For setter method, \code{inSCE} with SoupX results updated.
+#' @seealso runSoupX, plotSoupXResults
 #' @export
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' \dontrun{
-#' # SoupX does not work for toy example,
-#' # can be tested with `sce <- importExampleData("pbmc3k")`
+#' sce <- importExampleData("pbmc3k")
 #' sce <- runSoupX(sce, sample = "sample")
 #' soupXResults <- getSoupX(sce)
 #' }
@@ -414,15 +410,6 @@ setGeneric("getSoupX", function(inSCE, sampleID = NULL, background = FALSE)
 #' @return For getter method, a list with SoupX results for specified samples.
 #' For setter method, \code{inSCE} with SoupX results updated.
 #' @export
-#' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' \dontrun{
-#' # SoupX does not work for toy example,
-#' # can be tested with `sce <- importExampleData("pbmc3k")`
-#' sce <- runSoupX(sce, sample = "sample")
-#' soupXResults <- getSoupX(sce)
-#' }
 setMethod("getSoupX",
           "SingleCellExperiment",
           function(inSCE,
@@ -515,15 +502,13 @@ setReplaceMethod("getSoupX",
 #' @param legendSize Numeric. Size of legend. Default \code{NULL}.
 #' @param legendTitleSize Numeric. Size of legend title. Default \code{NULL}.
 #' @return ggplot object of the combination of UMAPs. See description.
+#' @seealso runSoupX
 #' @export
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' \dontrun{
-#' # SoupX does not work for toy example,
-#' # can be tested with `sce <- importExampleData("pbmc3k")`
+#' sce <- importExampleData("pbmc3k")
 #' sce <- runSoupX(sce, sample = "sample")
-#' plotSoupXResults(sce)
+#' plotSoupXResults(sce, sample = "sample")
 #' }
 plotSoupXResults <- function(inSCE,
                             sample = NULL,

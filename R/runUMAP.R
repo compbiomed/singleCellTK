@@ -65,6 +65,7 @@
 #' Default \code{NULL} will use global seed in use by the R environment.
 #' @param BPPARAM A \linkS4class{BiocParallelParam} object specifying whether
 #' the PCA should be parallelized.
+#' @param verbose Logical. Whether to print log messages. Default \code{TRUE}.
 #' @return A \linkS4class{SingleCellExperiment} object with UMAP computation
 #' updated in \code{reducedDim(inSCE, reducedDimName)}.
 #' @export
@@ -73,14 +74,8 @@
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' # Run from raw counts
 #' sce <- runQuickUMAP(sce)
-#' \dontrun{
-#' # Run from PCA
-#' sce <- scaterlogNormCounts(sce, "logcounts")
-#' sce <- runModelGeneVar(sce)
-#' sce <- scaterPCA(sce, useAssay = "logcounts",
-#'                  useFeatureSubset = "HVG_modelGeneVar2000", scale = TRUE)
-#' sce <- runUMAP(sce, useReducedDim = "PCA")
-#' }
+#' plotDimRed(sce, "UMAP")
+#' 
 #' @importFrom S4Vectors metadata<-
 #' @importFrom BiocParallel SerialParam
 runUMAP <- function(inSCE, useReducedDim = "PCA", useAssay = NULL, 
@@ -88,7 +83,7 @@ runUMAP <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
                     logNorm = TRUE, useFeatureSubset = NULL, nTop = 2000,
                     scale = TRUE, pca = TRUE, initialDims = 25, nNeighbors = 30,
                     nIterations = 200, alpha = 1, minDist = 0.01, spread = 1,
-                    seed = NULL, BPPARAM = SerialParam()) {
+                    seed = NULL, verbose = TRUE, BPPARAM = SerialParam()) {
   params <- as.list(environment())
   params$inSCE <- NULL
   params$BPPARAM <- NULL
@@ -127,8 +122,11 @@ runUMAP <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
     }
     
     nNeighbors <- min(ncol(sceSample), nNeighbors)
-    message(paste0(date(), " ... Computing Scater UMAP for sample '",
+    if(isTRUE(verbose)) {
+      message(paste0(date(), " ... Computing Scater UMAP for sample '",
                    samples[i], "'."))
+    }
+    
     .withSeed(seed, {
       umapRes <- scater::calculateUMAP(sceSample, exprs_values = useAssayTemp,
                                        dimred = useReducedDim, scale = scale,

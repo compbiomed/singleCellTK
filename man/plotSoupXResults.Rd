@@ -105,12 +105,12 @@ expression value of the output corrected matrix from that of the original
 input matrix, and then devided by the input.
 }
 \examples{
-data(scExample, package = "singleCellTK")
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 \dontrun{
-# SoupX does not work for toy example,
-# can be tested with `sce <- importExampleData("pbmc3k")`
+sce <- importExampleData("pbmc3k")
 sce <- runSoupX(sce, sample = "sample")
-plotSoupXResults(sce)
+plotSoupXResults(sce, sample = "sample")
 }
+}
+\seealso{
+runSoupX
 }

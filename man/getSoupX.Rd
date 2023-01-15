@@ -43,20 +43,12 @@ S4 method for getting and setting SoupX results that cannot be
 appended to either \code{rowData(inSCE)} or \code{colData(inSCE)}.
 }
 \examples{
-data(scExample, package = "singleCellTK")
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 \dontrun{
-# SoupX does not work for toy example,
-# can be tested with `sce <- importExampleData("pbmc3k")`
+sce <- importExampleData("pbmc3k")
 sce <- runSoupX(sce, sample = "sample")
 soupXResults <- getSoupX(sce)
 }
-data(scExample, package = "singleCellTK")
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-\dontrun{
-# SoupX does not work for toy example,
-# can be tested with `sce <- importExampleData("pbmc3k")`
-sce <- runSoupX(sce, sample = "sample")
-soupXResults <- getSoupX(sce)
 }
+\seealso{
+runSoupX, plotSoupXResults
 }
