@@ -26,7 +26,8 @@ shinyPanelFS_DimRed <- fluidPage(
               "Seurat - vst" = "vst",
               "Seurat - mean.var.plot" = "mean.var.plot",
               "Seurat - dispersion" = "dispersion",
-              "Scran - modelGeneVar" = "modelGeneVar"
+              "Scran - modelGeneVar" = "modelGeneVar",
+              "Scanpy - cellranger" = "cell_ranger"
             )
           ),
           selectizeInput(
@@ -143,18 +144,22 @@ shinyPanelFS_DimRed <- fluidPage(
                             c(
                               "Scater - PCA" = "scaterPCA",
                               "Seurat - PCA" = "seuratPCA",
-                              "Seurat - ICA" = "seuratICA"
+                              "Seurat - ICA" = "seuratICA",
+                              "Scanpy - PCA" = "scanpyPCA"
                             )
                           ),
-                          selectInput(
-                            inputId = "dimRedHVGSelect",
-                            label = "Select HVG list:",
-                            choices = "None"
-                          ),
-                          checkboxInput(
-                            inputId = "dimRedScale",
-                            label = "Scale",
-                            value = TRUE
+                          conditionalPanel(
+                            condition = "input.dimRedPlotMethod != 'scanpyPCA'",
+                            selectInput(
+                              inputId = "dimRedHVGSelect",
+                              label = "Select HVG list:",
+                              choices = "None"
+                            ),
+                            checkboxInput(
+                              inputId = "dimRedScale",
+                              label = "Scale",
+                              value = TRUE
+                            )
                           ),
                           uiOutput("dimRedNameUI"),
                           numericInput(
@@ -238,7 +243,9 @@ shinyPanelFS_DimRed <- fluidPage(
                                       c("scaterUMAP" = "scaterUMAP",
                                         "rtSNE" = "rTSNE",
                                         "seuratUMAP" = "seuratUMAP",
-                                        "seuratTSNE" = "seuratTSNE")),
+                                        "seuratTSNE" = "seuratTSNE",
+                                        "scanpyTSNE" = "scanpyTSNE",
+                                        "scanpyUMAP" = "scanpyUMAP")),
                           uiOutput("dimRedNameUI_tsneUmap"),
                           conditionalPanel(
                             condition = "input.dimRedPlotMethod_tsneUmap == 'scaterUMAP' ||
