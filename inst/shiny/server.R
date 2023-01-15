@@ -7448,7 +7448,8 @@ shinyServer(function(input, output, session) {
                                reducedDimName = "seuratPCA",
                                #useFeatureSubset = getSeuratVariableFeatures(vals$counts),
                                nPCs = input$pca_no_components,
-                               seed = input$seed_PCA)
+                               seed = input$seed_PCA, 
+                               scale = TRUE)
 
     vals$counts@metadata$seurat$count_pc <- dim(convertSCEToSeurat(vals$counts)[["pca"]])[2]
     vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
@@ -7498,7 +7499,7 @@ shinyServer(function(input, output, session) {
       ))
       message(paste0(date(), " ... Generating JackStraw Plot"))
       vals$counts <- runSeuratJackStraw(inSCE = vals$counts,
-                                              useAssay = "seuratScaledData",
+                                              useAssay = "seuratNormData", # scales internally
                                               dims = input$pca_no_components)
       output$plot_jackstraw_pca <- renderPlotly({
         isolate({
@@ -7613,9 +7614,10 @@ shinyServer(function(input, output, session) {
 
     message(paste0(date(), " ... Running ICA"))
     vals$counts <- runSeuratICA(inSCE = vals$counts,
-                               useAssay = "seuratScaledData",
+                               useAssay = "seuratNormData", # scales internally with scale = TRUE
                                nics = input$ica_no_components,
-                               seed = input$seed_ICA)
+                               seed = input$seed_ICA, 
+                               scale = TRUE)
 
     vals$counts@metadata$seurat$count_ic <- dim(convertSCEToSeurat(vals$counts)[["ica"]])[2]
     vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
@@ -7656,7 +7658,7 @@ shinyServer(function(input, output, session) {
 
       message(paste0(date(), " ... Generating Heatmaps"))
       vals$counts@metadata$seurat$heatmap_ica <- runSeuratHeatmap(inSCE = vals$counts,
-                                                                        useAssay = "seuratScaledData",
+                                                                        useAssay = "seuratNormData", # scales internally
                                                                         useReduction = "ica",
                                                                         dims = input$ica_no_components,
                                                                         nfeatures = input$ica_compute_heatmap_nfeatures,
@@ -7710,7 +7712,6 @@ shinyServer(function(input, output, session) {
 
       message(paste0(date(), " ... Clustering Dataset"))
       vals$counts <- runSeuratFindClusters(inSCE = vals$counts,
-                                          useAssay = "seuratScaledData",
                                           useReduction = input$reduction_clustering_method,
                                           dims = input$pca_significant_pc_counter,
                                           algorithm = input$algorithm.use,

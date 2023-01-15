@@ -177,6 +177,10 @@ runSeuratScaleData <- function(inSCE,
 #' normalized counts.
 #' @param hvgNumber numeric value of how many genes to select as highly
 #' variable. Default \code{2000}
+#' @param createFeatureSubset Specify a name of the subset to create
+#' for the identified variable features. Default is \code{"hvf"}.
+#' Leave it \code{NULL} if you do not want to create a subset of 
+#' variable features.
 #' @param altExp Logical value indicating if the input object is an
 #' altExperiment. Default \code{FALSE}.
 #' @param verbose Logical value indicating if informative messages should
@@ -195,6 +199,7 @@ runSeuratFindHVG <- function(inSCE,
                              useAssay = "counts",
                              method = c("vst", "dispersion", "mean.var.plot"),
                              hvgNumber = 2000,
+                             createFeatureSubset = "hvf",
                              altExp = FALSE,
                              verbose = TRUE) {
   method <- match.arg(method)
@@ -275,7 +280,12 @@ runSeuratFindHVG <- function(inSCE,
   }
   
   # create a feature subset
-  inSCE <- setTopHVG(inSCE = inSCE, method = method, hvgNumber = hvgNumber, featureSubsetName = "featureSubset")
+  if(!is.null(createFeatureSubset)){
+    inSCE <- setTopHVG(inSCE = inSCE, 
+                       method = method, 
+                       hvgNumber = hvgNumber, 
+                       featureSubsetName = createFeatureSubset) 
+  }
   
   return(inSCE)
 }
@@ -293,7 +303,7 @@ runSeuratFindHVG <- function(inSCE,
 #' @param useFeatureSubset Subset of feature to use for dimension reduction. A
 #' character string indicating a \code{rowData} variable that stores the logical
 #' vector of HVG selection, or a vector that can subset the rows of
-#' \code{inSCE}. Default \code{NULL}.
+#' \code{inSCE}. Default \code{"hvf"}.
 #' @param scale Logical scalar, whether to standardize the expression values
 #' using \code{\link[Seurat]{ScaleData}}. Default \code{TRUE}.
 #' @param seed Random seed for reproducibility of results.
@@ -314,7 +324,7 @@ runSeuratFindHVG <- function(inSCE,
 #' \dontrun{
 #' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
 #' sce <- runSeuratFindHVG(sce, useAssay = "counts")
-#' sce <- setTopHVG(sce, method = "vst", featureSubsetName = "featureSubset")
+#' sce <- setTopHVG(sce, method = "vst", featureSubsetName = "hvf")
 #' sce <- runSeuratScaleData(sce, useAssay = "counts")
 #' sce <- runSeuratPCA(sce, useAssay = "counts")
 #' }
@@ -326,7 +336,7 @@ runSeuratFindHVG <- function(inSCE,
 runSeuratPCA <-
   function(inSCE,
            useAssay = "seuratNormData",
-           useFeatureSubset = "featureSubset",
+           useFeatureSubset = "hvf",
            scale = TRUE,
            reducedDimName = "seuratPCA",
            nPCs = 20,
@@ -739,7 +749,7 @@ plotSeuratReduction <-
 #' @return Updated sce object which now contains the computed clusters
 #' @export
 runSeuratFindClusters <- function(inSCE,
-                                  useAssay = "seuratScaledData",
+                                  useAssay = "seuratNormData",
                                   useReduction = c("pca", "ica"),
                                   dims = 10,
                                   algorithm = c("louvain", "multilevel", "SLM"),

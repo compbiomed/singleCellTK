@@ -325,9 +325,9 @@ function <code><a href="../reference/runDropletQC.html">runDropletQC()</a></code
 algorithms will be run.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDropletQC.html">runDropletQC</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Tue Jan 10 17:22:57 2023 ... Running 'perCellQCMetrics'</span></span></code></pre>
-<pre><code><span><span class="co">## Tue Jan 10 17:22:58 2023 ... Running 'emptyDrops'</span></span></code></pre>
-<pre><code><span><span class="co">## Tue Jan 10 17:23:28 2023 ... Running 'barcodeRanks'</span></span></code></pre>
+<pre><code><span><span class="co">## Sat Jan 14 22:47:23 2023 ... Running 'perCellQCMetrics'</span></span></code></pre>
+<pre><code><span><span class="co">## Sat Jan 14 22:47:24 2023 ... Running 'emptyDrops'</span></span></code></pre>
+<pre><code><span><span class="co">## Sat Jan 14 22:47:51 2023 ... Running 'barcodeRanks'</span></span></code></pre>
 <p>If users choose to only run a specific set of algorithms, they can
 specify which to run with the <code>algorithms</code> parameter.</p>
 <p>After running QC functions with SCTK, the output will be stored in
@@ -338,60 +338,60 @@ object.</p>
 <pre><code><span><span class="co">## DataFrame with 5 rows and 16 columns</span></span>
 <span><span class="co">##                         sample            Barcode       sum  detected</span></span>
 <span><span class="co">##                    &lt;character&gt;        &lt;character&gt; &lt;numeric&gt; &lt;integer&gt;</span></span>
-<span><span class="co">## AAACGGGTCAAGGTAA-1      pbmc4k AAACGGGTCAAGGTAA-1         1         1</span></span>
-<span><span class="co">## ACGATACCATGTTCCC-1      pbmc4k ACGATACCATGTTCCC-1         0         0</span></span>
-<span><span class="co">## GGTGTTATCCCTCAGT-1      pbmc4k GGTGTTATCCCTCAGT-1        22        21</span></span>
-<span><span class="co">## CGACTTCTCATCGGAT-1      pbmc4k CGACTTCTCATCGGAT-1         0         0</span></span>
-<span><span class="co">## GTTCGGGCATGAACCT-1      pbmc4k GTTCGGGCATGAACCT-1         0         0</span></span>
+<span><span class="co">## CTACCCAGTGTCCTCT-1      pbmc4k CTACCCAGTGTCCTCT-1         1         1</span></span>
+<span><span class="co">## CTACGTCTCGTTACAG-1      pbmc4k CTACGTCTCGTTACAG-1         8         8</span></span>
+<span><span class="co">## GACCTGGCAGCTGTTA-1      pbmc4k GACCTGGCAGCTGTTA-1         0         0</span></span>
+<span><span class="co">## CTACACCTCGTACCGG-1      pbmc4k CTACACCTCGTACCGG-1         4         4</span></span>
+<span><span class="co">## TAGCCGGCACTAGTAC-1      pbmc4k TAGCCGGCACTAGTAC-1         1         1</span></span>
 <span><span class="co">##                    percent.top_50 percent.top_100 percent.top_200</span></span>
 <span><span class="co">##                         &lt;numeric&gt;       &lt;numeric&gt;       &lt;numeric&gt;</span></span>
-<span><span class="co">## AAACGGGTCAAGGTAA-1            100             100             100</span></span>
-<span><span class="co">## ACGATACCATGTTCCC-1            NaN             NaN             NaN</span></span>
-<span><span class="co">## GGTGTTATCCCTCAGT-1            100             100             100</span></span>
-<span><span class="co">## CGACTTCTCATCGGAT-1            NaN             NaN             NaN</span></span>
-<span><span class="co">## GTTCGGGCATGAACCT-1            NaN             NaN             NaN</span></span>
+<span><span class="co">## CTACCCAGTGTCCTCT-1            100             100             100</span></span>
+<span><span class="co">## CTACGTCTCGTTACAG-1            100             100             100</span></span>
+<span><span class="co">## GACCTGGCAGCTGTTA-1            NaN             NaN             NaN</span></span>
+<span><span class="co">## CTACACCTCGTACCGG-1            100             100             100</span></span>
+<span><span class="co">## TAGCCGGCACTAGTAC-1            100             100             100</span></span>
 <span><span class="co">##                    percent.top_500     total dropletUtils_emptyDrops_total</span></span>
 <span><span class="co">##                          &lt;numeric&gt; &lt;numeric&gt;                     &lt;integer&gt;</span></span>
-<span><span class="co">## AAACGGGTCAAGGTAA-1             100         1                             1</span></span>
-<span><span class="co">## ACGATACCATGTTCCC-1             NaN         0                             0</span></span>
-<span><span class="co">## GGTGTTATCCCTCAGT-1             100        22                            22</span></span>
-<span><span class="co">## CGACTTCTCATCGGAT-1             NaN         0                             0</span></span>
-<span><span class="co">## GTTCGGGCATGAACCT-1             NaN         0                             0</span></span>
+<span><span class="co">## CTACCCAGTGTCCTCT-1             100         1                             1</span></span>
+<span><span class="co">## CTACGTCTCGTTACAG-1             100         8                             8</span></span>
+<span><span class="co">## GACCTGGCAGCTGTTA-1             NaN         0                             0</span></span>
+<span><span class="co">## CTACACCTCGTACCGG-1             100         4                             4</span></span>
+<span><span class="co">## TAGCCGGCACTAGTAC-1             100         1                             1</span></span>
 <span><span class="co">##                    dropletUtils_emptyDrops_logprob</span></span>
 <span><span class="co">##                                          &lt;numeric&gt;</span></span>
-<span><span class="co">## AAACGGGTCAAGGTAA-1                              NA</span></span>
-<span><span class="co">## ACGATACCATGTTCCC-1                              NA</span></span>
-<span><span class="co">## GGTGTTATCCCTCAGT-1                              NA</span></span>
-<span><span class="co">## CGACTTCTCATCGGAT-1                              NA</span></span>
-<span><span class="co">## GTTCGGGCATGAACCT-1                              NA</span></span>
+<span><span class="co">## CTACCCAGTGTCCTCT-1                              NA</span></span>
+<span><span class="co">## CTACGTCTCGTTACAG-1                              NA</span></span>
+<span><span class="co">## GACCTGGCAGCTGTTA-1                              NA</span></span>
+<span><span class="co">## CTACACCTCGTACCGG-1                              NA</span></span>
+<span><span class="co">## TAGCCGGCACTAGTAC-1                              NA</span></span>
 <span><span class="co">##                    dropletUtils_emptyDrops_pvalue</span></span>
 <span><span class="co">##                                         &lt;numeric&gt;</span></span>
-<span><span class="co">## AAACGGGTCAAGGTAA-1                             NA</span></span>
-<span><span class="co">## ACGATACCATGTTCCC-1                             NA</span></span>
-<span><span class="co">## GGTGTTATCCCTCAGT-1                             NA</span></span>
-<span><span class="co">## CGACTTCTCATCGGAT-1                             NA</span></span>
-<span><span class="co">## GTTCGGGCATGAACCT-1                             NA</span></span>
+<span><span class="co">## CTACCCAGTGTCCTCT-1                             NA</span></span>
+<span><span class="co">## CTACGTCTCGTTACAG-1                             NA</span></span>
+<span><span class="co">## GACCTGGCAGCTGTTA-1                             NA</span></span>
+<span><span class="co">## CTACACCTCGTACCGG-1                             NA</span></span>
+<span><span class="co">## TAGCCGGCACTAGTAC-1                             NA</span></span>
 <span><span class="co">##                    dropletUtils_emptyDrops_limited dropletUtils_emptyDrops_fdr</span></span>
 <span><span class="co">##                                          &lt;logical&gt;                   &lt;numeric&gt;</span></span>
-<span><span class="co">## AAACGGGTCAAGGTAA-1                              NA                          NA</span></span>
-<span><span class="co">## ACGATACCATGTTCCC-1                              NA                          NA</span></span>
-<span><span class="co">## GGTGTTATCCCTCAGT-1                              NA                          NA</span></span>
-<span><span class="co">## CGACTTCTCATCGGAT-1                              NA                          NA</span></span>
-<span><span class="co">## GTTCGGGCATGAACCT-1                              NA                          NA</span></span>
+<span><span class="co">## CTACCCAGTGTCCTCT-1                              NA                          NA</span></span>
+<span><span class="co">## CTACGTCTCGTTACAG-1                              NA                          NA</span></span>
+<span><span class="co">## GACCTGGCAGCTGTTA-1                              NA                          NA</span></span>
+<span><span class="co">## CTACACCTCGTACCGG-1                              NA                          NA</span></span>
+<span><span class="co">## TAGCCGGCACTAGTAC-1                              NA                          NA</span></span>
 <span><span class="co">##                    dropletUtils_BarcodeRank_Knee</span></span>
 <span><span class="co">##                                        &lt;integer&gt;</span></span>
-<span><span class="co">## AAACGGGTCAAGGTAA-1                             0</span></span>
-<span><span class="co">## ACGATACCATGTTCCC-1                             0</span></span>
-<span><span class="co">## GGTGTTATCCCTCAGT-1                             0</span></span>
-<span><span class="co">## CGACTTCTCATCGGAT-1                             0</span></span>
-<span><span class="co">## GTTCGGGCATGAACCT-1                             0</span></span>
+<span><span class="co">## CTACCCAGTGTCCTCT-1                             0</span></span>
+<span><span class="co">## CTACGTCTCGTTACAG-1                             0</span></span>
+<span><span class="co">## GACCTGGCAGCTGTTA-1                             0</span></span>
+<span><span class="co">## CTACACCTCGTACCGG-1                             0</span></span>
+<span><span class="co">## TAGCCGGCACTAGTAC-1                             0</span></span>
 <span><span class="co">##                    dropletUtils_BarcodeRank_Inflection</span></span>
 <span><span class="co">##                                              &lt;integer&gt;</span></span>
-<span><span class="co">## AAACGGGTCAAGGTAA-1                                   0</span></span>
-<span><span class="co">## ACGATACCATGTTCCC-1                                   0</span></span>
-<span><span class="co">## GGTGTTATCCCTCAGT-1                                   0</span></span>
-<span><span class="co">## CGACTTCTCATCGGAT-1                                   0</span></span>
-<span><span class="co">## GTTCGGGCATGAACCT-1                                   0</span></span></code></pre>
+<span><span class="co">## CTACCCAGTGTCCTCT-1                                   0</span></span>
+<span><span class="co">## CTACGTCTCGTTACAG-1                                   0</span></span>
+<span><span class="co">## GACCTGGCAGCTGTTA-1                                   0</span></span>
+<span><span class="co">## CTACACCTCGTACCGG-1                                   0</span></span>
+<span><span class="co">## TAGCCGGCACTAGTAC-1                                   0</span></span></code></pre>
 <div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:80%; ">
 <table class="table table" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -449,13 +449,13 @@ dropletUtils_BarcodeRank_Inflection
 <tbody>
 <tr>
 <td style="text-align:left;">
-AAACGGGTCAAGGTAA-1
+CTACCCAGTGTCCTCT-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-AAACGGGTCAAGGTAA-1
+CTACCCAGTGTCCTCT-1
 </td>
 <td style="text-align:right;">
 1
@@ -502,13 +502,66 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-ACGATACCATGTTCCC-1
+CTACGTCTCGTTACAG-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-ACGATACCATGTTCCC-1
+CTACGTCTCGTTACAG-1
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GACCTGGCAGCTGTTA-1
+</td>
+<td style="text-align:left;">
+pbmc4k
+</td>
+<td style="text-align:left;">
+GACCTGGCAGCTGTTA-1
 </td>
 <td style="text-align:right;">
 0
@@ -555,22 +608,19 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-GGTGTTATCCCTCAGT-1
+CTACACCTCGTACCGG-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-GGTGTTATCCCTCAGT-1
+CTACACCTCGTACCGG-1
 </td>
 <td style="text-align:right;">
-22
+4
 </td>
 <td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-100
+4
 </td>
 <td style="text-align:right;">
 100
@@ -582,10 +632,13 @@ GGTGTTATCCCTCAGT-1
 100
 </td>
 <td style="text-align:right;">
-22
+100
 </td>
 <td style="text-align:right;">
-22
+4
+</td>
+<td style="text-align:right;">
+4
 </td>
 <td style="text-align:right;">
 NA
@@ -608,90 +661,37 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-CGACTTCTCATCGGAT-1
+TAGCCGGCACTAGTAC-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-CGACTTCTCATCGGAT-1
+TAGCCGGCACTAGTAC-1
 </td>
 <td style="text-align:right;">
-0
+1
 </td>
 <td style="text-align:right;">
-0
+1
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-0
+1
 </td>
 <td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-GTTCGGGCATGAACCT-1
-</td>
-<td style="text-align:left;">
-pbmc4k
-</td>
-<td style="text-align:left;">
-GTTCGGGCATGAACCT-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
+1
 </td>
 <td style="text-align:right;">
 NA
@@ -928,7 +928,7 @@ documentation</a> for detail.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#After filtering:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 33694   355</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 33694   337</span></span></code></pre>
 <p>We can compare the average total UMI counts per cell before and after
 cell filtration:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
