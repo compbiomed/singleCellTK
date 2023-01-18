@@ -4,7 +4,7 @@
 
 The Single Cell Toolkit (SCTK) in the *singleCellTK* R package is an analysis platform that provides an **R interface to several popular single-cell RNA-sequencing (scRNAseq) data preprocessing, quality control, analysis, and visualization tools**. SCTK imports raw or filtered counts from various scRNAseq preprocessing tools such as 10x CellRanger, BUStools, Optimus, STARSolo, and more. By integrating several publicly available tools written in R or Python, SCTK can be used to perform extensive quality control including doublet detection, ambient RNA removal. SCTK integrates analysis workflows from popular tools such as Seurat and Bioconductor/OSCA into a single unified framework. Results from various workflows can be summarized and easily shared using comprehensive HTML reports. Lastly, data can be exported to Seurat or AnnData object to allow for seamless integration with other downstream analysis workflows.
 
-![](images/image-516723231.png)
+![](https://camplab.net/sctk/img/interior-2.png)
 
 ## Features
 
@@ -22,23 +22,10 @@ SCTK offers multiple ways to analyze your scRNAseq data through the R console, t
 
 ## Tutorials
 
-#### The Import and QC workflows allow users to import data from multiple formats and perform comprehensive quality control and filtering:
-
-[![](images/image-2029858439.png)](https://camplab.net/sctk/current/articles/import_data.html)
-
-#### The "A la carte" workflow lets users choose from a variety of options during each step of the clustering workflow including normalization, batch correction (optional), dimensionality reduction, 2-D embedding, and clustering:
-
-[![](images/image-295296270.png)](https://camplab.net/sctk/current/articles/02_a_la_carte_workflow.html)
-
-<https://camplab.net/sctk/current/articles/02_a_la_carte_workflow.html>
-
-#### The curated Seurat workflow recapitulates the steps for clustering and integration from the Seurat package:
-
-<https://camplab.net/sctk/current/articles/seurat_curated_workflow.html>
-
-#### The curated Celda workflow performs matrix factorization and clusters genes into co-expression modules:
-
-<https://camplab.net/sctk/current/articles/celda_curated_workflow.html>
+-   [Import and QC:](https://camplab.net/sctk/current/articles/import_data.html) The Import and QC workflows allow users to import data from multiple formats and perform comprehensive quality control and filtering.
+-   ["*A la carte*" workflow:](https://camplab.net/sctk/current/articles/02_a_la_carte_workflow.html) The "A la carte" workflow lets users choose from a variety of options during each step of the analysis workflow including normalization, batch correction (optional), dimensionality reduction, 2-D embedding, and clustering.
+-   [Seurat curated workflow:](https://camplab.net/sctk/current/articles/seurat_curated_workflow.html) The curated workflows recapitulates the steps for clustering and integration from the Seurat package.
+-   [Celda curated workflow:](https://camplab.net/sctk/current/articles/celda_curated_workflow.html) The curated Celda workflow performs matrix factorization by clustering genes into co-expression modules, cells into subpopulations, and estimating the amount of each module in each cell population.
 
 ## Installation
 
@@ -55,9 +42,13 @@ Additional information on how to install from GitHub, install Python dependencie
 
 ## Citation
 
-If you use SCTK, please cite our *Nature Communication* paper
+If you use SCTK for quality control, please cite our *Nature Communication* paper
 
 > Rui Hong, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Yichen Wang, Vidya Akavoor, Xinyun Cao, Irzam Sarfraz, Zhe Wang, Salam Alabdullatif, Frederick Jansen, Masanao Yajima, W. Evan Johnson & Joshua D. Campbell, "Comprehensive generation, visualization, and reporting of quality control metrics for single-cell RNA sequencing data," *Nature Communications*, vol. 13, no. 1688, 2022, doi: 10.1038/s41467-022-29212-9.
+
+If you use SCTK for analysis in the Rconsole or the interactive graphical user interface, please cite our bioRxiv paper:
+
+> Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Vidya Akavoor, Xinyun Cao, Salam Alabdullatif, Nida Pervaiz, Syed Ali Zaib, Zhe Wang, Frederick Jansen, Masanao Yajima, W Evan Johnson, Joshua D Campbell, "Interactive analysis of single-cell data using flexible workflows with SCTK2.0", *bioRxiv*, 2022.07.13.499900; doi: <https://doi.org/10.1101/2022.07.13.499900>.
 
 ## Report Issues
 
