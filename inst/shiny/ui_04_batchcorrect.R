@@ -26,6 +26,7 @@ shinyPanelBatchcorrect <- fluidPage(
                                           "Seurat - SCTransform" = "SCTransform",
                                           "Scater - LogNormCounts" = "logNormCounts",
                                           "Scater - CPM" = "CPM",
+                                          "Scanpy - NormalizeTotal" = "NormalizeTotal",
                                           "Custom Normalization" = "custom")
                             )
 
@@ -125,6 +126,7 @@ shinyPanelBatchcorrect <- fluidPage(
                                                        "Seurat - RC" = "RC",
                                                        "Seurat - SCTransform" = "SCTransform",
                                                        "Scater - LogNormCounts" = "logNormCounts",
+                                                       "Scanpy - NormalizeTotal" = "NormalizeTotal",
                                                        "Scater - CPM" = "CPM")
                                          )
                                        ),

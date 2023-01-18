@@ -1,3 +1,10 @@
+Changes in Version 2.8.1 (2022-XX-XX)
+================================================================================
+* Added scanpy wrapper functions for use from console
+* Added scanpy UI curated workflow
+* Integrated scanpy to a la carte workflow
+* Fixed a bug in importing fluidigm dataset
+
 Changes in Version 2.8.0 (2022-12-19)
 ================================================================================
 * Updated version to match Bioconductor version

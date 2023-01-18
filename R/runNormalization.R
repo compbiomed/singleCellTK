@@ -60,6 +60,7 @@ runNormalization <- function(inSCE,
                              ){
   seuratMethods <- c("LogNormalize", "CLR", "RC", "SCTransform")
   scaterMethods <- c("logNormCounts", "CPM")
+  scanpyMethods <- c("NormalizeTotal")
   tempAssay <- NULL
   tag <- "normalized"
 
@@ -120,6 +121,18 @@ runNormalization <- function(inSCE,
       if(normalizationMethod == "logNormCounts"){
         tag <- "transformed"
       }
+    }
+    else if(normalizationMethod %in% scanpyMethods){
+      tempSCE <- do.call(
+        "runScanpyNormalizeData",
+        list(
+          inSCE = inSCE,
+          normAssayName = outAssayName,
+          useAssay = useAssay
+        )
+      )
+      tempAssay <- assay(tempSCE, outAssayName)
+      tag <- "transformed"
     }
     else{
       stop("Specified normalization method '", normalizationMethod, "' not found.")

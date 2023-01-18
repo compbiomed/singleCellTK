@@ -164,6 +164,7 @@ source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer varia
 source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
 #source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
+source("ui_09_4_scanpyWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
 jsCode <- "
 shinyjs.disableTabs = function() {
   let tabs = $('.nav li a').not('a[data-value=\"Data\"], a[data-value=\"Import\"]');
@@ -254,7 +255,8 @@ shinyUI(
       navbarMenu(
         "Curated Workflows",
         tabPanel("Celda", value = "CeldaWorkflow", shinyPanelCelda),
-        tabPanel("Seurat", shinyPanelSeurat)
+        tabPanel("Seurat", shinyPanelSeurat),
+        tabPanel("Scanpy", shinyPanelScanpy)
       ),
       # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
       navbarMenu("Viewers",
@@ -274,26 +276,6 @@ shinyUI(
                ))
         )
       ),
-
-      # fluidRow(
-      #   column(12, id = "consoleDiv", align = "right",
-      #          actionButton(inputId="interpretToggle", label = "Interpret"),
-      #          pushbar_deps(),
-      #          pushbar(
-      #            from = "bottom",
-      #            id = "myPushbar",
-      #            spsTimeline(
-      #              "b",
-      #              up_labels = c("Data Import",
-      #                            "Quality Control",
-      #                            "Normalization"),
-      #              down_labels = c("step 1", "step 2", "step3"),
-      #              icons = list(icon("dna"), icon("dna"), icon("dna")),
-      #              completes = c(TRUE, TRUE, FALSE)
-      #            )
-      #          )
-      #   )
-      # ),
       useShinyjs(),
       extendShinyjs(text = jsCode, functions = c("enableTabs", "disableTabs")),
 

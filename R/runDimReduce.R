@@ -9,8 +9,8 @@
 #' representation by specifying \code{useReducedDim}.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param method One from \code{"scaterPCA"}, \code{"seuratPCA"},
-#' \code{"seuratICA"}, \code{"rTSNE"}, \code{"seuratTSNE"}, \code{"scaterUMAP"}
-#' and \code{"seuratUMAP"}.
+#' \code{"seuratICA"}, \code{"rTSNE"}, \code{"seuratTSNE"}, \code{"scaterUMAP"},
+#' \code{"seuratUMAP"}, \code{"scanpyPCA"}, \code{"scanpyUMAP"} and \code{"scanpyTSNE"}.
 #' @param useAssay Assay to use for computation. If \code{useAltExp} is
 #' specified, \code{useAssay} has to exist in
 #' \code{assays(altExp(inSCE, useAltExp))}. Default \code{"counts"}.
@@ -48,10 +48,13 @@ runDimReduce <- function(inSCE,
                          method = c("scaterPCA",
                                     "seuratPCA",
                                     "seuratICA",
+                                    "scanpyPCA",
                                     "rTSNE",
                                     "seuratTSNE",
                                     "scaterUMAP",
-                                    "seuratUMAP"),
+                                    "seuratUMAP",
+                                    "scanpyUMAP",
+                                    "scanpyTSNE"),
                          useAssay = NULL, useReducedDim = NULL,
                          useAltExp = NULL, reducedDimName = method,
                          nComponents = 20, useFeatureSubset = NULL,
@@ -76,6 +79,20 @@ runDimReduce <- function(inSCE,
                      useReducedDim = useReducedDim,
                      useFeatureSubset = useFeatureSubset, scale = scale,
                      reducedDimName = reducedDimName, seed = seed, ...)
+  } else if (method == "scanpyPCA"){
+    inSCE <- runScanpyPCA(inSCE = inSCE,
+                          useAssay = useAssay, 
+                          reducedDimName = reducedDimName, 
+                          nPCs = nComponents, 
+                          method = "auto", 
+                          use_highly_variable = FALSE
+                          )
+  } else if (method == "scanpyTSNE"){
+    inSCE <- runScanpyTSNE(inSCE = inSCE, useAssay = useAssay,
+                           useReducedDim = useReducedDim, reducedDimName = reducedDimName, ...)
+  } else if (method == "scanpyUMAP"){
+    inSCE <- runScanpyUMAP(inSCE = inSCE, useAssay = useAssay, 
+                           useReducedDim = useReducedDim, reducedDimName = reducedDimName, ...)
   } else if (method == "rTSNE") {
     inSCE <- runTSNE(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
                      useReducedDim = useReducedDim,

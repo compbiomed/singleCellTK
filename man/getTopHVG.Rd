@@ -7,7 +7,8 @@
 \usage{
 getTopHVG(
   inSCE,
-  method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar"),
+  method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar", "seurat",
+    "seurat_v3", "cell_ranger"),
   hvgNumber = 2000,
   useFeatureSubset = NULL,
   featureDisplay = metadata(inSCE)$featureDisplay
@@ -15,7 +16,8 @@ getTopHVG(
 
 setTopHVG(
   inSCE,
-  method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar"),
+  method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar", "seurat",
+    "seurat_v3", "cell_ranger"),
   hvgNumber = 2000,
   featureSubsetName = NULL,
   genes = NULL,
@@ -28,7 +30,8 @@ setTopHVG(
 
 \item{method}{Specify which method to use for variable gene extraction
 from Seurat \code{"vst"}, \code{"mean.var.plot"}, \code{"dispersion"} or
-Scran \code{"modelGeneVar"}. Default \code{"vst"}}
+Scran \code{"modelGeneVar"} or Scanpy \code{"seurat"}, \code{"cell_ranger"}, 
+\code{"seurat_v3"}. Default \code{"vst"}}
 
 \item{hvgNumber}{Specify the number of top variable genes to extract.}
 

@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -232,11 +235,12 @@
 
       
 
-      </header><script src="import_genesets_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Import Genesets</h1>
-                        <h4 data-toc-skip class="author">Yichen Wang</h4>
+                        <h4 data-toc-skip class="author">Yichen
+Wang</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/import_genesets.Rmd" class="external-link"><code>vignettes/articles/import_genesets.Rmd</code></a></small>
@@ -251,8 +255,14 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Users can import gene sets to use in later steps of the toolkit’s pipeline, including quality control (QC) and EnrichR analysis. SCTK mainly supports importing genesets from a GMT file, the MSigDB database <span class="citation">[1]</span>, or manually prepared list.</p>
-<p>To view detailed instructions on how to import genesets, please select ‘Interactive Analysis’ for importing through the shiny application or ‘Console Analysis’ for importing through the R console from the tabs below: <br></p>
+<p>Users can import gene sets to use in later steps of the toolkit’s
+pipeline, including quality control (QC) and EnrichR analysis. SCTK
+mainly supports importing genesets from a GMT file, the MSigDB database
+<span class="citation">[1]</span>, or manually prepared list.</p>
+<p>To view detailed instructions on how to import genesets, please
+select ‘Interactive Analysis’ for importing through the shiny
+application or ‘Console Analysis’ for importing through the R console
+from the tabs below: <br></p>
 </div>
 <div class="section level2">
 <h2 id="workflow-guide">Workflow Guide<a class="anchor" aria-label="anchor" href="#workflow-guide"></a>
@@ -265,29 +275,67 @@
 <div id="interactive" class="tabcontent">
 <p><strong>Entry of the panel</strong></p>
 <p><img src="ui_screenshots/import/import_ui_gs_entry.png" alt="gs entry"><br></p>
-<p>In the UI of SCTK, users can import gene sets to use in later steps. The UIs are implemented in the page that can be entered through the links, as shown in the screenshot above.</p>
+<p>In the UI of SCTK, users can import gene sets to use in later steps.
+The UIs are implemented in the page that can be entered through the
+links, as shown in the screenshot above.</p>
 <p><strong>Import Genesets</strong></p>
 <p>There are four ways to import gene sets, as described below:</p>
  <style>
 div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </style>
 <div class="offset">
-<details><summary><b>1. Import Gene Sets from a GMT File</b></summary><p>The first option is to upload the GMT file detailing a gene set. For this option, users must provide a GMT file through the file input <strong>“Choose GMT File”</strong>; a text collection name at <strong>“Collection Name”</strong>. If the collection name entered already exists in current session, the gene set from the GMT file will be added to that collection. Otherwise, a new collection with the given name will be created. Finally, users must click <strong>“Upload”</strong> to finish the procedure.</p>
+<details><summary><b>1. Import Gene Sets from a GMT File</b></summary><p>The first option is to upload the GMT file detailing a gene set. For
+this option, users must provide a GMT file through the file input
+<strong>“Choose GMT File”</strong>; a text collection name at
+<strong>“Collection Name”</strong>. If the collection name entered
+already exists in current session, the gene set from the GMT file will
+be added to that collection. Otherwise, a new collection with the given
+name will be created. Finally, users must click
+<strong>“Upload”</strong> to finish the procedure.</p>
 <p><img src="ui_screenshots/import/import_ui_gs_gmt.png" alt="gmt"><br></p>
-</details><details><summary><b>2. Select from a Database</b></summary><p>SCTK also has a database of gene sets that users can choose from. For this option, the user must simply select the gene sets they would like to upload and click <strong>“Upload”</strong>. A brief description of each gene set is provided in the checklist.</p>
+</details><details><summary><b>2. Select from a Database</b></summary><p>SCTK also has a database of gene sets that users can choose from. For
+this option, the user must simply select the gene sets they would like
+to upload and click <strong>“Upload”</strong>. A brief description of
+each gene set is provided in the checklist.</p>
 <p><img src="ui_screenshots/import/import_ui_gs_db.png" alt="db"><br></p>
-</details><details><summary><b>3. Import Mitochondrial Gene Set</b></summary><p>SCTK has built-in curated mitochondrial gene sets for human and mouse, and these gene sets can be used in quality control (QC) to filter out the potentially apoptotic or lysing cells. Users have to choose the <strong>Species</strong> that matches to the uploaded dataset. Users also need to have the prior knowledge of the <strong>ID Type</strong> used to identify the features in the dataset. SCTK supports using gene symbols, Entrez IDs, Ensembl IDs and Ensembl transcript IDs. Users need to choose the one that matches to the dataset.</p>
+</details><details><summary><b>3. Import Mitochondrial Gene Set</b></summary><p>SCTK has built-in curated mitochondrial gene sets for human and
+mouse, and these gene sets can be used in quality control (QC) to filter
+out the potentially apoptotic or lysing cells. Users have to choose the
+<strong>Species</strong> that matches to the uploaded dataset. Users
+also need to have the prior knowledge of the <strong>ID Type</strong>
+used to identify the features in the dataset. SCTK supports using gene
+symbols, Entrez IDs, Ensembl IDs and Ensembl transcript IDs. Users need
+to choose the one that matches to the dataset.</p>
 <p><img src="ui_screenshots/import/import_ui_gs_mt.png" alt="mt"><br></p>
-</details><details><summary><b>4. Paste in Gene Sets</b></summary><p>Users also have the option to paste their gene set into a text box. In order to do so, the user must paste their gene set into the provided text box and then provide a collection name to create a new collection. If there are already gene sets imported, the user can choose an existing collection to add their pasted gene set into. Then the user must click “Upload.”</p>
+</details><details><summary><b>4. Paste in Gene Sets</b></summary><p>Users also have the option to paste their gene set into a text box.
+In order to do so, the user must paste their gene set into the provided
+text box and then provide a collection name to create a new collection.
+If there are already gene sets imported, the user can choose an existing
+collection to add their pasted gene set into. Then the user must click
+“Upload.”</p>
 <p><img src="ui_screenshots/import/import_ui_gs_paste.png" alt="paste"><br></p>
 </details>
 </div>
 <br><p><strong>Map Gene Sets to Specific Feature IDs</strong></p>
-<p>There is an additional selection input labeled with <strong>“Location within SCE object where the gene identifiers in should be mapped”</strong>, placed above the <strong>“Upload”</strong> button as already shown in screenshots above. This specifies the feature IDs stored in the imported single-cell dataset, to which the gene identifiers in the uploaded gene sets will be mapped. For example, if the uploaded gene sets are presented by gene symbols, users must make sure the selection here is pointing to gene symbols instead of ENSEMBL IDs. Most of the time, “rownames” is the default feature ID of the imported single-cell dataset.</p>
+<p>There is an additional selection input labeled with <strong>“Location
+within SCE object where the gene identifiers in should be
+mapped”</strong>, placed above the <strong>“Upload”</strong> button as
+already shown in screenshots above. This specifies the feature IDs
+stored in the imported single-cell dataset, to which the gene
+identifiers in the uploaded gene sets will be mapped. For example, if
+the uploaded gene sets are presented by gene symbols, users must make
+sure the selection here is pointing to gene symbols instead of ENSEMBL
+IDs. Most of the time, “rownames” is the default feature ID of the
+imported single-cell dataset.</p>
 </div>
 
 <div id="console" class="tabcontent">
-<p>SCTK handles genesets by using a <a href="https://rdrr.io/bioc/GSEABase/man/GeneSetCollection-class.html" class="external-link"><code>GeneSetCollection</code></a> object, supported by the GSEABase library. <span class="citation">[2]</span> We provide five functions that converts gene set/list from different sources into a <code>GeneSetCollection</code> object and store it in the <code>metadata</code> slot of an <code>SingleCellExperiment</code> object. Downstream analysis such as QC and pathway analysis will then be able to use the data.</p>
+<p>SCTK handles genesets by using a <a href="https://rdrr.io/bioc/GSEABase/man/GeneSetCollection-class.html" class="external-link"><code>GeneSetCollection</code></a>
+object, supported by the GSEABase library. <span class="citation">[2]</span> We provide five functions that converts gene
+set/list from different sources into a <code>GeneSetCollection</code>
+object and store it in the <code>metadata</code> slot of an
+<code>SingleCellExperiment</code> object. Downstream analysis such as QC
+and pathway analysis will then be able to use the data.</p>
 <ul>
 <li><code><a href="../reference/importGeneSetsFromCollection.html">importGeneSetsFromCollection()</a></code></li>
 <li><code><a href="../reference/importGeneSetsFromGMT.html">importGeneSetsFromGMT()</a></code></li>
@@ -295,7 +343,8 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <li><code><a href="../reference/importGeneSetsFromMSigDB.html">importGeneSetsFromMSigDB()</a></code></li>
 <li><code><a href="../reference/importMitoGeneSet.html">importMitoGeneSet()</a></code></li>
 </ul>
-<p>For the usage and detail of these functions, please click on the function name and there will be a reference page for each of them.</p>
+<p>For the usage and detail of these functions, please click on the
+function name and there will be a reference page for each of them.</p>
 </div>
 <script>
 document.getElementById("ia-button").click();
@@ -304,12 +353,21 @@ document.getElementById("ia-button").click();
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references">
-<div id="ref-Subramanian2005">
-<p>[1] A. Subramanian <em>et al.</em>, “Gene set enrichment analysis: A knowledge-based approach for interpreting genome-wide expression profiles,” <em>PNAS</em>, vol. 102, no. 43, pp. 15545–15550, Sep. 2005, doi: <a href="https://doi.org/10.1073/pnas.0506580102" class="external-link">10.1073/pnas.0506580102</a>.</p>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-Subramanian2005" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">A.
+Subramanian <em>et al.</em>, <span>“<span class="nocase">Gene set
+enrichment analysis: A knowledge-based approach for interpreting
+genome-wide expression profiles</span>,”</span> <em>PNAS</em>, vol. 102,
+pp. 15545–15550, Sep. 2005, doi: <a href="https://doi.org/10.1073/pnas.0506580102" class="external-link">10.1073/pnas.0506580102</a>.</div>
 </div>
-<div id="ref-Morgan2021">
-<p>[2] M. Morgan, S. Falcon, and R. Gentleman, <em>GSEABase: Gene set enrichment data structures and methods</em>. 2021.Available: <a href="https://bioconductor.org/packages/release/bioc/html/GSEABase.html" class="external-link">https://bioconductor.org/packages/release/bioc/html/GSEABase.html</a></p>
+<div id="ref-Morgan2021" class="csl-entry">
+<div class="csl-left-margin">[2] </div>
+<div class="csl-right-inline">M.
+Morgan, S. Falcon, and R. Gentleman, <em>GSEABase: Gene set enrichment
+data structures and methods</em>. 2021.Available: <a href="https://bioconductor.org/packages/release/bioc/html/GSEABase.html" class="external-link">https://bioconductor.org/packages/release/bioc/html/GSEABase.html</a>
+</div>
 </div>
 </div>
 </div>
@@ -327,12 +385,12 @@ document.getElementById("ia-button").click();
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
