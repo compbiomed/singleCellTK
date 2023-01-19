@@ -24,7 +24,8 @@ SCTK offers multiple ways to analyze your scRNAseq data through the R console, t
 
 -   [Import and QC:](https://camplab.net/sctk/current/articles/import_data.html) The Import and QC workflows allow users to import data from multiple formats and perform comprehensive quality control and filtering.
 -   ["*A la carte*" workflow:](https://camplab.net/sctk/current/articles/02_a_la_carte_workflow.html) The "A la carte" workflow lets users choose from a variety of options during each step of the analysis workflow including normalization, batch correction (optional), dimensionality reduction, 2-D embedding, and clustering.
--   [Seurat curated workflow:](https://camplab.net/sctk/current/articles/seurat_curated_workflow.html) The curated workflows recapitulates the steps for clustering and integration from the Seurat package.
+-   [Seurat curated workflow:](https://camplab.net/sctk/current/articles/seurat_curated_workflow.html) This curated workflows recapitulates the steps for clustering and integration from the Seurat package (R).
+-   [Scanpy curated workflow:](https://camplab.net/sctk/current/articles/scanpy_curated_workflow.html) This curated workflows recapitulates the steps for clustering from the Scanpy package (Python).
 -   [Celda curated workflow:](https://camplab.net/sctk/current/articles/celda_curated_workflow.html) The curated Celda workflow performs matrix factorization by clustering genes into co-expression modules, cells into subpopulations, and estimating the amount of each module in each cell population.
 
 ## Installation
