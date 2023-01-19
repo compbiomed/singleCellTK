@@ -128,7 +128,7 @@ runEnrichR <- function(inSCE,
                                                     db = db
                                                   )) 
   } else {
-    message(date(), " ... No enrichments identified. No enrichment results were created.")
+    stop("No enrichments identified. No enrichment results were created.")
   }
   
   return(inSCE)
