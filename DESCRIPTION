@@ -95,7 +95,7 @@ Imports:
     reticulate (>= 1.14),
     tools,
     tximport,
-    fishpond,
+    eds,
     withr,
     GSEABase,
     R.utils,
