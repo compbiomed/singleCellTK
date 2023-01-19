@@ -4,6 +4,30 @@
 #' @param inSCE A \linkS4class{SingleCellExperiment} object.
 #' @param useAssay A string specifying which assay in the SCE to use. Default
 #' \code{"counts"}.
+#' @param mitoRef Character. The species used to extract mitochondrial genes ID 
+#' from build-in mitochondrial geneset in SCTK. Available species options are 
+#' \code{"human"} and \code{"mouse"}. Default is \code{"human"}. 
+#' @param mitoIDType Character. Types of mitochondrial gene id. SCTK supports 
+#' \code{"symbol"}, \code{"entrez"}, \code{"ensembl"} and 
+#' \code{"ensemblTranscriptID"}. It is used with \code{mitoRef} to extract 
+#' mitochondrial genes from build-in mitochondrial geneset in SCTK. Default 
+#' \code{NULL}. 
+#' @param mitoGeneLocation Character. Describes the location within \code{inSCE}
+#' where the gene identifiers in the mitochondrial gene sets should be located.
+#' If set to \code{"rownames"} then the features will be searched for among 
+#' \code{rownames(inSCE)}. This can also be set to one of the column names of 
+#' \code{rowData(inSCE)} in which case the gene identifies will be mapped to 
+#' that column in the \code{rowData} of \code{inSCE}. See 
+#' \code{\link{featureIndex}} for more information. If this parameter is set to
+#' \code{NULL}, then no mitochondrial metrics will be calculated.
+#' Default \code{"rownames"}.
+#' @param mitoPrefix Character. The prefix used to get mitochondrial gene from 
+#' either \code{rownames(inSCE)} or columns of \code{rowData(inSCE)} specified 
+#' by \code{mitoGeneLocation}. This parameter is usually used to extract mitochondrial 
+#' genes from the gene symbol. For example, \code{mitoPrefix = "^MT-"} can be used 
+#' to detect mito gene symbols like "MT-ND4". Note that case is ignored so "mt-"
+#' will still match "MT-ND4". Default \code{"^MT-"}.
+#' @param mitoID Character. A vector of mitochondrial genes to be quantified.  
 #' @param collectionName Character. Name of a \code{GeneSetCollection} obtained
 #' by using one of the \code{importGeneSet*} functions. Default \code{NULL}.
 #' @param geneSetList List of gene sets to be quantified. The genes in the
@@ -27,27 +51,6 @@
 #' the description denoting the location of the gene IDs in \code{inSCE}. These 
 #' gene sets will be included with those from \code{geneSetList} if both 
 #' parameters are provided.
-#' @param mitoRef Character. The species used to extract mitochondrial genes ID 
-#' from build-in mitochondrial geneset in SCTK. Available species options are 
-#' \code{"human"} and \code{"mouse"}. Default is \code{NULL}. 
-#' @param mitoIDType Character. Types of mitochondrial gene id. SCTK supports 
-#' \code{"symbol"}, \code{"entrez"}, \code{"ensembl"} and 
-#' \code{"ensemblTranscriptID"}. It is used with \code{mitoRef} to extract 
-#' mitochondrial genes from build-in mitochondrial geneset in SCTK. Default 
-#' \code{NULL}. 
-#' @param mitoGeneLocation Character. Describes the location within \code{inSCE}
-#' where the gene identifiers in the mitochondrial gene sets should be mapped.
-#' If set to \code{"rownames"} then the features will be searched for among 
-#' \code{rownames(inSCE)}. This can also be set to one of the column names of 
-#' \code{rowData(inSCE)} in which case the gene identifies will be mapped to 
-#' that column in the \code{rowData} of \code{inSCE}. See 
-#' \code{\link{featureIndex}} for more information. Default \code{NULL}.
-#' @param mitoPrefix Character. The prefix used to get mitochondrial gene from 
-#' either \code{rownames(inSCE)} or columns of \code{rowData(inSCE)} specified 
-#' by \code{mitoGeneLocation}. This parameter is usually used to extract mito 
-#' genes from gene symbol. For example, \code{mitoPrefix = "^MT-"} can be used 
-#' to detect mito gene symbols like "MT-ND4".
-#' @param mitoID Character. A vector of mitochondrial genes to be quantified.  
 #' @param percent_top An integer vector. Each element is treated as a number of
 #' top genes to compute the percentage of library size occupied by the most 
 #' highly expressed genes in each cell. Default \code{c(50, 100, 200, 500)}.
@@ -68,24 +71,25 @@
 #' \code{BiocParallel::SerialParam()}.
 #' @details 
 #' This function allows multiple ways to import mitochondrial genes and quantify 
-#' their expression. 
+#' their expression in cells. \code{mitoGeneLocation} is required for all
+#' methods to point to the location within inSCE object that stores the
+#' mitochondrial gene IDs or Symbols. The various ways mito genes can be 
+#' specified are:
+
 #' \itemize{
-#'   \item Using \code{mitoRef}, \code{mitoIDType} and \code{mitoGeneLocation} 
-#'   parameters will load the build-in mitochondrial geneset in SCTK package. 
-#'   \item Using \code{mitoPrefix} and \code{mitoGeneLocation} parameters will
-#'   extract mitochondrial genes from either rownames(inSCE) or columns of 
-#'   rowData(inSCE) specified ny parameter \code{mitoGeneLocation}
-#'   \item Using \code{mitoID} and \code{mitoGeneLocation} parameters will 
-#'   quantify the expression of mitochondrial genes stored in \code{mitoID}. 
+#'   \item A combination of \code{mitoRef} and \code{mitoIDType} 
+#'   parameters can be used to load pre-built mitochondrial gene sets stored
+#'   in the SCTK package. These parameters are used in the
+#'   \link{importMitoGeneSet} function.
+#'   \item The \code{mitoPrefix} parameter can be used to search for features
+#'   matching a particular pattern. The default pattern is an "MT-" 
+#'   at the beginning of the ID.
+#'   \item The \code{mitoID} parameter can be used to directy supply a vector of 
+#'   mitochondrial gene IDs or names. Only features that exactly match items
+#'   in this vector will be included in the mitochondrial gene set. 
 #' }
-#' \code{mitoGeneLocation} is required if you use any methods mentioned above to 
-#' quantify mitochondrial gene expression. Please make sure 
-#' \code{mitoGeneLocation} is pointing to the location within inSCE object that 
-#' stores the correct mitochondrial genes ID.  
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
-#' cell QC metrics added to the \link{colData} slot. If \code{geneSetList} or
-#' \code{geneSetCollection} are provided, then the rownames for each gene set
-#' will be saved in \code{metadata(inSCE)$sctk$runPerCellQC[[sample]]$geneSets}.
+#' cell QC metrics added to the \link{colData} slot. 
 #' @seealso \code{\link[scater]{addPerCellQC}}, 
 #' \code{link{plotRunPerCellQCResults}}, \code{\link{runCellQC}}
 #' @examples
@@ -98,15 +102,15 @@
 #' @importFrom S4Vectors metadata metadata<-
 runPerCellQC <- function(inSCE,
                          useAssay = "counts",
+                         mitoGeneLocation = "rownames",                         
+                         mitoRef = c(NULL, "human", "mouse"),
+                         mitoIDType = c("ensembl", "symbol", "entrez", "ensemblTranscriptID"),
+                         mitoPrefix = "MT-",
+                         mitoID = NULL,
                          collectionName = NULL,
                          geneSetList = NULL,
                          geneSetListLocation = "rownames",
                          geneSetCollection = NULL,
-                         mitoRef = NULL,
-                         mitoIDType = NULL,
-                         mitoPrefix = NULL,
-                         mitoID = NULL,
-                         mitoGeneLocation = NULL,
                          percent_top = c(50, 100, 200, 500),
                          use_altexps = FALSE,
                          flatten = TRUE,
@@ -115,60 +119,61 @@ runPerCellQC <- function(inSCE,
 ) {
 
   message(paste0(date(), " ... Running 'perCellQCMetrics'"))
-  #argsList <- as.list(formals(fun = sys.function(sys.parent()),
-  #                            envir = parent.frame()))
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
-
+  mitoRef <- match.arg(mitoRef)
+  mitoIDType <- match.arg(mitoIDType)
+  
   ## Add mito gene collection from built-in mito gene sets in SCTK package
-  if (is.null(mitoGeneLocation)) {
-    #message("'mitoGeneLocation' not specified or specified as NULL.")
+  if (!is.null(mitoGeneLocation) && mitoGeneLocation == "rownames") {
+    features <- rownames(inSCE)
+  } else if (mitoGeneLocation %in% names(rowData(inSCE))) {
+    features <- rowData(inSCE)[[mitoGeneLocation]]
   } else {
+    stop("'mitoGeneLocation' needs to be set to 'rownames' or a column name of 'rowData(inSCE)'")
+  }
+  
+  if(!is.null(mitoGeneLocation)) {
     mitoGS <- NULL
-    if (!is.null(mitoRef) & !is.null(mitoIDType)) {
-      message(date(), " ... Importing Mitochondiral genes using parameter ", 
-              "'mitoRef', 'mitoIDType' and 'mitoGeneLocation'")
-      inSCE <- importMitoGeneSet(inSCE, reference = mitoRef, id = mitoIDType, 
-                                 by = mitoGeneLocation, collectionName = "mito")
-      mitoGS <- metadata(inSCE)$sctk$genesets$mito[[1]]
-    }
-
-    if (mitoGeneLocation == "rownames") {
-      features <- rownames(inSCE)
-    } else if (mitoGeneLocation %in% names(rowData(inSCE))) {
-      features <- rowData(inSCE)[[mitoGeneLocation]]
-    } else {
-      warning(mitoGeneLocation, " is not 'rownames' of inSCE or is not found ", 
-              "in column names of 'rowData(inSCE)'. Ignore mitoPrefix, mitoID", 
-              " and mitoGeneLocation parameters.")
-    }    
-
-    mitoG <- NULL
-    ## Add mito genes by greping mitoPrefix from the mitoGeneLocation
-    if (!is.null(mitoPrefix)) {
-      message(date(), " ... Importing Mitochondiral genes using parameter ", 
-              "'mitoPrefix' and 'mitoGeneLocation'")
-      mitoG <- grep(mitoPrefix, features, value = TRUE)
-    }
+    
+    # Getting rid of any previous gene sets with the same name
+    metadata(inSCE)$sctk$genesets$mito <- NULL
 
     ## Add mito genes specified in mitoID
     if (!is.null(mitoID)) {
-      message(date(), " ... Importing Mitochondiral genes using parameter ", 
-              "'mitoID' and 'mitoGeneLocation'")
-      mitoG <- intersect(mitoID, features)
+      message(date(), " ...... Attempting to find mitochondiral by identifing features in '", mitoGeneLocation, "' that match those given in `mitoID`.")
+      inSCE <- importGeneSetsFromList(inSCE, geneSetList = list(mito=mitoID), 
+                                      collectionName = "mito", 
+                                      by = mitoGeneLocation,
+                                      noMatchError = FALSE)
+      mitoGS <- metadata(inSCE)$sctk$genesets$mito[[1]]
+    }
+    
+    if (!is.null(mitoRef) & !is.null(mitoIDType) & is.null(mitoGS)) {
+      message(date(), " ...... Attempting to find mitochondrial genes by identifying features in '", mitoGeneLocation, 
+      "' that match mitochondrial genes from reference '", mitoRef, "' and ID type '", mitoIDType, "'.")
+      
+      inSCE <- importMitoGeneSet(inSCE, reference = mitoRef, id = mitoIDType, 
+                                 by = mitoGeneLocation, collectionName = "mito",
+                                 noMatchError = FALSE)
+      mitoGS <- metadata(inSCE)$sctk$genesets$mito[[1]]
     }
 
-    if (!is.null(mitoG)) {
-      mitoGL <- list('mito' = mitoG)
-      inSCE <- importGeneSetsFromList(inSCE, geneSetList = mitoGL, 
-                                      collectionName = "mito", 
-                                      by = mitoGeneLocation)
-      mitoGS <- metadata(inSCE)$sctk$genesets$mito[[1]]
-    } 
+    ## Add mito genes by greping mitoPrefix from the mitoGeneLocation
+    if (!is.null(mitoPrefix) & is.null(mitoGS)) {
+      message(date(), " ...... Attempting to find mitochondrial genes by identifying features in '", mitoGeneLocation, "' starting with '", mitoPrefix, "'")
+      mitoG <- grep(paste0("^", mitoPrefix), features, value = TRUE, ignore.case = TRUE)
+      
+      if(length(mitoG) > 0) {
+        inSCE <- importGeneSetsFromList(inSCE, list(mito=mitoG), 
+                                        by = mitoGeneLocation, collectionName = "mito",
+                                        noMatchError = FALSE)
+        mitoGS <- metadata(inSCE)$sctk$genesets$mito[[1]]
+      }
+    }
 
+    # Creating a new gene set collection from mitoGS and any other user supplied geneSetCollections
     if (is.null(mitoGS)) {
-      message("No mitochondrial gene is found in 'rownames(inSCE)' or in the", 
-              " column of 'rowData(inSCE)' specified by 'mitoGeneLocation'. ", 
-              "Skip quantifying mitochondrial genes.")      
+      message(date(), " ...... No mitochondrial genes found. Skipping quantification of mitochondrial metrics.")      
     } else {
       if (!is.null(geneSetCollection)) {
         geneSetCollection <- GSEABase::GeneSetCollection(
@@ -282,11 +287,6 @@ runPerCellQC <- function(inSCE,
     }
   }
 
-  # ## Add mito genes into geneSets 
-  # if (length(mitoG) != 0) {
-  #   geneSets[['mito']] <- mitoG
-  # }
-
   if(length(geneSets) == 0) {
     geneSets <- NULL
   }
@@ -317,7 +317,7 @@ runPerCellQC <- function(inSCE,
     utils::packageDescription("scran")$Version
 
   if(is.null(geneSets)){
-    geneSets = as.character(geneSets)
+    geneSets <- as.character(geneSets)
   }
   metadata(inSCE)$sctk$runPerCellQC$all_cells$geneSets <- geneSets
 
