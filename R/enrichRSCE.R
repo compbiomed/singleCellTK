@@ -107,7 +107,7 @@ runEnrichR <- function(inSCE,
   if (is.null(db)){
     db <- enrdb
   } else if (!all(db %in% enrdb)){
-    db.notFound <- db[!db %in% enrdbE]
+    db.notFound <- db[!db %in% enrdb]
     stop("Database(s) ", paste(db.notFound, collapse = ", "), " were not found in Enrichr.")
   }
   
