@@ -412,14 +412,6 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "plotTSCANDimReduceFeatures_useReducedDim", choices = currreddim)
   }
 
-  updateEnrichDB <- function(){
-    if (internetConnection){
-      enrDB <- listEnrichrDbs()$libraryName
-    } else {
-      enrDB <- ""
-    }
-    updateSelectInput(session, "enrichDb", choices = c("ALL", enrDB))
-  }
 
   observeEvent(input$consoleToggle, {
     shinyjs::toggle(id = "consolePanel")
@@ -7132,11 +7124,12 @@ shinyServer(function(input, output, session) {
     }
     res <- res[which(res[, 1] %in% dbToShow), ]
     vals$enrichRes <- res
-    tableToShow <- res[, c(1:10)] %>%
-      mutate(Database_selected =
-               paste0("<a href='", res[, 11],
-                      "' target='_blank'>",
-                      res[, 1], "</a>"))
+    #tableToShow <- res[, c(1:10)] %>%
+    #  mutate(Database_selected =
+    #           paste0("<a href='", res[, 11],
+    #                  "' target='_blank'>",
+    #                  res[, 1], "</a>"))
+    tableToShow <- res
     output$enrDataTable <- DT::renderDataTable({
       DT::datatable({
         tableToShow

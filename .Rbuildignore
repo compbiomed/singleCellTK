@@ -16,3 +16,4 @@ exec/png
 ^pkgdown$
 ^\.github$
 ^vignettes/articles/*
+^images

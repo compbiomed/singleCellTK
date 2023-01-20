@@ -39,9 +39,16 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install fftw
 
-      - uses: r-lib/actions/setup-r-dependencies@v1
+      - name: Manual Install
+        run: |
+          install.packages("BiocManager")
+          BiocManager::install("ggtree")
+        shell: Rscript {0}
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: rcmdcheck
+          cache-version: 2
 
       - name: Install XQuartz on macOS
         if: runner.os == 'macOS'

@@ -95,7 +95,7 @@ Imports:
     reticulate (>= 1.14),
     tools,
     tximport,
-    fishpond,
+    eds,
     withr,
     GSEABase,
     R.utils,
@@ -116,7 +116,7 @@ Imports:
     utils,
     stats,
     zellkonverter
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Suggests:
     testthat,
     Rsubread,

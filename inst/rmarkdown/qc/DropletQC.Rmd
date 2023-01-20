@@ -70,7 +70,7 @@ cat("\n")
 intro <- paste0(
   "Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://github.com/compbiomed/singleCellTK) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](",
   docs.qc.Path,
-  "). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication."
+  "). If you use the singleCellTK package for quality control, please include a [**reference**](https://pubmed.ncbi.nlm.nih.gov/35354805/) in your publication."
 )
 
 cat(intro)

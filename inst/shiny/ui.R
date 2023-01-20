@@ -283,6 +283,22 @@ shinyUI(
       # loads several ui elements/plots etc.
       includeCSS("busy-load-piccard21.css"),
       tags$script(src = "initialLoading.js"),
-      tags$script(src = "busy-load-piccard21.js")
+      tags$script(src = "busy-load-piccard21.js"),
+      
+      # Add ability to track usage with Google Analytics. Requires a 
+      # link like:
+      # https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX
+      # with a code for the Google analytics project. It also requires a .js
+      # file. See the following page on the wiki for more info:
+      # https://github.com/compbiomed/singleCellTK/wiki/Google-Analytics
+      tags$head(
+        shiny::tags$script(
+          src = "https://www.googletagmanager.com/gtag/js?id=G-NP0B0KLYE2",
+          async = ""
+        ),
+        shiny::tags$script(
+          src = "gtag.js"
+        )
+      )
     )
 )
