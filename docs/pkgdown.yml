@@ -1,5 +1,5 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7
+pandoc: 2.17.1.1
+pkgdown: 2.0.5
 pkgdown_sha: ~
 articles:
   01_import_and_qc_tutorial: 01_import_and_qc_tutorial.html
@@ -33,5 +33,5 @@ articles:
   ui_qc: ui_qc.html
   visualization: visualization.html
   singleCellTK: singleCellTK.html
-last_built: 2023-01-19T17:50Z
+last_built: 2023-01-22T00:42Z
 
