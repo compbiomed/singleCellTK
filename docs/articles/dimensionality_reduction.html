@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -232,11 +235,12 @@
 
       
 
-      </header><script src="dimensionality_reduction_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Dimensionality Reduction</h1>
-                        <h4 data-toc-skip class="author">Irzam Sarfraz</h4>
+                        <h4 data-toc-skip class="author">Irzam
+Sarfraz</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/dimensionality_reduction.Rmd" class="external-link"><code>vignettes/articles/dimensionality_reduction.Rmd</code></a></small>
@@ -249,9 +253,26 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Dimensionality reduction algorithms (PCA/ICA) can be run through the <strong>singleCellTK</strong> toolkit using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute metrics for dimensionality reduction and then visualize the results using any of the available interactive plots. For the console analysis, the toolkit offers a single wrapper function <code><a href="../reference/runDimReduce.html">runDimReduce()</a></code> to compute metrics for any of the integrated algorithms and multiple methods to visualize the computed results.</p>
-<p>Methods available with the toolkit include <code>PCA</code> from <code>scater</code> <span class="citation">[1]</span> package and <code>PCA</code> &amp; <code>ICA</code> from <code>Seurat</code> <span class="citation">[2]</span><span class="citation">[3]</span><span class="citation">[4]</span><span class="citation">[5]</span> package. Visualization options available for users include 2D Component Plot, Elbow Plot, JackStraw Plot and Heatmap. A complete list of supported visualization options against each method are specified at the bottom of the tabs below.</p>
-<p>To view detailed instructions on how to use these methods, please select ‘Interactive Analysis’, from the tabs below, for performing dimension reduction in shiny application or ‘Console Analysis’ for using these methods in R console:</p>
+<p>Dimensionality reduction algorithms (PCA/ICA) can be run through the
+<strong>singleCellTK</strong> toolkit using both interactive shiny
+application and R console. For the interactive analysis, the toolkit
+offers a streamlined workflow to both compute metrics for dimensionality
+reduction and then visualize the results using any of the available
+interactive plots. For the console analysis, the toolkit offers a single
+wrapper function <code><a href="../reference/runDimReduce.html">runDimReduce()</a></code> to compute metrics for any
+of the integrated algorithms and multiple methods to visualize the
+computed results.</p>
+<p>Methods available with the toolkit include <code>PCA</code> from
+<code>scater</code> <span class="citation">[1]</span> package and
+<code>PCA</code> &amp; <code>ICA</code> from <code>Seurat</code> [<span class="citation">[2]</span>]<span class="citation">[3]</span>[<span class="citation">[4]</span>]<span class="citation">[5]</span> package.
+Visualization options available for users include 2D Component Plot,
+Elbow Plot, JackStraw Plot and Heatmap. A complete list of supported
+visualization options against each method are specified at the bottom of
+the tabs below.</p>
+<p>To view detailed instructions on how to use these methods, please
+select ‘Interactive Analysis’, from the tabs below, for performing
+dimension reduction in shiny application or ‘Console Analysis’ for using
+these methods in R console:</p>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </div>
@@ -264,9 +285,16 @@
 </div>
 
 <div id="interactive" class="tabcontent">
-<p>In general, the UI offers options for selection of data items and choice of parameters on the left side, and a visualization panel on the right side of the interface. A detailed workflow guide to run and visualize dimension reduction (DR) is described below:</p>
+<p>In general, the UI offers options for selection of data items and
+choice of parameters on the left side, and a visualization panel on the
+right side of the interface. A detailed workflow guide to run and
+visualize dimension reduction (DR) is described below:</p>
 <ol style="list-style-type: decimal">
-<li>To begin the DR workflow, click on the <strong>“Feature Selection &amp; Dimensionality Reduction”</strong> tab from the top menu. This workflow assumes that before proceeding towards computation of DR, data has been uploaded, filtered and normalized (and optionally variable features have been identified) through the preceding tabs.</li>
+<li>To begin the DR workflow, click on the <strong>“Feature Selection
+&amp; Dimensionality Reduction”</strong> tab from the top menu. This
+workflow assumes that before proceeding towards computation of DR, data
+has been uploaded, filtered and normalized (and optionally variable
+features have been identified) through the preceding tabs.</li>
 </ol>
 <p><img src="ui_screenshots/dimensionality_reduction/dr_1.PNG"><br></p>
 <ol start="2" style="list-style-type: decimal">
@@ -274,32 +302,68 @@
 </ol>
 <p><img src="ui_screenshots/dimensionality_reduction/dr_2.png"><br></p>
 <ol start="3" style="list-style-type: decimal">
-<li>Select an expression matrix which should be used for computation, usually log-normalized matrix is recommended.</li>
-<li>Select a method for dimensionality reduction. Available choices are “PCA” from <em>scater</em> package and “PCA” &amp; “ICA” from <em>Seurat</em> package.</li>
-<li>(Optional) Choose a subset of features to use for dimension reduction. Subsets can be obtained from <a href="feature_selection.html">Feature Selection</a> tab.</li>
-<li>(Optional) Check whether to scale the variance of features (subset of features if chosen in 5.) in the selected expression matrix before reducing dimensionality. Usually, scaling the subset of highly variable features is recommended.</li>
+<li>Select an expression matrix which should be used for computation,
+usually log-normalized matrix is recommended.</li>
+<li>Select a method for dimensionality reduction. Available choices are
+“PCA” from <em>scater</em> package and “PCA” &amp; “ICA” from
+<em>Seurat</em> package.</li>
+<li>(Optional) Choose a subset of features to use for dimension
+reduction. Subsets can be obtained from <a href="feature_selection.html">Feature Selection</a> tab.</li>
+<li>(Optional) Check whether to scale the variance of features (subset
+of features if chosen in 5.) in the selected expression matrix before
+reducing dimensionality. Usually, scaling the subset of highly variable
+features is recommended.</li>
 <li>Specify a name for result low-dimensional data.</li>
-<li>Specify the number of dimensions to generate with the selected algorithm. Default value is <code>50</code>.</li>
-<li>(Optional) Check the boxes for optional visualization methods that should be applied after the computation of dimension reduction. Requested visualization will be shown in sub-tabs on the right side.</li>
-<li>If “Compute HeatmapPlot?” is selected in 9., you can specify how many features should be involved in the each heatmap. This setting can be changed later as well from the visualization panel on the right.</li>
-<li>Set the seed of randomized computation process. A fixed seed generates reproducible result each run.</li>
+<li>Specify the number of dimensions to generate with the selected
+algorithm. Default value is <code>50</code>.</li>
+<li>(Optional) Check the boxes for optional visualization methods that
+should be applied after the computation of dimension reduction.
+Requested visualization will be shown in sub-tabs on the right
+side.</li>
+<li>If “Compute HeatmapPlot?” is selected in 9., you can specify how
+many features should be involved in the each heatmap. This setting can
+be changed later as well from the visualization panel on the right.</li>
+<li>Set the seed of randomized computation process. A fixed seed
+generates reproducible result each run.</li>
 <li>Press “Run” to start computation.</li>
-<li>Once processing is complete, selected visualization methods will be shown in the tabset on the right, together with the “Component Plot” (by default shown) which contains a scatter plot of cells on the top two components (dimensions).</li>
+<li>Once processing is complete, selected visualization methods will be
+shown in the tabset on the right, together with the “Component Plot” (by
+default shown) which contains a scatter plot of cells on the top two
+components (dimensions).</li>
 </ol>
 <p><img src="ui_screenshots/dimensionality_reduction/dr_4.png"><br></p>
 <ol start="14" style="list-style-type: decimal">
-<li>An optional elbow plot can be computed for a PCA result, when chosen in step 9. It is a heuristic method which shows a relationship between the increasing number of components and the standard deviation. Components before an elbow break are empirically considered as containing most of the information of the data, and should be selected for downstream analysis.</li>
+<li>An optional elbow plot can be computed for a PCA result, when chosen
+in step 9. It is a heuristic method which shows a relationship between
+the increasing number of components and the standard deviation.
+Components before an elbow break are empirically considered as
+containing most of the information of the data, and should be selected
+for downstream analysis.</li>
 </ol>
 <p><img src="ui_screenshots/dimensionality_reduction/dr_6.png"><br></p>
 <ol start="15" style="list-style-type: decimal">
-<li>Heatmaps can be computed optionally, when chosen in step 9. Each heatmap shows the expression of the features that are correlated to a component. This method allows for easy exploration of the primary sources of heterogeneity in a data set, and can be useful for determining number of components to include for downstream analysis.</li>
+<li>Heatmaps can be computed optionally, when chosen in step 9. Each
+heatmap shows the expression of the features that are correlated to a
+component. This method allows for easy exploration of the primary
+sources of heterogeneity in a data set, and can be useful for
+determining number of components to include for downstream
+analysis.</li>
 </ol>
 <p><img src="ui_screenshots/dimensionality_reduction/dr_7a.png"></p>
 <ol start="16" style="list-style-type: decimal">
-<li>Customization for the heatmaps can be made by selecting the components to display and entering the number of columns to organize the sub-plots.</li>
+<li>Customization for the heatmaps can be made by selecting the
+components to display and entering the number of columns to organize the
+sub-plots.</li>
 </ol>
 <p><img src="ui_screenshots/dimensionality_reduction/dr_7b.png"></p>
 <details><summary><b>Visualizations Supported</b></summary><table class="table">
+<colgroup>
+<col width="20%">
+<col width="20%">
+<col width="20%">
+<col width="20%">
+<col width="20%">
+</colgroup>
 <thead><tr class="header">
 <th>Method</th>
 <th>2-Dimensional Component Plot</th>
@@ -326,15 +390,24 @@
 </table></details>
 </div>
 <div id="console" class="tabcontent">
-<p>Here we show how to perform dimension reduction with the generic function <code><a href="../reference/runDimReduce.html">runDimReduce()</a></code>, together with the method to visualize and explore the results.</p>
+<p>Here we show how to perform dimension reduction with the generic
+function <code><a href="../reference/runDimReduce.html">runDimReduce()</a></code>, together with the method to
+visualize and explore the results.</p>
 <p><strong>1. Compute dimensionality reduction</strong></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"scaterPCA"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, </span>
 <span>                    scale <span class="op">=</span> <span class="cn">TRUE</span>, useFeatureSubset <span class="op">=</span> <span class="st">"HVG_modelGeneVar2000"</span>, </span>
 <span>                    nComponents <span class="op">=</span> <span class="fl">50</span>, reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span></code></pre></div>
-<p>The generic function <code><a href="../reference/runDimReduce.html">runDimReduce()</a></code> allows <code>"scaterPCA"</code> from <em>scater</em>, <code>"seuratPCA"</code> and <code>"seuratICA"</code> from <em>Seurat</em> as options of dimension reduction for <code>method</code> argument. For detailed parameter description, please click on the function name to be redirected to its reference page.</p>
+<p>The generic function <code><a href="../reference/runDimReduce.html">runDimReduce()</a></code> allows
+<code>"scaterPCA"</code> from <em>scater</em>, <code>"seuratPCA"</code>
+and <code>"seuratICA"</code> from <em>Seurat</em> as options of
+dimension reduction for <code>method</code> argument. For detailed
+parameter description, please click on the function name to be
+redirected to its reference page.</p>
 <p><strong>2. Visualization</strong></p>
-<p>There are multiple functions that can create scatter plot using dimensions stored in <code>reducedDims</code> slot of the SCE object.</p>
+<p>There are multiple functions that can create scatter plot using
+dimensions stored in <code>reducedDims</code> slot of the SCE
+object.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Make scatter plot without annotation</span></span>
 <span><span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span>
@@ -344,7 +417,10 @@
 <span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"cluster"</span>, reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span>
 <span><span class="co"># Color scatter plot with feature expression</span></span>
 <span><span class="fu"><a href="../reference/plotSCEDimReduceFeatures.html">plotSCEDimReduceFeatures</a></span><span class="op">(</span><span class="va">sce</span>, feature <span class="op">=</span> <span class="st">"CD8A"</span>, reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span></code></pre></div>
-<p>Besides, SCTK also wraps elbow plot, Jackstraw plot and DimHeatmap methods from <em>Seurat</em>. For usage of these visualization methods, please refer to <a href="seurat_curated_workflow.html">Seurat Curated Workflow</a></p>
+<p>Besides, SCTK also wraps elbow plot, Jackstraw plot and DimHeatmap
+methods from <em>Seurat</em>. For usage of these visualization methods,
+please refer to <a href="seurat_curated_workflow.html">Seurat Curated
+Workflow</a></p>
 <details><summary><b>Example</b></summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></span>
@@ -357,7 +433,11 @@
 <span><span class="co"># Plot</span></span>
 <span><span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"PCA"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="dimensionality_reduction_files/figure-html/dm_console_example-1.png" width="700"></p>
-</details><details><summary><b>Individual Functions</b></summary><p>While the <code><a href="../reference/runDimReduce.html">runDimReduce()</a></code> wrapper function can be used for all dimensionality reduction algorithms including PCA and ICA, and additionally for 2D embeddings like tSNE and UMAP, separate functions are also available for all of the included methods. The following functions can be used for specific methods:</p>
+</details><details><summary><b>Individual Functions</b></summary><p>While the <code><a href="../reference/runDimReduce.html">runDimReduce()</a></code> wrapper function can be used
+for all dimensionality reduction algorithms including PCA and ICA, and
+additionally for 2D embeddings like tSNE and UMAP, separate functions
+are also available for all of the included methods. The following
+functions can be used for specific methods:</p>
 <p>Running PCA with <em>Seurat</em> method:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Recommended to find variable features before running runSeuratPCA</span></span>
@@ -377,6 +457,13 @@
 <span>                 useFeatureSubset <span class="op">=</span> <span class="st">"HVG_vst2000"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                 reducedDimName <span class="op">=</span> <span class="st">"scaterPCA"</span><span class="op">)</span></span></code></pre></div>
 </details><details><summary><b>Visualizations Supported</b></summary><table class="table">
+<colgroup>
+<col width="20%">
+<col width="20%">
+<col width="20%">
+<col width="20%">
+<col width="20%">
+</colgroup>
 <thead><tr class="header">
 <th>Method</th>
 <th>2-Dimensional Component Plot</th>
@@ -409,21 +496,43 @@ document.getElementById("ia-button").click();
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references">
-<div id="ref-McCarthy2017">
-<p>[1] D. J. McCarthy, K. R. Campbell, A. T. L. Lun, and Q. F. Wills, “Scater: Pre-processing, quality control, normalization and visualization of single-cell RNA-seq data in R,” <em>Bioinformatics</em>, vol. 33, no. 8, pp. 1179–1186, Apr. 2017, doi: <a href="https://doi.org/10.1093/bioinformatics/btw777" class="external-link">10.1093/bioinformatics/btw777</a>.</p>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-McCarthy2017" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">D.
+J. McCarthy, K. R. Campbell, A. T. L. Lun, and Q. F. Wills, <span>“<span class="nocase">Scater: Pre-processing, quality control, normalization
+and visualization of single-cell RNA-seq data in R</span>,”</span>
+<em>Bioinformatics</em>, vol. 33, no. 8, pp. 1179–1186, Apr. 2017, doi:
+<a href="https://doi.org/10.1093/bioinformatics/btw777" class="external-link">10.1093/bioinformatics/btw777</a>.</div>
 </div>
-<div id="ref-Butler2018">
-<p>[2] A. Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, “Integrating single-cell transcriptomic data across different conditions, technologies, and species,” <em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018, doi: <a href="https://doi.org/10.1038/nbt.4096" class="external-link">10.1038/nbt.4096</a>.</p>
+<div id="ref-Butler2018" class="csl-entry">
+<div class="csl-left-margin">[2] </div>
+<div class="csl-right-inline">A.
+Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, <span>“<span class="nocase">Integrating single-cell transcriptomic data across
+different conditions, technologies, and species</span>,”</span>
+<em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018,
+doi: <a href="https://doi.org/10.1038/nbt.4096" class="external-link">10.1038/nbt.4096</a>.</div>
 </div>
-<div id="ref-Stuart2019">
-<p>[3] T. Stuart <em>et al.</em>, “Comprehensive Integration of Single-Cell Data,” <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031" class="external-link">10.1016/j.cell.2019.05.031</a>.</p>
+<div id="ref-Stuart2019" class="csl-entry">
+<div class="csl-left-margin">[3] </div>
+<div class="csl-right-inline">T.
+Stuart <em>et al.</em>, <span>“<span class="nocase">Comprehensive
+Integration of Single-Cell Data</span>,”</span> <em>Cell</em>, vol. 177,
+no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031" class="external-link">10.1016/j.cell.2019.05.031</a>.</div>
 </div>
-<div id="ref-Satija2017">
-<p>[4] R. Satija, J. A. Farrell, D. Gennert, A. F. Schier, and A. Regev, “Spatial reconstruction of single-cell gene expression data,” <em>Nature Biotechnology</em>, vol. 33, pp. 495–502, 2015, doi: <a href="https://doi.org/10.1038/nbt.3192" class="external-link">10.1038/nbt.3192</a>.</p>
+<div id="ref-Satija2017" class="csl-entry">
+<div class="csl-left-margin">[4] </div>
+<div class="csl-right-inline">R.
+Satija, J. A. Farrell, D. Gennert, A. F. Schier, and A. Regev,
+<span>“Spatial reconstruction of single-cell gene expression
+data,”</span> <em>Nature Biotechnology</em>, vol. 33, pp. 495–502, 2015,
+doi: <a href="https://doi.org/10.1038/nbt.3192" class="external-link">10.1038/nbt.3192</a>.</div>
 </div>
-<div id="ref-Hao2021">
-<p>[5] Y. Hao <em>et al.</em>, “Integrated analysis of multimodal single-cell data,” <em>Cell</em>, 2021, doi: <a href="https://doi.org/10.1016/j.cell.2021.04.048" class="external-link">10.1016/j.cell.2021.04.048</a>.</p>
+<div id="ref-Hao2021" class="csl-entry">
+<div class="csl-left-margin">[5] </div>
+<div class="csl-right-inline">Y.
+Hao <em>et al.</em>, <span>“Integrated analysis of multimodal
+single-cell data,”</span> <em>Cell</em>, 2021, doi: <a href="https://doi.org/10.1016/j.cell.2021.04.048" class="external-link">10.1016/j.cell.2021.04.048</a>.</div>
 </div>
 </div>
 </div>
@@ -441,12 +550,12 @@ document.getElementById("ia-button").click();
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>

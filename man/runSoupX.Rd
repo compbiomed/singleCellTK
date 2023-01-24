@@ -131,13 +131,15 @@ experimental factors such as ambient RNA. Visit
 for better understanding.
 }
 \examples{
-data(scExample, package = "singleCellTK")
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 \dontrun{
 # SoupX does not work for toy example,
 sce <- importExampleData("pbmc3k")
 sce <- runSoupX(sce, sample = "sample")
+plotSoupXResults(sce, sample = "sample")
 }
+}
+\seealso{
+plotSoupXResults
 }
 \author{
 Yichen Wang

@@ -20,7 +20,7 @@ downstream quality control and analysis functions in singleCellTK."><!-- mathjax
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -51,6 +51,9 @@ downstream quality control and analysis functions in singleCellTK."><!-- mathjax
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul></li>
 <li>
@@ -210,7 +213,8 @@ downstream quality control and analysis functions in <a href="singleCellTK.html"
 <span>  <span class="va">file</span>,</span>
 <span>  collectionName <span class="op">=</span> <span class="st">"GeneSetCollection"</span>,</span>
 <span>  by <span class="op">=</span> <span class="st">"rownames"</span>,</span>
-<span>  sep <span class="op">=</span> <span class="st">"\t"</span></span>
+<span>  sep <span class="op">=</span> <span class="st">"\t"</span>,</span>
+<span>  noMatchError <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -250,6 +254,11 @@ Default <code>"rownames"</code>.</p></dd>
 
 <dt>sep</dt>
 <dd><p>Character. Delimiter of the GMT file. Default <code>"\t"</code>.</p></dd>
+
+
+<dt>noMatchError</dt>
+<dd><p>Boolean. Show an error if a collection does not have
+any matching features. Default <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -304,11 +313,11 @@ GeneSetCollection objects, and
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

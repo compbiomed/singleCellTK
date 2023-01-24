@@ -10,7 +10,8 @@ importGeneSetsFromMSigDB(
   species = "Homo sapiens",
   mapping = c("gene_symbol", "human_gene_symbol", "entrez_gene"),
   by = "rownames",
-  verbose = TRUE
+  verbose = TRUE,
+  noMatchError = TRUE
 )
 }
 \arguments{
@@ -38,6 +39,9 @@ of \code{inSCE}. See \link{featureIndex} for more information.
 Default \code{"rownames"}.}
 
 \item{verbose}{Boolean. Whether to display progress. Default \code{TRUE}.}
+
+\item{noMatchError}{Boolean. Show an error if a collection does not have
+any matching features. Default \code{TRUE}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object

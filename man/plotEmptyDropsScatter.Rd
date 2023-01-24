@@ -9,7 +9,7 @@ plotEmptyDropsScatter(
   sample = NULL,
   fdrCutoff = 0.01,
   defaultTheme = TRUE,
-  dotSize = 0.5,
+  dotSize = 0.1,
   title = NULL,
   titleSize = 18,
   xlab = NULL,
@@ -42,7 +42,7 @@ sample each cell belongs to. Default \code{NULL}.}
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 
 \code{10} when \code{TRUE}. Default \code{TRUE}.}
 
-\item{dotSize}{Size of dots. Default \code{0.5}.}
+\item{dotSize}{Size of dots. Default \code{0.1}.}
 
 \item{title}{Title of plot. Default \code{NULL}.}
 

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -48,6 +48,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul></li>
 <li>
@@ -201,8 +204,8 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">reportQCTool</span><span class="op">(</span></span>
 <span>  <span class="va">inSCE</span>,</span>
-<span>  algorithm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BarcodeRankDrops"</span>, <span class="st">"EmptyDrops"</span>, <span class="st">"QCMetrics"</span>, <span class="st">"Scrublet"</span>, <span class="st">"ScDblFinder"</span>,</span>
-<span>    <span class="st">"Cxds"</span>, <span class="st">"Bcds"</span>, <span class="st">"CxdsBcdsHybrid"</span>, <span class="st">"DoubletFinder"</span>, <span class="st">"DecontX"</span>, <span class="st">"SoupX"</span><span class="op">)</span>,</span>
+<span>  algorithm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BarcodeRankDrops"</span>, <span class="st">"EmptyDrops"</span>, <span class="st">"QCMetrics"</span>, <span class="st">"Scrublet"</span>,</span>
+<span>    <span class="st">"ScDblFinder"</span>, <span class="st">"Cxds"</span>, <span class="st">"Bcds"</span>, <span class="st">"CxdsBcdsHybrid"</span>, <span class="st">"DoubletFinder"</span>, <span class="st">"DecontX"</span>, <span class="st">"SoupX"</span><span class="op">)</span>,</span>
 <span>  output_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  output_dir <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -255,11 +258,11 @@ Available options are "BarcodeRankDrops", "EmptyDrops", "QCMetrics", "Scrublet",
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -232,11 +235,12 @@
 
       
 
-      </header><script src="enrichR_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Enrichment Analysis with enrichR</h1>
-                        <h4 data-toc-skip class="author">Irzam Sarfraz, Yichen Wang</h4>
+                        <h4 data-toc-skip class="author">Irzam Sarfraz,
+Yichen Wang</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/enrichR.Rmd" class="external-link"><code>vignettes/articles/enrichR.Rmd</code></a></small>
@@ -251,8 +255,17 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p><strong>EnrichR</strong> <span class="citation">[1]</span><span class="citation">[2]</span> is a GSE (Gene Set Enrichment) method that infers biological knowledge by performing enrichment of input gene sets with curated biologically relevant prior databases that represent biological functions or functional pathways. Single-Cell Toolkit (SCTK) offers an easy to use interface to the EnrichR method and only requires the selection of input genes and the databases against which the genes should be tested.</p>
-<p>To view detailed instructions on how to use the method from the toolkit, please select “Interactive Analysis” for using enrichR in shiny application or “Console Analysis” for using this method on R console from the tabs below:</p>
+<p><strong>EnrichR</strong> [<span class="citation">[1]</span>]<span class="citation">[2]</span> is a GSE (Gene Set Enrichment) method that
+infers biological knowledge by performing enrichment of input gene sets
+with curated biologically relevant prior databases that represent
+biological functions or functional pathways. Single-Cell Toolkit (SCTK)
+offers an easy to use interface to the EnrichR method and only requires
+the selection of input genes and the databases against which the genes
+should be tested.</p>
+<p>To view detailed instructions on how to use the method from the
+toolkit, please select “Interactive Analysis” for using enrichR in shiny
+application or “Console Analysis” for using this method on R console
+from the tabs below:</p>
 </div>
 <div class="section level2">
 <h2 id="workflow-guide">Workflow Guide<a class="anchor" aria-label="anchor" href="#workflow-guide"></a>
@@ -263,53 +276,112 @@
 </div>
 
 <div id="interactive" class="tabcontent">
-<p>An overall workflow guide on how to use <strong><em>EnrichR</em></strong> sub-tab is described below.</p>
+<p>An overall workflow guide on how to use
+<strong><em>EnrichR</em></strong> sub-tab is described below.</p>
 <p><img src="ui_screenshots/pathway_analysis/enrichR_1.png"><br></p>
 <p>To enter the tab for running EnrichR analysis, users need to:</p>
 <ol style="list-style-type: decimal">
-<li>Select <strong><em>Enrichment &amp; Pathway Analysis</em></strong> tab from the top menu.</li>
-<li>Select <strong><em>EnrichR</em></strong> option from the drop-down menu.</li>
+<li>Select <strong><em>Enrichment &amp; Pathway Analysis</em></strong>
+tab from the top menu.</li>
+<li>Select <strong><em>EnrichR</em></strong> option from the drop-down
+menu.</li>
 </ol>
 <p><strong>Approaches to select genes</strong></p>
 <p><img src="ui_screenshots/pathway_analysis/enrichR_2.png"><br></p>
-<p>At the top-left of the EnrichR tab, a radio-button set is provided for users to choose a way to specify the gene set to use for EnrichR test.</p>
+<p>At the top-left of the EnrichR tab, a radio-button set is provided
+for users to choose a way to specify the gene set to use for EnrichR
+test.</p>
 <details><summary><b>A. Use differential expression genes already identified</b></summary><ol style="list-style-type: decimal">
-<li><p><strong>Select DE Analysis</strong> - After performing <a href="differential_expression.html">differential expression analysis</a> with SCTK, users will have options available in this dropdown box. Users can select an analysis to import the DEGs identified there. <br></p></li>
-<li><p><strong>Use Log2FC greater than</strong> - Filter the DEGs, to only use genes with the absolute value of log2 fold-change greater than the input. <br></p></li>
-<li><p><strong>Use FDR less than</strong> - Filter the DEGs, to only use genes with FDR value less than the input. <br></p></li>
-<li><p><strong>Only use upregulated genes</strong> - Filter the DEGs, check to only use genes with positive log2 fold-change values. <br></p></li>
-<li><p><strong>Use mean exp in group1 greater than</strong> - Filter the DEGs, to only use genes with mean expression within group1 (<a href="differential_expression.html">what is group1?</a>) greater then the input. <br></p></li>
-<li><p><strong>Use mean exp in group2 less than</strong> - Filter the DEGs, to only use genes with mean expression within group2 less then the input. <br></p></li>
-<li><p><strong>Use exp% in group1 greater than</strong> - Filter the DEGs, to only use genes expressed in greater than this fraction of cells in group1. <br></p></li>
-<li><p><strong>Use exp% in group2 less than</strong> - Filter the DEGs, to only use genes expressed in greater than this fraction of cells in group1. <br></p></li>
+<li><p><strong>Select DE Analysis</strong> - After performing <a href="differential_expression.html">differential expression analysis</a>
+with SCTK, users will have options available in this dropdown box. Users
+can select an analysis to import the DEGs identified there.
+<br></p></li>
+<li><p><strong>Use Log2FC greater than</strong> - Filter the DEGs, to
+only use genes with the absolute value of log2 fold-change greater than
+the input. <br></p></li>
+<li><p><strong>Use FDR less than</strong> - Filter the DEGs, to only use
+genes with FDR value less than the input. <br></p></li>
+<li><p><strong>Only use upregulated genes</strong> - Filter the DEGs,
+check to only use genes with positive log2 fold-change values.
+<br></p></li>
+<li><p><strong>Use mean exp in group1 greater than</strong> - Filter the
+DEGs, to only use genes with mean expression within group1 (<a href="differential_expression.html">what is group1?</a>) greater then
+the input. <br></p></li>
+<li><p><strong>Use mean exp in group2 less than</strong> - Filter the
+DEGs, to only use genes with mean expression within group2 less then the
+input. <br></p></li>
+<li><p><strong>Use exp% in group1 greater than</strong> - Filter the
+DEGs, to only use genes expressed in greater than this fraction of cells
+in group1. <br></p></li>
+<li><p><strong>Use exp% in group2 less than</strong> - Filter the DEGs,
+to only use genes expressed in greater than this fraction of cells in
+group1. <br></p></li>
 </ol>
-<p>By making changes above, the number of remaining DEGs and the list of remaining DEGs will be shown at the bottom of this section.</p>
+<p>By making changes above, the number of remaining DEGs and the list of
+remaining DEGs will be shown at the bottom of this section.</p>
 </details><details><summary><b>B. Manually select genes</b></summary><ol start="9" style="list-style-type: decimal">
 <li>
-<strong>Select Gene(s)</strong> - Users can manually select the genes from the available data here.</li>
+<strong>Select Gene(s)</strong> - Users can manually select the
+genes from the available data here.</li>
 </ol></details><details><summary><b>C. Upload a file that contains gene names</b></summary><ol start="10" style="list-style-type: decimal">
-<li><p>Users can upload a text table file where the first column contains the gene identifiers. A text file with one gene per line works the same. CSV, TSV or TXT formats may be accepted. Depending on the exact situation of the file, selection might be applied in the following options.</p></li>
-<li><p><strong>Header</strong> - If the first line of the file is a header (e.g. column names if it’s a table, “Genes”, “Symbols” or etc. if it’s just the genes), users need to check this option to let the APP ignore the line.</p></li>
-<li><p><strong>Separator</strong> - If the text file is a table, users need to make sure of the separator of entries and make the corresponding selection here. Usually, “Comma” for CSV files and “Tab” for TSV files.</p></li>
-<li><p><strong>Quote</strong> - Depending on whether each entry in the text table file is quoted, users might make a selection here. Users might open file with a text editor software, or run <code>head ${FILENAME}</code> command on Unix system, to exactly have a check on it.</p></li>
-<li><p><strong>Match feature type</strong> - If the type of the gene identifiers (e.g. symbol, ensembl ID, etc.) provided in the file does not match to the default type for the dataset (denoted as “rownames”), users need to select from available feature metadata to find the match.</p></li>
+<li><p>Users can upload a text table file where the first column
+contains the gene identifiers. A text file with one gene per line works
+the same. CSV, TSV or TXT formats may be accepted. Depending on the
+exact situation of the file, selection might be applied in the following
+options.</p></li>
+<li><p><strong>Header</strong> - If the first line of the file is a
+header (e.g. column names if it’s a table, “Genes”, “Symbols” or etc. if
+it’s just the genes), users need to check this option to let the APP
+ignore the line.</p></li>
+<li><p><strong>Separator</strong> - If the text file is a table, users
+need to make sure of the separator of entries and make the corresponding
+selection here. Usually, “Comma” for CSV files and “Tab” for TSV
+files.</p></li>
+<li><p><strong>Quote</strong> - Depending on whether each entry in the
+text table file is quoted, users might make a selection here. Users
+might open file with a text editor software, or run
+<code>head ${FILENAME}</code> command on Unix system, to exactly have a
+check on it.</p></li>
+<li><p><strong>Match feature type</strong> - If the type of the gene
+identifiers (e.g. symbol, ensembl ID, etc.) provided in the file does
+not match to the default type for the dataset (denoted as “rownames”),
+users need to select from available feature metadata to find the
+match.</p></li>
 </ol></details><p><br></p>
 <p><strong>Other necessary options</strong></p>
 <p><img src="ui_screenshots/pathway_analysis/enrichR_3.png"></p>
 <ol style="list-style-type: decimal">
-<li><p><strong>Select symbol annotation</strong> - EnrichR only expects gene symbols as the input. That’s to say, if the genes selected from previous steps appear to be IDs, EnrichR is likely to return zero lines of result. In this case, users are provided with a selection to convert the identifier type from available feature metadata. <br></p></li>
-<li><p><strong>Select DB</strong> - Select databases to test the input genes against. By default, no selection is made and all available databases will be used. However, this may take long time to compute <br></p></li>
-<li><p><strong>Set analysis name</strong> - Users have to set an analysis name for each run, in order to distinguish the results of different input. <br></p></li>
-<li><p>Press <strong>Run</strong> to start computation of enrichment scores. <br></p></li>
+<li><p><strong>Select symbol annotation</strong> - EnrichR only expects
+gene symbols as the input. That’s to say, if the genes selected from
+previous steps appear to be IDs, EnrichR is likely to return zero lines
+of result. In this case, users are provided with a selection to convert
+the identifier type from available feature metadata. <br></p></li>
+<li><p><strong>Select DB</strong> - Select databases to test the input
+genes against. By default, no selection is made and all available
+databases will be used. However, this may take long time to compute
+<br></p></li>
+<li><p><strong>Set analysis name</strong> - Users have to set an
+analysis name for each run, in order to distinguish the results of
+different input. <br></p></li>
+<li><p>Press <strong>Run</strong> to start computation of enrichment
+scores. <br></p></li>
 </ol>
 <p><br></p>
 <p><strong>Result display</strong></p>
 <p><img src="ui_screenshots/pathway_analysis/enrichR_4.png"></p>
-<p>After running the analysis, the result table will be automatically shown on the right side of the EnrichR tab (left part of the figure). The content to be shown might be adjusted as instructed below.</p>
+<p>After running the analysis, the result table will be automatically
+shown on the right side of the EnrichR tab (left part of the figure).
+The content to be shown might be adjusted as instructed below.</p>
 <ol style="list-style-type: decimal">
-<li><p>Click on the cog button to open a dropdown box with options (right part of the figure). <br></p></li>
-<li><p><strong>Select analysis name</strong> - Choose to show the result of a sepecific analysis. All EnrichR analyses conducted by SCTK will be available here. <br></p></li>
-<li><p><strong>Show result of sepecific database</strong> - Filter the result table by database. Only the databases used for the selected analysis will be available here. Leave unselected for showing all results.</p></li>
+<li><p>Click on the cog button to open a dropdown box with options
+(right part of the figure). <br></p></li>
+<li><p><strong>Select analysis name</strong> - Choose to show the result
+of a sepecific analysis. All EnrichR analyses conducted by SCTK will be
+available here. <br></p></li>
+<li><p><strong>Show result of sepecific database</strong> - Filter the
+result table by database. Only the databases used for the selected
+analysis will be available here. Leave unselected for showing all
+results.</p></li>
 </ol>
 </div>
 <div id="console" class="tabcontent">
@@ -321,23 +393,30 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runEnrichR.html">runEnrichR</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, features <span class="op">=</span> <span class="va">genes</span>, db <span class="op">=</span> <span class="va">databases</span>,</span>
 <span>                  analysisName <span class="op">=</span> <span class="st">"tutorial_analysis"</span><span class="op">)</span></span></code></pre></div>
-<p>For the <code><a href="../reference/runEnrichR.html">runEnrichR()</a></code> function above, the required parameters are:</p>
+<p>For the <code><a href="../reference/runEnrichR.html">runEnrichR()</a></code> function above, the required
+parameters are:</p>
 <ul>
 <li>
-<code>inSCE</code>: The input <code>SingleCellExperiment</code> object</li>
+<code>inSCE</code>: The input <code>SingleCellExperiment</code>
+object</li>
 <li>
 <code>features</code>: A vector of input gene names</li>
 <li>
-<code>analysisName</code>: A string to identify a single analysis</li>
+<code>analysisName</code>: A string to identify a single
+analysis</li>
 </ul>
 <p>Other optional parameters include:</p>
 <ul>
 <li>
 <code>db</code>: A character vector of the databases to test</li>
 <li>
-<code>by</code>: Indicates where the method should find the <code>features</code>. Can be <code>"rownames"</code> or a column name of <code>rowData(inSCE)</code>.</li>
+<code>by</code>: Indicates where the method should find the
+<code>features</code>. Can be <code>"rownames"</code> or a column name
+of <code>rowData(inSCE)</code>.</li>
 <li>
-<code>featureName</code>: EnrichR expects gene symbols as the input. Need to choose from <code>rowData</code> to convert <code>features</code> if necessary.</li>
+<code>featureName</code>: EnrichR expects gene symbols as the input.
+Need to choose from <code>rowData</code> to convert
+<code>features</code> if necessary.</li>
 </ul>
 <p><strong>3. Get results</strong></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -360,18 +439,17 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <colgroup>
-<col width="2%">
-<col width="14%">
-<col width="15%">
 <col width="3%">
-<col width="3%">
-<col width="7%">
-<col width="5%">
-<col width="8%">
+<col width="18%">
+<col width="19%">
 <col width="4%">
+<col width="4%">
+<col width="9%">
 <col width="6%">
+<col width="11%">
 <col width="6%">
-<col width="22%">
+<col width="8%">
+<col width="8%">
 </colgroup>
 <thead><tr class="header">
 <th align="left"></th>
@@ -385,7 +463,6 @@
 <th align="left">Odds.Ratio</th>
 <th align="left">Combined.Score</th>
 <th align="left">Genes</th>
-<th align="left">link</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -400,7 +477,6 @@
 <td align="left">307</td>
 <td align="left">4326</td>
 <td align="left">PON2;HES1;SOX4</td>
-<td align="left"><a href="https://clue.io/" class="external-link uri">https://clue.io/</a></td>
 </tr>
 <tr class="even">
 <td align="left">28670</td>
@@ -414,7 +490,6 @@
 <td align="left">2499</td>
 <td align="left">34229</td>
 <td align="left">HES1;SOX4</td>
-<td align="left"><a href="https://www.wikipathways.org/index.php/Portal:PFOCR" class="external-link uri">https://www.wikipathways.org/index.php/Portal:PFOCR</a></td>
 </tr>
 <tr class="odd">
 <td align="left">7751</td>
@@ -428,7 +503,6 @@
 <td align="left">252</td>
 <td align="left">3413</td>
 <td align="left">PON2;HES1;SOX4</td>
-<td align="left"><a href="https://clue.io/" class="external-link uri">https://clue.io/</a></td>
 </tr>
 <tr class="even">
 <td align="left">5530</td>
@@ -442,7 +516,6 @@
 <td align="left">226</td>
 <td align="left">2992</td>
 <td align="left">PON2;HES1;SOX4</td>
-<td align="left"><a href="https://clue.io/" class="external-link uri">https://clue.io/</a></td>
 </tr>
 <tr class="odd">
 <td align="left">4156</td>
@@ -456,7 +529,6 @@
 <td align="left">1666</td>
 <td align="left">21778</td>
 <td align="left">DEK;SOX4</td>
-<td align="left"><a href="https://grants.nih.gov/grants/oer.htm" class="external-link uri">https://grants.nih.gov/grants/oer.htm</a></td>
 </tr>
 <tr class="even">
 <td align="left">28671</td>
@@ -470,7 +542,6 @@
 <td align="left">1428</td>
 <td align="left">18307</td>
 <td align="left">HES1;SOX4</td>
-<td align="left"><a href="https://www.wikipathways.org/index.php/Portal:PFOCR" class="external-link uri">https://www.wikipathways.org/index.php/Portal:PFOCR</a></td>
 </tr>
 </tbody>
 </table></details>
@@ -482,12 +553,22 @@ document.getElementById("ia-button").click();
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references">
-<div id="ref-Kuleshov2016">
-<p>[1] M. V. Kuleshov <em>et al.</em>, “Enrichr: a comprehensive gene set enrichment analysis web server 2016 update,” <em>Nucleic acids research</em>, vol. 44, no. W1, pp. W90–W97, Jul. 2016, doi: <a href="https://doi.org/10.1093/nar/gkw377" class="external-link">10.1093/nar/gkw377</a>.</p>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-Kuleshov2016" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">M.
+V. Kuleshov <em>et al.</em>, <span>“<span class="nocase">Enrichr: a
+comprehensive gene set enrichment analysis web server 2016
+update</span>,”</span> <em>Nucleic acids research</em>, vol. 44, no. W1,
+pp. W90–W97, Jul. 2016, doi: <a href="https://doi.org/10.1093/nar/gkw377" class="external-link">10.1093/nar/gkw377</a>.</div>
 </div>
-<div id="ref-Chen2013">
-<p>[2] E. Y. Chen <em>et al.</em>, “Enrichr: Interactive and collaborative HTML5 gene list enrichment analysis tool,” <em>BMC Bioinformatics</em>, vol. 14, no. 1, pp. 1–14, Apr. 2013, doi: <a href="https://doi.org/10.1186/1471-2105-14-128" class="external-link">10.1186/1471-2105-14-128</a>.</p>
+<div id="ref-Chen2013" class="csl-entry">
+<div class="csl-left-margin">[2] </div>
+<div class="csl-right-inline">E.
+Y. Chen <em>et al.</em>, <span>“<span class="nocase">Enrichr:
+Interactive and collaborative HTML5 gene list enrichment analysis
+tool</span>,”</span> <em>BMC Bioinformatics</em>, vol. 14, no. 1, pp.
+1–14, Apr. 2013, doi: <a href="https://doi.org/10.1186/1471-2105-14-128" class="external-link">10.1186/1471-2105-14-128</a>.</div>
 </div>
 </div>
 </div>
@@ -505,12 +586,12 @@ document.getElementById("ia-button").click();
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>
