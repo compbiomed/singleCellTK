@@ -609,7 +609,7 @@ shinyServer(function(input, output, session) {
     showModal(importCRModal())
   })
   observeEvent(input$addSSSample, {
-    showModal(importModal())
+    showModal(importStarModal())
   })
   observeEvent(input$addBUSSample, {
     showModal(importModal())
@@ -821,6 +821,40 @@ shinyServer(function(input, output, session) {
 
   })
 
+  # event handler for pressing OK on the import Star modal
+  observeEvent(input$modalStarOk, {
+    basePath <- dirPaths$directory
+    curFiles <- list()
+    if ((!nzchar(input$sampleName)) || (identical(basePath, character(0)))) {
+      showModal(importStarModal(failed = TRUE))
+    } else {
+      entry <- list()
+      id <- paste0("newSampleSS", allImportEntries$id_count)
+      entry <- list(type="starSolo", id = id, params=list(STARsoloDirs = basePath, samples = input$sampleName, STARsoloOuts = input$geneFolder))
+      allImportEntries$samples <- c(allImportEntries$samples, list(entry))
+      allImportEntries$id_count <- allImportEntries$id_count+1
+      addToGeneralSampleTable(input$uploadChoice, id, basePath, input$sampleName)
+      observeEvent(input[[paste0("remove", id)]],{
+        removeUI(
+          selector = paste0("#", id)
+        )
+        toRemove <- vector()
+        for (entry in allImportEntries$samples) {
+          if (entry$id == id) {
+            toRemove <- c(toRemove, FALSE)
+          } else {
+            toRemove <- c(toRemove, TRUE)
+          }
+        }
+        allImportEntries$samples <- allImportEntries$samples[toRemove]
+      })
+      removeModal()
+    }
+    updateCollapse(session = session, "importUI", open = "2. Create dataset:",
+                   style = list("1. Add sample to import:" = "success"))
+    
+  })
+  
   # event handler for pressing OK on the import modal
   observeEvent(input$modalOk, {
     basePath <- dirPaths$directory
@@ -829,12 +863,7 @@ shinyServer(function(input, output, session) {
       showModal(importModal(failed = TRUE))
     } else {
       entry <- list()
-      if (input$uploadChoice == "starSolo") {
-        id <- paste0("newSampleSS", allImportEntries$id_count)
-        entry <- list(type="starSolo", id = id, params=list(STARsoloDirs = basePath, samples = input$sampleName))
-        allImportEntries$samples <- c(allImportEntries$samples, list(entry))
-        allImportEntries$id_count <- allImportEntries$id_count+1
-      } else if (input$uploadChoice == "busTools") {
+      if (input$uploadChoice == "busTools") {
         id <- paste0("newSampleBUS", allImportEntries$id_count)
         entry <- list(type="busTools", id = id, params=list(BUStoolsDirs = basePath, samples = input$sampleName))
         allImportEntries$samples <- c(allImportEntries$samples, list(entry))
@@ -9258,99 +9287,47 @@ shinyServer(function(input, output, session) {
   # Page Download ####
   #-----------------------------------------------------------------------------
 
-  exportPath = '~'
-  shinyDirChoose(input, 'outputDirectory', roots = roots)
-  output$outputDirectoryPath <- renderText({
-    dirPaths$outputDirectory
-  })
-  observeEvent(
-    ignoreNULL = TRUE,
-    eventExpr = {
-      input$outputDirectory
-    },
-    handlerExpr = {
-      if ("path" %in% names(input$outputDirectory)) {
-        # condition prevents handler execution on initial app launch
-        #path <<- choose.dir(default = readDirectoryInput(session, 'outputDirectory'))
-        #updateDirectoryInput(session, 'outputDirectory', value = path)
-        vol <- roots[[input$outputDirectory$root]]
-        dirPaths$outputDirectory <- paste0(vol, paste(unlist(input$outputDirectory$path[-1]),
-                                             collapse = .Platform$file.sep))
-        exportPath <<- dirPaths$outputDirectory
-      }
-    }
-  )
-
   output$exportFileName <- renderUI({
     defaultName <- paste0("SCE-", strftime(Sys.time(), format = "%y%m%d_%H%M"))
     if (input$exportChoice == "rds") {
       extName <- ".rds"
     } else if (input$exportChoice == "annData") {
       extName <- ".h5ad"
-    } else if (input$exportChoice == "textfile") {
-      extName <- ".txt"
-    }
-    if (input$exportChoice != "textfile") {
-      tags$div(
-        div(style = "display: inline-block;vertical-align:top; width: 160px;",
-            textInput("exportPrefix", label = NULL,
-                      value = defaultName, placeholder = "Required!",
-                      width = '160px')),
-        div(
-          style = "display: inline-block;vertical-align:top; width: 50px;",
-          p(extName, style = "margin-top: 8px; margin-left: 2px; font-size: 16px;")
-        )
+    } 
+    tags$div(
+      div(style = "display: inline-block;vertical-align:top; width: 160px;",
+          textInput("exportPrefix", label = NULL,
+                    value = defaultName, placeholder = "Required!",
+                    width = '160px')),
+      div(
+        style = "display: inline-block;vertical-align:top; width: 50px;",
+        p(extName, style = "margin-top: 8px; margin-left: 2px; font-size: 16px;")
       )
-    } else {
-      tags$div(
-        div(style = "display: inline-block;vertical-align:top; width: 160px;",
-            textInput("exportPrefix", label = NULL,
-                      value = defaultName, placeholder = "Required!",
-                      width = '160px')),
-      )
-    }
-
+      
+    )
   })
-
   addPopover(session, 'exportAssayLabel', '', "The name of assay of interests that will be set as the primary matrix of the output AnnData.", 'right')
-  addPopover(session, 'compressionLabel', '', "If output file compression is required, this variable accepts 'gzip' or 'lzf' as inputs", 'right')
-  addPopover(session, 'compressionOptsLabel', '', "Sets the compression level", 'right')
-  addPopover(session, 'forceDenseLabel', '', "Default False. Write sparse data as a dense matrix. Refer anndata.write_h5ad documentation for details.", 'right')
-
-  addPopover(session, 'gzipLabel', '', 'Set to true if output files are to be gzip compressed', 'right')
-  addPopover(session, 'overwriteLabel', '', 'Overwrites the file if it already exists', 'right')
-
-  observeEvent(input$exportData, {
-    #shows the notification spinner and console log
-    .loadOpen ("Please wait while data is being exported. See console log for progress.")
-
-    withBusyIndicatorServer("exportData", {
-      if (is.null(vals$counts) && is.null(vals$original)) {
-        shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-      } else {
-        if (input$exportChoice == "rds") {
-          filename <- paste0(input$exportPrefix, ".rds")
-          saveRDS(vals$counts, paste0(exportPath, "/", filename))
-        } else if (input$exportChoice == "annData") {
-          exportSCEtoAnnData(sce=vals$counts,
-                             useAssay = input$exportAssay,
-                             outputDir = exportPath,
-                             prefix = input$exportPrefix,
-                             overwrite = input$exportOverwrite,
-                             compression = "gzip",
-                             compressionOpts = input$compressionOpts,
-                             forceDense = input$forceDense)
-        } else if (input$exportChoice == "textfile") {
-          exportSCEtoFlatFile(sce = vals$counts,
-                              outputDir = exportPath,
-                              overwrite = input$exportOverwrite,
-                              gzipped = input$exportFlatGzip,
-                              prefix = input$exportPrefix)
-        }
+  
+  output$exportData <- downloadHandler(
+    filename = function() {
+      if (input$exportChoice == "rds") {
+        paste0(input$exportPrefix, ".rds")
       }
-    })
-    .loadClose() #close the notification spinner and console log
-  })
+      else if (input$exportChoice == "annData"){
+        paste0(input$exportPrefix, ".h5ad")
+      }
+    },
+    content = function(file) {
+      if (input$exportChoice == "rds") {
+        saveRDS(vals$counts, file)
+      } 
+      else if (input$exportChoice == "annData") {
+        zellkonverter::writeH5AD(sce = vals$counts, 
+                                 file,
+                                 X_name = input$exportAssay)
+      }
+    }
+  )
 
   ##############################################################################
   # Page: Cell Type Labeling ####

@@ -11,9 +11,9 @@ runScanpyUMAP(
   useAssay = NULL,
   useReducedDim = "scanpyPCA",
   reducedDimName = "scanpyUMAP",
-  dims = 10L,
+  dims = 40,
   minDist = 0.5,
-  nNeighbors = 15L,
+  nNeighbors = 10,
   spread = 1,
   alpha = 1,
   gamma = 1,
@@ -27,19 +27,19 @@ runScanpyUMAP(
 \code{useReducedDim} param will be used instead.}
 
 \item{useReducedDim}{Reduction to use for computing UMAP. 
-Default is \code{"pca"}.}
+Default is \code{"scanpyPCA"}.}
 
 \item{reducedDimName}{Name of new reducedDims object containing Scanpy UMAP
 Default \code{scanpyUMAP}.}
 
 \item{dims}{Numerical value of how many reduction components to use for UMAP
-computation. Default \code{10}.}
+computation. Default \code{40}.}
 
 \item{minDist}{Sets the \code{"min_dist"} parameter to the underlying UMAP
 call. Default \code{0.5}.}
 
 \item{nNeighbors}{Sets the \code{"n_neighbors"} parameter to the underlying
-UMAP call. Default \code{15L}.}
+UMAP call. Default \code{10}.}
 
 \item{spread}{Sets the \code{"spread"} parameter to the underlying UMAP call.
 Default \code{1}.}

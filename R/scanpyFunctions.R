@@ -68,7 +68,18 @@ runScanpyNormalizeData <- function(inSCE,
       "'"
     )
   }
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, 
+                                             X_name = useAssay,
+                                             assays = FALSE,
+                                             colData = TRUE,
+                                             rowData = TRUE,
+                                             varm = TRUE,
+                                             reducedDims = FALSE,
+                                             metadata = FALSE,
+                                             colPairs = FALSE,
+                                             rowPairs = FALSE,
+                                             skip_assays = FALSE,
+                                             verbose = NULL)
   normValue <- sc$pp$normalize_total(scanpyObject, 
                                      target_sum = targetSum, 
                                      max_fraction =  maxFraction,
@@ -110,7 +121,18 @@ runScanpyScaleData <- function(inSCE,
                                useAssay = "scanpyNormData",
                                scaledAssayName = "scanpyScaledData") {
   
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, 
+                                             X_name = useAssay,
+                                             assays = FALSE,
+                                             colData = TRUE,
+                                             rowData = TRUE,
+                                             varm = TRUE,
+                                             reducedDims = FALSE,
+                                             metadata = TRUE,
+                                             colPairs = FALSE,
+                                             rowPairs = FALSE,
+                                             skip_assays = FALSE,
+                                             verbose = NULL)
   sc$pp$scale(scanpyObject, max_value=10)
   inSCE <-
     .updateAssaySCEFromScanpy(inSCE, scanpyObject, scaledAssayName, "X")
@@ -146,16 +168,16 @@ runScanpyScaleData <- function(inSCE,
 #' variable. Default \code{2000}
 #' @param minMean If n_top_genes unequals None, this and all other cutoffs for 
 #' the means and the normalized dispersions are ignored. Ignored if 
-#' flavor='seurat_v3'.
+#' flavor='seurat_v3'. Default \code{0.0125}
 #' @param maxMean If n_top_genes unequals None, this and all other cutoffs for 
 #' the means and the normalized dispersions are ignored. Ignored if 
-#' flavor='seurat_v3'.
+#' flavor='seurat_v3'. Default \code{3}
 #' @param minDisp If n_top_genes unequals None, this and all other cutoffs for 
 #' the means and the normalized dispersions are ignored. Ignored if 
-#' flavor='seurat_v3'.
+#' flavor='seurat_v3'. Default \code{0.5}
 #' @param maxDisp If n_top_genes unequals None, this and all other cutoffs for 
 #' the means and the normalized dispersions are ignored. Ignored if 
-#' flavor='seurat_v3'.
+#' flavor='seurat_v3'. Default \code{Inf}
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -182,15 +204,7 @@ runScanpyFindHVG <- function(inSCE,
   
   method <- match.arg(method)
   fullSCE_cellranger <- NULL
-  if (missing(useAssay)) {
-    useAssay <- SummarizedExperiment::assayNames(inSCE)[1]
-    message(
-      "'useAssay' parameter missing. Using the first available assay ",
-      "instead: '",
-      useAssay,
-      "'"
-    )
-  }
+  
   if (!altExp) {
     if (method == "cell_ranger"){
       # for cell_ranger method only
@@ -199,7 +213,17 @@ runScanpyFindHVG <- function(inSCE,
       #############################
     }
     scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, 
-                                               X_name = useAssay)
+                                               X_name = useAssay,
+                                               assays = FALSE,
+                                               colData = TRUE,
+                                               rowData = TRUE,
+                                               varm = TRUE,
+                                               reducedDims = FALSE,
+                                               metadata = TRUE,
+                                               colPairs = FALSE,
+                                               rowPairs = FALSE,
+                                               skip_assays = FALSE,
+                                               verbose = NULL)
   }
   else{
     if (method == "cell_ranger"){
@@ -209,7 +233,17 @@ runScanpyFindHVG <- function(inSCE,
       #############################
     }
     scanpyObject <- zellkonverter::SCE2AnnData(sce = altExp(inSCE, altExpName), 
-                                               X_name = useAssay)
+                                               X_name = useAssay,
+                                               assays = FALSE,
+                                               colData = TRUE,
+                                               rowData = TRUE,
+                                               varm = TRUE,
+                                               reducedDims = FALSE,
+                                               metadata = FALSE,
+                                               colPairs = FALSE,
+                                               rowPairs = FALSE,
+                                               skip_assays = FALSE,
+                                               verbose = NULL)
     
   }
   
@@ -256,7 +290,20 @@ runScanpyFindHVG <- function(inSCE,
                                 min_disp = minDisp,
                                 max_disp = maxDisp)
     
-    tmpSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject)
+    tmpSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject,
+                                         X_name = NULL,
+                                         layers = TRUE,
+                                         uns = TRUE,
+                                         var = TRUE,
+                                         obs = TRUE,
+                                         varm = TRUE,
+                                         obsm = TRUE,
+                                         varp = TRUE,
+                                         obsp = TRUE,
+                                         raw = FALSE,
+                                         skip_assays = TRUE,
+                                         hdf5_backed = TRUE,
+                                         verbose = NULL)
     #metadata(inSCE)$hvg <- metadata(tmpSCE)['hvg'][['hvg']] 
     metadata(fullSCE_cellranger)$hvg <- metadata(tmpSCE)['hvg'][['hvg']] 
     if (!altExp) {
@@ -271,7 +318,20 @@ runScanpyFindHVG <- function(inSCE,
       
     }
     else{
-      scanpyToSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject)
+      scanpyToSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject,
+                                                X_name = NULL,
+                                                layers = TRUE,
+                                                uns = TRUE,
+                                                var = TRUE,
+                                                obs = TRUE,
+                                                varm = TRUE,
+                                                obsm = TRUE,
+                                                varp = TRUE,
+                                                obsp = TRUE,
+                                                raw = FALSE,
+                                                skip_assays = TRUE,
+                                                hdf5_backed = TRUE,
+                                                verbose = NULL)
       altExpRows <- match(rownames(inSCE), rownames(scanpyToSCE))
       rowData(inSCE)$dispersions <-
         unlist(rowData(tmpSCE)['dispersions'])[altExpRows]
@@ -311,7 +371,20 @@ runScanpyFindHVG <- function(inSCE,
                                 min_disp = minDisp,
                                 max_disp = maxDisp)
     
-    tmpSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject)
+    tmpSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject,
+                                         X_name = NULL,
+                                         layers = TRUE,
+                                         uns = TRUE,
+                                         var = TRUE,
+                                         obs = TRUE,
+                                         varm = TRUE,
+                                         obsm = TRUE,
+                                         varp = TRUE,
+                                         obsp = TRUE,
+                                         raw = FALSE,
+                                         skip_assays = TRUE,
+                                         hdf5_backed = TRUE,
+                                         verbose = NULL)
     metadata(inSCE)$hvg <- metadata(tmpSCE)['hvg'][['hvg']] 
     
     rowData(inSCE)$variances <-
@@ -352,7 +425,17 @@ runScanpyFindHVG <- function(inSCE,
 plotScanpyHVG <- function(inSCE,
                           log = FALSE){
   
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,
+                                             assays = FALSE,
+                                             colData = TRUE,
+                                             rowData = TRUE,
+                                             varm = TRUE,
+                                             reducedDims = FALSE,
+                                             metadata = TRUE,
+                                             colPairs = FALSE,
+                                             rowPairs = FALSE,
+                                             skip_assays = TRUE,
+                                             verbose = NULL)
   if(is.null(scanpyObject$uns['hvg'])){
     stop(
       " High variable genes not found. Please run the 'runScanpyFindHVG' first."
@@ -375,7 +458,7 @@ plotScanpyHVG <- function(inSCE,
 #' @param reducedDimName Name of new reducedDims object containing Scanpy PCA.
 #' Default \code{scanpyPCA}.
 #' @param nPCs numeric value of how many components to compute. Default
-#' \code{20}.
+#' \code{50}.
 #' @param method selected method to use for computation of pca. 
 #' One of \code{'arpack'}, \code{'randomized'}, \code{'auto'} or \code{'lobpcg'}.
 #' Default \code{"arpack"}.
@@ -385,7 +468,7 @@ plotScanpyHVG <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
 #' }
@@ -398,7 +481,7 @@ plotScanpyHVG <- function(inSCE,
 runScanpyPCA <- function(inSCE,
                          useAssay = "scanpyScaledData",
                          reducedDimName = "scanpyPCA",
-                         nPCs = 20,
+                         nPCs = 50,
                          method = c("arpack", "randomized", "auto", "lobpcg"),
                          use_highly_variable = TRUE){
   params <- as.list(environment())
@@ -406,17 +489,18 @@ runScanpyPCA <- function(inSCE,
   
   method <- match.arg(method)
   
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, 
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,
                                              X_name = useAssay,
                                              assays = FALSE,
-                                             colData = FALSE,
+                                             colData = TRUE,
                                              rowData = TRUE,
                                              varm = TRUE,
-                                             reducedDims = TRUE,
-                                             metadata = TRUE,
+                                             reducedDims = FALSE,
+                                             metadata = FALSE,
                                              colPairs = FALSE,
                                              rowPairs = FALSE,
-                                             skip_assays = FALSE)
+                                             skip_assays = FALSE,
+                                             verbose = NULL)
   sc$tl$pca(scanpyObject, 
             svd_solver= method, 
             n_comps = as.integer(nPCs), 
@@ -452,7 +536,7 @@ runScanpyPCA <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
 #' plotScanpyPCA(sce)
@@ -471,7 +555,15 @@ plotScanpyPCA <- function(inSCE,
     )
   }
   reducedDim (inSCE, "X_pca") <- reducedDim(inSCE, reducedDimName)
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,
+                                             colData = TRUE,
+                                             rowData = TRUE,
+                                             varm = TRUE,
+                                             reducedDims = TRUE,
+                                             metadata = FALSE,
+                                             colPairs = TRUE,
+                                             rowPairs = TRUE,
+                                             verbose = NULL)
   return(sc$pl$pca(scanpyObject,
                    color = color,
                    title = title, 
@@ -490,7 +582,7 @@ plotScanpyPCA <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
 #' plotScanpyPCAGeneRanking(sce)
@@ -511,13 +603,13 @@ plotScanpyPCAGeneRanking <- function(inSCE,
 #' plotScanpyPCAVariance
 #'
 #' @param inSCE Input \code{SingleCellExperiment} object.
-#' @param nPCs Number of PCs to show. Default \code{20}.
+#' @param nPCs Number of PCs to show. Default \code{50}.
 #' @param log Plot on logarithmic scale. Default \code{FALSE}
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
 #' plotScanpyPCAVariance(sce)
@@ -525,7 +617,7 @@ plotScanpyPCAGeneRanking <- function(inSCE,
 #' @return plot object
 #' @export
 plotScanpyPCAVariance <- function(inSCE,
-                                  nPCs = 20,
+                                  nPCs = 50,
                                   log = FALSE){
   scanpyObject <- metadata(inSCE)$scanpy$PCA
   return(sc$pl$pca_variance_ratio(scanpyObject,
@@ -545,13 +637,13 @@ plotScanpyPCAVariance <- function(inSCE,
 #' in
 #' @param useAssay Assay containing scaled counts to use for clustering.
 #' @param useReducedDim Reduction method to use for computing clusters. 
-#' Default \code{"pca"}.
+#' Default \code{"scanpyPCA"}.
 #' @param nNeighbors The size of local neighborhood (in terms of number of 
 #' neighboring data points) used for manifold approximation. Larger values 
 #' result in more global views of the manifold, while smaller values result in 
-#' more local data being preserved. Default \code{15L}.
+#' more local data being preserved. Default \code{10}.
 #' @param dims numeric value of how many components to use for computing
-#' clusters. Default \code{10}.
+#' clusters. Default \code{40}.
 #' @param method selected method to compute clusters. One of "louvain",
 #' and "leiden". Default \code{louvain}.
 #' @param colDataName Specify the name to give to this clustering result. 
@@ -561,12 +653,14 @@ plotScanpyPCAVariance <- function(inSCE,
 #' @param niterations How many iterations of the Leiden clustering method to 
 #' perform. Positive values above 2 define the total number of iterations to 
 #' perform, -1 has the method run until it reaches its optimal clustering.
-#' @param flavor Choose between to packages for computing the clustering. 
-#' @param use_weights Boolean. Use weights from knn graph.
+#' Default \code{-1}.
+#' @param flavor Choose between to packages for computing the clustering.
+#' Default \code{vtraag} 
+#' @param use_weights Boolean. Use weights from knn graph. Default \code{FALSE}
 #' @param cor_method correlation method to use. Options are ‘pearson’, 
-#' ‘kendall’, and ‘spearman’. Default 'pearson'.
+#' ‘kendall’, and ‘spearman’. Default \code{pearson}.
 #' @param inplace If True, adds dendrogram information to annData object, 
-#' else this function returns the information.
+#' else this function returns the information. Default \code{TRUE}
 #' @param externalReduction Pass DimReduce object if PCA computed through
 #' other libraries. Default \code{NULL}.
 #' @examples
@@ -583,8 +677,8 @@ plotScanpyPCAVariance <- function(inSCE,
 runScanpyFindClusters <- function(inSCE,
                                   useAssay = "scanpyScaledData",
                                   useReducedDim = "scanpyPCA",
-                                  nNeighbors = 15L,
-                                  dims = 2L,
+                                  nNeighbors = 10,
+                                  dims = 40,
                                   method = c("louvain", "leiden"),
                                   colDataName = NULL,
                                   resolution = 1,
@@ -596,7 +690,18 @@ runScanpyFindClusters <- function(inSCE,
                                   externalReduction = NULL) {
   method <- match.arg(method)
 
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,  X_name = useAssay)
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,  
+                                             X_name = useAssay,
+                                             assays = FALSE,
+                                             colData = TRUE,
+                                             rowData = TRUE,
+                                             varm = TRUE,
+                                             reducedDims = useReducedDim,
+                                             metadata = FALSE,
+                                             colPairs = FALSE,
+                                             rowPairs = FALSE,
+                                             skip_assays = FALSE,
+                                             verbose = NULL)
   
   if (!is.null(externalReduction)) {
     scanpyObject$obsm <- list(pca = externalReduction)
@@ -641,15 +746,15 @@ runScanpyFindClusters <- function(inSCE,
 #' @param useAssay Specify name of assay to use. Default is \code{NULL}, so
 #' \code{useReducedDim} param will be used instead.
 #' @param useReducedDim Reduction to use for computing UMAP. 
-#' Default is \code{"pca"}.
+#' Default is \code{"scanpyPCA"}.
 #' @param reducedDimName Name of new reducedDims object containing Scanpy UMAP
 #' Default \code{scanpyUMAP}.
 #' @param dims Numerical value of how many reduction components to use for UMAP
-#' computation. Default \code{10}.
+#' computation. Default \code{40}.
 #' @param minDist Sets the \code{"min_dist"} parameter to the underlying UMAP
 #' call. Default \code{0.5}.
 #' @param nNeighbors Sets the \code{"n_neighbors"} parameter to the underlying
-#' UMAP call. Default \code{15L}.
+#' UMAP call. Default \code{10}.
 #' @param spread Sets the \code{"spread"} parameter to the underlying UMAP call.
 #' Default \code{1}.
 #' @param alpha Sets the \code{"alpha"} parameter to the underlying UMAP call.
@@ -675,9 +780,9 @@ runScanpyUMAP <- function(inSCE,
                           useAssay = NULL,
                           useReducedDim = "scanpyPCA",
                           reducedDimName = "scanpyUMAP",
-                          dims = 10L,  
+                          dims = 40,  
                           minDist = 0.5,
-                          nNeighbors = 15L, 
+                          nNeighbors = 10, 
                           spread = 1,
                           alpha=1.0, 
                           gamma=1.0, 
@@ -687,9 +792,30 @@ runScanpyUMAP <- function(inSCE,
   params$inSCE <- NULL
   
   if(!is.null(useAssay)){
-    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
+    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, 
+                                               X_name = useAssay,
+                                               assays = FALSE,
+                                               colData = TRUE,
+                                               rowData = TRUE,
+                                               varm = TRUE,
+                                               reducedDims = useReducedDim,
+                                               metadata = FALSE,
+                                               colPairs = FALSE,
+                                               rowPairs = FALSE,
+                                               skip_assays = FALSE,
+                                               verbose = NULL)
   } else{
-    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, reducedDims = useReducedDim)
+    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, 
+                                               reducedDims = useReducedDim,
+                                               assays = FALSE,
+                                               colData = TRUE,
+                                               rowData = TRUE,
+                                               varm = TRUE,
+                                               metadata = FALSE,
+                                               colPairs = FALSE,
+                                               rowPairs = FALSE,
+                                               skip_assays = FALSE,
+                                               verbose = NULL)
   }
   
   if (!is.null(externalReduction)) {
@@ -699,17 +825,17 @@ runScanpyUMAP <- function(inSCE,
   
   if(!is.null(useAssay)){
     sc$pp$neighbors(scanpyObject, 
-                    n_neighbors = nNeighbors, 
+                    n_neighbors = as.integer(nNeighbors), 
                     n_pcs = 0)
   } else{
     sc$pp$neighbors(scanpyObject, 
-                    n_neighbors = nNeighbors, 
-                    n_pcs = dims,
+                    n_neighbors = as.integer(nNeighbors), 
+                    n_pcs = as.integer(dims),
                     use_rep = useReducedDim)
   }
   
   sc$tl$umap(scanpyObject, 
-             n_components = dims,
+             n_components = 2L,
              min_dist = minDist,
              alpha = alpha, 
              gamma = gamma,
@@ -733,13 +859,13 @@ runScanpyUMAP <- function(inSCE,
 #' @param useAssay Specify name of assay to use. Default is \code{NULL}, so
 #' \code{useReducedDim} param will be used instead.
 #' @param useReducedDim selected reduction method to use for computing tSNE.
-#' Default \code{"pca"}.
+#' Default \code{"scanpyPCA"}.
 #' @param reducedDimName Name of new reducedDims object containing Scanpy tSNE
 #' Default \code{scanpyTSNE}.
 #' @param dims Number of reduction components to use for tSNE computation.
-#' Default \code{10}.
+#' Default \code{40}.
 #' @param perplexity Adjust the perplexity tuneable parameter for the underlying
-#' tSNE call. Default \code{15}.
+#' tSNE call. Default \code{30}.
 #' @param externalReduction Pass DimReduc object if PCA computed through
 #' other libraries. Default \code{NULL}.
 #' @examples
@@ -759,17 +885,38 @@ runScanpyTSNE <- function(inSCE,
                           useAssay = NULL,
                           useReducedDim = "scanpyPCA", 
                           reducedDimName = "scanpyTSNE",
-                          dims = 10L,
-                          perplexity = 15L,
+                          dims = 40,
+                          perplexity = 30,
                           externalReduction = NULL){
   
   params <- as.list(environment())
   params$inSCE <- NULL
   
   if(!is.null(useAssay)){
-    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
+    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, 
+                                               X_name = useAssay,
+                                               assays = FALSE,
+                                               colData = TRUE,
+                                               rowData = TRUE,
+                                               varm = TRUE,
+                                               reducedDims = useReducedDim,
+                                               metadata = FALSE,
+                                               colPairs = FALSE,
+                                               rowPairs = FALSE,
+                                               skip_assays = FALSE,
+                                               verbose = NULL)
   } else{
-    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, reducedDims = useReducedDim)
+    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,
+                                               reducedDims = useReducedDim,
+                                               assays = FALSE,
+                                               colData = TRUE,
+                                               rowData = TRUE,
+                                               varm = TRUE,
+                                               metadata = FALSE,
+                                               colPairs = FALSE,
+                                               rowPairs = FALSE,
+                                               skip_assays = FALSE,
+                                               verbose = NULL)
   }
   
   
@@ -780,15 +927,15 @@ runScanpyTSNE <- function(inSCE,
   
   if(!is.null(useAssay)){
     sc$tl$tsne(scanpyObject, 
-               n_pcs = dims,
+               n_pcs = as.integer(dims),
                use_rep = 'X',
-               perplexity = perplexity)
+               perplexity = as.integer(perplexity))
   }
   else{
     sc$tl$tsne(scanpyObject, 
-               n_pcs = dims,
+               n_pcs = as.integer(dims),
                use_rep = useReducedDim, 
-               perplexity = perplexity)
+               perplexity = as.integer(perplexity))
   }
   
 
@@ -834,7 +981,17 @@ plotScanpyEmbedding <- function(inSCE,
       'runScanpyTSNE' first."
     )
   }
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,
+                                             assays = FALSE,
+                                             colData = TRUE,
+                                             rowData = TRUE,
+                                             varm = TRUE,
+                                             reducedDims = reducedDimName,
+                                             metadata = FALSE,
+                                             colPairs = FALSE,
+                                             rowPairs = FALSE,
+                                             skip_assays = FALSE,
+                                             verbose = NULL)
   
   return(sc$pl$embedding(scanpyObject,
                          basis = reducedDimName,
