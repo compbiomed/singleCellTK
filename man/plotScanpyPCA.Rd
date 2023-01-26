@@ -34,7 +34,7 @@ plotScanpyPCA
 data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
+sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
 plotScanpyPCA(sce)

@@ -41,19 +41,19 @@ variable. Default \code{2000}}
 
 \item{minMean}{If n_top_genes unequals None, this and all other cutoffs for 
 the means and the normalized dispersions are ignored. Ignored if 
-flavor='seurat_v3'.}
+flavor='seurat_v3'. Default \code{0.0125}}
 
 \item{maxMean}{If n_top_genes unequals None, this and all other cutoffs for 
 the means and the normalized dispersions are ignored. Ignored if 
-flavor='seurat_v3'.}
+flavor='seurat_v3'. Default \code{3}}
 
 \item{minDisp}{If n_top_genes unequals None, this and all other cutoffs for 
 the means and the normalized dispersions are ignored. Ignored if 
-flavor='seurat_v3'.}
+flavor='seurat_v3'. Default \code{0.5}}
 
 \item{maxDisp}{If n_top_genes unequals None, this and all other cutoffs for 
 the means and the normalized dispersions are ignored. Ignored if 
-flavor='seurat_v3'.}
+flavor='seurat_v3'. Default \code{Inf}}
 }
 \value{
 Updated \code{SingleCellExperiment} object with highly variable genes
