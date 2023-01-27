@@ -47,15 +47,15 @@ multiple conditions, respectively.
 }
 \section{Functions}{
 \itemize{
-\item \code{subDiffEx}: 
+\item \code{subDiffEx()}: 
 
-\item \code{subDiffExttest}: Runs t-tests on all genes in a simulated dataset with 2
+\item \code{subDiffExttest()}: Runs t-tests on all genes in a simulated dataset with 2
 conditions, and adjusts for FDR.
 
-\item \code{subDiffExANOVA}: Runs ANOVA on all genes in a simulated dataset with
+\item \code{subDiffExANOVA()}: Runs ANOVA on all genes in a simulated dataset with
 more than 2 conditions, and adjusts for FDR.
-}}
 
+}}
 \examples{
 data("mouseBrainSubsetSCE")
 res <- generateSimulatedData(
