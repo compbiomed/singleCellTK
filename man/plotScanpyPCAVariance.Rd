@@ -4,12 +4,12 @@
 \alias{plotScanpyPCAVariance}
 \title{plotScanpyPCAVariance}
 \usage{
-plotScanpyPCAVariance(inSCE, nPCs = 20, log = FALSE)
+plotScanpyPCAVariance(inSCE, nPCs = 50, log = FALSE)
 }
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object.}
 
-\item{nPCs}{Number of PCs to show. Default \code{20}.}
+\item{nPCs}{Number of PCs to show. Default \code{50}.}
 
 \item{log}{Plot on logarithmic scale. Default \code{FALSE}}
 }
@@ -23,7 +23,7 @@ plotScanpyPCAVariance
 data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
+sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
 plotScanpyPCAVariance(sce)

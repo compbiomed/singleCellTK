@@ -169,10 +169,10 @@ plotScanpyHVG(sce)
 PCA can be computed using the `runScanpyPCA()` function. Plots can be visualized using `plotScanpyPCA()`, `plotScanpyPCAGeneRanking()` and `plotScanpyPCAVariance()`.
 
 ```{r "scanpy_dm", warning=FALSE, message=FALSE}
-sce <- runScanpyPCA(inSCE = sce, useAssay = "scanpyScaledData", reducedDimName = "scanpyPCA", nPCs = 20, method = "auto", use_highly_variable = TRUE)
+sce <- runScanpyPCA(inSCE = sce, useAssay = "scanpyScaledData", reducedDimName = "scanpyPCA", nPCs = 50, method = "auto", use_highly_variable = TRUE)
 plotScanpyPCA(inSCE = sce, reducedDimName = "scanpyPCA")
 plotScanpyPCAGeneRanking(inSCE = sce)
-plotScanpyPCAVariance(inSCE = sce, nPCs = 20)
+plotScanpyPCAVariance(inSCE = sce, nPCs = 50)
 ```
 
 **5. tSNE/UMAP** <br>
@@ -194,7 +194,7 @@ plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP")
 **6. Clustering** <br>
 `runScanpyFindClusters()` function can be used to compute the clusters, which can later be plotted through the `plotScanpyEmbedding()` method with cluster labels. The parameters to the function include `inSCE` (input SCE object), `useAssay` (name of the scaled assay), `useReducedDim` (specify which reduction to use i.e. `"scanpyPCA"`), `dims` (number of dims to use) and the method (either `"louvain"` or `"leiden"`).
 ```{r "scanpy_clustering", warning=FALSE, message=FALSE}
-sce <- runScanpyFindClusters(inSCE = sce, useAssay = "scanpyScaledData", useReducedDim = "scanpyPCA", method = "leiden", resolution = 0.8, nNeighbors = 15, dims = 10, cor_method = "pearson")
+sce <- runScanpyFindClusters(inSCE = sce, useAssay = "scanpyScaledData", useReducedDim = "scanpyPCA", method = "leiden", resolution = 1, nNeighbors = 10, dims = 40, cor_method = "pearson")
 ```
 
 `plotScanpyEmbedding()` can then be used to plot all reductions previously computed with cluster labels:

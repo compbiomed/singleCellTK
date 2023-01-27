@@ -10,7 +10,7 @@ runScanpyPCA(
   inSCE,
   useAssay = "scanpyScaledData",
   reducedDimName = "scanpyPCA",
-  nPCs = 20,
+  nPCs = 50,
   method = c("arpack", "randomized", "auto", "lobpcg"),
   use_highly_variable = TRUE
 )
@@ -25,7 +25,7 @@ runScanpyPCA(
 Default \code{scanpyPCA}.}
 
 \item{nPCs}{numeric value of how many components to compute. Default
-\code{20}.}
+\code{50}.}
 
 \item{method}{selected method to use for computation of pca. 
 One of \code{'arpack'}, \code{'randomized'}, \code{'auto'} or \code{'lobpcg'}.
@@ -47,7 +47,7 @@ components within the sce object
 data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
+sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
 sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
 }

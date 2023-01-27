@@ -11,8 +11,8 @@ runScanpyTSNE(
   useAssay = NULL,
   useReducedDim = "scanpyPCA",
   reducedDimName = "scanpyTSNE",
-  dims = 10L,
-  perplexity = 15L,
+  dims = 40,
+  perplexity = 30,
   externalReduction = NULL
 )
 }
@@ -23,16 +23,16 @@ runScanpyTSNE(
 \code{useReducedDim} param will be used instead.}
 
 \item{useReducedDim}{selected reduction method to use for computing tSNE.
-Default \code{"pca"}.}
+Default \code{"scanpyPCA"}.}
 
 \item{reducedDimName}{Name of new reducedDims object containing Scanpy tSNE
 Default \code{scanpyTSNE}.}
 
 \item{dims}{Number of reduction components to use for tSNE computation.
-Default \code{10}.}
+Default \code{40}.}
 
 \item{perplexity}{Adjust the perplexity tuneable parameter for the underlying
-tSNE call. Default \code{15}.}
+tSNE call. Default \code{30}.}
 
 \item{externalReduction}{Pass DimReduc object if PCA computed through
 other libraries. Default \code{NULL}.}

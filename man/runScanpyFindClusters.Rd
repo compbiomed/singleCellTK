@@ -10,8 +10,8 @@ runScanpyFindClusters(
   inSCE,
   useAssay = "scanpyScaledData",
   useReducedDim = "scanpyPCA",
-  nNeighbors = 15L,
-  dims = 2L,
+  nNeighbors = 10,
+  dims = 40,
   method = c("louvain", "leiden"),
   colDataName = NULL,
   resolution = 1,
@@ -30,15 +30,15 @@ in}
 \item{useAssay}{Assay containing scaled counts to use for clustering.}
 
 \item{useReducedDim}{Reduction method to use for computing clusters. 
-Default \code{"pca"}.}
+Default \code{"scanpyPCA"}.}
 
 \item{nNeighbors}{The size of local neighborhood (in terms of number of 
 neighboring data points) used for manifold approximation. Larger values 
 result in more global views of the manifold, while smaller values result in 
-more local data being preserved. Default \code{15L}.}
+more local data being preserved. Default \code{10}.}
 
 \item{dims}{numeric value of how many components to use for computing
-clusters. Default \code{10}.}
+clusters. Default \code{40}.}
 
 \item{method}{selected method to compute clusters. One of "louvain",
 and "leiden". Default \code{louvain}.}
@@ -51,17 +51,19 @@ clustering. Higher values lead to more clusters Default \code{1}.}
 
 \item{niterations}{How many iterations of the Leiden clustering method to 
 perform. Positive values above 2 define the total number of iterations to 
-perform, -1 has the method run until it reaches its optimal clustering.}
+perform, -1 has the method run until it reaches its optimal clustering.
+Default \code{-1}.}
 
-\item{flavor}{Choose between to packages for computing the clustering.}
+\item{flavor}{Choose between to packages for computing the clustering.
+Default \code{vtraag}}
 
-\item{use_weights}{Boolean. Use weights from knn graph.}
+\item{use_weights}{Boolean. Use weights from knn graph. Default \code{FALSE}}
 
 \item{cor_method}{correlation method to use. Options are ‘pearson’, 
-‘kendall’, and ‘spearman’. Default 'pearson'.}
+‘kendall’, and ‘spearman’. Default \code{pearson}.}
 
 \item{inplace}{If True, adds dendrogram information to annData object, 
-else this function returns the information.}
+else this function returns the information. Default \code{TRUE}}
 
 \item{externalReduction}{Pass DimReduce object if PCA computed through
 other libraries. Default \code{NULL}.}
