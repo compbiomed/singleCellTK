@@ -72,7 +72,7 @@ maxResolution <- clustering.resolution
 numClusters <- 10 #remove this later
 showClusterDesc <- FALSE
 
-resClustering <- knitr::knit_child('reportSeuratClustering.Rmd', quiet = TRUE, envir = environment())
+resClustering <- knitr::knit_child(system.file("rmarkdown/seurat", "reportSeuratClustering.Rmd", package = "singleCellTK"), quiet = TRUE, envir = environment())
 ```
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
@@ -88,7 +88,7 @@ selectedOption <- paste0("Seurat_louvain_Resolution", clustering.resolution)
 groupTitle <- "Clusters"
 titleMarkerPlots <- "Gene Plots of Top Markers by Clusters"
 headingMS <- "##"
-resMSC <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE, envir = environment())
+resMSC <- knitr::knit_child(system.file("rmarkdown/seurat", "reportSeuratMarkerSelection.Rmd", package = "singleCellTK"), quiet = TRUE, envir = environment())
 numMarkerGenesCluster <- nrow(data.markers[data.markers$p_val_adj < 0.05, ])
 ```
 
@@ -101,7 +101,7 @@ selectedOption <- biological.group
 groupTitle <- biological.group
 titleMarkerPlots <- paste0("Gene Plots of Top Markers by Group: ", biological.group)
 headingMS <- "##"
-resMSB <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
+resMSB <- knitr::knit_child(system.file("rmarkdown/seurat", "reportSeuratMarkerSelection.Rmd", package = "singleCellTK"), quiet = TRUE)
 numMarkerGenesBio <- nrow(data.markers[data.markers$p_val_adj < 0.05, ])
 ```
 
@@ -116,7 +116,7 @@ titleMarkerPlots <- "Plot Selected Features"
 numTopFeatures <- length(selected.markers)
 headingMS <- "#"
 
-resPSM <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
+resPSM <- knitr::knit_child(system.file("rmarkdown/seurat", "reportSeuratMarkerSelection.Rmd", package = "singleCellTK"), quiet = TRUE)
 ```
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=!is.null(selected.markers)}
