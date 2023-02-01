@@ -119,8 +119,9 @@ nonLinearWorkflow <- function(input, output, session, parent,
     output$cw <- renderUI({
       panel(
         heading = "Curated Workflows",
-        h5("Interactively analyze raw or filtered data in a step-by-step curated workflow using either Seurat or Celda pipeline."),
+        h5("Interactively analyze raw or filtered data in a step-by-step curated workflow using either Seurat, Scanpy or Celda pipeline."),
         actionButton(inputId = ns("goSeurat"), label = "Go to Seurat"),
+        actionButton(inputId = ns("goScanpy"), label = "Go to Scanpy"),
         actionButton(inputId = ns("goCelda"), label = "Go to Celda")
       )
     })
@@ -235,6 +236,13 @@ nonLinearWorkflow <- function(input, output, session, parent,
     observeEvent(input$goSeurat,{
       showTab(inputId = "navbar",
               target = "Seurat",
+              select = TRUE,
+              session = parent)
+    })
+    
+    observeEvent(input$goScanpy,{
+      showTab(inputId = "navbar",
+              target = "Scanpy",
               select = TRUE,
               session = parent)
     })
