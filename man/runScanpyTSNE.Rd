@@ -13,7 +13,8 @@ runScanpyTSNE(
   reducedDimName = "scanpyTSNE",
   dims = 40,
   perplexity = 30,
-  externalReduction = NULL
+  externalReduction = NULL,
+  seed = 12345
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ tSNE call. Default \code{30}.}
 
 \item{externalReduction}{Pass DimReduc object if PCA computed through
 other libraries. Default \code{NULL}.}
+
+\item{seed}{Specify numeric value to set as a seed. Default \code{12345}.}
 }
 \value{
 Updated sce object with tSNE computations stored

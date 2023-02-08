@@ -20,7 +20,8 @@ runScanpyFindClusters(
   use_weights = FALSE,
   cor_method = "pearson",
   inplace = TRUE,
-  externalReduction = NULL
+  externalReduction = NULL,
+  seed = 12345
 )
 }
 \arguments{
@@ -67,6 +68,8 @@ else this function returns the information. Default \code{TRUE}}
 
 \item{externalReduction}{Pass DimReduce object if PCA computed through
 other libraries. Default \code{NULL}.}
+
+\item{seed}{Specify numeric value to set as a seed. Default \code{12345}.}
 }
 \value{
 Updated sce object which now contains the computed clusters
