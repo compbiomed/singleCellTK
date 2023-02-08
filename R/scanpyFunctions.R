@@ -54,11 +54,26 @@
 #' }
 #' @return Normalized \code{SingleCellExperiment} object
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 runScanpyNormalizeData <- function(inSCE,
                                    useAssay,
                                    targetSum = 1,
                                    maxFraction = 0.05,
                                    normAssayName = "scanpyNormData") {
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
+  
   if (missing(useAssay)) {
     useAssay <- SummarizedExperiment::assayNames(inSCE)[1]
     message(
@@ -117,9 +132,23 @@ runScanpyNormalizeData <- function(inSCE,
 #' }
 #' @return Scaled \code{SingleCellExperiment} object
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 runScanpyScaleData <- function(inSCE,
                                useAssay = "scanpyNormData",
                                scaledAssayName = "scanpyScaledData") {
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
   
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, 
                                              X_name = useAssay,
@@ -191,6 +220,7 @@ runScanpyScaleData <- function(inSCE,
 #' @export
 #' @importFrom SummarizedExperiment rowData rowData<-
 #' @importFrom S4Vectors metadata<-
+#' @importFrom reticulate py_module_available py_set_seed import
 runScanpyFindHVG <- function(inSCE,
                              useAssay = "scanpyNormData",
                              method = c("seurat", "cell_ranger", "seurat_v3"),
@@ -201,6 +231,19 @@ runScanpyFindHVG <- function(inSCE,
                              maxMean = 3,
                              minDisp = 0.5,
                              maxDisp = Inf) {
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
   
   method <- match.arg(method)
   fullSCE_cellranger <- NULL
@@ -422,8 +465,22 @@ runScanpyFindHVG <- function(inSCE,
 #' }
 #' @return plot object
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyHVG <- function(inSCE,
                           log = FALSE){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
   
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,
                                              assays = FALSE,
@@ -464,6 +521,7 @@ plotScanpyHVG <- function(inSCE,
 #' Default \code{"arpack"}.
 #' @param use_highly_variable boolean value of whether to use highly variable 
 #' genes only. By default uses them if they have been determined beforehand. 
+#' @param seed Specify numeric value to set as a seed. Default \code{12345}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -477,13 +535,32 @@ plotScanpyHVG <- function(inSCE,
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<- rowSubset
 #' @importFrom S4Vectors metadata<-
-#' 
+#' @importFrom reticulate py_module_available py_set_seed import
 runScanpyPCA <- function(inSCE,
                          useAssay = "scanpyScaledData",
                          reducedDimName = "scanpyPCA",
                          nPCs = 50,
                          method = c("arpack", "randomized", "auto", "lobpcg"),
-                         use_highly_variable = TRUE){
+                         use_highly_variable = TRUE,
+                         seed = 12345){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
+  
+  if (!is.null(seed)) {
+    reticulate::py_set_seed(seed = seed)
+  }
+  
   params <- as.list(environment())
   params$inSCE <- NULL
   
@@ -543,11 +620,25 @@ runScanpyPCA <- function(inSCE,
 #' }
 #' @return plot object
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyPCA <- function(inSCE,
                           reducedDimName = "scanpyPCA", 
                           color = NULL,
                           title = '',
                           legend = 'right margin'){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
   
   if(!reducedDimName %in% reducedDimNames(inSCE)){
     stop(
@@ -589,9 +680,23 @@ plotScanpyPCA <- function(inSCE,
 #' }
 #' @return plot object
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyPCAGeneRanking <- function(inSCE, 
                                      PC_comp = "1,2,3",
                                      includeLowest = TRUE){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
   
   scanpyObject <- metadata(inSCE)$scanpy$PCA
   return(sc$pl$pca_loadings(scanpyObject,
@@ -616,9 +721,24 @@ plotScanpyPCAGeneRanking <- function(inSCE,
 #' }
 #' @return plot object
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyPCAVariance <- function(inSCE,
                                   nPCs = 50,
                                   log = FALSE){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
+  
   scanpyObject <- metadata(inSCE)$scanpy$PCA
   return(sc$pl$pca_variance_ratio(scanpyObject,
                                   n_pcs = as.integer(nPCs),
@@ -663,6 +783,7 @@ plotScanpyPCAVariance <- function(inSCE,
 #' else this function returns the information. Default \code{TRUE}
 #' @param externalReduction Pass DimReduce object if PCA computed through
 #' other libraries. Default \code{NULL}.
+#' @param seed Specify numeric value to set as a seed. Default \code{12345}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -674,6 +795,7 @@ plotScanpyPCAVariance <- function(inSCE,
 #' }
 #' @return Updated sce object which now contains the computed clusters
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 runScanpyFindClusters <- function(inSCE,
                                   useAssay = "scanpyScaledData",
                                   useReducedDim = "scanpyPCA",
@@ -687,7 +809,52 @@ runScanpyFindClusters <- function(inSCE,
                                   use_weights = FALSE,
                                   cor_method = 'pearson',
                                   inplace = TRUE,
-                                  externalReduction = NULL) {
+                                  externalReduction = NULL,
+                                  seed = 12345) {
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
+  
+  if (!reticulate::py_module_available(module = "louvain")) {
+    warning("Cannot find python module 'louvain', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, louvain can be installed on the local machine",
+            "with pip (e.g. pip install louvain) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
+  
+  if (!reticulate::py_module_available(module = "leidenalg")) {
+    warning("Cannot find python module 'leidenalg', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, leidenalg can be installed on the local machine",
+            "with pip (e.g. pip install leidenalg) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
+  
+  if (!is.null(seed)) {
+    reticulate::py_set_seed(seed = seed)
+  }
+  
   method <- match.arg(method)
 
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,  
@@ -763,6 +930,7 @@ runScanpyFindClusters <- function(inSCE,
 #' Default \code{1}.
 #' @param externalReduction Pass DimReduce object if PCA computed through
 #' other libraries. Default \code{NULL}.
+#' @param seed Specify numeric value to set as a seed. Default \code{12345}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -776,6 +944,7 @@ runScanpyFindClusters <- function(inSCE,
 #' @return Updated sce object with UMAP computations stored
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
+#' @importFrom reticulate py_module_available py_set_seed import
 runScanpyUMAP <- function(inSCE,
                           useAssay = NULL,
                           useReducedDim = "scanpyPCA",
@@ -786,7 +955,25 @@ runScanpyUMAP <- function(inSCE,
                           spread = 1,
                           alpha=1.0, 
                           gamma=1.0, 
-                          externalReduction = NULL) {
+                          externalReduction = NULL,
+                          seed = 12345) {
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
+  
+  if (!is.null(seed)) {
+    reticulate::py_set_seed(seed = seed)
+  }
   
   params <- as.list(environment())
   params$inSCE <- NULL
@@ -868,6 +1055,7 @@ runScanpyUMAP <- function(inSCE,
 #' tSNE call. Default \code{30}.
 #' @param externalReduction Pass DimReduc object if PCA computed through
 #' other libraries. Default \code{NULL}.
+#' @param seed Specify numeric value to set as a seed. Default \code{12345}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -881,13 +1069,32 @@ runScanpyUMAP <- function(inSCE,
 #' @return Updated sce object with tSNE computations stored
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
+#' @importFrom reticulate py_module_available py_set_seed import
 runScanpyTSNE <- function(inSCE,
                           useAssay = NULL,
                           useReducedDim = "scanpyPCA", 
                           reducedDimName = "scanpyTSNE",
                           dims = 40,
                           perplexity = 30,
-                          externalReduction = NULL){
+                          externalReduction = NULL,
+                          seed = 12345){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
+  
+  if (!is.null(seed)) {
+    reticulate::py_set_seed(seed = seed)
+  }
   
   params <- as.list(environment())
   params$inSCE <- NULL
@@ -969,11 +1176,25 @@ runScanpyTSNE <- function(inSCE,
 #' }
 #' @return plot object
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyEmbedding <- function(inSCE,
                                 reducedDimName,
                                 color = NULL,
                                 legend = 'right margin',
                                 title = ''){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
   
   if(!reducedDimName %in% reducedDimNames(inSCE)){
     stop(
@@ -1035,6 +1256,7 @@ plotScanpyEmbedding <- function(inSCE,
 #' @return A \code{SingleCellExperiment} object that contains marker genes
 #' populated in a data.frame stored inside metadata slot.
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 runScanpyFindMarkers <- function(inSCE,
                                  nGenes = NULL,
                                  useAssay = "scanpyNormData",
@@ -1043,6 +1265,20 @@ runScanpyFindMarkers <- function(inSCE,
                                  group2 = "rest",
                                  test = c("t-test", "wilcoxon", "t-test_overestim_var", "logreg"),
                                  corr_method = c("benjamini-hochberg", "bonferroni")) {
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
+  
   test <- match.arg(test)
   corr_method <- match.arg(corr_method)
   
@@ -1119,11 +1355,25 @@ runScanpyFindMarkers <- function(inSCE,
 #' }
 #' @return plot object
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyMarkerGenes <- function(inSCE,
                                   groups = NULL,
                                   nGenes = 10,
                                   nCols = 4,
                                   sharey = FALSE){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
   
   if(is.null(metadata(inSCE)[["findMarkerScanpyObject"]])){
     stop("Marker genes not found. Please run the 'runScanpyFindMarkers' function first.")
@@ -1158,10 +1408,24 @@ plotScanpyMarkerGenes <- function(inSCE,
 #' }
 #' @return plot object
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyMarkerGenesViolin <- function(inSCE,
                                         groups = NULL,
                                         features = NULL,
                                         nGenes = 10){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
   
   if(is.null(metadata(inSCE)["findMarkerScanpyObject"])){
     stop("Marker genes not found. Please run the 'runScanpyFindMarkers' function first.")
@@ -1199,12 +1463,26 @@ plotScanpyMarkerGenesViolin <- function(inSCE,
 #' }
 #' @return plot object
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyMarkerGenesHeatmap <- function(inSCE,
                                          groups = NULL,
                                          groupBy,
                                          nGenes = 10,
                                          features = NULL,
                                          log2fcThreshold = NULL){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
   
   if(is.null(metadata(inSCE)["findMarkerScanpyObject"])){
     stop("Marker genes not found. Please run the 'runScanpyFindMarkers' function first.")
@@ -1275,6 +1553,7 @@ plotScanpyMarkerGenesHeatmap <- function(inSCE,
 #' }
 #' @return plot object
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyMarkerGenesDotPlot <- function(inSCE,
                                          groups = NULL,
                                          nGenes = 10, 
@@ -1287,6 +1566,19 @@ plotScanpyMarkerGenesDotPlot <- function(inSCE,
                                          vmin = NULL,
                                          vmax = NULL,
                                          colorBarTitle = "log fold change"){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
   
   if(is.null(metadata(inSCE)["findMarkerScanpyObject"])){
     stop("Marker genes not found. Please run the 'runScanpyFindMarkers' function first.")
@@ -1370,6 +1662,7 @@ plotScanpyMarkerGenesDotPlot <- function(inSCE,
 #' }
 #' @return plot object
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyMarkerGenesMatrixPlot <- function(inSCE,
                                             groups = NULL,
                                             nGenes = 10, 
@@ -1382,6 +1675,19 @@ plotScanpyMarkerGenesMatrixPlot <- function(inSCE,
                                             vmin = NULL,
                                             vmax = NULL,
                                             colorBarTitle = "log fold change"){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
   
   if(is.null(metadata(inSCE)["findMarkerScanpyObject"])){
     stop("Marker genes not found. Please run the 'runScanpyFindMarkers' function first.")
@@ -1458,12 +1764,26 @@ plotScanpyMarkerGenesMatrixPlot <- function(inSCE,
 #' }
 #' @return plot object
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyHeatmap <- function(inSCE,
                               features,
                               groupBy,
                               standardScale = 'var',
                               vmin = NULL,
                               vmax = NULL){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
   
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
   
@@ -1518,6 +1838,7 @@ plotScanpyHeatmap <- function(inSCE,
 #' }
 #' @return plot object
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyDotPlot <- function(inSCE,
                               features,
                               groupBy,
@@ -1526,6 +1847,19 @@ plotScanpyDotPlot <- function(inSCE,
                               vmin = NULL,
                               vmax = NULL,
                               colorBarTitle = "Mean expression in group"){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
   
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
   
@@ -1567,11 +1901,25 @@ plotScanpyDotPlot <- function(inSCE,
 #' }
 #' @return plot object
 #' @export
+#' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyViolin <- function(inSCE,
                              features,
                              groupBy, 
                              xlabel = '', 
                              ylabel = NULL){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
   
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
   
@@ -1582,5 +1930,3 @@ plotScanpyViolin <- function(inSCE,
                       ylabel = ylabel))
   
 }
-
-

@@ -58,14 +58,14 @@ sampleNames <- unique(colData(data)[[biological.group]])
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 showSession <- FALSE
-seuratRun <- knitr::knit_child('reportSeuratRun.Rmd', quiet = TRUE, envir = environment())
+seuratRun <- knitr::knit_child(system.file("rmarkdown/seurat", "reportSeuratRun.Rmd", package = "singleCellTK"), quiet = TRUE, envir = environment())
 ```
 
 <!-- Seurat Results -->
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 showSession <- FALSE
-seuratResults <- knitr::knit_child('reportSeuratResults.Rmd', quiet = TRUE, envir = environment())
+seuratResults <- knitr::knit_child(system.file("rmarkdown/seurat", "reportSeuratResults.Rmd", package = "singleCellTK"), quiet = TRUE, envir = environment())
 ```
 
 # Summary {-}

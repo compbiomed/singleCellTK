@@ -17,7 +17,8 @@ runScanpyUMAP(
   spread = 1,
   alpha = 1,
   gamma = 1,
-  externalReduction = NULL
+  externalReduction = NULL,
+  seed = 12345
 )
 }
 \arguments{
@@ -52,6 +53,8 @@ Default \code{1}.}
 
 \item{externalReduction}{Pass DimReduce object if PCA computed through
 other libraries. Default \code{NULL}.}
+
+\item{seed}{Specify numeric value to set as a seed. Default \code{12345}.}
 }
 \value{
 Updated sce object with UMAP computations stored

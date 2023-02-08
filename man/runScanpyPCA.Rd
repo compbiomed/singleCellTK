@@ -12,7 +12,8 @@ runScanpyPCA(
   reducedDimName = "scanpyPCA",
   nPCs = 50,
   method = c("arpack", "randomized", "auto", "lobpcg"),
-  use_highly_variable = TRUE
+  use_highly_variable = TRUE,
+  seed = 12345
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ Default \code{"arpack"}.}
 
 \item{use_highly_variable}{boolean value of whether to use highly variable 
 genes only. By default uses them if they have been determined beforehand.}
+
+\item{seed}{Specify numeric value to set as a seed. Default \code{12345}.}
 }
 \value{
 Updated \code{SingleCellExperiment} object which now contains the

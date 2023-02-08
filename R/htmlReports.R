@@ -291,7 +291,7 @@ reportFindMarker <- function(inSCE, output_file = NULL, output_dir = NULL) {
 #'  each figure in the report. Default is \code{FALSE}.
 #' @param forceRun A logical value indicating if all computations previously
 #'  computed should be re-calculated regardless if these computations are
-#'  available in the input object. Default is \code{FALSE}.
+#'  available in the input object. Default is \code{TRUE}.
 #'
 #' @return A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
 #'  with computations stored.
@@ -318,7 +318,7 @@ reportSeuratRun <- function(inSCE,
                             authors =  NULL,
                             showSession = FALSE,
                             pdf = FALSE,
-                            forceRun = FALSE){
+                            forceRun = TRUE){
 
   if(is.null(biological.group)){
     stop("Must specify atleast one biological.group that is present in the colData of input object.")
@@ -431,7 +431,7 @@ reportSeuratRun <- function(inSCE,
 #'  each figure in the report. Default is \code{FALSE}.
 #' @param forceRun A logical value indicating if all computations previously
 #'  computed should be re-calculated regardless if these computations are
-#'  available in the input object. Default is \code{FALSE}.
+#'  available in the input object. Default is \code{TRUE}.
 #'
 #' @return A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
 #'  with computations stored.
@@ -454,7 +454,7 @@ reportSeuratResults <- function(inSCE,
                                 authors =  NULL,
                                 showSession = FALSE,
                                 pdf = FALSE,
-                                forceRun = FALSE){
+                                forceRun = TRUE){
 
   if(is.null(biological.group)){
     stop("Must specify atleast one biological.group that is present in the colData of input object.")
@@ -544,7 +544,7 @@ reportSeuratResults <- function(inSCE,
 #'  each figure in the report. Default is \code{FALSE}.
 #' @param forceRun A logical value indicating if all computations previously
 #'  computed should be re-calculated regardless if these computations are
-#'  available in the input object. Default is \code{FALSE}.
+#'  available in the input object. Default is \code{TRUE}.
 #'
 #' @return A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
 #'  with computations stored.
@@ -561,7 +561,7 @@ reportSeuratDimRed <- function(inSCE,
                                authors =  NULL,
                                showSession = FALSE,
                                pdf = FALSE,
-                               forceRun = FALSE){
+                               forceRun = TRUE){
 
   if(is.null(outputPath)){
     outputPath <- getwd()
@@ -621,7 +621,7 @@ reportSeuratDimRed <- function(inSCE,
 #'  each figure in the report. Default is \code{FALSE}.
 #' @param forceRun A logical value indicating if all computations previously
 #'  computed should be re-calculated regardless if these computations are
-#'  available in the input object. Default is \code{FALSE}.
+#'  available in the input object. Default is \code{TRUE}.
 #'
 #' @return A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
 #'  with computations stored.
@@ -633,7 +633,7 @@ reportSeuratNormalization <- function(inSCE,
                                authors =  NULL,
                                showSession = FALSE,
                                pdf = FALSE,
-                               forceRun = FALSE){
+                               forceRun = TRUE){
 
   if(is.null(outputPath)){
     outputPath <- getwd()
@@ -693,7 +693,7 @@ reportSeuratNormalization <- function(inSCE,
 #'  each figure in the report. Default is \code{FALSE}.
 #' @param forceRun A logical value indicating if all computations previously
 #'  computed should be re-calculated regardless if these computations are
-#'  available in the input object. Default is \code{FALSE}.
+#'  available in the input object. Default is \code{TRUE}.
 #'
 #' @return A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
 #'  with computations stored.
@@ -708,7 +708,7 @@ reportSeuratFeatureSelection <- function(inSCE,
                                          authors =  NULL,
                                          showSession = FALSE,
                                          pdf = FALSE,
-                                         forceRun = FALSE){
+                                         forceRun = TRUE){
   if(is.null(outputPath)){
     outputPath <- getwd()
     message("No output directory defined, using current working directory ", outputPath, " instead.")
@@ -763,7 +763,7 @@ reportSeuratFeatureSelection <- function(inSCE,
 #'  each figure in the report. Default is \code{FALSE}.
 #' @param forceRun A logical value indicating if all computations previously
 #'  computed should be re-calculated regardless if these computations are
-#'  available in the input object. Default is \code{FALSE}.
+#'  available in the input object. Default is \code{TRUE}.
 #'
 #' @return A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
 #'  with computations stored.
@@ -775,7 +775,7 @@ reportSeuratScaling <- function(inSCE,
                            authors =  NULL,
                            showSession = FALSE,
                            pdf = FALSE,
-                           forceRun = FALSE){
+                           forceRun = TRUE){
 
   if(is.null(outputPath)){
     outputPath <- getwd()
@@ -848,7 +848,7 @@ reportSeuratScaling <- function(inSCE,
 #'  each figure in the report. Default is \code{FALSE}.
 #' @param forceRun A logical value indicating if all computations previously
 #'  computed should be re-calculated regardless if these computations are
-#'  available in the input object. Default is \code{FALSE}.
+#'  available in the input object. Default is \code{TRUE}.
 #'
 #' @return A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
 #'  with computations stored.
@@ -869,7 +869,7 @@ reportSeuratClustering <- function(inSCE,
                                    authors =  NULL,
                                    showSession = FALSE,
                                    pdf = FALSE,
-                                   forceRun = FALSE){
+                                   forceRun = TRUE){
 
   if(is.null(biological.group)){
     stop("Must specify atleast one biological.group that is present in the colData of input object.")
@@ -1090,7 +1090,7 @@ reportSeuratMarkerSelection <- function(inSCE,
 #'  to visualize in each group. Default \code{10}.
 #' @param forceRun A logical value indicating if all algorithms should be
 #'  re-run regardless if they have been computed previously in the input object.
-#'  Default is \code{FALSE}.
+#'  Default is \code{TRUE}.
 #'
 #' @return A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
 #'  with computations stored.
@@ -1123,7 +1123,7 @@ reportSeurat <- function(
   runMSClusters = TRUE,
   runMSBioGroup = TRUE,
   numTopFeatures = 10,
-  forceRun = FALSE){
+  forceRun = TRUE){
 
   if(is.null(biological.group)){
     stop("Must specify atleast one biological.group that is present in the colData of input object.")
