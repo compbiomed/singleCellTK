@@ -28,8 +28,8 @@ bioc.package.check <- lapply(bioc.packages, FUN = function(x) {
 }
 
 ## tmp function to check the output of QC before generate HTAN meta
-.check_QC <- function(direcotry, samplename) {
-    absFilterDir <- file.path(direcotry, samplename, 'FlatFile', 'Cells')
+.check_QC <- function(directory, samplename) {
+    absFilterDir <- file.path(directory, samplename, 'FlatFile', 'Cells')
     print('The layout of the output folder after QC is done')
     print(list.files(absFilterDir, recursive = TRUE))
 
@@ -293,7 +293,6 @@ if (length(formats) == 0) {
 if (!(dataType %in% c("Both", "Droplet", "Cell"))) {
     stop("-d / -dataType must be one of the following: 'Both', 'Droplet' or 'Cell'. ")
 }
-
 ## Checking argument
 if (dataType == "Both") {
     if (is.null(RawFile) & is.null(FilterFile)) {
@@ -388,7 +387,6 @@ if (dataType == "Cell") {
         }
     }
 }
-
 if (dataType == "Droplet") {
     if (is.null(RawFile)) {
         if (is.null(basepath)) {
@@ -446,7 +444,6 @@ if (!is.null(gmt)) {
 
 level3Meta <- list()
 level4Meta <- list()
-
 for(i in seq_along(process)) {
     preproc <- process[i]
     samplename <- sample[i]
@@ -532,13 +529,13 @@ for(i in seq_along(process)) {
 
         if (!is.null(cellSCE)) {
             message(paste0(date(), " .. Running cell QC"))
+
             cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
                 paramsList=Params, algorithms = cellQCAlgos, background = dropletSCE,
                 mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],
                 mitoGeneLocation = "rownames")
         }
     }
-
     ## merge colData of dropletSCE and FilteredSCE
     mergedDropletSCE <- NULL
     mergedFilteredSCE <- NULL
@@ -565,7 +562,7 @@ for(i in seq_along(process)) {
     if (isTRUE(split)) {
         ### assign sample to every runBarcodeRanksMetaOutput metadata slot
         if (!is.null(mergedDropletSCE)) {
-            names(metadata(mergedDropletSCE)$runBarcodeRanksMetaOutput) <- samplename
+            names(metadata(mergedDropletSCE)$sctk$runBarcodeRankDrops) <- samplename
         }
 
         if (!is.null(mergedFilteredSCE)) {
@@ -645,7 +642,7 @@ for(i in seq_along(process)) {
             exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
             if ("FlatFile" %in% formats) {
                 if ("HTAN" %in% formats) {
-                    .check_QC(direcotry = directory, samplename = samplename)
+                    .check_QC(directory = directory, samplename = samplename)
                     meta <- generateHTANMeta(dropletSCE = NULL, cellSCE = mergedFilteredSCE, samplename = samplename,
                                         dir = directory, htan_biospecimen_id=samplename, dataType = "Cell")
                 } else {
@@ -691,7 +688,7 @@ if (!isTRUE(split)) {
         by.r <- NULL
         by.c <- Reduce(intersect, lapply(dropletSCE_list, function(x) { colnames(colData(x))}))
         dropletSCE <- combineSCE(dropletSCE_list, by.r, by.c, combined = TRUE)
-        names(metadata(dropletSCE)$runBarcodeRanksMetaOutput) <- sample
+        names(metadata(dropletSCE)$sctk$runBarcodeRankDrops) <- sample
 
         if (length(sample) == 1) {
             ### one sample. Treat it like split == TRUE
@@ -802,7 +799,7 @@ if (!isTRUE(split)) {
         by.r <- NULL
         by.c <- Reduce(intersect, lapply(dropletSCE_list, function(x) { colnames(colData(x))}))
         dropletSCE <- combineSCE(dropletSCE_list, by.r, by.c, combined = TRUE)
-        names(metadata(dropletSCE)$runBarcodeRanksMetaOutput) <- sample
+        names(metadata(dropletSCE)$sctk$runBarcodeRankDrops) <- sample
 
         exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
         if ("FlatFile" %in% formats) {
