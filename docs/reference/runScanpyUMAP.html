@@ -217,13 +217,14 @@ into the sce object</p>
 <span>  useAssay <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  useReducedDim <span class="op">=</span> <span class="st">"scanpyPCA"</span>,</span>
 <span>  reducedDimName <span class="op">=</span> <span class="st">"scanpyUMAP"</span>,</span>
-<span>  dims <span class="op">=</span> <span class="fl">10L</span>,</span>
+<span>  dims <span class="op">=</span> <span class="fl">40</span>,</span>
 <span>  minDist <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>  nNeighbors <span class="op">=</span> <span class="fl">15L</span>,</span>
+<span>  nNeighbors <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  spread <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  gamma <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  externalReduction <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  externalReduction <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">12345</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -240,7 +241,7 @@ into the sce object</p>
 
 <dt>useReducedDim</dt>
 <dd><p>Reduction to use for computing UMAP. 
-Default is <code>"pca"</code>.</p></dd>
+Default is <code>"scanpyPCA"</code>.</p></dd>
 
 
 <dt>reducedDimName</dt>
@@ -250,7 +251,7 @@ Default <code>scanpyUMAP</code>.</p></dd>
 
 <dt>dims</dt>
 <dd><p>Numerical value of how many reduction components to use for UMAP
-computation. Default <code>10</code>.</p></dd>
+computation. Default <code>40</code>.</p></dd>
 
 
 <dt>minDist</dt>
@@ -260,7 +261,7 @@ call. Default <code>0.5</code>.</p></dd>
 
 <dt>nNeighbors</dt>
 <dd><p>Sets the <code>"n_neighbors"</code> parameter to the underlying
-UMAP call. Default <code>15L</code>.</p></dd>
+UMAP call. Default <code>10</code>.</p></dd>
 
 
 <dt>spread</dt>
@@ -281,6 +282,10 @@ Default <code>1</code>.</p></dd>
 <dt>externalReduction</dt>
 <dd><p>Pass DimReduce object if PCA computed through
 other libraries. Default <code>NULL</code>.</p></dd>
+
+
+<dt>seed</dt>
+<dd><p>Specify numeric value to set as a seed. Default <code>12345</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -315,7 +320,7 @@ other libraries. Default <code>NULL</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

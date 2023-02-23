@@ -381,7 +381,7 @@ the UMAP of this dataset, with clusters labeled by color.</p>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">Seurat_louvain_Resolution0.8</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">##   0   1   2   3   4   5   6   7   8   9  10 </span></span>
-<span><span class="co">## 529 490 349 302 256 235 180 160 149  36  14</span></span></code></pre>
+<span><span class="co">## 531 490 349 296 257 234 178 159 155  36  15</span></span></code></pre>
 </details><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratUMAP.html">runSeuratUMAP</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span>, colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, legendTitle <span class="op">=</span> <span class="st">"Seurat Cluster"</span>, title <span class="op">=</span> <span class="st">"Clustering on UMAP"</span><span class="op">)</span></span></code></pre></div>
@@ -446,7 +446,7 @@ document.getElementById("ia-button").click();
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
