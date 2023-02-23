@@ -433,12 +433,10 @@ sample on a single column. Default <code>TRUE</code>.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package<span class="op">=</span><span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runUMAP.html">runQuickUMAP</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Jan 21 19:44:03 2023 ... Computing Scater UMAP for sample 'pbmc_4k'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Feb 22 16:27:20 2023 ... Computing Scater UMAP for sample 'pbmc_4k'.</span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runBcds.html">runBcds</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Jan 21 19:44:06 2023 ... Running 'bcds'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Feb 22 16:27:23 2023 ... Running 'bcds'</span>
 <span class="r-in"><span><span class="fu">plotBcdsResults</span><span class="op">(</span>inSCE<span class="op">=</span><span class="va">sce</span>, reducedDimName<span class="op">=</span><span class="st">"UMAP"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Ignoring unknown parameters: linewidth</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Ignoring unknown parameters: linewidth</span>
 <span class="r-plt img"><img src="plotBcdsResults-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -454,7 +452,7 @@ sample on a single column. Default <code>TRUE</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

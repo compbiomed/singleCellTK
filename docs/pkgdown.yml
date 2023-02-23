@@ -1,5 +1,5 @@
-pandoc: 2.17.1.1
-pkgdown: 2.0.5
+pandoc: 2.19.2
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   01_import_and_qc_tutorial: 01_import_and_qc_tutorial.html
@@ -27,11 +27,11 @@ articles:
   installation: installation.html
   normalization: normalization.html
   pathwayAnalysis: pathwayAnalysis.html
-  scanpy_curated_worklfow: scanpy_curated_worklfow.html
+  scanpy_curated_workflow: scanpy_curated_workflow.html
   seurat_curated_workflow: seurat_curated_workflow.html
   trajectoryAnalysis: trajectoryAnalysis.html
   ui_qc: ui_qc.html
   visualization: visualization.html
   singleCellTK: singleCellTK.html
-last_built: 2023-01-22T00:42Z
+last_built: 2023-02-22T21:25Z
 

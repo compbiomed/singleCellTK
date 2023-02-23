@@ -216,8 +216,8 @@ object</p>
 <span>  <span class="va">inSCE</span>,</span>
 <span>  useAssay <span class="op">=</span> <span class="st">"scanpyScaledData"</span>,</span>
 <span>  useReducedDim <span class="op">=</span> <span class="st">"scanpyPCA"</span>,</span>
-<span>  nNeighbors <span class="op">=</span> <span class="fl">15L</span>,</span>
-<span>  dims <span class="op">=</span> <span class="fl">2L</span>,</span>
+<span>  nNeighbors <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  dims <span class="op">=</span> <span class="fl">40</span>,</span>
 <span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"louvain"</span>, <span class="st">"leiden"</span><span class="op">)</span>,</span>
 <span>  colDataName <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -226,7 +226,8 @@ object</p>
 <span>  use_weights <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  cor_method <span class="op">=</span> <span class="st">"pearson"</span>,</span>
 <span>  inplace <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  externalReduction <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  externalReduction <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">12345</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -243,19 +244,19 @@ in</p></dd>
 
 <dt>useReducedDim</dt>
 <dd><p>Reduction method to use for computing clusters. 
-Default <code>"pca"</code>.</p></dd>
+Default <code>"scanpyPCA"</code>.</p></dd>
 
 
 <dt>nNeighbors</dt>
 <dd><p>The size of local neighborhood (in terms of number of 
 neighboring data points) used for manifold approximation. Larger values 
 result in more global views of the manifold, while smaller values result in 
-more local data being preserved. Default <code>15L</code>.</p></dd>
+more local data being preserved. Default <code>10</code>.</p></dd>
 
 
 <dt>dims</dt>
 <dd><p>numeric value of how many components to use for computing
-clusters. Default <code>10</code>.</p></dd>
+clusters. Default <code>40</code>.</p></dd>
 
 
 <dt>method</dt>
@@ -276,30 +277,36 @@ clustering. Higher values lead to more clusters Default <code>1</code>.</p></dd>
 <dt>niterations</dt>
 <dd><p>How many iterations of the Leiden clustering method to 
 perform. Positive values above 2 define the total number of iterations to 
-perform, -1 has the method run until it reaches its optimal clustering.</p></dd>
+perform, -1 has the method run until it reaches its optimal clustering.
+Default <code>-1</code>.</p></dd>
 
 
 <dt>flavor</dt>
-<dd><p>Choose between to packages for computing the clustering.</p></dd>
+<dd><p>Choose between to packages for computing the clustering.
+Default <code>vtraag</code></p></dd>
 
 
 <dt>use_weights</dt>
-<dd><p>Boolean. Use weights from knn graph.</p></dd>
+<dd><p>Boolean. Use weights from knn graph. Default <code>FALSE</code></p></dd>
 
 
 <dt>cor_method</dt>
 <dd><p>correlation method to use. Options are ‘pearson’, 
-‘kendall’, and ‘spearman’. Default 'pearson'.</p></dd>
+‘kendall’, and ‘spearman’. Default <code>pearson</code>.</p></dd>
 
 
 <dt>inplace</dt>
 <dd><p>If True, adds dendrogram information to annData object, 
-else this function returns the information.</p></dd>
+else this function returns the information. Default <code>TRUE</code></p></dd>
 
 
 <dt>externalReduction</dt>
 <dd><p>Pass DimReduce object if PCA computed through
 other libraries. Default <code>NULL</code>.</p></dd>
+
+
+<dt>seed</dt>
+<dd><p>Specify numeric value to set as a seed. Default <code>12345</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -333,7 +340,7 @@ other libraries. Default <code>NULL</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
