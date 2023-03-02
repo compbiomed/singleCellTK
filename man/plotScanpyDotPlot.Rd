@@ -6,6 +6,7 @@
 \usage{
 plotScanpyDotPlot(
   inSCE,
+  useAssay = NULL,
   features,
   groupBy,
   standardScale = NULL,
@@ -17,6 +18,8 @@ plotScanpyDotPlot(
 }
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object.}
+
+\item{useAssay}{Assay to use for plotting. By default it will use counts assay.}
 
 \item{features}{Genes to plot. Sometimes is useful to pass a specific list of
 var names (e.g. genes). The var_names could be a dictionary or a list.}
