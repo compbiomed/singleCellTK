@@ -9,7 +9,7 @@ Normalizes the sce object according to the input parameters}
 runScanpyNormalizeData(
   inSCE,
   useAssay,
-  targetSum = 1,
+  targetSum = 10000,
   maxFraction = 0.05,
   normAssayName = "scanpyNormData"
 )
@@ -21,7 +21,7 @@ runScanpyNormalizeData(
 
 \item{targetSum}{If NULL, after normalization, each observation (cell) has a 
 total count equal to the median of total counts for observations (cells) 
-before normalization. Default \code{1}}
+before normalization. Default \code{1e4}}
 
 \item{maxFraction}{Include cells that have more counts than max_fraction of 
 the original total counts in at least one cell. Default \code{0.05}}

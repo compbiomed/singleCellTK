@@ -40,7 +40,7 @@
 #' @param useAssay Assay containing raw counts to use for normalization.
 #' @param targetSum If NULL, after normalization, each observation (cell) has a 
 #' total count equal to the median of total counts for observations (cells) 
-#' before normalization. Default \code{1}
+#' before normalization. Default \code{1e4}
 #' @param maxFraction Include cells that have more counts than max_fraction of 
 #' the original total counts in at least one cell. Default \code{0.05}
 #' @param normAssayName Name of new assay containing normalized data. Default
@@ -57,7 +57,7 @@
 #' @importFrom reticulate py_module_available py_set_seed import
 runScanpyNormalizeData <- function(inSCE,
                                    useAssay,
-                                   targetSum = 1,
+                                   targetSum = 1e4,
                                    maxFraction = 0.05,
                                    normAssayName = "scanpyNormData") {
   
@@ -104,7 +104,7 @@ runScanpyNormalizeData <- function(inSCE,
   scanpyObject$X <- normValue$X
   
   # log transform the data.
-  sc$pp$log1p(scanpyObject, copy = TRUE)
+  scanpyObject <- sc$pp$log1p(scanpyObject, copy = TRUE)
   
   inSCE <-
     .updateAssaySCEFromScanpy(inSCE, scanpyObject, normAssayName)
@@ -301,16 +301,16 @@ runScanpyFindHVG <- function(inSCE,
                                 min_disp = minDisp,
                                 max_disp = maxDisp)
     
-    tmpSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject)
-    metadata(inSCE)$hvg <- metadata(tmpSCE)['hvg'][['hvg']]   
+    #tmpSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject)
+    metadata(inSCE)$hvg <- scanpyObject$uns['hvg']
     rowData(inSCE)$dispersions <-
-      unlist(rowData(tmpSCE)['dispersions'])
+      unlist(scanpyObject$var['dispersions'])
     rowData(inSCE)$dispersions_norm <-
-      unlist(rowData(tmpSCE)['dispersions_norm'])   
+      unlist(scanpyObject$var['dispersions_norm'])
     rowData(inSCE)$means <-
-      unlist(rowData(tmpSCE)['means'])  
+      unlist(scanpyObject$var['means'])
     rowData(inSCE)$highly_variable <-
-      unlist(rowData(tmpSCE)['highly_variable'])
+      unlist(scanpyObject$var['highly_variable'])
     
     metadata(inSCE)$sctk$runFeatureSelection$seurat <-
       list(
@@ -333,57 +333,30 @@ runScanpyFindHVG <- function(inSCE,
                                 min_disp = minDisp,
                                 max_disp = maxDisp)
     
-    tmpSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject,
-                                         X_name = NULL,
-                                         layers = TRUE,
-                                         uns = TRUE,
-                                         var = TRUE,
-                                         obs = TRUE,
-                                         varm = TRUE,
-                                         obsm = TRUE,
-                                         varp = TRUE,
-                                         obsp = TRUE,
-                                         raw = FALSE,
-                                         skip_assays = TRUE,
-                                         hdf5_backed = TRUE,
-                                         verbose = NULL)
+    
     #metadata(inSCE)$hvg <- metadata(tmpSCE)['hvg'][['hvg']] 
-    metadata(fullSCE_cellranger)$hvg <- metadata(tmpSCE)['hvg'][['hvg']] 
+    metadata(fullSCE_cellranger)$hvg <- scanpyObject$uns['hvg']
     if (!altExp) {
       rowData(inSCE)$dispersions <-
-        unlist(rowData(tmpSCE)['dispersions'])
+        unlist(scanpyObject$var['dispersions'])
       rowData(inSCE)$dispersions_norm <-
-        unlist(rowData(tmpSCE)['dispersions_norm'])    
+        unlist(scanpyObject$var['dispersions_norm'])
       rowData(inSCE)$means <-
-        unlist(rowData(tmpSCE)['means']) 
+        unlist(scanpyObject$var['means'])
       rowData(inSCE)$highly_variable <-
-        unlist(rowData(tmpSCE)['highly_variable'])
+        unlist(scanpyObject$var['highly_variable'])
       
     }
     else{
-      scanpyToSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject,
-                                                X_name = NULL,
-                                                layers = TRUE,
-                                                uns = TRUE,
-                                                var = TRUE,
-                                                obs = TRUE,
-                                                varm = TRUE,
-                                                obsm = TRUE,
-                                                varp = TRUE,
-                                                obsp = TRUE,
-                                                raw = FALSE,
-                                                skip_assays = TRUE,
-                                                hdf5_backed = TRUE,
-                                                verbose = NULL)
-      altExpRows <- match(rownames(inSCE), rownames(scanpyToSCE))
+      altExpRows <- match(rownames(inSCE), rownames(scanpyObject))
       rowData(inSCE)$dispersions <-
-        unlist(rowData(tmpSCE)['dispersions'])[altExpRows]
+        unlist(scanpyObject$var['dispersions'])[altExpRows]
       rowData(inSCE)$dispersions_norm <-
-        unlist(rowData(tmpSCE)['dispersions_norm'])[altExpRows]   
+        unlist(scanpyObject$var['dispersions_norm'])[altExpRows]   
       rowData(inSCE)$means <-
-        unlist(rowData(tmpSCE)['means'])[altExpRows]
+        unlist(scanpyObject$var['means'])[altExpRows]
       rowData(inSCE)$highly_variable <-
-        unlist(rowData(tmpSCE)['highly_variable'])
+        unlist(scanpyObject$var['highly_variable'])
     }
     
     metadata(inSCE)$sctk$runFeatureSelection$cell_ranger <-
@@ -398,7 +371,7 @@ runScanpyFindHVG <- function(inSCE,
       )
     
     mergedRowData <- merge(rowData(fullSCE_cellranger), rowData(inSCE)[, metadata(inSCE)$sctk$runFeatureSelection$cell_ranger$rowData],
-          by = 'row.names', all = TRUE)
+                           by = 'row.names', all = TRUE)
     row.names(mergedRowData) <- mergedRowData$Row.names
     mergedRowData$Row.names <- NULL
     rowData(fullSCE_cellranger) <- mergedRowData
@@ -414,30 +387,16 @@ runScanpyFindHVG <- function(inSCE,
                                 min_disp = minDisp,
                                 max_disp = maxDisp)
     
-    tmpSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject,
-                                         X_name = NULL,
-                                         layers = TRUE,
-                                         uns = TRUE,
-                                         var = TRUE,
-                                         obs = TRUE,
-                                         varm = TRUE,
-                                         obsm = TRUE,
-                                         varp = TRUE,
-                                         obsp = TRUE,
-                                         raw = FALSE,
-                                         skip_assays = TRUE,
-                                         hdf5_backed = TRUE,
-                                         verbose = NULL)
-    metadata(inSCE)$hvg <- metadata(tmpSCE)['hvg'][['hvg']] 
+    metadata(inSCE)$hvg <- scanpyObject$uns['hvg']
     
     rowData(inSCE)$variances <-
-      unlist(rowData(tmpSCE)['variances'])
+      unlist(scanpyObject$var['variances'])
     rowData(inSCE)$variances_norm <-
-      unlist(rowData(tmpSCE)['variances_norm'])   
+      unlist(scanpyObject$var['variances_norm'])   
     rowData(inSCE)$means <-
-      unlist(rowData(tmpSCE)['means'])
+      unlist(scanpyObject$var['means'])
     rowData(inSCE)$highly_variable <-
-      unlist(rowData(tmpSCE)['highly_variable'])
+      unlist(scanpyObject$var['highly_variable'])
     metadata(inSCE)$sctk$runFeatureSelection$seurat_v3 <-
       list(
         useAssay = useAssay,
@@ -585,15 +544,15 @@ runScanpyPCA <- function(inSCE,
   
   metadata(inSCE)$scanpy$PCA <- scanpyObject
   
-  temp <- scanpyObject$obsm['X_pca']
+  temp <- scanpyObject$obsm[['X_pca']]
   #colnames(temp) <- paste0(rep("PC", ncol(temp)), seq(ncol(10)))
   rownames(temp) <- colnames(inSCE)
-  rotation <- scanpyObject$varm['PCs']
+  rotation <- scanpyObject$varm[['PCs']]
   rownames(rotation) <- rownames(inSCE)
   
   reducedDim(inSCE, reducedDimName) <- temp
   attr(reducedDim(inSCE, reducedDimName), "percentVar") <- 
-    scanpyObject$uns['pca'][['variance_ratio']]
+    scanpyObject$uns[['pca']][['variance_ratio']]
   attr(reducedDim(inSCE, reducedDimName), "rotation") <- rotation
   metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]] <- params
   
@@ -646,7 +605,9 @@ plotScanpyPCA <- function(inSCE,
     )
   }
   reducedDim (inSCE, "X_pca") <- reducedDim(inSCE, reducedDimName)
+  useAssay = metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]]$useAssay
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,
+                                             X_name = useAssay,
                                              colData = TRUE,
                                              rowData = TRUE,
                                              varm = TRUE,
@@ -856,7 +817,7 @@ runScanpyFindClusters <- function(inSCE,
   }
   
   method <- match.arg(method)
-
+  
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,  
                                              X_name = useAssay,
                                              assays = FALSE,
@@ -1010,16 +971,11 @@ runScanpyUMAP <- function(inSCE,
     useReducedDim <- "pca"
   } 
   
-  if(!is.null(useAssay)){
-    sc$pp$neighbors(scanpyObject, 
-                    n_neighbors = as.integer(nNeighbors), 
-                    n_pcs = 0)
-  } else{
-    sc$pp$neighbors(scanpyObject, 
-                    n_neighbors = as.integer(nNeighbors), 
-                    n_pcs = as.integer(dims),
-                    use_rep = useReducedDim)
-  }
+  sc$pp$neighbors(scanpyObject, 
+                  n_neighbors = as.integer(nNeighbors), 
+                  n_pcs = as.integer(dims),
+                  use_rep = useReducedDim)
+  
   
   sc$tl$umap(scanpyObject, 
              n_components = 2L,
@@ -1028,8 +984,8 @@ runScanpyUMAP <- function(inSCE,
              gamma = gamma,
              spread = spread)
   
-
-  temp <- scanpyObject$obsm['X_umap']
+  
+  temp <- scanpyObject$obsm[['X_umap']]
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
   metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]] <- params
@@ -1132,21 +1088,14 @@ runScanpyTSNE <- function(inSCE,
     useReducedDim <- "pca"
   }
   
-  if(!is.null(useAssay)){
-    sc$tl$tsne(scanpyObject, 
-               n_pcs = as.integer(dims),
-               use_rep = 'X',
-               perplexity = as.integer(perplexity))
-  }
-  else{
-    sc$tl$tsne(scanpyObject, 
-               n_pcs = as.integer(dims),
-               use_rep = useReducedDim, 
-               perplexity = as.integer(perplexity))
-  }
+  sc$tl$tsne(scanpyObject, 
+             n_pcs = as.integer(dims),
+             use_rep = useReducedDim, 
+             perplexity = as.integer(perplexity))
   
-
-  temp <- scanpyObject$obsm['X_tsne']
+  
+  
+  temp <- scanpyObject$obsm[['X_tsne']]
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
   metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]] <- params
@@ -1202,7 +1151,9 @@ plotScanpyEmbedding <- function(inSCE,
       'runScanpyTSNE' first."
     )
   }
+  useAssay <- metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]]$useAssay
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,
+                                             X_name = useAssay,
                                              assays = FALSE,
                                              colData = TRUE,
                                              rowData = TRUE,
@@ -1289,7 +1240,7 @@ runScanpyFindMarkers <- function(inSCE,
   colData(tmpSCE)[colDataName] <- as.character(colData(inSCE)[[colDataName]])
   rowData(tmpSCE)$id <- rownames(inSCE)
   
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = tmpSCE)
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = tmpSCE, X_name = "temp")
   if(!is.null(nGenes)){
     nGenes = as.integer(nGenes)
   }
@@ -1299,8 +1250,7 @@ runScanpyFindMarkers <- function(inSCE,
                           reference = group2,
                           method = test, 
                           n_genes = nGenes,
-                          corr_method = corr_method,
-                          layer = "temp")
+                          corr_method = corr_method)
   
   py <- reticulate::py
   py$scanpyObject <- scanpyObject
@@ -1489,7 +1439,6 @@ plotScanpyMarkerGenesHeatmap <- function(inSCE,
   }
   scanpyObject <- metadata(inSCE)[["findMarkerScanpyObject"]]
   
-  
   if(!is.null(features)){
     return(sc$pl$rank_genes_groups_heatmap(scanpyObject,
                                            groups = groups,
@@ -1501,13 +1450,13 @@ plotScanpyMarkerGenesHeatmap <- function(inSCE,
   }
   else
     return(sc$pl$rank_genes_groups_heatmap(scanpyObject,
-                                         groups = groups,
-                                         groupby = groupBy,
-                                         n_genes = as.integer(nGenes),
-                                         var_names = NULL,
-                                         min_logfoldchange = log2fcThreshold,
-                                         show_gene_labels = TRUE,
-                                         dendrogram = FALSE))
+                                           groups = groups,
+                                           groupby = groupBy,
+                                           n_genes = as.integer(nGenes),
+                                           var_names = NULL,
+                                           min_logfoldchange = log2fcThreshold,
+                                           show_gene_labels = TRUE,
+                                           dendrogram = FALSE))
   
 }
 
@@ -1737,6 +1686,8 @@ plotScanpyMarkerGenesMatrixPlot <- function(inSCE,
 #' plotScanpyHeatmap
 #' 
 #' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param useAssay Assay to use for plotting. By default it will use counts
+#' assay.
 #' @param features Genes to plot. Sometimes is useful to pass a specific list of
 #'  var names (e.g. genes). The var_names could be a dictionary or a list. 
 #' @param groupBy The key of the observation grouping to consider.
@@ -1766,6 +1717,7 @@ plotScanpyMarkerGenesMatrixPlot <- function(inSCE,
 #' @export
 #' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyHeatmap <- function(inSCE,
+                              useAssay = NULL,
                               features,
                               groupBy,
                               standardScale = 'var',
@@ -1785,7 +1737,8 @@ plotScanpyHeatmap <- function(inSCE,
     return(inSCE)
   }
   
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,
+                                             X_name = useAssay)
   
   return(sc$pl$heatmap(scanpyObject,
                        var_names = features,
@@ -1802,6 +1755,7 @@ plotScanpyHeatmap <- function(inSCE,
 #' plotScanpyDotPlot
 #' 
 #' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param useAssay Assay to use for plotting. By default it will use counts assay.
 #' @param features Genes to plot. Sometimes is useful to pass a specific list of
 #'  var names (e.g. genes). The var_names could be a dictionary or a list. 
 #' @param groupBy The key of the observation grouping to consider.
@@ -1840,6 +1794,7 @@ plotScanpyHeatmap <- function(inSCE,
 #' @export
 #' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyDotPlot <- function(inSCE,
+                              useAssay = NULL,
                               features,
                               groupBy,
                               standardScale = NULL,
@@ -1861,7 +1816,8 @@ plotScanpyDotPlot <- function(inSCE,
     return(inSCE)
   }
   
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,
+                                             X_name = useAssay)
   
   return(sc$pl$dotplot(scanpyObject,
                        var_names = features,
@@ -1881,6 +1837,8 @@ plotScanpyDotPlot <- function(inSCE,
 #' plotScanpyViolin
 #' 
 #' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param useAssay Assay to use for plotting. By default it will use counts
+#' assay.
 #' @param features Genes to plot. Sometimes is useful to pass a specific list of
 #'  var names (e.g. genes). The var_names could be a dictionary or a list. 
 #' @param groupBy The key of the observation grouping to consider.
@@ -1903,6 +1861,7 @@ plotScanpyDotPlot <- function(inSCE,
 #' @export
 #' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyViolin <- function(inSCE,
+                             useAssay = NULL,
                              features,
                              groupBy, 
                              xlabel = '', 
@@ -1921,7 +1880,8 @@ plotScanpyViolin <- function(inSCE,
     return(inSCE)
   }
   
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,
+                                             X_name = useAssay)
   
   return(sc$pl$violin(scanpyObject,
                       keys = features,
