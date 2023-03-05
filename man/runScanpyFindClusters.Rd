@@ -12,7 +12,7 @@ runScanpyFindClusters(
   useReducedDim = "scanpyPCA",
   nNeighbors = 10,
   dims = 40,
-  method = c("louvain", "leiden"),
+  method = c("leiden", "louvain"),
   colDataName = NULL,
   resolution = 1,
   niterations = -1,
