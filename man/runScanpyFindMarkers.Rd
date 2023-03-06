@@ -11,7 +11,7 @@ runScanpyFindMarkers(
   colDataName,
   group1 = "all",
   group2 = "rest",
-  test = c("t-test", "wilcoxon", "t-test_overestim_var", "logreg"),
+  test = c("wilcoxon", "t-test", "t-test_overestim_var", "logreg"),
   corr_method = c("benjamini-hochberg", "bonferroni")
 )
 }

@@ -1278,9 +1278,9 @@ shinyServer(function(input, output, session) {
 
 
 
-      #tSNE/UMAP
-          shinyjs::enable(selector = "#SeuratUI > div[value='tSNE/UMAP']")
-          updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
+      #2D-Embedding
+          shinyjs::enable(selector = "#SeuratUI > div[value='2D-Embedding']")
+          updateCollapse(session = session, "SeuratUI", style = list("2D-Embedding" = "success"))
 
           # output$plot_tsne <- renderPlotly({
           #   metadata(inSCE)$seurat$plots$tsne
@@ -3222,7 +3222,7 @@ shinyServer(function(input, output, session) {
                            choices = reducedDimNames(vals$counts),
                            selected = dimrednamesave,
                            server = TRUE)
-      message(paste0(date(), " ... Plotting tSNE/UMAP."))
+      message(paste0(date(), " ... Plotting 2D-Embedding."))
       output$plotDimRed_tsneUmap <- renderPlotly({
         isolate({
           plotly::ggplotly(plotDimRed(
@@ -7609,7 +7609,7 @@ shinyServer(function(input, output, session) {
       condition = input$pca_compute_heatmap)
 
     shinyjs::enable(
-      selector = "#SeuratUI > div[value='tSNE/UMAP']")
+      selector = "#SeuratUI > div[value='2D-Embedding']")
 
     shinyjs::show(selector = ".seurat_pca_plots")
 
@@ -7707,7 +7707,7 @@ shinyServer(function(input, output, session) {
       condition = input$ica_compute_heatmap)
 
     shinyjs::enable(
-      selector = "#SeuratUI > div[value='tSNE/UMAP']")
+      selector = "#SeuratUI > div[value='2D-Embedding']")
 
     shinyjs::show(selector = ".seurat_ica_plots")
 
@@ -7742,14 +7742,53 @@ shinyServer(function(input, output, session) {
       updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
       message(paste0(date(), " ... Finding Clusters Complete"))
 
+      if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
+        appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "UMAP Plot",
+                                                                   panel(heading = "UMAP Plot",
+                                                                         plotlyOutput(outputId = "plot_umap_clustering")
+                                                                   )
+        ), select = TRUE)
+        message(paste0(date(), " ... Re-generating UMAP Plot with Cluster Labels"))
+        
+        output$plot_umap_clustering <- renderPlotly({
+          isolate({
+            plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
+                                                 useReduction = "umap",
+                                                 showLegend = TRUE))
+          })
+        })
+        shinyjs::toggleState(
+          selector = ".seurat_clustering_plots a[data-value='UMAP Plot']",
+          condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]]))
+      }
+      
+      if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])){
+        appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "tSNE Plot",
+                                                                   panel(heading = "tSNE Plot",
+                                                                         plotlyOutput(outputId = "plot_tsne_clustering")
+                                                                   )
+        ), select = TRUE)
+        
+        message(paste0(date(), " ... Re-generating tSNE Plot with Cluster Labels"))
+        
+        output$plot_tsne_clustering <- renderPlotly({
+          isolate({
+            plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
+                                                 useReduction = "tsne",
+                                                 showLegend = TRUE))
+          })
+        })
+        shinyjs::toggleState(
+          selector = ".seurat_clustering_plots a[data-value='tSNE Plot']",
+          condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]]))
+      }
 
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])){
         appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "PCA Plot",
                                                                    panel(heading = "PCA Plot",
                                                                          plotlyOutput(outputId = "plot_pca_clustering")
                                                                    )
-        ), select = TRUE
-
+        )
         )
         message(paste0(date(), " ... Re-generating PCA Plot with Cluster Labels"))
         output$plot_pca_clustering <- renderPlotly({
@@ -7768,7 +7807,7 @@ shinyServer(function(input, output, session) {
                                                                    panel(heading = "ICA Plot",
                                                                          plotlyOutput(outputId = "plot_ica_clustering")
                                                                    )
-        ), select = TRUE)
+        ))
 
         message(paste0(date(), " ... Re-generating ICA Plot with Cluster Labels"))
         output$plot_ica_clustering <- renderPlotly({
@@ -7781,49 +7820,6 @@ shinyServer(function(input, output, session) {
         shinyjs::toggleState(
           selector = ".seurat_clustering_plots a[data-value='ICA Plot']",
           condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]]))
-      }
-
-      if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])){
-        appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "tSNE Plot",
-                                                                   panel(heading = "tSNE Plot",
-                                                                         plotlyOutput(outputId = "plot_tsne_clustering")
-                                                                   )
-        )
-        )
-
-        message(paste0(date(), " ... Re-generating tSNE Plot with Cluster Labels"))
-
-        output$plot_tsne_clustering <- renderPlotly({
-          isolate({
-              plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
-                                                   useReduction = "tsne",
-                                                   showLegend = TRUE))
-            })
-          })
-        shinyjs::toggleState(
-          selector = ".seurat_clustering_plots a[data-value='tSNE Plot']",
-          condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]]))
-      }
-
-      if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
-        appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "UMAP Plot",
-                                                                   panel(heading = "UMAP Plot",
-                                                                         plotlyOutput(outputId = "plot_umap_clustering")
-                                                                   )
-        )
-        )
-        message(paste0(date(), " ... Re-generating UMAP Plot with Cluster Labels"))
-
-        output$plot_umap_clustering <- renderPlotly({
-          isolate({
-              plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
-                                                   useReduction = "umap",
-                                                   showLegend = TRUE))
-            })
-          })
-        shinyjs::toggleState(
-          selector = ".seurat_clustering_plots a[data-value='UMAP Plot']",
-          condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]]))
       }
 
       shinyjs::show(selector = ".seurat_clustering_plots")
@@ -7842,7 +7838,12 @@ shinyServer(function(input, output, session) {
       #populate updated colData items for findMarkers tab
       updateSelectInput(session = session,
                         inputId = "seuratFindMarkerSelectPhenotype",
-                        choices = colnames(colData(vals$counts)))
+                        choices = colnames(colData(vals$counts)),
+                        selected = paste0(
+                          "Seurat_", 
+                          input$algorithm.use, 
+                          "_Resolution", 
+                          input$resolution_clustering))
 
       #populate reducDim objects from seuratObject for findMarkers tab
       updateSelectInput(session = session,
@@ -8279,7 +8280,7 @@ shinyServer(function(input, output, session) {
                                                  showLegend = FALSE))
           })
         })
-      updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
+      updateCollapse(session = session, "SeuratUI", style = list("2D-Embedding" = "success"))
       shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
       S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       shinyjs::hide(
@@ -8332,7 +8333,7 @@ shinyServer(function(input, output, session) {
                                                  showLegend = FALSE))
           })
         })
-      updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
+      updateCollapse(session = session, "SeuratUI", style = list("2D-Embedding" = "success"))
       shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
       S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       shinyjs::hide(
@@ -8462,14 +8463,14 @@ shinyServer(function(input, output, session) {
             if(is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])
                && is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]])){
               updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
-              updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "primary"))
-              shinyjs::disable(selector = "#SeuratUI > div[value='tSNE/UMAP']")
+              updateCollapse(session = session, "SeuratUI", style = list("2D-Embedding" = "primary"))
+              shinyjs::disable(selector = "#SeuratUI > div[value='2D-Embedding']")
             }
 
-            #If TSNE and UMAP both removed from sce object, reset tSNE/UMAP tab and reset/lock next tab
+            #If TSNE and UMAP both removed from sce object, reset 2D-Embedding tab and reset/lock next tab
             if(is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])
                && is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
-              updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "primary"))
+              updateCollapse(session = session, "SeuratUI", style = list("2D-Embedding" = "primary"))
               updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "primary"))
               shinyjs::disable(selector = "#SeuratUI > div[value='Clustering']")
             }
@@ -8508,9 +8509,9 @@ shinyServer(function(input, output, session) {
         selector = "#ScanpyUI > div[value='Dimensionality Reduction']")
       
       shinyjs::disable(
-        selector = "#SeuratUI > div[value='tSNE/UMAP']")
+        selector = "#SeuratUI > div[value='2D-Embedding']")
       shinyjs::disable(
-        selector = "#ScanpyUI > div[value='tSNE/UMAP']")
+        selector = "#ScanpyUI > div[value='2D-Embedding']")
       
       shinyjs::disable(
         selector = "#SeuratUI > div[value='Clustering']")
@@ -9383,14 +9384,8 @@ shinyServer(function(input, output, session) {
                                             maxFraction = input$scanpy_maxFraction,
                                             normAssayName = "scanpyNormData"
                                             )
-      # metadata(vals$counts)$sctk$scanpyUseAssay <- input$scanpySelectNormalizationAssay
-      # 
-      # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts)
       updateCollapse(session = session, "ScanpyUI", style = list("Normalize Data" = "success"))
       shinyjs::enable(selector = "#ScanpyUI > div[value='Highly Variable Genes']")
-      # S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
-      # shinyjs::hide(
-      #   selector = "div[value='Downstream Analysis']")
       updateAssayInputs()
       message(paste0(date(), " ... Normalization Complete"))
     }))
@@ -9403,8 +9398,6 @@ shinyServer(function(input, output, session) {
       req(vals$counts)
       message(paste0(date(), " ... Finding High Variable Genes"))
       useAssay <- NULL
-      vals$counts <- runScanpyScaleData(inSCE = vals$counts,
-                                        useAssay = "scanpyNormData")
       
       maxDisp <- NULL
       if(input$scanpy_maxDisp_Inf){
@@ -9414,14 +9407,8 @@ shinyServer(function(input, output, session) {
         maxDisp <- input$scanpy_maxDisp
       }
       
-      if(input$scanpy_hvg_method == "cell_ranger"){
-        useAssay <- "scanpyNormData"
-      } else{
-        useAssay <- "scanpyScaledData"
-      }
-      
         vals$counts <- runScanpyFindHVG(inSCE = vals$counts,
-                                        useAssay = useAssay,
+                                        useAssay = "scanpyNormData",
                                         method = input$scanpy_hvg_method,
                                         hvgNumber = input$scanpy_hvg_no_features,
                                         minMean = input$scanpy_minMean,
@@ -9429,13 +9416,9 @@ shinyServer(function(input, output, session) {
                                         minDisp = input$scanpy_minDisp,
                                         maxDisp = maxDisp)
 
-      # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, varFeatures = FALSE)
       message(paste0(date(), " ... Finding HVG Complete"))
       updateCollapse(session = session, "ScanpyUI", style = list("Highly Variable Genes" = "success"))
       shinyjs::enable(selector = "#ScanpyUI > div[value='Dimensionality Reduction']")
-      # S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
-      # shinyjs::hide(
-      #   selector = "div[value='Downstream Analysis']")
         
         message(paste0(date(), " ... Plotting HVG"))
         output$scanpy_plot_hvg <- renderPlot({
@@ -9448,54 +9431,33 @@ shinyServer(function(input, output, session) {
     }
   ))
   
-  output$scanpy_hvg_output <- renderText({
-    req(vals$counts)
-    if(!is.null(metadata(vals$counts)$hvg)){
-      isolate({
-        getTopHVG(inSCE = vals$counts, 
-                  method = input$scanpy_hvg_method, 
-                  hvgNumber = input$scanpy_hvg_no_features_view)
-      })
-    }
-  })
-  
   # PCA
   observeEvent(input$scanpy_run_pca_button, withConsoleMsgRedirect(
     msg = "Please wait while PCA is being computed. See console log for progress.",
     {
       req(vals$counts)
-      # #remove tabs if not generated
-      # removeTab(inputId = "seuratPCAPlotTabset", target = "PCA Plot")
-      # removeTab(inputId = "seuratPCAPlotTabset", target = "Elbow Plot")
-      # removeTab(inputId = "seuratPCAPlotTabset", target = "JackStraw Plot")
-      # removeTab(inputId = "seuratPCAPlotTabset", target = "Heatmap Plot")
-      # 
+
       message(paste0(date(), " ... Running PCA"))
-      # # For the commented line below:
-      # # `useFeatureSubset`, in any functions that use it, goes to util function
-      # # `.parseUseFeatureSubset()` which does a check for rownames(inSCE). Thus
-      # # incompatible with Seurat's "_"-to-"-" change. But in `runSeuratPCA/ICA`,
-      # # we automatically detect seurat HVG from the object when `useFeatureSubset
-      # # = NULL`, so no need to specify this now.
+      
+      vals$counts <- runScanpyScaleData(inSCE = vals$counts,
+                                        useAssay = "scanpyNormData")
+                                        
       vals$counts <- runScanpyPCA(inSCE = vals$counts,
-                                  useAssay = "scanpyNormData", 
+                                  useAssay = "scanpyScaledData", 
                                   method = input$scanpy_pca_method,
                                   nPCs = input$scanpy_pca_no_components,
                                   reducedDimName = "scanpyPCA",
                                   use_highly_variable = TRUE)
-      # 
-      # vals$counts@metadata$seurat$count_pc <- dim(convertSCEToSeurat(vals$counts)[["pca"]])[2]
-      # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
-      # 
-      appendTab(inputId = "scanpyPCAPlotTabset", tabPanel(title = "PCA Plot",
-                                                          panel(heading = "PCA Plot",
-                                                                plotOutput(outputId = "scanpy_plot_pca")
-                                                          )
-      ), select = TRUE)
       
       appendTab(inputId = "scanpyPCAPlotTabset", tabPanel(title = "PCA Variance",
                                                           panel(heading = "PCA Variance",
                                                                 plotOutput(outputId = "scanpy_plot_pca_variance")
+                                                          )
+      ), select = TRUE)
+      
+      appendTab(inputId = "scanpyPCAPlotTabset", tabPanel(title = "PCA Plot",
+                                                          panel(heading = "PCA Plot",
+                                                                plotOutput(outputId = "scanpy_plot_pca")
                                                           )
       ), select = FALSE)
       
@@ -9509,7 +9471,7 @@ shinyServer(function(input, output, session) {
 
       output$scanpy_plot_pca_variance <- renderPlot({
         isolate({
-          plotScanpyPCAVariance(inSCE = vals$counts)
+          plotScanpyPCAVariance(inSCE = vals$counts, log = TRUE)
         })
       })
       
@@ -9524,148 +9486,28 @@ shinyServer(function(input, output, session) {
           plotScanpyPCA(inSCE = vals$counts)
         })
       })
-      # if (input$pca_compute_elbow) {
-      #   appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "Elbow Plot",
-      #                                                       panel(
-      #                                                         heading = "Elbow Plot",
-      #                                                         plotlyOutput(outputId = "plot_elbow_pca")
-      #                                                       )
-      #   ))
-      #   
-      #   message(paste0(date(), " ... Generating Elbow Plot"))
-      #   updateNumericInput(session = session, inputId = "pca_significant_pc_counter", value = singleCellTK:::.computeSignificantPC(vals$counts))
-      #   output$plot_elbow_pca <- renderPlotly({
-      #     isolate({
-      #       plotSeuratElbow(inSCE = vals$counts,
-      #                       significantPC = singleCellTK:::.computeSignificantPC(vals$counts))
-      #     })
-      #   })
-      #   output$pca_significant_pc_output <- renderText({
-      #     isolate({
-      #       paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", singleCellTK:::.computeSignificantPC(vals$counts)," </span> </p> <hr>")
-      #     })
-      #   })
-      # }
-      # if (input$pca_compute_jackstraw) {
-      #   appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "JackStraw Plot",
-      #                                                       panel(heading = "JackStraw Plot",
-      #                                                             plotlyOutput(outputId = "plot_jackstraw_pca")
-      #                                                       )
-      #   ))
-      #   message(paste0(date(), " ... Generating JackStraw Plot"))
-      #   vals$counts <- runSeuratJackStraw(inSCE = vals$counts,
-      #                                     useAssay = "seuratScaledData",
-      #                                     dims = input$pca_no_components)
-      #   output$plot_jackstraw_pca <- renderPlotly({
-      #     isolate({
-      #       plotly::ggplotly(plotSeuratJackStraw(inSCE = vals$counts,
-      #                                            dims = input$pca_no_components))
-      #     })
-      #   })
-      # }
-      # if (input$pca_compute_heatmap) {
-      #   appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "Heatmap Plot",
-      #                                                       panel(heading = "Heatmap Plot",
-      #                                                             panel(heading = "Plot Options",
-      #                                                                   fluidRow(
-      #                                                                     column(4, dropdown(
-      #                                                                       fluidRow(
-      #                                                                         column(12,
-      #                                                                                fluidRow(actionBttn(inputId = "closeDropDownSeuratHM", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
-      #                                                                                fluidRow(
-      #                                                                                  column(6,
-      #                                                                                         pickerInput(inputId = "picker_dimheatmap_components_pca", label = "Select principal components to plot:", choices = c(), options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), multiple = TRUE)
-      #                                                                                  ),
-      #                                                                                  column(6,
-      #                                                                                         sliderInput(inputId = "slider_dimheatmap_pca", label = "Number of columns for the plot: ", min = 1, max = 4, value = 2)
-      #                                                                                  )
-      #                                                                                ),
-      #                                                                                actionBttn(
-      #                                                                                  inputId = "plot_heatmap_pca_button",
-      #                                                                                  label = "Update",
-      #                                                                                  style = "bordered",
-      #                                                                                  color = "primary",
-      #                                                                                  size = "sm"
-      #                                                                                )
-      #                                                                         )
-      #                                                                       ),
-      #                                                                       inputId = "dropDownSeuratHM",
-      #                                                                       icon = icon("cog"),
-      #                                                                       status = "primary",
-      #                                                                       circle = FALSE,
-      #                                                                       inline = TRUE
-      #                                                                     )),
-      #                                                                     column(7, fluidRow(h6("Heatmaps of the top features correlated with each component"), align="center"))
-      #                                                                   )
-      #                                                             ),
-      #                                                             panel(heading = "Plot",
-      #                                                                   shinyjqui::jqui_resizable(plotOutput(outputId = "plot_heatmap_pca"), options = list(maxWidth = 700))
-      #                                                             )
-      #                                                       )
-      #   ))
-      #   
-      #   message(paste0(date(), "  ... Generating Heatmaps"))
-      #   
-      #   vals$counts@metadata$seurat$heatmap_pca <- runSeuratHeatmap(inSCE = vals$counts,
-      #                                                               useAssay = "seuratNormData",
-      #                                                               useReduction = "pca",
-      #                                                               dims = input$pca_no_components,
-      #                                                               nfeatures = input$pca_compute_heatmap_nfeatures,
-      #                                                               combine = FALSE,
-      #                                                               fast = FALSE)
-      #   output$plot_heatmap_pca <- renderPlot({
-      #     isolate({
-      #       plotSeuratHeatmap(plotObject = vals$counts@metadata$seurat$heatmap_pca,
-      #                         dims = input$pca_no_components,
-      #                         ncol = 2,
-      #                         labels = c("PC1", "PC2", "PC3", "PC4"))
-      #     })
-      #   })
-      #   updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_pc, "PC"))
-      # }
+
       updateCollapse(session = session, "ScanpyUI", style = list("Dimensionality Reduction" = "success"))
-      # 
-      # #Enable/Disable PCA plot panels not selected for computation (ElbowPlot, JackStraw or Heatmap)
-      # shinyjs::enable(
-      #   selector = ".seurat_pca_plots a[data-value='PCA Plot']")
-      # 
-      # shinyjs::toggleState(
-      #   selector = ".seurat_pca_plots a[data-value='Elbow Plot']",
-      #   condition = input$pca_compute_elbow)
-      # 
-      # shinyjs::toggleState(
-      #   selector = ".seurat_pca_plots a[data-value='JackStraw Plot']",
-      #   condition = input$pca_compute_jackstraw)
-      # 
-      # shinyjs::toggleState(
-      #   selector = ".seurat_pca_plots a[data-value='Heatmap Plot']",
-      #   condition = input$pca_compute_heatmap)
-      # 
       shinyjs::enable(
-        selector = "#ScanpyUI > div[value='tSNE/UMAP']")
+        selector = "#ScanpyUI > div[value='2D-Embedding']")
 
       shinyjs::show(selector = ".scanpy_pca_plots")
-      # 
-      # S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
-      # shinyjs::hide(
-      #   selector = "div[value='Downstream Analysis']")
-      # 
       message(paste0(date(), " ... PCA Complete"))
     }))
+  
   
   # TSNE
   observeEvent(input$scanpy_run_tsne_button, withConsoleMsgRedirect(
     msg = "Please wait while tSNE is being computed. See console log for progress.",
     {
       req(vals$counts)
-      # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_tsne_method]])){
         message(paste0(date(), " ... Running tSNE"))
         vals$counts <- runScanpyTSNE(inSCE = vals$counts, 
                                      useReducedDim = "scanpyPCA",
+                                     # useAssay = "scanpyScaledData",
                                      reducedDimName = "scanpyTSNE",
-                                     dims = 10L,
+                                     dims = input$scanpy_pca_significant_pc_counter,
                                      perplexity = input$scanpy_perplexity_tsne)
-      #   vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
         message(paste0(date(), " ... Plotting tSNE"))
         
         output$scanpy_plot_tsne <- renderPlot({
@@ -9674,17 +9516,9 @@ shinyServer(function(input, output, session) {
                                                  reducedDimName = "scanpyTSNE")
           })
         })
-        updateCollapse(session = session, "ScanpyUI", style = list("tSNE/UMAP" = "success"))
+        updateCollapse(session = session, "ScanpyUI", style = list("2D-Embedding" = "success"))
         shinyjs::enable(selector = "#ScanpyUI > div[value='Clustering']")
-      #   S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
-      #   shinyjs::hide(
-      #     selector = "div[value='Downstream Analysis']")
         message(paste0(date(), " ... tSNE Complete"))
-      #   
-      # }
-      # else{
-      #   showNotification(paste0("'", input$reduction_tsne_method, "' reduction not found in input object"))
-      # }
     }))
   
   #UMAP 
@@ -9695,16 +9529,16 @@ shinyServer(function(input, output, session) {
       # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_umap_method]])){
          message(paste0(date(), " ... Running UMAP"))
          vals$counts <- runScanpyUMAP(inSCE = vals$counts, 
-                                      useReducedDim = "scanpyPCA",
+                                      useReducedDim = "scanpyPCA", 
+                                      # useAssay = "scanpyScaledData", #not needed when using PCA
                                       reducedDimName = "scanpyUMAP",
-                                      dims = input$scanpy_reduction_umap_count,  
+                                      dims = input$scanpy_pca_significant_pc_counter,  
                                       minDist = input$scanpy_min_dist_umap,
                                       nNeighbors = input$scanpy_n_neighbors_umap, 
                                       spread = input$scanpy_spread_umap,
                                       alpha = input$scanpy_spread_alpha, 
                                       gamma = input$scanpy_spread_gamma)
                                       
-      #   vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
         message(paste0(date(), " ... Plotting UMAP"))
 
         output$scanpy_plot_umap <- renderPlot({
@@ -9713,17 +9547,9 @@ shinyServer(function(input, output, session) {
                                 reducedDimName = "scanpyUMAP")
           })
         })
-        updateCollapse(session = session, "ScanpyUI", style = list("tSNE/UMAP" = "success"))
+        updateCollapse(session = session, "ScanpyUI", style = list("2D-Embedding" = "success"))
         shinyjs::enable(selector = "#ScanpyUI > div[value='Clustering']")
-      #   S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
-      #   shinyjs::hide(
-      #     selector = "div[value='Downstream Analysis']")
-         message(paste0(date(), " ... UMAP Complete"))
-      #   
-      # }
-      # else{
-      #   showNotification(paste0("'", input$reduction_umap_method, "' reduction not found in input object"))
-      # }
+        message(paste0(date(), " ... UMAP Complete"))
     }))
   
   #Clustering
@@ -9731,7 +9557,6 @@ shinyServer(function(input, output, session) {
     msg = "Please wait while clusters are being computed. See console log for progress.",
     {
        req(vals$counts)
-      # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_clustering_method]])){
         #Remove plot tabs if generated before
         removeTab(inputId = "scanpyClusteringPlotTabset", target = "PCA Plot")
         removeTab(inputId = "scanpyClusteringPlotTabset", target = "ICA Plot")
@@ -9739,25 +9564,69 @@ shinyServer(function(input, output, session) {
         removeTab(inputId = "scanpyClusteringPlotTabset", target = "UMAP Plot")
 
          message(paste0(date(), " ... Clustering Dataset"))
-         vals$counts <- runScanpyFindClusters(inSCE = vals$counts,
-                                              useAssay = "scanpyScaledData", 
+         vals$counts <- runScanpyFindClusters(inSCE = vals$counts, 
                                               useReducedDim = "scanpyPCA",
                                               nNeighbors = input$scanpy_nNeighbors,
-                                              dims = input$scanpy_reduction_clustering_count, 
+                                              dims = input$scanpy_pca_significant_pc_counter, 
                                               method = input$scanpy_algorithm.use,
                                               resolution = input$scanpy_resolution_clustering,
                                               niterations = -1,
                                               cor_method = input$scanpy_corr_method)
         updateCollapse(session = session, "ScanpyUI", style = list("Clustering" = "success"))
          message(paste0(date(), " ... Finding Clusters Complete"))
-      #   
-      #   
-      #   if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])){
+         
+         if("scanpyTSNE" %in% reducedDimNames(vals$counts)){
+           appendTab(inputId = "scanpyClusteringPlotTabset", tabPanel(title = "tSNE Plot",
+                                                                      panel(heading = "tSNE Plot",
+                                                                            plotOutput(outputId = "scanpy_plot_tsne_clustering")
+                                                                      )
+           )
+           )
+           
+           message(paste0(date(), " ... Re-generating tSNE Plot with Cluster Labels"))
+           
+           output$scanpy_plot_tsne_clustering <- renderPlot({
+             isolate({
+               plotScanpyEmbedding(inSCE = vals$counts, 
+                                   reducedDimName = "scanpyTSNE",
+                                   color = paste0(
+                                     "Scanpy_", 
+                                     input$scanpy_algorithm.use, 
+                                     "_", 
+                                     input$scanpy_resolution_clustering))
+             })
+           })
+         }
+         
+         if("scanpyUMAP" %in% reducedDimNames(vals$counts)){
+           appendTab(inputId = "scanpyClusteringPlotTabset", tabPanel(title = "UMAP Plot",
+                                                                      panel(heading = "UMAP Plot",
+                                                                            plotOutput(outputId = "scanpy_plot_umap_clustering")
+                                                                      )
+           ), select = TRUE
+           )
+           message(paste0(date(), " ... Re-generating UMAP Plot with Cluster Labels"))
+           
+           output$scanpy_plot_umap_clustering <- renderPlot({
+             isolate({
+               plotScanpyEmbedding(
+                 inSCE = vals$counts,
+                 reducedDimName = "scanpyUMAP",
+                 color = paste0(
+                   "Scanpy_", 
+                   input$scanpy_algorithm.use, 
+                   "_", 
+                   input$scanpy_resolution_clustering)
+               )
+             })
+           })
+         }
+
           appendTab(inputId = "scanpyClusteringPlotTabset", tabPanel(title = "PCA Plot",
                                                                      panel(heading = "PCA Plot",
                                                                            plotOutput(outputId = "scanpy_plot_pca_clustering")
                                                                      )
-          ), select = TRUE)
+          ), select = FALSE)
           
           message(paste0(date(), " ... Re-generating PCA Plot with Cluster Labels"))
           output$scanpy_plot_pca_clustering <- renderPlot({
@@ -9770,85 +9639,8 @@ shinyServer(function(input, output, session) {
                               input$scanpy_resolution_clustering))
             })
           })
-      #     shinyjs::toggleState(
-      #       selector = ".seurat_clustering_plots a[data-value='PCA Plot']",
-      #       condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]]))
-      #   }
-      #   if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]])){
-      #     appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "ICA Plot",
-      #                                                                panel(heading = "ICA Plot",
-      #                                                                      plotlyOutput(outputId = "plot_ica_clustering")
-      #                                                                )
-      #     ), select = TRUE)
-      #     
-      #     message(paste0(date(), " ... Re-generating ICA Plot with Cluster Labels"))
-      #     output$plot_ica_clustering <- renderPlotly({
-      #       isolate({
-      #         plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
-      #                                              useReduction = "ica",
-      #                                              showLegend = TRUE))
-      #       })
-      #     })
-      #     shinyjs::toggleState(
-      #       selector = ".seurat_clustering_plots a[data-value='ICA Plot']",
-      #       condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]]))
-      #   }
-      #   
-        if("scanpyTSNE" %in% reducedDimNames(vals$counts)){
-          appendTab(inputId = "scanpyClusteringPlotTabset", tabPanel(title = "tSNE Plot",
-                                                                     panel(heading = "tSNE Plot",
-                                                                           plotOutput(outputId = "scanpy_plot_tsne_clustering")
-                                                                     )
-          )
-          )
-
-          message(paste0(date(), " ... Re-generating tSNE Plot with Cluster Labels"))
-
-          output$scanpy_plot_tsne_clustering <- renderPlot({
-            isolate({
-              plotScanpyEmbedding(inSCE = vals$counts, 
-                                  reducedDimName = "scanpyTSNE",
-                                  color = paste0(
-                                    "Scanpy_", 
-                                    input$scanpy_algorithm.use, 
-                                    "_", 
-                                    input$scanpy_resolution_clustering))
-            })
-          })
-      #     shinyjs::toggleState(
-      #       selector = ".seurat_clustering_plots a[data-value='tSNE Plot']",
-      #       condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]]))
-        }
-      #   
-        if("scanpyUMAP" %in% reducedDimNames(vals$counts)){
-          appendTab(inputId = "scanpyClusteringPlotTabset", tabPanel(title = "UMAP Plot",
-                                                                     panel(heading = "UMAP Plot",
-                                                                           plotOutput(outputId = "scanpy_plot_umap_clustering")
-                                                                     )
-          )
-          )
-          message(paste0(date(), " ... Re-generating UMAP Plot with Cluster Labels"))
-
-          output$scanpy_plot_umap_clustering <- renderPlot({
-            isolate({
-              plotScanpyEmbedding(
-                inSCE = vals$counts,
-                reducedDimName = "scanpyUMAP",
-                color = paste0(
-                  "Scanpy_", 
-                  input$scanpy_algorithm.use, 
-                  "_", 
-                  input$scanpy_resolution_clustering)
-              )
-            })
-          })
-      #     shinyjs::toggleState(
-      #       selector = ".seurat_clustering_plots a[data-value='UMAP Plot']",
-      #       condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]]))
-        }
-      #   
+ 
         shinyjs::show(selector = ".scanpy_clustering_plots")
-      #   
         #enable find marker selection
         shinyjs::enable(
           selector = "#ScanpyUI > div[value='Find Markers']")
@@ -9856,24 +9648,15 @@ shinyServer(function(input, output, session) {
         #update colData names
         updateColDataNames()
 
-      #   S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
-      #   shinyjs::hide(
-      #     selector = "div[value='Downstream Analysis']")
-      #   
         #populate updated colData items for findMarkers tab
         updateSelectInput(session = session,
                           inputId = "scanpyFindMarkerSelectPhenotype",
-                          choices = colnames(colData(vals$counts)))
-      #   
-        # #populate reducDim objects from seuratObject for findMarkers tab
-        # updateSelectInput(session = session,
-        #                   inputId = "seuratFindMarkerReductionMethod",
-        #                   choices = Seurat::Reductions(convertSCEToSeurat(vals$counts)))
-      #   
-      # }
-      # else{
-      #   showNotification(paste0("'", input$reduction_clustering_method, "' reduction not found in input object"))
-      # }
+                          choices = colnames(colData(vals$counts)),
+                          selected = paste0(
+                            "Scanpy_", 
+                            input$scanpy_algorithm.use, 
+                            "_", 
+                            input$scanpy_resolution_clustering))
     }))
   
   observeEvent(input$scanpyFindMarkerRun, withConsoleMsgRedirect(
@@ -9882,160 +9665,15 @@ shinyServer(function(input, output, session) {
       req(vals$counts)
       message(paste0(date(), " ... Finding Marker Genes"))
       
-      if(input$scanpyFindMarkerType == "scanpyMarkerAll"){
-        vals$counts <- runScanpyFindMarkers(inSCE = vals$counts,
-   #                                         nGenes = input$scanpyFindMarkerNGenes, #causes error with gene plots
-                                            colDataName = input$scanpyFindMarkerSelectPhenotype,
-                                            test = input$scanpyFindMarkerTest, 
-                                            corr_method = input$scanpyFindMarkerCorrMethod, 
-                                            group1 = c("all"), 
-                                            group2 = "rest")
-      }
-      else{
-        vals$counts <- runScanpyFindMarkers(inSCE = vals$counts,
-                                            nGenes = input$scanpyFindMarkerNGenes,
-                                            colDataName = input$scanpyFindMarkerSelectPhenotype,
-                                            group1 = c(input$scanpyFindMarkerGroup1, input$scanpyFindMarkerGroup2), 
-                                            group2 = "rest",
-                                            test = input$scanpyFindMarkerTest, 
-                                            corr_method = input$scanpyFindMarkerCorrMethod)
-        
-        # indices1 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
-        # indices2 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup2, arr.ind = TRUE)
-        # cells1 <- colnames(vals$counts)[indices1]
-        # cells2 <- colnames(vals$counts)[indices2]
-        # if(input$seuratFindMarkerType == "markerConserved"){
-        #   vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
-        #                                       cells1 = cells1,
-        #                                       cells2 = cells2,
-        #                                       group1 = input$seuratFindMarkerGroup1,
-        #                                       group2 = input$seuratFindMarkerGroup2,
-        #                                       conserved = TRUE,
-        #                                       test = input$seuratFindMarkerTest,
-        #                                       onlyPos = input$seuratFindMarkerPosOnly)
-        # }
-        # else{
-        #   vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
-        #                                       cells1 = cells1,
-        #                                       cells2 = cells2,
-        #                                       group1 = input$seuratFindMarkerGroup1,
-        #                                       group2 = input$seuratFindMarkerGroup2,
-        #                                       test = input$seuratFindMarkerTest,
-        #                                       onlyPos = input$seuratFindMarkerPosOnly)
-        # }
-      }
-      
+      vals$counts <- runScanpyFindMarkers(inSCE = vals$counts,
+                                          colDataName = input$scanpyFindMarkerSelectPhenotype,
+                                          test = input$scanpyFindMarkerTest, 
+                                          corr_method = input$scanpyFindMarkerCorrMethod)
       
       shinyjs::show(selector = ".scanpy_findmarker_table")
       shinyjs::show(selector = ".scanpy_findmarker_jointHeatmap")
       shinyjs::show(selector = ".scanpy_findmarker_plots")
 
-      # removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
-      # removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
-      # removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
-      # removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
-      # removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
-      
-      # appendTab(inputId = "seuratFindMarkerPlotTabset",
-      #           tabPanel(title = "Ridge Plot",
-      #                    panel(heading = "Ridge Plot",
-      #                          fluidRow(
-      #                            column(12, align = "center",
-      #                                   panel(
-      #                                     HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-      #                                   )
-      #                            )
-      #                          )
-      #                    )
-      #           )
-      # )
-      # appendTab(inputId = "seuratFindMarkerPlotTabset",
-      #           tabPanel(title = "Violin Plot",
-      #                    panel(heading = "Violin Plot",
-      #                          fluidRow(
-      #                            column(12, align = "center",
-      #                                   panel(
-      #                                     HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-      #                                   )
-      #                            )
-      #                          )
-      #                    )
-      #           )
-      # )
-      # appendTab(inputId = "seuratFindMarkerPlotTabset",
-      #           tabPanel(title = "Feature Plot",
-      #                    panel(heading = "Feature Plot",
-      #                          fluidRow(
-      #                            column(12, align = "center",
-      #                                   panel(
-      #                                     HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-      #                                   )
-      #                            )
-      #                          )
-      #                    )
-      #           )
-      # )
-      # appendTab(inputId = "seuratFindMarkerPlotTabset",
-      #           tabPanel(title = "Dot Plot",
-      #                    panel(heading = "Dot Plot",
-      #                          fluidRow(
-      #                            column(12, align = "center",
-      #                                   panel(
-      #                                     HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-      #                                   )
-      #                            )
-      #                          )
-      #                    )
-      #           )
-      # )
-      # appendTab(inputId = "seuratFindMarkerPlotTabset",
-      #           tabPanel(title = "Heatmap Plot",
-      #                    panel(heading = "Heatmap Plot",
-      #                          fluidRow(
-      #                            column(12, align = "center",
-      #                                   panel(
-      #                                     HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-      #                                   )
-      #                            )
-      #                          )
-      #                    )
-      #           )
-      # )
-      # 
-      # #df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
-      # df <- metadata(vals$counts)$seuratMarkers
-      # seuratObject <- convertSCEToSeurat(vals$counts, normAssay = "seuratNormData")
-      # indices <- list()
-      # cells <- list()
-      # groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
-      # for(i in seq(length(groups))){
-      #   indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
-      #   cells[[i]] <- colnames(vals$counts)[indices[[i]]]
-      #   cells[[i]] <- lapply(
-      #     X = cells[[i]],
-      #     FUN = function(t) gsub(
-      #       pattern = "_",
-      #       replacement = "-",
-      #       x = t,
-      #       fixed = TRUE)
-      #   )
-      #   Idents(seuratObject, cells = cells[[i]]) <- groups[i]
-      # }
-      # 
-      # showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
-      updateTabsetPanel(session = session, inputId = "scanpyFindMarkerPlotTabset", selected = "Violin Plot")
-      shinyjs::show(selector = ".scanpy_findmarker_plots")
-      # 
-      # Output the heatmap
-      # colnames(df)[which(startsWith(colnames(df), "avg") == TRUE)] <- "avg_log2FC"
-      # top10markers <- df %>% group_by(findMarker_cluster) %>% arrange(desc(Pvalue)) %>% slice_head(n=2)
-      # Subset seuratObject to contain only cells available in selected clusters
-      # if(input$seuratFindMarkerType != "markerAll"){
-      #   subsetIdents <- c(unique(top10markers$cluster1), unique(top10markers$cluster2))
-      #   subsetIdents <- subsetIdents[subsetIdents!="all"]
-      #   seuratObject <- subset(seuratObject, idents = subsetIdents)
-      # }
-      # seuratObject <- Seurat::ScaleData(seuratObject, features = top10markers$gene.id)
       # Plot heatmap
       output$scanpy_findMarkerHeatmapPlotFull <- renderPlot({
         isolate({
@@ -10045,36 +9683,30 @@ shinyServer(function(input, output, session) {
         })
       })
 
-      # output$findMarkerHeatmapPlotFullTopText <- renderUI({
-      #   h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
-      # })
-
       message(paste0(date(), " ... Find Markers Complete"))
-      # 
-      # 
+
       # Show downstream analysis options
       callModule(module = nonLinearWorkflow, id = "nlw-scanpy", parent = session,
                  de = TRUE, fm = TRUE, pa = TRUE)
 
       updateCollapse(session = session, "ScanpyUI", style = list("Find Markers" = "success"))
 
-      # updateCollapse(session = session, "ScanpyUI", style = list("Downstream Analysis" = "info"))
-
-      # removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Ridge Plot")
+      removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Matrix Plot")
       removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Violin Plot")
       removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Feature Plot")
       removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Dot Plot")
       removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Heatmap Plot")
-
-      # appendTab(inputId = "scanpyFindMarkerPlotTabset",
-      #           tabPanel(title = "Ridge Plot",
-      #                    panel(heading = "Ridge Plot",
-      #                          shinyjqui::jqui_resizable(
-      #                            plotOutput(outputId = "scanpyFindMarkerRidgePlot")
-      #                          )
-      #                    )
-      #           )
-      # )
+      
+      appendTab(inputId = "scanpyFindMarkerPlotTabset",
+                tabPanel(title = "Feature Plot",
+                         panel(heading = "Feature Plot",
+                               shinyjqui::jqui_resizable(
+                                 plotOutput(outputId = "scanpyFindMarkerFeaturePlot")
+                               )
+                         )
+                ), select = TRUE
+      )
+      
       appendTab(inputId = "scanpyFindMarkerPlotTabset",
                 tabPanel(title = "Violin Plot",
                          panel(heading = "Violin Plot",
@@ -10116,10 +9748,6 @@ shinyServer(function(input, output, session) {
                 )
       )
 
-      # #singleCellTK:::.exportMetaSlot(vals$counts, "seuratMarkers")
-      # 
-      # orderByLFCMarkers <- metadata(vals$counts)$seuratMarkers
-      # orderByLFCMarkers <- orderByLFCMarkers[order(-orderByLFCMarkers$avg_log2FC), ]
       vals$ftScanpy <- callModule(
         module = filterTableServer,
         id = "filterScanpyFindMarker",
@@ -10129,11 +9757,6 @@ shinyServer(function(input, output, session) {
         defaultFilterValues = c("0.05"),
         topText = "You can view the marker genes in the table below and apply custom filters to filter the table accordingly. A joint heatmap for all the marker genes available in the table is plotted underneath the table. Additional visualizations are plotted for select genes which can be selected by clicking on the rows of the table."
       )
-      # # vals$fts <- callModule(
-      # #   module = filterTableServer,
-      # #   id = "filterSeuratFindMarker",
-      # #   dataframe = orderByLFCMarkers
-      # # )
     }))
   
   observeEvent(input$scanpy_findMarkerHeatmapPlotFullNumericRun, withConsoleMsgRedirect(
@@ -10153,58 +9776,35 @@ shinyServer(function(input, output, session) {
     req(vals$ftScanpy$selectedRows)
     df <- vals$ftScanpy$data[vals$ftScanpy$selectedRows, ]
     
-    # output$scanpyFindMarkerRidgePlot <- renderPlot({
-    #   plotScanpyMarkerGenes(inSCE = vals$counts, nGenes = 10)
-    # })
+    output$scanpyFindMarkerFeaturePlot <- renderPlot({
+      plotScanpyEmbedding(inSCE = vals$counts,
+                          reducedDimName = "scanpyUMAP",
+                       color = df$Gene)
+    })
     output$scanpyFindMarkerViolinPlot <- renderPlot({
-      plotScanpyMarkerGenesViolin(inSCE = vals$counts,
+      plotScanpyViolin(inSCE = vals$counts,
                                   features = df$Gene,
-                                  nGenes = NULL)
+                                  groupBy = input$scanpyFindMarkerSelectPhenotype,
+                                  useAssay = "scanpyNormData")
     })
     output$scanpyFindMarkerMatrixPlot <- renderPlot({
-      plotScanpyMarkerGenesMatrixPlot(inSCE = vals$counts, 
-                                      groupBy = input$scanpyFindMarkerSelectPhenotype, 
-                                      features = df$Gene)
+      plotScanpyMatrixPlot(inSCE = vals$counts, 
+                          groupBy = input$scanpyFindMarkerSelectPhenotype, 
+                          features = df$Gene,
+                          useAssay = "scanpyNormData")
     })
     output$scanpyFindMarkerDotPlot <- renderPlot({
-      plotScanpyMarkerGenesDotPlot(inSCE = vals$counts,
-                                   groupBy = input$scanpyFindMarkerSelectPhenotype,
-                                   features = df$Gene)
+      plotScanpyDotPlot(inSCE = vals$counts,
+                        groupBy = input$scanpyFindMarkerSelectPhenotype,
+                        features = df$Gene,
+                        useAssay = "scanpyNormData")
     })
     output$scanpyFindMarkerHeatmapPlot <- renderPlot({
-      plotScanpyMarkerGenesHeatmap(inSCE = vals$counts, 
-                                   groupBy = input$scanpyFindMarkerSelectPhenotype, 
-                                   features = df$Gene)
+      plotScanpyHeatmap(inSCE = vals$counts, 
+                        groupBy = input$scanpyFindMarkerSelectPhenotype, 
+                        features = df$Gene, 
+                        useAssay = "scanpyNormData")
     })
   })
-  
-  observeEvent(input$scanpyFindMarkerSelectPhenotype, {
-    if(!is.null(vals$counts)){
-      updateSelectInput(
-        session = session,
-        inputId = "scanpyFindMarkerGroup1",
-        choices = unique(colData(vals$counts)[[input$scanpyFindMarkerSelectPhenotype]])
-      )
-      updateSelectInput(
-        session = session,
-        inputId = "scanpyFindMarkerGroup2",
-        choices = unique(colData(vals$counts)[[input$scanpyFindMarkerSelectPhenotype]])
-      )
-    }
-  })
-  
-  observeEvent(input$scanpyFindMarkerGroup1, {
-    if(!is.null(vals$counts)){
-      matchedIndex <- match(input$scanpyFindMarkerGroup1,  unique(colData(vals$counts)[[input$scanpyFindMarkerSelectPhenotype]]))
-      if(!is.na(matchedIndex)){
-        updateSelectInput(
-          session = session,
-          inputId = "scanpyFindMarkerGroup2",
-          choices = unique(colData(vals$counts)[[input$scanpyFindMarkerSelectPhenotype]])[-matchedIndex]
-        )
-      }
-    }
-  })
-  
 })
 

@@ -762,7 +762,7 @@ runScanpyFindClusters <- function(inSCE,
                                   useReducedDim = "scanpyPCA",
                                   nNeighbors = 10,
                                   dims = 40,
-                                  method = c("louvain", "leiden"),
+                                  method = c("leiden", "louvain"),
                                   colDataName = NULL,
                                   resolution = 1,
                                   niterations = -1,
@@ -1214,7 +1214,7 @@ runScanpyFindMarkers <- function(inSCE,
                                  colDataName,
                                  group1 = "all",
                                  group2 = "rest",
-                                 test = c("t-test", "wilcoxon", "t-test_overestim_var", "logreg"),
+                                 test = c("wilcoxon", "t-test", "t-test_overestim_var", "logreg"),
                                  corr_method = c("benjamini-hochberg", "bonferroni")) {
   
   if (!reticulate::py_module_available(module = "scanpy")) {
@@ -1820,6 +1820,87 @@ plotScanpyDotPlot <- function(inSCE,
                                              X_name = useAssay)
   
   return(sc$pl$dotplot(scanpyObject,
+                       var_names = features,
+                       groupby = groupBy,
+                       standard_scale = standardScale,
+                       title = title,
+                       vmin = vmin,
+                       vmax = vmax,
+                       cmap = 'bwr',
+                       dendrogram = FALSE,
+                       colorbar_title = colorBarTitle))
+  
+  
+}
+
+#' plotScanpyMatrixPlot
+#' 
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param useAssay Assay to use for plotting. By default it will use counts assay.
+#' @param features Genes to plot. Sometimes is useful to pass a specific list of
+#'  var names (e.g. genes). The var_names could be a dictionary or a list. 
+#' @param groupBy The key of the observation grouping to consider.
+#' @param standardScale Whether or not to standardize the given dimension 
+#' between 0 and 1, meaning for each variable or group, subtract the minimum and 
+#' divide each by its maximum. Default \code{NULL} means that it doesn't perform
+#' any scaling. 
+#' @param title Provide title for the figure.
+#' @param vmin The value representing the lower limit of the color scale. 
+#' Values smaller than vmin are plotted with the same color as vmin.
+#' Default \code{NULL}
+#' @param vmax The value representing the upper limit of the color scale. 
+#' Values larger than vmax are plotted with the same color as vmax. 
+#' Default \code{NULL}
+#' @param title Provide title for the figure.
+#' @param vmin The value representing the lower limit of the color scale. 
+#' Values smaller than vmin are plotted with the same color as vmin. 
+#' Default \code{NULL}
+#' @param vmax The value representing the upper limit of the color scale. 
+#' Values larger than vmax are plotted with the same color as vmax. 
+#' Default \code{NULL}
+#' @param colorBarTitle Title for the color bar. 
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyNormData", method = "seurat")
+#' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyScaledData")
+#' sce <- runScanpyFindClusters(sce, useReducedDim = "scanpyPCA")
+#' sce <- runScanpyUMAP(sce, useReducedDim = "scanpyPCA")
+#' markers <- c("MALAT1" ,"RPS27" ,"CST3")
+#' plotScanpyMatrixPlot(sce, features = markers, groupBy = 'Scanpy_louvain_1')
+#' }
+#' @return plot object
+#' @export
+#' @importFrom reticulate py_module_available py_set_seed import
+plotScanpyMatrixPlot <- function(inSCE,
+                              useAssay = NULL,
+                              features,
+                              groupBy,
+                              standardScale = NULL,
+                              title = '',
+                              vmin = NULL,
+                              vmax = NULL,
+                              colorBarTitle = "Mean expression in group"){
+  
+  if (!reticulate::py_module_available(module = "scanpy")) {
+    warning("Cannot find python module 'scanpy', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scanpy can be installed on the local machine",
+            "with pip (e.g. pip install scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+    return(inSCE)
+  }
+  
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,
+                                             X_name = useAssay)
+  
+  return(sc$pl$matrixplot(scanpyObject,
                        var_names = features,
                        groupby = groupBy,
                        standard_scale = standardScale,
