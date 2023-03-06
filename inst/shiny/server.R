@@ -7742,14 +7742,53 @@ shinyServer(function(input, output, session) {
       updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
       message(paste0(date(), " ... Finding Clusters Complete"))
 
+      if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
+        appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "UMAP Plot",
+                                                                   panel(heading = "UMAP Plot",
+                                                                         plotlyOutput(outputId = "plot_umap_clustering")
+                                                                   )
+        ), select = TRUE)
+        message(paste0(date(), " ... Re-generating UMAP Plot with Cluster Labels"))
+        
+        output$plot_umap_clustering <- renderPlotly({
+          isolate({
+            plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
+                                                 useReduction = "umap",
+                                                 showLegend = TRUE))
+          })
+        })
+        shinyjs::toggleState(
+          selector = ".seurat_clustering_plots a[data-value='UMAP Plot']",
+          condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]]))
+      }
+      
+      if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])){
+        appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "tSNE Plot",
+                                                                   panel(heading = "tSNE Plot",
+                                                                         plotlyOutput(outputId = "plot_tsne_clustering")
+                                                                   )
+        ), select = TRUE)
+        
+        message(paste0(date(), " ... Re-generating tSNE Plot with Cluster Labels"))
+        
+        output$plot_tsne_clustering <- renderPlotly({
+          isolate({
+            plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
+                                                 useReduction = "tsne",
+                                                 showLegend = TRUE))
+          })
+        })
+        shinyjs::toggleState(
+          selector = ".seurat_clustering_plots a[data-value='tSNE Plot']",
+          condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]]))
+      }
 
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])){
         appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "PCA Plot",
                                                                    panel(heading = "PCA Plot",
                                                                          plotlyOutput(outputId = "plot_pca_clustering")
                                                                    )
-        ), select = TRUE
-
+        )
         )
         message(paste0(date(), " ... Re-generating PCA Plot with Cluster Labels"))
         output$plot_pca_clustering <- renderPlotly({
@@ -7768,7 +7807,7 @@ shinyServer(function(input, output, session) {
                                                                    panel(heading = "ICA Plot",
                                                                          plotlyOutput(outputId = "plot_ica_clustering")
                                                                    )
-        ), select = TRUE)
+        ))
 
         message(paste0(date(), " ... Re-generating ICA Plot with Cluster Labels"))
         output$plot_ica_clustering <- renderPlotly({
@@ -7781,49 +7820,6 @@ shinyServer(function(input, output, session) {
         shinyjs::toggleState(
           selector = ".seurat_clustering_plots a[data-value='ICA Plot']",
           condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]]))
-      }
-
-      if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])){
-        appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "tSNE Plot",
-                                                                   panel(heading = "tSNE Plot",
-                                                                         plotlyOutput(outputId = "plot_tsne_clustering")
-                                                                   )
-        )
-        )
-
-        message(paste0(date(), " ... Re-generating tSNE Plot with Cluster Labels"))
-
-        output$plot_tsne_clustering <- renderPlotly({
-          isolate({
-              plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
-                                                   useReduction = "tsne",
-                                                   showLegend = TRUE))
-            })
-          })
-        shinyjs::toggleState(
-          selector = ".seurat_clustering_plots a[data-value='tSNE Plot']",
-          condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]]))
-      }
-
-      if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
-        appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "UMAP Plot",
-                                                                   panel(heading = "UMAP Plot",
-                                                                         plotlyOutput(outputId = "plot_umap_clustering")
-                                                                   )
-        )
-        )
-        message(paste0(date(), " ... Re-generating UMAP Plot with Cluster Labels"))
-
-        output$plot_umap_clustering <- renderPlotly({
-          isolate({
-              plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
-                                                   useReduction = "umap",
-                                                   showLegend = TRUE))
-            })
-          })
-        shinyjs::toggleState(
-          selector = ".seurat_clustering_plots a[data-value='UMAP Plot']",
-          condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]]))
       }
 
       shinyjs::show(selector = ".seurat_clustering_plots")
@@ -7842,7 +7838,12 @@ shinyServer(function(input, output, session) {
       #populate updated colData items for findMarkers tab
       updateSelectInput(session = session,
                         inputId = "seuratFindMarkerSelectPhenotype",
-                        choices = colnames(colData(vals$counts)))
+                        choices = colnames(colData(vals$counts)),
+                        selected = paste0(
+                          "Seurat_", 
+                          input$algorithm.use, 
+                          "_Resolution", 
+                          input$resolution_clustering))
 
       #populate reducDim objects from seuratObject for findMarkers tab
       updateSelectInput(session = session,
