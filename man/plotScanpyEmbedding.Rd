@@ -7,6 +7,7 @@
 plotScanpyEmbedding(
   inSCE,
   reducedDimName,
+  useAssay = NULL,
   color = NULL,
   legend = "right margin",
   title = ""
@@ -17,6 +18,9 @@ plotScanpyEmbedding(
 
 \item{reducedDimName}{Name of reducedDims object containing embeddings.
 Eg. scanpyUMAP.}
+
+\item{useAssay}{Specify name of assay to use. Default is \code{NULL},
+which will use scaled assay by default.}
 
 \item{color}{Keys for annotations of observations/cells or variables/genes.}
 
