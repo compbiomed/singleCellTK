@@ -202,13 +202,25 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotScanpyViolin</span><span class="op">(</span><span class="va">inSCE</span>, <span class="va">features</span>, <span class="va">groupBy</span>, xlabel <span class="op">=</span> <span class="st">""</span>, ylabel <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotScanpyViolin</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">features</span>,</span>
+<span>  <span class="va">groupBy</span>,</span>
+<span>  xlabel <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  ylabel <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>inSCE</dt>
 <dd><p>Input <code>SingleCellExperiment</code> object.</p></dd>
+
+
+<dt>useAssay</dt>
+<dd><p>Assay to use for plotting. By default it will use counts
+assay.</p></dd>
 
 
 <dt>features</dt>
