@@ -1108,6 +1108,8 @@ runScanpyTSNE <- function(inSCE,
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param reducedDimName Name of reducedDims object containing embeddings.
 #' Eg. scanpyUMAP.
+#' @param useAssay Specify name of assay to use. Default is \code{NULL},
+#' which will use scaled assay by default. 
 #' @param color Keys for annotations of observations/cells or variables/genes.
 #' @param title Provide title for panels either as string or list of strings
 #' @param legend Location of legend, either 'on data', 'right margin' or a 
@@ -1128,6 +1130,7 @@ runScanpyTSNE <- function(inSCE,
 #' @importFrom reticulate py_module_available py_set_seed import
 plotScanpyEmbedding <- function(inSCE,
                                 reducedDimName,
+                                useAssay = NULL,
                                 color = NULL,
                                 legend = 'right margin',
                                 title = ''){
@@ -1152,6 +1155,9 @@ plotScanpyEmbedding <- function(inSCE,
     )
   }
   useAssay <- metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]]$useAssay
+  if(is.null(useAssay)){
+    useAssay <- "scanpyScaledData"
+  }
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,
                                              X_name = useAssay,
                                              assays = FALSE,

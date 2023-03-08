@@ -58,7 +58,7 @@ The first major step in the analysis is to normalize the raw counts for differen
 > **Note:** The input raw counts matrix should only contained filtered cells and empty droplets should already have been removed. If you applied ambient RNA removal algorithms and want to use the decontominated counts, make sure to specify the appropriate matrix as input.
 
 
-![](ui_screenshots/scanpy/scanpy_1_normalize_annotated.png) <br>
+![](ui_screenshots/scanpy/scanpy_normalize.png) <br>
 
 **2. Highly Variable Genes** <br>
 Identification and selection of highly variable features/genes is important in the `Scanpy` workflow to produce high quality clustering results. Currently, `Scanpy` provides three methods for variable genes identification (`seurat`, `cell_ranger` and `seurat_v3`).
@@ -68,9 +68,9 @@ Identification and selection of highly variable features/genes is important in t
 3. Input the number of genes that should be identified as variable. 
 4. Modify optional parameters if necessary.
 5. Press 'Find HVG' button to find the top highly variable genes.
-6. A plot is procuded that displays the relationship between the mean and variabiliyt or disperson of each gene. Highly variable features will have higher levels of variability or dispersion regardless of the mean.
+6. A plot is produced that displays the relationship between the mean and variability or disperson of each gene. Highly variable features will have higher levels of variability or dispersion regardless of the mean.
 
-![](ui_screenshots/scanpy/scanpy_3_hvg_annotated.png) <br>
+![](ui_screenshots/scanpy/scanpy_hvg.png) <br>
 
 **3. Dimensionality Reduction** <br>
 `Scanpy` workflow offers `PCA` for dimensionality reduction. The principal components (PCs) from PCA will be used in the downstream clustering and 2-D embedding analyses. In the downstream analysis, you will have to select the number of PCs to use. Several plots are available for the user to inspect the output of the dimensionality reduction and identify the appropriate number of PCs to use in the downstream analyses.
@@ -83,10 +83,10 @@ Identification and selection of highly variable features/genes is important in t
 2. Change the method for computation of PCA if desired.
 3. Input the total number of components to compute.
 4. Press the 'Run PCA' button to start processing.
-5. Select the number of PCs that should be used in the downstream clustering and 2-D embedding analyses.
+5. Select the number of PCs that should be used in the downstream clustering and 2D-Embedding analyses.
 6. The plot area from where all computed plots can be viewed by the user.
 
-![](ui_screenshots/scanpy/scanpy_dimensionalityReduction_annotated.png) <br>
+![](ui_screenshots/scanpy/scanpy_pca.png) <br>
 
 
 **4. 2D-Embedding** <br>
@@ -94,53 +94,48 @@ The relationships between cells can be viewed on 2-D scatter plots using embeddi
 
 1. Click on the '2-D Embedding' vertical tab.
 2. Select the 'tSNE' or 'UMAP' sub-tab.
-3. Select a reduction method. Only results that were previously computed in the 'Dimensionality Reduction' tab will be available.
-4. Change optional parameters if desired.
-5. Press 'Run tSNE' or 'Run UMAP' button to start processing.
-6. A 2-D embedding scatter plot will be generated on the right.
+3. Change optional parameters if desired.
+4. Press 'Run UMAP' or 'Run tSNE' button to start processing.
+5. A 2D embedding scatter plot will be generated on the right.
 
-![](ui_screenshots/scanpy/scanpy_tsneUmap.png) <br>
+![](ui_screenshots/scanpy/scanpy_umap.png) <br>
 
 **5. Clustering** <br>
 Cells can be clustered using a previously computed reduced dimensional object. Cluster labels will be displaye on previously computed 2-D embedding or reduction plots. 
 
 1. Click on the 'Clustering' vertical tab.
-2. Select number of components to use from the previously computed PCA.
-3. Select clustering method.
-4. Set parameters.
-5. Press 'Find Clusters' button to start processing.
-6. Re-computed plots with cluster labels. Only those plots are available that have previously been computed.
+2. Select clustering method.
+3. Set parameters.
+4. Press 'Find Clusters' button to start processing.
+5. Re-computed plots with cluster labels. Only those plots are available that have previously been computed.
 
-![](ui_screenshots/scanpy/scanpy_6_clustering.png) <br>
+![](ui_screenshots/scanpy/scanpy_clustering.png) <br>
 
 **6. Find Markers** <br>
 'Find Markers' tab can be used to identify the marker genes that are enriched in each cluster or group. Markers genes can be identified that are differentially expressed between each cluster and all other cluster or between two selected clusters/groups. Expression of individual marker genes can be visualized in Dot plots, Violin plots, Matrix plots and via a Heatmap. 
 
 1. Click on "Find Markers" vertical tab.
-2. Select if you want to identify marker genes between for each cluster/group compared to all  other cluster/groups or between two specific clusters/groups.
-3. Change optional parameters if desired.
-4. Press "Find Markers" button to run the marker identification analysis.
-5. Differentially expressed features will be displayed in the table on the right. Additional filters can be applied to further refine the list of differentially expressed genes. For example, specifying a log fold change cutoff in addition to an adjusted p-value cutoff can sometimes help identify better marker genes. 
+2. Change parameters if desired and press "Find Markers".
+3. Differentially expressed features will be displayed in the table on the right. Additional filters can be applied to further refine the list of differentially expressed genes. For example, specifying a log fold change cutoff in addition to an adjusted p-value cutoff can sometimes help identify better marker genes. 
 
-![](ui_screenshots/scanpy/scanpy_findmarkers_1.png) <br>
+![](ui_screenshots/scanpy/scanpy_fm_1.png) <br>
 
-6. A Heatmap plot of the top differentially expressed genes for each cluster/group can be used to visualize the patterns of expression within and across clusters/groups.
+4. A Heatmap plot of the top differentially expressed genes for each cluster/group can be used to visualize the patterns of expression within and across clusters/groups.
 
-![](ui_screenshots/scanpy/scanpy_findmarkers_2.png) <br>
+![](ui_screenshots/scanpy/scanpy_fm_2.png) <br>
 
-**7. Downstream Analysis** <br>
-Once all steps of the Scanpy workflow have been completed, users can further explore the data by selecting other downstream analysis options.
+5. Desired marker genes can be selected from the table (3) and clicking on these genes will generate feature plots at the bottom of the screen. Selecting marker genes this way can highlight particular clusters on a UMAP (feature plot) or other plots and can identify cell-types based on their respective marker genes. 
 
 ````{=html}
 </div>
 <div id="console" class="tabcontent">
 ````
 
-All methods Scanpy wrapper functions in *singleCellTK* take a `SingleCellExperiment` (SCE) object as an input and will return an SCE with additional information. For this tutorial, we will use a small PBMC dataset:
+All methods Scanpy wrapper functions in *singleCellTK* take a `SingleCellExperiment` (SCE) object as an input and will return an SCE with additional information. For this tutorial, we will use a small PBMC dataset that has been previously run through quality control and has been filtered:
 
 ```{r "scanpy_import", warning=FALSE,  message=FALSE}
 library(singleCellTK)
-sce <- importExampleData('pbmc3k')
+sce <- readRDS("tutorial_pbmc3k_qc.rds")
 ```
 
 **1. Normalize Data** <br>
