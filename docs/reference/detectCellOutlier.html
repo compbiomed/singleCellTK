@@ -33,7 +33,7 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
@@ -58,13 +58,13 @@
   <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/import_data.html">Import Data</a>
         </li>
@@ -82,7 +82,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
@@ -97,7 +97,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/normalization.html">Normalization</a>
         </li>
@@ -106,7 +106,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/feature_selection.html">Feature Selection</a>
         </li>
@@ -121,7 +121,7 @@
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
         </li>
@@ -133,7 +133,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/enrichR.html">EnrichR</a>
         </li>
@@ -142,13 +142,13 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Trajectory Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/trajectoryAnalysis.html">TSCAN</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/seurat_curated_workflow.html">Seurat</a>
         </li>
@@ -157,7 +157,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/visualization.html">General Visualization</a>
         </li>
@@ -271,27 +271,20 @@ decontaminated counts will be added as an assay called 'decontXCounts'.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runDecontX.html">runDecontX</a></span><span class="op">(</span><span class="va">sce</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>,<span class="fl">20</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:04 2023 ... Running 'DecontX'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Mar 17 10:33:24 2023 ... Running 'DecontX'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting DecontX</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:04 2023 .. Analyzing all cells</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:04 2023 .... Generating UMAP and estimating cell types</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:06 2023 .... Estimating contamination</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:06 2023 ...... Completed iteration: 10 | converge: 0.01614</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:06 2023 ...... Completed iteration: 20 | converge: 0.003874</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:06 2023 ...... Completed iteration: 30 | converge: 0.001663</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:06 2023 ...... Completed iteration: 40 | converge: 0.001929</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:07 2023 ...... Completed iteration: 50 | converge: 0.001273</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:07 2023 ...... Completed iteration: 60 | converge: 0.001176</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:07 2023 ...... Completed iteration: 70 | converge: 0.001201</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:07 2023 ...... Completed iteration: 80 | converge: 0.00119</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:07 2023 ...... Completed iteration: 90 | converge: 0.001137</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:07 2023 ...... Completed iteration: 100 | converge: 0.001072</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:07 2023 ...... Completed iteration: 110 | converge: 0.0009942</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 11 13:35:07 2023 .. Calculating final decontaminated matrix</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Mar 17 10:33:24 2023 .. Analyzing all cells</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Mar 17 10:33:24 2023 .... Generating UMAP and estimating cell types</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Mar 17 10:33:26 2023 .... Estimating contamination</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Mar 17 10:33:26 2023 ...... Completed iteration: 10 | converge: 0.01817</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Mar 17 10:33:26 2023 ...... Completed iteration: 20 | converge: 0.004537</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Mar 17 10:33:26 2023 ...... Completed iteration: 30 | converge: 0.002596</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Mar 17 10:33:26 2023 ...... Completed iteration: 39 | converge: 0.0009935</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Mar 17 10:33:26 2023 .. Calculating final decontaminated matrix</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 2.669573 secs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 1.833442 secs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">detectCellOutlier</span><span class="op">(</span><span class="va">sce</span>, slotName <span class="op">=</span> <span class="st">"colData"</span>, sample <span class="op">=</span> <span class="va">sce</span><span class="op">$</span><span class="va">sample</span>,</span></span>
 <span class="r-in"><span> nmads <span class="op">=</span> <span class="fl">4</span>, itemName <span class="op">=</span> <span class="st">"decontX_contamination"</span>, type <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span></span></span>

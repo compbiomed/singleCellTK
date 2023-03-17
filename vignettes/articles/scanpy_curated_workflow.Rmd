@@ -126,6 +126,8 @@ Cells can be clustered using a previously computed reduced dimensional object. C
 
 5. Desired marker genes can be selected from the table (3) and clicking on these genes will generate feature plots at the bottom of the screen. Selecting marker genes this way can highlight particular clusters on a UMAP (feature plot) or other plots and can identify cell-types based on their respective marker genes. 
 
+![](ui_screenshots/scanpy/scanpy_fm_3.png) <br>
+
 ````{=html}
 </div>
 <div id="console" class="tabcontent">
@@ -165,16 +167,19 @@ The main parameters to this function include `useAssay` which is used to specify
 
 ```{r "scanpy_hvg", warning=FALSE, message=FALSE}
 sce <- runScanpyFindHVG(inSCE = sce, useAssay = "scanpyNormData", method = "seurat", minMean = 0.0125, maxMean = 3, maxDisp = 0.5)
-
 ```
 
 The `getTopHVG` function can be used to select the top most variable genes and store it back in `rowData` of the SCE object as a Boolean vector. 
 
-```{r plotHVG}
+```{r HVGlist}
 print(getTopHVG(sce, method = "seurat", hvgNumber = 10))
+```
+
+```{r HVGPlot, eval = FALSE}
 plotScanpyHVG(sce)
 ```
 
+![](scanpy_cnsl_screenshots/scanpy_hvg.png) <br>
 
 **4. Dimensionality Reduction** <br>
 PCA can be computed using the `runScanpyPCA()` function. 
@@ -188,23 +193,27 @@ sce <- runScanpyPCA(inSCE = sce, useAssay = "scanpyScaledData", reducedDimName =
 
 The results of the PCA can be visualized in several ways. The `plotScanpyPCAVariance()` function shows the percentage of variability explained by each PC. This plot can be useful for selecting the number of PCs. In general, the "elbow" of the curve is a good selection criteria. The elbow is where there is a sharp drop in the amount the percentage of variance decreases after including additional PCs. 
 
-```{r plotScanpyPCAVariance}
+```{r plotScanpyPCAVariance, eval = FALSE}
 plotScanpyPCAVariance(inSCE = sce, nPCs = 50)
 ```
 
+![](scanpy_cnsl_screenshots/scanpy_pca_variance.png) <br>
+
 The `plotScanpyPCA()` function can be used to view cells in the reduced dimensional space of PC1 versus PC2.
 
-```{r plotScanpyPCA}
+```{r plotScanpyPCA, eval = FALSE}
 plotScanpyPCA(inSCE = sce, reducedDimName = "scanpyPCA")
 ```
 
+![](scanpy_cnsl_screenshots/scanpy_pca.png) <br>
+
 The `plotScanpyPCAGeneRanking()` function shows the highest ranked genes for each PC. 
 
-```{r plotScanpyPCAGeneRanking}
+```{r plotScanpyPCAGeneRanking, eval = FALSE}
 plotScanpyPCAGeneRanking(inSCE = sce)
 ```
 
-
+![](scanpy_cnsl_screenshots/scanpy_pca_gene_ranking.png) <br>
 
 **5. 2-D Embedding** <br>
 
@@ -214,9 +223,13 @@ Parameters to both functions include `useReducedDim` which specifies the reduced
 
 ```{r, warning=FALSE, message=FALSE}
 sce <- runScanpyUMAP(inSCE = sce, useReducedDim = "scanpyPCA", reducedDimName = "scanpyUMAP")
+```
+
+```{r, eval = FALSE}
 plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP")
 ```
 
+![](scanpy_cnsl_screenshots/scanpy_umap.png) <br>
 
 **6. Clustering** <br>
 
@@ -228,9 +241,11 @@ sce <- runScanpyFindClusters(inSCE = sce, useAssay = "scanpyScaledData", useRedu
 
 `plotScanpyEmbedding()` can then be used to plot the cluster labels on the previously computed 2-D embeddings or reduced dimensional objects. For example, we can plot the cluster labels on the UMAP:
 
-```{r "scanpy_cluster_plots", warning=FALSE, message=FALSE}
+```{r "scanpy_cluster_plots", warning=FALSE, message=FALSE, eval = FALSE}
 plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_leiden_1')
 ```
+
+![](scanpy_cnsl_screenshots/scanpy_clustering.png) <br>
 
 **7. Find Markers** <br>
 Marker genes can be identified using the `runScanpyFindMarkers()` function. The main parameter for this function is a vector of cluster/group labels that are stored in the `colData` of the input SCE object. By default. each cluster of cells will be compared to the rest of the cells in all other clusters. Users can can find also find differentially expressed genes between two clusters using the `group1` and `group2` parameters. Generally, group labels defined by clustering functions will be used as input. Here we will find markers for the clusters we identified previously:
@@ -245,13 +260,25 @@ The full table of differentially expressed marker genes can be accessed in the m
 print(head(metadata(sce)[["scanpyMarkersTable"]]))
 ```
 
-Expression of individual marker genes can be visualized in Dot plots, Violin plots, Matrix plots and via a Heatmap:
+Expression of individual marker genes can be visualized in Feature plots, Dot plots, Violin plots, Matrix plots and via a Heatmap:
 
-```{r "scanpy_genePlots", warning=FALSE, message=FALSE}
-plotScanpyMarkerGenes(sce, groups = '0')
-plotScanpyMarkerGenesViolin(sce, groups = '0')
-plotScanpyMarkerGenesHeatmap(sce, groupBy = 'Scanpy_leiden_1', nGenes = 10)
+```{r "scanpy_genePlots", warning=FALSE, message=FALSE, eval = FALSE}
+plotScanpyEmbedding(sce, color = c("CD79A", "CST3"), reducedDimName = "scanpyUMAP")
+plotScanpyDotPlot(sce, features = c("CD79A", "CST3"), groupBy = "Scanpy_leiden_1")
+plotScanpyViolin(sce, features = c("CD79A", "CST3"), groupBy = "Scanpy_leiden_1")
+plotScanpyMatrixPlot(sce, features = c("CD79A", "CST3"), groupBy = "Scanpy_leiden_1")
+plotScanpyHeatmap(sce, features = c("CD79A", "CST3"), groupBy = "Scanpy_leiden_1")
 ```
+
+![](scanpy_cnsl_screenshots/scanpy_feature.png) <br>
+
+![](scanpy_cnsl_screenshots/scanpy_dotplot.png) <br>
+
+![](scanpy_cnsl_screenshots/scanpy_violin.png) <br>
+
+![](scanpy_cnsl_screenshots/scanpy_matrix.png) <br>
+
+![](scanpy_cnsl_screenshots/scanpy_heatmap.png) <br>
 
 ````{=html} 
       </div>
