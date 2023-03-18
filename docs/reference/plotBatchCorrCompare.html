@@ -32,7 +32,7 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
@@ -57,13 +57,13 @@
   <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/import_data.html">Import Data</a>
         </li>
@@ -81,7 +81,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
@@ -96,7 +96,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/normalization.html">Normalization</a>
         </li>
@@ -105,7 +105,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/feature_selection.html">Feature Selection</a>
         </li>
@@ -120,7 +120,7 @@
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
         </li>
@@ -132,7 +132,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/enrichR.html">EnrichR</a>
         </li>
@@ -141,13 +141,13 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Trajectory Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/trajectoryAnalysis.html">TSCAN</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/seurat_curated_workflow.html">Seurat</a>
         </li>
@@ -156,7 +156,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/visualization.html">General Visualization</a>
         </li>
@@ -282,9 +282,9 @@ improvement might include solution to reduce redundant UMAP calculation.</p>
 <span class="r-in"><span><span class="fu">logcounts</span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p</a></span><span class="op">(</span><span class="fu">counts</span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sceBatches</span> <span class="op">&lt;-</span> <span class="fu"><a href="runLimmaBC.html">runLimmaBC</a></span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">plotBatchCorrCompare</span><span class="op">(</span><span class="va">sceBatches</span>, <span class="st">"LIMMA"</span>, condition <span class="op">=</span> <span class="st">"cell_type"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Mar 17 10:34:12 2023 ... Computing Scater UMAP for sample '1'.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Mar 17 10:34:15 2023 ... Computing Scater UMAP for sample '1'.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 50 rows containing missing values (geom_point).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 18 10:28:21 2023 ... Computing Scater UMAP for sample '1'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 18 10:28:24 2023 ... Computing Scater UMAP for sample '1'.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 47 rows containing missing values (`geom_point()`).</span>
 <span class="r-plt img"><img src="plotBatchCorrCompare-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>

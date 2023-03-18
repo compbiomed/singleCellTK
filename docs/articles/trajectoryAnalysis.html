@@ -50,7 +50,7 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
@@ -77,14 +77,14 @@
   <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/import_data.html">Import Data</a>
@@ -104,7 +104,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
@@ -121,7 +121,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/normalization.html">Normalization</a>
@@ -132,7 +132,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/feature_selection.html">Feature Selection</a>
@@ -149,7 +149,7 @@
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
@@ -163,7 +163,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/enrichR.html">EnrichR</a>
@@ -174,7 +174,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Trajectory Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/trajectoryAnalysis.html">TSCAN</a>
@@ -182,7 +182,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/seurat_curated_workflow.html">Seurat</a>
@@ -193,7 +193,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/visualization.html">General Visualization</a>
@@ -413,16 +413,20 @@
 <p>The table from the branch, of which we just visualized the top feature expression, looks like:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tableList</span><span class="op">$</span><span class="va">`6`</span></span></code></pre></div>
-<pre><code><span><span class="co">## DataFrame with 7 rows and 4 columns</span></span>
-<span><span class="co">##             logFC   logFC.1     p.value         FDR</span></span>
-<span><span class="co">##         &lt;numeric&gt; &lt;numeric&gt;   &lt;numeric&gt;   &lt;numeric&gt;</span></span>
-<span><span class="co">## S100A12 -0.157396 -0.157396 3.87369e-07 0.000461614</span></span>
-<span><span class="co">## GPX1    -0.170011 -0.170011 1.03705e-06 0.000926861</span></span>
-<span><span class="co">## RBP7    -0.144328 -0.144328 2.63401e-06 0.001883317</span></span>
-<span><span class="co">## CSF3R   -0.131230 -0.131230 5.25932e-05 0.020891177</span></span>
-<span><span class="co">## TSPO    -0.149364 -0.149364 5.79005e-05 0.022177944</span></span>
-<span><span class="co">## FOLR3   -0.122305 -0.122305 1.06946e-04 0.034757296</span></span>
-<span><span class="co">## GAPDH   -0.141333 -0.141333 1.68403e-04 0.047529412</span></span></code></pre>
+<pre><code><span><span class="co">## DataFrame with 12 rows and 3 columns</span></span>
+<span><span class="co">##              logFC     p.value         FDR</span></span>
+<span><span class="co">##          &lt;numeric&gt;   &lt;numeric&gt;   &lt;numeric&gt;</span></span>
+<span><span class="co">## GPX1     -0.161598 7.72253e-08 4.82474e-05</span></span>
+<span><span class="co">## RBP7     -0.131954 3.57329e-07 1.84926e-04</span></span>
+<span><span class="co">## CD14     -0.143327 2.95415e-06 1.33774e-03</span></span>
+<span><span class="co">## S100A12  -0.121480 5.04022e-06 1.90967e-03</span></span>
+<span><span class="co">## FOLR3    -0.106884 1.15951e-05 3.93798e-03</span></span>
+<span><span class="co">## ...            ...         ...         ...</span></span>
+<span><span class="co">## LYZ     -0.1007743 5.10931e-05   0.0132210</span></span>
+<span><span class="co">## QPCT    -0.0691165 1.00350e-04   0.0227209</span></span>
+<span><span class="co">## TSPO    -0.1225684 1.17562e-04   0.0260747</span></span>
+<span><span class="co">## IL8     -0.1241204 1.38549e-04   0.0289568</span></span>
+<span><span class="co">## BST1    -0.0769784 1.84220e-04   0.0357519</span></span></code></pre>
 </details><details><summary><b>Show recomputed pseudotime rooting from the cluster</b></summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANClusterPseudo.html">plotTSCANClusterPseudo</a></span><span class="op">(</span><span class="va">sce</span>, useCluster <span class="op">=</span> <span class="va">useCluster</span>, useReducedDim <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="trajectoryAnalysis_files/figure-html/tscanClusterPseudo-1.png" width="700" style="display: block; margin: auto;"></p>
