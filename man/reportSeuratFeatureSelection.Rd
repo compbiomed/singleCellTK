@@ -16,7 +16,7 @@ reportSeuratFeatureSelection(
   authors = NULL,
   showSession = FALSE,
   pdf = FALSE,
-  forceRun = FALSE
+  forceRun = TRUE
 )
 }
 \arguments{
@@ -54,7 +54,7 @@ each figure in the report. Default is \code{FALSE}.}
 
 \item{forceRun}{A logical value indicating if all computations previously
 computed should be re-calculated regardless if these computations are
-available in the input object. Default is \code{FALSE}.}
+available in the input object. Default is \code{TRUE}.}
 }
 \value{
 A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object

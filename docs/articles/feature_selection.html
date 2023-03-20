@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -232,7 +235,7 @@
 
       
 
-      </header><script src="feature_selection_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Feature Selection</h1>
@@ -326,8 +329,8 @@
 div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </style>
 <div class="offset">
-<details><p><summary><code>vst</code>, <code>mean.var.plot</code> or <code>dispersion</code> from Seurat package:</summary></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<details><summary><code>vst</code>, <code>mean.var.plot</code> or <code>dispersion</code> from Seurat package:
+</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindHVG.html">runSeuratFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, method <span class="op">=</span> <span class="st">"vst"</span><span class="op">)</span></span></code></pre></div>
 <p>The parameters to the above function include:</p>
 <ul>
@@ -344,8 +347,8 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <code>altExp</code>: A logical value indicating if the input object is an altExperiment</li>
 <li>
 <code>verbose</code>: A logical value indicating if progress should be printed</li>
-</ul></details><details><p><summary><code>modelGeneVar</code> from Scran package:</summary></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+</ul></details><details><summary><code>modelGeneVar</code> from Scran package:
+</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runModelGeneVar.html">runModelGeneVar</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span></code></pre></div>
 <p>The parameters to the above function include:</p>
 <ul>
@@ -364,21 +367,26 @@ document.getElementById("ia-button").click();
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references">
-<div id="ref-Butler2018">
-<p>[1] A. Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, “Integrating single-cell transcriptomic data across different conditions, technologies, and species,” <em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018, doi: <a href="https://doi.org/10.1038/nbt.4096" class="external-link">10.1038/nbt.4096</a>.</p>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-Butler2018" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">A. Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, <span>“<span class="nocase">Integrating single-cell transcriptomic data across different conditions, technologies, and species</span>,”</span> <em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018, doi: <a href="https://doi.org/10.1038/nbt.4096" class="external-link">10.1038/nbt.4096</a>.</div>
 </div>
-<div id="ref-Stuart2019">
-<p>[2] T. Stuart <em>et al.</em>, “Comprehensive Integration of Single-Cell Data,” <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031" class="external-link">10.1016/j.cell.2019.05.031</a>.</p>
+<div id="ref-Stuart2019" class="csl-entry">
+<div class="csl-left-margin">[2] </div>
+<div class="csl-right-inline">T. Stuart <em>et al.</em>, <span>“<span class="nocase">Comprehensive Integration of Single-Cell Data</span>,”</span> <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031" class="external-link">10.1016/j.cell.2019.05.031</a>.</div>
 </div>
-<div id="ref-Satija2017">
-<p>[3] R. Satija, J. A. Farrell, D. Gennert, A. F. Schier, and A. Regev, “Spatial reconstruction of single-cell gene expression data,” <em>Nature Biotechnology</em>, vol. 33, pp. 495–502, 2015, doi: <a href="https://doi.org/10.1038/nbt.3192" class="external-link">10.1038/nbt.3192</a>.</p>
+<div id="ref-Satija2017" class="csl-entry">
+<div class="csl-left-margin">[3] </div>
+<div class="csl-right-inline">R. Satija, J. A. Farrell, D. Gennert, A. F. Schier, and A. Regev, <span>“Spatial reconstruction of single-cell gene expression data,”</span> <em>Nature Biotechnology</em>, vol. 33, pp. 495–502, 2015, doi: <a href="https://doi.org/10.1038/nbt.3192" class="external-link">10.1038/nbt.3192</a>.</div>
 </div>
-<div id="ref-Hao2021">
-<p>[4] Y. Hao <em>et al.</em>, “Integrated analysis of multimodal single-cell data,” <em>Cell</em>, 2021, doi: <a href="https://doi.org/10.1016/j.cell.2021.04.048" class="external-link">10.1016/j.cell.2021.04.048</a>.</p>
+<div id="ref-Hao2021" class="csl-entry">
+<div class="csl-left-margin">[4] </div>
+<div class="csl-right-inline">Y. Hao <em>et al.</em>, <span>“Integrated analysis of multimodal single-cell data,”</span> <em>Cell</em>, 2021, doi: <a href="https://doi.org/10.1016/j.cell.2021.04.048" class="external-link">10.1016/j.cell.2021.04.048</a>.</div>
 </div>
-<div id="ref-Aaron2016">
-<p>[5] A. T. L. Lun, D. J. McCarthy, and J. C. Marioni, “A step-by-step workflow for low-level analysis of single-cell rna-seq data with bioconductor,” <em>F1000Research</em>, vol. 5, p. 2122, 2016, doi: <a href="https://doi.org/10.12688/f1000research.9501.2" class="external-link">10.12688/f1000research.9501.2</a>.</p>
+<div id="ref-Aaron2016" class="csl-entry">
+<div class="csl-left-margin">[5] </div>
+<div class="csl-right-inline">A. T. L. Lun, D. J. McCarthy, and J. C. Marioni, <span>“A step-by-step workflow for low-level analysis of single-cell RNA-seq data with bioconductor,”</span> <em>F1000Research</em>, vol. 5, p. 2122, 2016, doi: <a href="https://doi.org/10.12688/f1000research.9501.2" class="external-link">10.12688/f1000research.9501.2</a>.</div>
 </div>
 </div>
 </div>
@@ -396,12 +404,12 @@ document.getElementById("ia-button").click();
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

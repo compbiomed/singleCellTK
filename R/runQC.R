@@ -56,11 +56,11 @@ runCellQC <- function(inSCE,
   geneSetList = NULL,
   geneSetListLocation = "rownames",
   geneSetCollection = NULL,
-  mitoRef = NULL,
-  mitoIDType = NULL,
-  mitoPrefix = NULL,
+  mitoRef = "human",
+  mitoIDType = "ensembl",
+  mitoPrefix = "MT-",
   mitoID = NULL,
-  mitoGeneLocation = NULL,
+  mitoGeneLocation = "rownames",
   useAssay = "counts",
   background = NULL,
   bgAssayName= NULL,
@@ -205,7 +205,7 @@ runCellQC <- function(inSCE,
         bgBatch = bgBatch),
         paramsList[["soupX_bg"]]))      
     } else {
-      warning("'background' is NULL. Skip 'decontX_bg' algorithm. ")
+      warning("'background' is NULL. Skip 'soupX_bg' algorithm. ")
     }
   }
   return(inSCE)

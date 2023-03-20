@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -232,7 +235,7 @@
 
       
 
-      </header><script src="filtering_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Filtering the datasets</h1>
@@ -269,12 +272,12 @@
 <p><strong>Adding Filters for Cells</strong></p>
 <p>To filter by cells, users must click the “<strong>Add a Filter</strong>” button in the “<strong>Select Cell Filtering Criteria</strong>” panel. A pop-up will appear which asks users to select by which annotation to filter. Based on that selection, more input fields will appear for users to specify how they would like to set the filter.<br>
 - If the annotation contains categorical information, mostly presented by text or TRUE/FALSE values, users will have to select which categories to keep;<br>
-- If the annotation contains numeric values that might stand for categorical information, users will be asked whether to treat them as categories with a check-box “<strong>Convert to categorical filter</strong>”. If users check this, users will have to select which categories to keep;<br>
+- If the annotation contains numeric values that might stand for categorical information, users will be asked whether to treat them as categories with a check-box “<strong>Convert to categorical filter</strong>.” If users check this, users will have to select which categories to keep;<br>
 - If users do not want to treat the category-like numeric values in the condition above, or the annotation contains true numeric values, users will have to set a valid range of value to keep. For keeping cells with the value greater than a threshold, check “<strong>Greater than</strong>” and input the number; for keeping cells with the value less than a threshold, check “<strong>Less than</strong>” and input the number. Users can also check both threshold for double ended range setting.<br>
 After setting each criterion, users have to click on “<strong>OK</strong>” button to save it to the criterion table. Users can again press “<strong>Add a Filter</strong>” to add more criteria.</p>
 <p><img src="ui_screenshots/filtering/filter_ui_column.png" alt="columns"><br></p>
 <p><strong>Adding Filters for features</strong></p>
-<p>To filter by features, users must click the “<strong>Add a Filter</strong>” button in the “<strong>Select Feature Filtering Criteria</strong>” panel. A pop-up will appear which asks users to set the parameters to filter out features. Features are filtered by specifying at least how many counts a gene should be expressed in at least how many cells. Users must first select a expression matrix from the dropdown menu at top of the pop-up. Then, users have to input the numbers in the following numeric fields as explained. To save the the criterion, users must click “<strong>OK</strong>”.</p>
+<p>To filter by features, users must click the “<strong>Add a Filter</strong>” button in the “<strong>Select Feature Filtering Criteria</strong>” panel. A pop-up will appear which asks users to set the parameters to filter out features. Features are filtered by specifying at least how many counts a gene should be expressed in at least how many cells. Users must first select a expression matrix from the dropdown menu at top of the pop-up. Then, users have to input the numbers in the following numeric fields as explained. To save the the criterion, users must click “<strong>OK</strong>.”</p>
 <p><img src="ui_screenshots/filtering/filter_ui_row.png" alt="row"><br></p>
 <p><strong>Applying Filters</strong></p>
 <p>Once users have defined all their filtering criteria, the user must click “Filter” to apply the filters to the single-cell dataset.</p>
@@ -314,12 +317,12 @@ document.getElementById("ia-button").click();
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

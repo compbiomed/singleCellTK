@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -232,7 +235,7 @@
 
       
 
-      </header><script src="normalization_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Normalization</h1>
@@ -249,7 +252,7 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p><strong>singleCellTK</strong> offers a convenient way to normalize data for downstream analysis using a number of methods available through the toolkit. The integrated normalization methods and other transformation options can be used through both R console and interactive shiny application. Normalization methods available with the toolkit include <code>"LogNormalize"</code>, <code>"CLR"</code>, <code>"RC"</code> &amp; <code>"SCTransform"</code> from <code>Seurat</code> <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[3]</span><span class="citation">[4]</span> package and <code>"logNormCounts"</code> or <code>"CPM"</code> from <code>Scater</code> <span class="citation">[5]</span> package. Additional transformation options are available for users including ‘log’ &amp; ‘log1p’, trimming of data assays and Z-Score scaling. <br></p>
+<p><strong>singleCellTK</strong> offers a convenient way to normalize data for downstream analysis using a number of methods available through the toolkit. The integrated normalization methods and other transformation options can be used through both R console and interactive shiny application. Normalization methods available with the toolkit include <code>"LogNormalize"</code>, <code>"CLR"</code>, <code>"RC"</code> &amp; <code>"SCTransform"</code> from <code>Seurat</code> <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[3]</span><span class="citation">[4]</span> package and <code>"logNormCounts"</code> or <code>"CPM"</code> from <code>Scater</code> <span class="citation">[5]</span> package. Additional transformation options are available for users including ‘log’ &amp; ‘log1p,’ trimming of data assays and Z-Score scaling. <br></p>
 <p>To view detailed instructions on how to use these methods, please select ‘Interactive Analysis’ for using normalization in shiny application or ‘Console Analysis’ for using these methods on R console from the tabs below:</p>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -342,20 +345,20 @@
 div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </style>
 <div class="offset">
-<details><p><summary><code>LogNormalize</code>, <code>CLR</code> or <code>RC</code> from <strong>Seurat</strong> <span class="citation">[1]</span><span class="citation">[2]</span> package:</summary></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<details><summary><code>LogNormalize</code>, <code>CLR</code> or <code>RC</code> from <strong>Seurat</strong> <span class="citation">[1]</span><span class="citation">[2]</span> package:
+</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratNormalizeData.html">runSeuratNormalizeData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, normalizationMethod <span class="op">=</span> <span class="st">"CLR"</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, normAssayName <span class="op">=</span> <span class="st">"CLRCounts"</span>, scaleFactor <span class="op">=</span> <span class="fl">10000</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>normalizationMethod</code>: one of the options from “LogNormalize”, “CLR” or “RC” <br><code>useAssay</code>: name of the assay to use for normalization <br><code>normAssayName</code>: name of the output normalized assay <br><code>scaleFactor</code>: a numeric value that represents the scaling factor <br><code>verbose</code>: a logical value indicating if progress should be printed <br><br></p>
-</details><details><p><summary><code>SCTransform</code> from <strong>Seurat</strong> <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[6]</span> package:</summary></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>normalizationMethod</code>: one of the options from “LogNormalize,” “CLR” or “RC” <br><code>useAssay</code>: name of the assay to use for normalization <br><code>normAssayName</code>: name of the output normalized assay <br><code>scaleFactor</code>: a numeric value that represents the scaling factor <br><code>verbose</code>: a logical value indicating if progress should be printed <br><br></p>
+</details><details><summary><code>SCTransform</code> from <strong>Seurat</strong> <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[6]</span> package:
+</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratSCTransform.html">runSeuratSCTransform</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, normAssayName <span class="op">=</span> <span class="st">"SCTCounts"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: name of the assay to use for normalization <br><code>normAssayName</code>: name of the output normalized assay <br><code>verbose</code>: a logical value indicating if progress should be printed <br><br></p>
-</details><details><p><summary><code>logNormCounts</code> from <strong>Scater</strong> <span class="citation">[5]</span> package:</summary></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+</details><details><summary><code>logNormCounts</code> from <strong>Scater</strong> <span class="citation">[5]</span> package:
+</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, assayName <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span></code></pre></div>
 <p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: name of the assay to use for normalization <br><code>assayName</code>: name of the output normalized assay <br><br></p>
-</details><details><p><summary><code>CPM</code> from <strong>Scater</strong> <span class="citation">[5]</span> package:</summary></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+</details><details><summary><code>CPM</code> from <strong>Scater</strong> <span class="citation">[5]</span> package:
+</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterCPM.html">scaterCPM</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, assayName <span class="op">=</span> <span class="st">"countsCPM"</span><span class="op">)</span></span></code></pre></div>
 <p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: name of the assay to use for normalization <br><code>assayName</code>: name of the output normalized assay <br><br></p>
 </details><details><summary>Compute <b>Z-Score</b>:</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -375,24 +378,30 @@ document.getElementById("ia-button").click();
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references">
-<div id="ref-Butler2018">
-<p>[1] A. Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, “Integrating single-cell transcriptomic data across different conditions, technologies, and species,” <em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018, doi: <a href="https://doi.org/10.1038/nbt.4096" class="external-link">10.1038/nbt.4096</a>.</p>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-Butler2018" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">A. Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, <span>“<span class="nocase">Integrating single-cell transcriptomic data across different conditions, technologies, and species</span>,”</span> <em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018, doi: <a href="https://doi.org/10.1038/nbt.4096" class="external-link">10.1038/nbt.4096</a>.</div>
 </div>
-<div id="ref-Stuart2019">
-<p>[2] T. Stuart <em>et al.</em>, “Comprehensive Integration of Single-Cell Data,” <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031" class="external-link">10.1016/j.cell.2019.05.031</a>.</p>
+<div id="ref-Stuart2019" class="csl-entry">
+<div class="csl-left-margin">[2] </div>
+<div class="csl-right-inline">T. Stuart <em>et al.</em>, <span>“<span class="nocase">Comprehensive Integration of Single-Cell Data</span>,”</span> <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031" class="external-link">10.1016/j.cell.2019.05.031</a>.</div>
 </div>
-<div id="ref-Satija2017">
-<p>[3] R. Satija, J. A. Farrell, D. Gennert, A. F. Schier, and A. Regev, “Spatial reconstruction of single-cell gene expression data,” <em>Nature Biotechnology</em>, vol. 33, pp. 495–502, 2015, doi: <a href="https://doi.org/10.1038/nbt.3192" class="external-link">10.1038/nbt.3192</a>.</p>
+<div id="ref-Satija2017" class="csl-entry">
+<div class="csl-left-margin">[3] </div>
+<div class="csl-right-inline">R. Satija, J. A. Farrell, D. Gennert, A. F. Schier, and A. Regev, <span>“Spatial reconstruction of single-cell gene expression data,”</span> <em>Nature Biotechnology</em>, vol. 33, pp. 495–502, 2015, doi: <a href="https://doi.org/10.1038/nbt.3192" class="external-link">10.1038/nbt.3192</a>.</div>
 </div>
-<div id="ref-Hao2021">
-<p>[4] Y. Hao <em>et al.</em>, “Integrated analysis of multimodal single-cell data,” <em>Cell</em>, 2021, doi: <a href="https://doi.org/10.1016/j.cell.2021.04.048" class="external-link">10.1016/j.cell.2021.04.048</a>.</p>
+<div id="ref-Hao2021" class="csl-entry">
+<div class="csl-left-margin">[4] </div>
+<div class="csl-right-inline">Y. Hao <em>et al.</em>, <span>“Integrated analysis of multimodal single-cell data,”</span> <em>Cell</em>, 2021, doi: <a href="https://doi.org/10.1016/j.cell.2021.04.048" class="external-link">10.1016/j.cell.2021.04.048</a>.</div>
 </div>
-<div id="ref-McCarthy2017">
-<p>[5] D. J. McCarthy, K. R. Campbell, A. T. L. Lun, and Q. F. Wills, “Scater: Pre-processing, quality control, normalization and visualization of single-cell RNA-seq data in R,” <em>Bioinformatics</em>, vol. 33, no. 8, pp. 1179–1186, Apr. 2017, doi: <a href="https://doi.org/10.1093/bioinformatics/btw777" class="external-link">10.1093/bioinformatics/btw777</a>.</p>
+<div id="ref-McCarthy2017" class="csl-entry">
+<div class="csl-left-margin">[5] </div>
+<div class="csl-right-inline">D. J. McCarthy, K. R. Campbell, A. T. L. Lun, and Q. F. Wills, <span>“<span class="nocase">Scater: Pre-processing, quality control, normalization and visualization of single-cell RNA-seq data in R</span>,”</span> <em>Bioinformatics</em>, vol. 33, no. 8, pp. 1179–1186, Apr. 2017, doi: <a href="https://doi.org/10.1093/bioinformatics/btw777" class="external-link">10.1093/bioinformatics/btw777</a>.</div>
 </div>
-<div id="ref-Hafemeister2019">
-<p>[6] C. Hafemeister and R. Satija, “Normalization and variance stabilization of single-cell RNA-seq data using regularized negative binomial regression,” <em>Genome Biology</em>, vol. 20, no. 1, pp. 1–15, Dec. 2019, doi: <a href="https://doi.org/10.1186/s13059-019-1874-1" class="external-link">10.1186/s13059-019-1874-1</a>.</p>
+<div id="ref-Hafemeister2019" class="csl-entry">
+<div class="csl-left-margin">[6] </div>
+<div class="csl-right-inline">C. Hafemeister and R. Satija, <span>“<span class="nocase">Normalization and variance stabilization of single-cell RNA-seq data using regularized negative binomial regression</span>,”</span> <em>Genome Biology</em>, vol. 20, no. 1, pp. 1–15, Dec. 2019, doi: <a href="https://doi.org/10.1186/s13059-019-1874-1" class="external-link">10.1186/s13059-019-1874-1</a>.</div>
 </div>
 </div>
 </div>
@@ -410,12 +419,12 @@ document.getElementById("ia-button").click();
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

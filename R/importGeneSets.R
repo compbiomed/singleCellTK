@@ -24,6 +24,8 @@
 #' of the GMT file. See \link{featureIndex} for more information.
 #' Default \code{"rownames"}.
 #' @param sep Character. Delimiter of the GMT file. Default \code{"\t"}.
+#' @param noMatchError Boolean. Show an error if a collection does not have
+#' any matching features. Default \code{TRUE}.
 #' @details The gene identifiers in gene sets in the GMT file will be
 #' mapped to the rownames of \code{inSCE} using the \code{by} parameter and
 #' stored in a \linkS4class{GeneSetCollection} object from package
@@ -52,7 +54,9 @@
 #' @export
 importGeneSetsFromGMT <- function(inSCE, file,
                                   collectionName = "GeneSetCollection",
-                                  by = "rownames", sep = "\t") {
+                                  by = "rownames",
+                                  sep = "\t",
+                                  noMatchError = TRUE) {
 
   # Read gmt file into GeneSetCollection
   gsc <- GSEABase::getGmt(con = file, sep = sep)
@@ -60,7 +64,8 @@ importGeneSetsFromGMT <- function(inSCE, file,
   inSCE <- importGeneSetsFromCollection(inSCE = inSCE,
                                         geneSetCollection = gsc,
                                         collectionName = collectionName,
-                                        by = by)
+                                        by = by,
+                                        noMatchError = noMatchError)
   return(inSCE)
 }
 
@@ -90,6 +95,8 @@ importGeneSetsFromGMT <- function(inSCE, file,
 #' can point to different locations within \code{inSCE}. See
 #' \link{featureIndex} for more information.
 #' Default \code{"rownames"}.
+#' @param noMatchError Boolean. Show an error if a collection does not have
+#' any matching features. Default \code{TRUE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
 #' with gene set from \code{collectionName} output stored to the
 #' \link{metadata} slot.
@@ -126,7 +133,8 @@ importGeneSetsFromGMT <- function(inSCE, file,
 #' @importFrom SummarizedExperiment rowData
 importGeneSetsFromList <- function(inSCE, geneSetList,
                                    collectionName = "GeneSetCollection",
-                                   by = "rownames") {
+                                   by = "rownames",
+                                   noMatchError = TRUE) {
 
   # Check to ensure 'by' is correct
   if(!all(by %in% c("rownames", colnames(rowData(inSCE))))) {
@@ -158,7 +166,8 @@ importGeneSetsFromList <- function(inSCE, geneSetList,
   inSCE <- importGeneSetsFromCollection(inSCE = inSCE,
                                         geneSetCollection = gsc,
                                         collectionName = collectionName,
-                                        by = by)
+                                        by = by,
+                                        noMatchError = noMatchError)
   return(inSCE)
 }
 
@@ -188,6 +197,8 @@ importGeneSetsFromList <- function(inSCE, geneSetList,
 #' in the \code{GeneSetCollection}.
 #' See \link{featureIndex} for more information.
 #' Default \code{"rownames"}.
+#' @param noMatchError Boolean. Show an error if a collection does not have
+#' any matching features. Default \code{TRUE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
 #' with gene set from \code{collectionName} output stored to the
 #' \link{metadata} slot.
@@ -215,7 +226,8 @@ importGeneSetsFromList <- function(inSCE, geneSetList,
 #' @export
 importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
                                          collectionName = "GeneSetCollection",
-                                         by = "rownames") {
+                                         by = "rownames",
+                                         noMatchError = TRUE) {
 
   # If 'by' is NULL, then the location will be derived from the description
   if(is.null(by)) {
@@ -262,30 +274,35 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
     }
   }
 
-  if(length(gs) == 0) {
-    stop("No gene sets could be imported. This is either because the no overlapping genes were identified between the gene sets and the input data or different types of identifiers are used between the two. Please check if the gene identifiers of both gene sets and input data belong to same type.")
-  }
-
-  # Add GeneSetCollection back to metadata
-  new.gsc <- GSEABase::GeneSetCollection(gs)
-  old.gsc <- NULL
-  if(!is.null(S4Vectors::metadata(inSCE)$sctk$genesets)) {
-    if(collectionName %in% names(S4Vectors::metadata(inSCE)$sctk$genesets)) {
-      old.gsc <- S4Vectors::metadata(inSCE)$sctk$genesets[[collectionName]]
+  if(length(gs) == 0 & isTRUE(noMatchError)) {
+    stop("No gene sets could be imported. This is either because the no
+         overlapping genes were identified between the gene sets and the input
+         data or different types of identifiers are used between the two.
+         Please check if the gene identifiers of both gene sets and input
+         data belong to same type.")
+  } else if(length(gs) > 0) {
+    # Add GeneSetCollection back to metadata
+    new.gsc <- GSEABase::GeneSetCollection(gs)
+    old.gsc <- NULL
+    if(!is.null(S4Vectors::metadata(inSCE)$sctk$genesets)) {
+      if(collectionName %in% names(S4Vectors::metadata(inSCE)$sctk$genesets)) {
+        old.gsc <- S4Vectors::metadata(inSCE)$sctk$genesets[[collectionName]]
+      }
+    }
+    
+    if(!is.null(old.gsc)) {
+      # Remove any old gene sets with same name as new gene sets
+      old.gsc <- old.gsc[!(names(old.gsc) %in% names(new.gsc))]
+      
+      # Combine old and new GeneSetCollections and save back to metadata
+      S4Vectors::metadata(inSCE)$sctk$genesets[[collectionName]] <-
+        GSEABase::GeneSetCollection(c(old.gsc, new.gsc))
+    } else {
+      S4Vectors::metadata(inSCE)$sctk$genesets[[collectionName]] <- new.gsc
     }
   }
 
-  if(!is.null(old.gsc)) {
-    # Remove any old gene sets with same name as new gene sets
-    old.gsc <- old.gsc[!(names(old.gsc) %in% names(new.gsc))]
-
-    # Combine old and new GeneSetCollections and save back to metadata
-    S4Vectors::metadata(inSCE)$sctk$genesets[[collectionName]] <-
-      GSEABase::GeneSetCollection(c(old.gsc, new.gsc))
-  } else {
-    S4Vectors::metadata(inSCE)$sctk$genesets[[collectionName]] <- new.gsc
-  }
-
+  
   return(inSCE)
 }
 
@@ -314,6 +331,8 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
 #' of \code{inSCE}. See \link{featureIndex} for more information.
 #' Default \code{"rownames"}.
 #' @param verbose Boolean. Whether to display progress. Default \code{TRUE}.
+#' @param noMatchError Boolean. Show an error if a collection does not have
+#' any matching features. Default \code{TRUE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
 #' with gene set from \code{collectionName} output stored to the
 #' \link{metadata} slot.
@@ -344,7 +363,8 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
                                             "human_gene_symbol",
                                             "entrez_gene"),
                                      by = "rownames",
-                                     verbose = TRUE) {
+                                     verbose = TRUE,
+                                     noMatchError = TRUE) {
 
   mapping <- match.arg(mapping)
 
@@ -422,7 +442,8 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
     inSCE <- importGeneSetsFromCollection(inSCE = inSCE,
                                           geneSetCollection = gsc,
                                           collectionName = categoryIDs[i],
-                                          by = by)
+                                          by = by,
+                                          noMatchError = noMatchError)
   }
 
   return(inSCE)
@@ -449,12 +470,14 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
 #' @param collectionName Character. Name of collection to add gene sets to.
 #' If this collection already exists in \code{inSCE}, then these gene sets will
 #' be added to that collection. Any gene sets within the collection with the
-#' same name will be overwritten.
+#' same name will be overwritten. Default \code{"mito"}.
+#' @param noMatchError Boolean. Show an error if a collection does not have
+#' any matching features. Default \code{TRUE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
 #' with gene set from \code{collectionName} output stored to the
 #' \link{metadata} slot.
 #' @details The gene identifiers of mitochondrial genes will be loaded with
-#' "data(AllMito)". Currently, it supports human and mouse reference.
+#' "data(AllMito)". Currently, it supports human and mouse references.
 #' Also, it supports entrez ID, gene symbol, ensemble ID and ensemble transcript ID.
 #' They will be mapped to the IDs in \code{inSCE} using the \code{by} parameter and
 #' stored in a \linkS4class{GeneSetCollection} object from package
@@ -475,7 +498,8 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
 #'                          by = "rownames")
 #' @export
 importMitoGeneSet <- function(inSCE, reference = "human", id = "ensembl",
-                              by = "rownames", collectionName = "human_mito") {
+                              by = "rownames", collectionName = "mito",
+                              noMatchError = TRUE) {
 
   if (!id %in% c("symbol", "entrez", "ensembl", "ensemblTranscriptID")) {
     stop("`id` should be one of 'symbol', 'entrez', 'ensembl' or 'ensemblTranscriptID'")
@@ -497,7 +521,8 @@ importMitoGeneSet <- function(inSCE, reference = "human", id = "ensembl",
   names(mitogenes) <- collectionName
   inSCE <- importGeneSetsFromList(inSCE = inSCE, geneSetList = mitogenes,
                                   collectionName = collectionName,
-                                  by = by)
+                                  by = by,
+                                  noMatchError = noMatchError)
   return(inSCE)
 }
 

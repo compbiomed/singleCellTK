@@ -35,11 +35,11 @@ To view detailed instructions on how to use the workflow, please select 'Interac
 <div id="interactive" class="tabcontent">
 ````
 
-In this tutorial example, we illustrate all the steps of the curated workflow and focus on the options available to manipulate and customize the steps of the workflow as per user requirements. To initiate the `Seurat` workflow, click on the 'Curated Workflows' from the top menu and select `Seurat`:
+In this tutorial example, we illustrate all the steps of the curated workflow and focus on the options available to manipulate and customize the steps of the workflow as per user requirements. This tutorial takes the real-world scRNAseq dataset as an example, which consists of 2,700 Peripheral Blood Mononuclear Cells (PBMCs) collected from a healthy donor, namingly PBMC3K. This dataset is available from 10X Genomics and can be found on the 10X website. To initiate the `Seurat` workflow, click on the 'Curated Workflows' from the top menu and select `Seurat`:
 
 ![](ui_screenshots/seurat/seurat_menu.png) <br>
 
-NOTE: This tutorial assumes that the data has already been uploaded via the upload tab of the toolkit and filtered before using the workflow. 
+NOTE: Before heading into the next steps, we assume that users have already loaded SCTK, imported and QC'ed the PBMC3K data, following the [Import and QC Tutorial](01_import_and_qc_tutorial.html).
 
 **1. Normalize Data** <br>
 Assuming that the data has been uploaded via the Upload tab of the toolkit, the first step for the analysis of the data is the Normalization of data. For this purpose, any assay available in the uploaded data can be used against one of the three methods of normalization available through `Seurat` i.e. `LogNormalize`, `CLR` (Centered Log Ratio) or `RC` (Relative Counts).
@@ -52,18 +52,7 @@ Assuming that the data has been uploaded via the Upload tab of the toolkit, the 
 4. Set the scaling factor which represents the numeric value by which the data values are multiplied before log transformation. Default is set to `10000`.
 5. Press the 'Normalize' button to start the normalization process.
 
-**2. Scale Data** <br>
-Once normalization is complete, data needs to be scaled and centered accordingly. `Seurat` uses `linear` (linear model), `poisson` (generalized linear model) or `negbinom` (generalized linear model) as a regression model.
-
-![](ui_screenshots/seurat/seurat_2_scale_annotated.png) <br>
-
-1. Open up the 'Scale Data' tab.
-2. Select model for scaling from `linear`, `poisson` or `negbinom`.
-3. Select if you only want to scale data or center it as well.
-4. Input maximum scaled data value. This is the maximum value to which the data will be scaled to.
-5. Press 'Scale' button to start processing.
-
-**3. Highly Variable Genes** <br>
+**2. Highly Variable Genes** <br>
 Identification of the highly variable genes is core to the `Seurat` workflow and these highly variable genes are used throughout the remaining workflow. `Seurat` provides three methods for variable genes identification i.e. `vst` (uses local polynomial regression to fit a relationship between log of variance and log of mean), `mean.var.plot` (uses mean and dispersion to divide features into bins) and `dispersion` (uses highest dispersion values only).
 
 ![](ui_screenshots/seurat/seurat_3_hvg_annotated.png) <br>
@@ -76,7 +65,7 @@ Identification of the highly variable genes is core to the `Seurat` workflow and
 6. Displays the top most highly variable genes as selected in (5).
 7. Graph that plots each gene and its relationship based upon the selected model in (2), and identifies if a gene is highly variable or not.
 
-**4. Dimensionality Reduction** <br>
+**3. Dimensionality Reduction** <br>
 `Seurat` workflow offers `PCA` or `ICA` for dimensionality reduction and the components from these methods can be used in the downstream analysis. Moreover, several plots are available for the user to inspect the output of the dimensionality reduction such as the standard 'PCA Plot', 'Elbow Plot', 'Jackstraw Plot' and 'Heatmap Plot'.
 
 ![](ui_screenshots/seurat/seurat_4_dimensionalityReduction_annotated_1.png) <br>
@@ -88,12 +77,13 @@ Identification of the highly variable genes is core to the `Seurat` workflow and
 3. Input the number of components to compute. Default value is `50`.
 4. Select the plots that should be computed with the overall processing. The standard 'PCA Plot' will be computed at all times, while the remaining can be turned off if not required.
 5. Input the number of features against which a 'Heatmap' should be plotted. Only available when 'Compute Heatmap' is set to `TRUE`.
-6. Press the 'Run PCA' button to start processing.
-7. Select the number of computed components that should be used in the downstream analysis e.g. in 'tSNE/UMAP' computation or with 'Clustering'. If 'Elbow Plot' is computed, a suggested value will be indicated that should be preferred for downstream analysis.
-8. The plot area from where all computed plots can be viewed by the user.
-9. Heatmap plot has various options available for the users to customize the plot. Since a plot is computed against each component, a user-defined number of components can be selected against. Moreover, for viewing quality, a number of columns can be selected in which the plots should be shown.
+6. Specify seed value.
+7. Press the 'Run PCA' button to start processing.
+8. Select the number of computed components that should be used in the downstream analysis e.g. in 'tSNE/UMAP' computation or with 'Clustering'. If 'Elbow Plot' is computed, a suggested value will be indicated that should be preferred for downstream analysis.
+9. The plot area from where all computed plots can be viewed by the user.
+10. Heatmap plot has various options available for the users to customize the plot. Since a plot is computed against each component, a user-defined number of components can be selected against. Moreover, for viewing quality, a number of columns can be selected in which the plots should be shown.
 
-**5. tSNE/UMAP** <br>
+**4. tSNE/UMAP** <br>
 'tSNE' and 'UMAP' can be computed and plotted once components are available from 'Dimensionality Reduction' tab.
 
 ![](ui_screenshots/seurat/seurat_5_tsneUmap.png) <br>
@@ -102,11 +92,12 @@ Identification of the highly variable genes is core to the `Seurat` workflow and
 2. Select 'tSNE' or 'UMAP' sub-tab.
 3. Select a reduction method. Only methods that are computed previously in the 'Dimensionality Reduction' tab are available.
 4. Set perplexity tuning parameter.
-5. Information displayed to the user that how many components from the selected reduction method will be used. This value can only be changed from the 'Dimensionality Reduction' tab.
-6. Press 'Run tSNE' or 'Run UMAP' button to start processing.
-7. 'tSNE' or 'UMAP' plot depending upon the selected computation.
+5. Set seed value.
+6. Information displayed to the user that how many components from the selected reduction method will be used. This value can only be changed from the 'Dimensionality Reduction' tab.
+7. Press 'Run tSNE' or 'Run UMAP' button to start processing.
+8. 'tSNE' or 'UMAP' plot depending upon the selected computation.
 
-**6. Clustering** <br>
+**5. Clustering** <br>
 Cluster labels can be generated for all cells/samples using one of the computed reduction method. Plots are automatically re-computed with cluster labels. The available algorithms for clustering as provided by `Seurat` include `original Louvain algorithm`, `Louvain algorithm with multilevel refinement` and `SLM algorithm`.
 
 ![](ui_screenshots/seurat/seurat_6_clustering.png) <br>
@@ -120,7 +111,7 @@ Cluster labels can be generated for all cells/samples using one of the computed 
 7. Press 'Find Clusters' button to start processing.
 8. Re-computed plots with cluster labels. Only those plots are available that have previously been computed.
 
-**7. Find Markers** <br>
+**6. Find Markers** <br>
 'Find Markers' tab can be used to identify and visualize the marker genes using on of the provided visualization methods. The tab offers identification of markers between two selected phenotype groups or between all groups and can be decided at the time of the computation. Furthermore, markers that are conserved between two phenotype groups can also be identified. Visualizations such as Ridge Plot, Violin Plot, Feature Plot and Heatmap Plot can be used to visualize the individual marker genes. 
 
 ![](ui_screenshots/seurat/seurat_7_findmarkers_1.png) <br>
@@ -129,8 +120,6 @@ Cluster labels can be generated for all cells/samples using one of the computed 
 3. Select test used for marker genes identification.
 4. Select if only positive markers should be returned.
 5. Press "Find Markers" button to run marker identification.
-
-![](ui_screenshots/seurat/seurat_7_findmarkers_2.png) <br>
 6. Identified marker genes are populated in the table.
 7. Filters can be applied on the table.
 
@@ -139,6 +128,8 @@ Cluster labels can be generated for all cells/samples using one of the computed 
 
 ![](ui_screenshots/seurat/seurat_7_findmarkers_4.png) <br>
 9. Table re-populated after applying filters.
+
+![](ui_screenshots/seurat/seurat_7_findmarkers_10.png) <br>
 10. Heatmap plot can be visualized for all genes populated in the table (9) against all biological groups in the selected phenotype variable.
 
 ![](ui_screenshots/seurat/seurat_7_findmarkers_5.png) <br>
@@ -147,7 +138,7 @@ Cluster labels can be generated for all cells/samples using one of the computed 
 ![](ui_screenshots/seurat/seurat_7_findmarkers_6.png) <br>
 12. Selected marker genes from the table are plotted with gene plots.
 
-**8. Downstream Analysis** <br>
+**7. Downstream Analysis** <br>
 Once all steps of the Seurat workflow are completed, users can further analyze the data by directly going to the various downstream analysis options (Differential Expression, Marker Selection & Pathway Analysis) from within the Seurat workflow.
 
 ![](ui_screenshots/seurat/seurat_7_findmarkers_7.png) <br>
@@ -163,7 +154,10 @@ All methods provided by SCTK for Seurat workflow use a `SingleCellExperiment` ob
 Using a sample dataset:
 ```{r "seurat_import", warning=FALSE,  message=FALSE}
 library(singleCellTK)
-sce <- importExampleData('pbmc3k')
+
+# Load filtered pbmc3k data
+sce <- readRDS("tutorial_pbmc3k_qc.rds")
+
 print(sce)
 ```
 
@@ -173,57 +167,65 @@ Once raw data is uploaded and stored in a `SingleCellExperiment` object, `runSeu
 Parameters to this function include `useAssay` (specify the assay that should be normalized), `normAssayName` (specify the new name of the normalized assay, defaults to `"seuratNormData"`), `normalizationMethod` (specify the normalization method to use, defaults to `"LogNormalize"`) and `scaleFactor` (defaults to `10000`).
 
 ```{r "seurat_normalize", warning=FALSE, message=FALSE}
-sce <- runSeuratNormalizeData(inSCE = sce, useAssay = "counts", normAssayName = "seuratNormData")
+sce <- runSeuratNormalizeData(inSCE = sce, useAssay = "decontXcounts", normAssayName = "seuratNormData", normalizationMethod = "LogNormalize", scaleFactor = 10000)
 ```
 
-**2. Scale Data** <br>
-Normalized data can be scaled by using the `runSeuratScaleData()` function that takes input a `SingleCellExperiment` object that has been normalized previously by the `runSeuratNormalizeData()` function. Scaled assay is stored back in the input object. 
-
-Parameters include `useAssay` (specify the name of normalized assay), `scaledAssayName` (specify the new name for scaled assay, defaults to `"seuratScaledData"`), `model` (specify the method to use, defaults to `"linear"`), `scale` (specify if the data should be scaled, defaults to `TRUE`), `center` (specify if the data should be centered, defaults to `TRUE`) and `scaleMax` (specify the maximum clipping value, defaults to `10`).
-
-```{r "seurat_scale", warning=FALSE, message=FALSE}
-sce <- runSeuratScaleData(inSCE = sce, useAssay = "seuratNormData", scaledAssayName = "seuratScaledData")
-```
-
-**3. Highly Variable Genes** <br>
+**2. Highly Variable Genes** <br>
 Highly variable genes can be identified by first using the `runSeuratFindHVG()` function that computes that statistics against a selected HVG method in the rowData of input object. The genes can be identified by using the `getTopHVG()` function. The variable genes can be visualized using the `plotSeuratHVG()` method. <br> 
-Parameters for `runSeuratFindHVG()` include `useAssay` (specify the name of the scaled assay, defaults to `"seuratScaledData"` but `"counts"` should be used with `"vst"` method) and `hvgMethod()` (specify the method to use for variable genes computation, defaults to `"vst"`).
+Parameters for `runSeuratFindHVG()` include `useAssay` (specify the name of the assay to use), `method` (specify the method to use for variable genes computation, defaults to `"vst"`), `hvgNumber` (number of variable features to identify, defaults) and `createFeatureSubset` (define a name for the subset of selected top variable features). 
 
 ```{r "seurat_hvg", warning=FALSE, message=FALSE}
-sce <- runSeuratFindHVG(inSCE = sce, useAssay = "counts", method = "vst")
+sce <- runSeuratFindHVG(inSCE = sce, useAssay = "decontXcounts", method = "vst", hvgNumber = 2000, createFeatureSubset = "hvf")
+
+# Print names of top 10 variable features
 print(getTopHVG(inSCE = sce, method = "vst", hvgNumber = 10))
+
+# Plot variable features with top 10 labeled
 plotSeuratHVG(sce, labelPoints = 10)
 ```
 
-**4. Dimensionality Reduction** <br>
+**3. Dimensionality Reduction** <br>
 PCA or ICA can be computed using the `runSeuratPCA()` and `runSeuratICA()` functions respectively. Plots can be visualized using `plotSeuratReduction()`, `plotSeuratElbow()`, `plotSeuratJackStraw()` (must previously be computed by `runSeuratJackStraw()`) and `runSeuratHeatmap()`.
 
 ```{r "seurat_dm", warning=FALSE, message=FALSE}
-sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "seuratPCA", nPCs = 20)
+sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratNormData", reducedDimName = "pca", nPCs = 50, seed = 42, scale = TRUE, useFeatureSubset = "hvf")
+
+# Plot PC1 vs PC2 plot
 plotSeuratReduction(inSCE = sce, useReduction = "pca")
+
+# Plot Elbowplot
 plotSeuratElbow(inSCE = sce)
-sce <- runSeuratJackStraw(inSCE = sce, useAssay = "seuratScaledData", dims = 20)
-plotSeuratJackStraw(inSCE = sce, dims = 20)
-runSeuratHeatmap(inSCE = sce, useAssay = "seuratScaledData", useReduction = "pca", nfeatures = 20, dims = 2)
+
+# Compute JackStraw
+sce <- runSeuratJackStraw(inSCE = sce, useAssay = "seuratNormData", dims = 50)
+
+# Plot JackStraw
+plotSeuratJackStraw(inSCE = sce, dims = 50)
+
+# Compute and plot first 4 dimensions and 30 top features in a heatmap
+runSeuratHeatmap(inSCE = sce, useAssay = "seuratNormData", useReduction = "pca", nfeatures = 30, dims = 4)
 ```
 
-**5. tSNE/UMAP** <br>
-`runSeuratTSNE()` and `runSeuratUMAP()` can be used to compute tSNE/UMAP statistics and store into the input object. Parameters to both functions include `inSCE` (input SCE object), `useReduction` (specify the reduction to use i.e. `"pca"` or `"ica"`), `reducedDimName` (name of this new reduction) and `dims` (number of dims to use). `plotSeuratReduction()` can be used to visualize the results.
+**4. tSNE/UMAP** <br>
+`runSeuratTSNE()` and `runSeuratUMAP()` can be used to compute tSNE/UMAP statistics and store into the input object. Parameters to both functions include `inSCE` (input SCE object), `useReduction` (specify the reduction to use i.e. `"pca"` or `"ica"`), `reducedDimName` (name of this new reduction) and `dims` (number of dims to use). Additionally, method specific parameters can be used to fine tune the algorithm. `plotSeuratReduction()` can be used to visualize the results.
 ```{r "seurat_tsne_umap", warning=FALSE, message=FALSE}
-sce <- runSeuratTSNE(inSCE = sce, useReduction = "pca", reducedDimName = "seuratTSNE", dims = 10)
+sce <- runSeuratTSNE(inSCE = sce, useReduction = "pca", reducedDimName = "seuratTSNE", dims = 10, perplexity = 30, seed = 1)
+
+# Plot TSNE
 plotSeuratReduction(sce, "tsne")
 ```
 ```{r, warning=FALSE, message=FALSE}
-sce <- runSeuratUMAP(inSCE = sce, useReduction = "pca", reducedDimName = "seuratUMAP", dims = 10)
+sce <- runSeuratUMAP(inSCE = sce, useReduction = "pca", reducedDimName = "seuratUMAP", dims = 10, minDist = 0.3, nNeighbors = 30, spread = 1, seed = 42)
 ```
 ```{r, warning=FALSE}
+# Plot UMAP
 plotSeuratReduction(sce, "umap")
 ```
 
-**6. Clustering** <br>
-`runSeuratFindClusters()` function can be used to compute the clusters, which can later be plotted through the `plotSeuratReduction()` method with cluster labels. The parameters to the function include `inSCE` (input SCE object), `useAssay` (name of the scaled assay), `useReduction` (specify which reduction to use i.e. `"pca"` or `"ica"`), `dims` (number of dims to use) and the algorithm (either `"louvain"`, `"multilevel"` or `"SLM"`).
+**5. Clustering** <br>
+`runSeuratFindClusters()` function can be used to compute the clusters, which can later be plotted through the `plotSeuratReduction()` method with cluster labels. The parameters to the function include `inSCE` (input SCE object), `useAssay` (name of the assay if no reduction to be used), `useReduction` (specify which reduction to use i.e. `"pca"` or `"ica"`), `dims` (number of dims to use), the algorithm (either `"louvain"`, `"multilevel"` or `"SLM"`) and `resolution` (defaults to 0.8).
 ```{r "seurat_clustering", warning=FALSE, message=FALSE}
-sce <- runSeuratFindClusters(inSCE = sce, useAssay = "seuratScaledData", useReduction = "pca", dims = 10, algorithm = "louvain")
+sce <- runSeuratFindClusters(inSCE = sce, useReduction = "pca", resolution = 0.8, algorithm = "louvain", dims = 10) 
 ```
 
 `plotSeuratReduction()` can then be used to plot all reductions previously computed with cluster labels:
@@ -233,16 +235,23 @@ plotSeuratReduction(sce, "tsne", showLegend = TRUE)
 plotSeuratReduction(sce, "umap", showLegend = TRUE)
 ```
 
-**7. Find Markers** <br>
+**6. Find Markers** <br>
 Marker genes can be identified using the `runSeuratFindMarkers()` function. This function can either use one specified column from `colData` of the input object as a group variable if all groups from that variable are to be used (`allGroup` parameter) or users can manually specify the cells included in one group vs cells included in the second group (`cells1` and `cells2` parameter). 
 ```{r "seurat_findMarkers", warning=FALSE, message=FALSE}
 sce <- runSeuratFindMarkers(inSCE = sce, allGroup = "Seurat_louvain_Resolution0.8")
-print(head(metadata(sce)[["seuratMarkers"]]))
+
+# Fetch marker genes table
+markerGenes <- metadata(sce)[["seuratMarkers"]] 
+
+# Order by log fold change and p value
+markerGenes <- markerGenes[order(-markerGenes$avg_log2FC, markerGenes$p_val),]
+
+head(markerGenes)
 ```
 
 The marker genes identified can be visualized through one of the available plots from `ridge plot`, `violin plot`, `feature plot`, `dot plot` and `heatmap plot`. All marker genes visualizations can be plotted through the wrapper function `plotSeuratGenes()`, which must be supplied the SCE object (markers previously computed), name of the scaled assay, type of the plot (available options are `"ridge"`, `"feature"`, `"violin"`, `"dot"` and `"heatmap"`), features that should be plotted (`character` vector) and the grouping variable that is available in the `colData` slot of the input object. An additional parameter `ncol` decides in how many columns should the visualizations be plotted.
 ```{r "seurat_genePlots", warning=FALSE, message=FALSE}
-plotSeuratGenes(inSCE = sce, useAssay = "seuratScaledData", plotType = "ridge", features = metadata(sce)[["seuratMarkers"]]$gene.id[1:4], groupVariable = "Seurat_louvain_Resolution0.8", ncol = 2, combine = TRUE)
+plotSeuratGenes(inSCE = sce, useAssay = "seuratNormData", plotType = "ridge", features = metadata(sce)[["seuratMarkers"]]$gene.id[1:4], groupVariable = "Seurat_louvain_Resolution0.8", ncol = 2, combine = TRUE)
 ```
 
 ````{=html} 

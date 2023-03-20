@@ -186,8 +186,41 @@ shinyPanelSeurat <- fluidPage(
 
 
 
-            bsCollapsePanel("tSNE/UMAP",
+            bsCollapsePanel("2D-Embedding",
                 tabsetPanel(id = "tsneUmapTabsetSeurat", type = "tabs",
+                            tabPanel("UMAP",
+                                     br(),
+                                     fluidRow(
+                                       column(4,
+                                              fluidRow(
+                                                column(12,
+                                                       panel(heading = "UMAP",
+                                                             selectInput(inputId = "reduction_umap_method", label = "Select reduction method: ", choices = c("pca", "ica")),
+                                                             #textInput(inputId = "reduction_umap_count", label = "Select number of reduction components: ", value = "20"),
+                                                             numericInput(inputId = "min_dist_umap", label = "Set min.dist:", value = 0.3),
+                                                             numericInput(inputId = "n_neighbors_umap", label = "Set n.neighbors:", value = 30, step = 1),
+                                                             numericInput(inputId = "spread_umap", label = "Set spread:", value = 1),
+                                                             numericInput(inputId = "seed_UMAP",
+                                                                          label = "Seed value for reproducibility of result:",
+                                                                          value = 42,
+                                                                          step = 1),
+                                                             htmlOutput(outputId = "display_message_umap", inline = FALSE),
+                                                             actionButton(inputId = "run_umap_button", "Run UMAP")
+                                                       )
+                                                )
+                                              )
+                                       ),
+                                       column(8,
+                                              fluidRow(
+                                                panel(heading = "Plot",
+                                                      column(12,
+                                                             plotlyOutput(outputId = "plot_umap")
+                                                      )
+                                                )
+                                              )
+                                       )
+                                     )
+                            ),
                     tabPanel("tSNE",
                         br(),
                         fluidRow(
@@ -213,39 +246,6 @@ shinyPanelSeurat <- fluidPage(
                                     panel(heading = "Plot",
                                         column(12,
                                             plotlyOutput(outputId = "plot_tsne")
-                                              )
-                                         )
-                                        )
-                                  )
-                                )
-                            ),
-                    tabPanel("UMAP",
-                        br(),
-                        fluidRow(
-                            column(4,
-                                fluidRow(
-                                    column(12,
-                                        panel(heading = "UMAP",
-                                            selectInput(inputId = "reduction_umap_method", label = "Select reduction method: ", choices = c("pca", "ica")),
-                                            #textInput(inputId = "reduction_umap_count", label = "Select number of reduction components: ", value = "20"),
-                                            numericInput(inputId = "min_dist_umap", label = "Set min.dist:", value = 0.3),
-                                            numericInput(inputId = "n_neighbors_umap", label = "Set n.neighbors:", value = 30, step = 1),
-                                            numericInput(inputId = "spread_umap", label = "Set spread:", value = 1),
-                                            numericInput(inputId = "seed_UMAP",
-                                                         label = "Seed value for reproducibility of result:",
-                                                         value = 42,
-                                                         step = 1),
-                                            htmlOutput(outputId = "display_message_umap", inline = FALSE),
-                                            actionButton(inputId = "run_umap_button", "Run UMAP")
-                                            )
-                                          )
-                                        )
-                                 ),
-                            column(8,
-                                fluidRow(
-                                    panel(heading = "Plot",
-                                        column(12,
-                                            plotlyOutput(outputId = "plot_umap")
                                               )
                                          )
                                         )

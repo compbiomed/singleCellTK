@@ -19,7 +19,7 @@ downstream quality control and analysis functions in singleCellTK."><!-- mathjax
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -50,6 +50,9 @@ downstream quality control and analysis functions in singleCellTK."><!-- mathjax
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul></li>
 <li>
@@ -208,7 +211,8 @@ downstream quality control and analysis functions in <a href="singleCellTK.html"
 <span>  reference <span class="op">=</span> <span class="st">"human"</span>,</span>
 <span>  id <span class="op">=</span> <span class="st">"ensembl"</span>,</span>
 <span>  by <span class="op">=</span> <span class="st">"rownames"</span>,</span>
-<span>  collectionName <span class="op">=</span> <span class="st">"human_mito"</span></span>
+<span>  collectionName <span class="op">=</span> <span class="st">"mito"</span>,</span>
+<span>  noMatchError <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -242,7 +246,12 @@ Default <code>"rownames"</code>.</p></dd>
 <dd><p>Character. Name of collection to add gene sets to.
 If this collection already exists in <code>inSCE</code>, then these gene sets will
 be added to that collection. Any gene sets within the collection with the
-same name will be overwritten.</p></dd>
+same name will be overwritten. Default <code>"mito"</code>.</p></dd>
+
+
+<dt>noMatchError</dt>
+<dd><p>Boolean. Show an error if a collection does not have
+any matching features. Default <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -256,7 +265,7 @@ metadata slot.</p>
     <div id="details">
     <h2>Details</h2>
     <p>The gene identifiers of mitochondrial genes will be loaded with
-"data(AllMito)". Currently, it supports human and mouse reference.
+"data(AllMito)". Currently, it supports human and mouse references.
 Also, it supports entrez ID, gene symbol, ensemble ID and ensemble transcript ID.
 They will be mapped to the IDs in <code>inSCE</code> using the <code>by</code> parameter and
 stored in a GeneSetCollection object from package
@@ -293,11 +302,11 @@ GeneSetCollection objects.</p></div>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

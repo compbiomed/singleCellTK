@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -50,6 +50,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul></li>
 <li>
@@ -206,7 +209,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">importSTARsolo</span><span class="op">(</span></span>
 <span>  <span class="va">STARsoloDirs</span>,</span>
 <span>  <span class="va">samples</span>,</span>
-<span>  STARsoloOuts <span class="op">=</span> <span class="st">"Gene/filtered"</span>,</span>
+<span>  STARsoloOuts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gene"</span>, <span class="st">"GeneFull"</span><span class="op">)</span>,</span>
 <span>  matrixFileNames <span class="op">=</span> <span class="st">"matrix.mtx"</span>,</span>
 <span>  featuresFileNames <span class="op">=</span> <span class="st">"features.tsv"</span>,</span>
 <span>  barcodesFileNames <span class="op">=</span> <span class="st">"barcodes.tsv"</span>,</span>
@@ -233,11 +236,11 @@ imported. Must have the same length as <code>STARsoloDirs</code>.</p></dd>
 
 
 <dt>STARsoloOuts</dt>
-<dd><p>Character vector. The intermediate
-paths to filtered or raw cell barcode, feature, and matrix files
-for each of <code>samples</code>. Default <code>"Gene/filtered"</code>  which works
-for STAR 2.7.3a. Must have length 1 or the same
-length as <code>samples</code>.</p></dd>
+<dd><p>Character. The intermediate
+folder to filtered or raw cell barcode, feature, and matrix files
+for each of <code>samples</code>. Default <code>"Gene"</code>.
+It can be either Gene or GeneFull as the main folder from
+which data needs to be imported.</p></dd>
 
 
 <dt>matrixFileNames</dt>
@@ -332,11 +335,11 @@ DelayedArray object or not. Default <code>FALSE</code>.</p></dd>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

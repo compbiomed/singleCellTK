@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -232,7 +235,7 @@
 
       
 
-      </header><script src="celda_curated_workflow_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Celda Curated Workflow</h1>
@@ -272,7 +275,7 @@
 <p>To identify number of feature modules, there are always five essential inputs that users should be sure with:</p>
 <ul>
 <li>The data matrix to use - selection input <strong>“Choose an Assay”</strong>. In terms of celda analysis, SCTK always requires a full-sized feature expression data (i.e. assay) as a valid input.</li>
-<li>Feature selection method - selection input <strong>“Choose Feature Selection Method”</strong>. Select feature selection method from ‘None’ , ‘runSeuratFindHVG’ and ‘Scran_modelGeneVar’.</li>
+<li>Feature selection method - selection input <strong>“Choose Feature Selection Method”</strong>. Select feature selection method from ‘None’ , ‘runSeuratFindHVG’ and ‘Scran_modelGeneVar.’</li>
 <li>Minimum number of counts required for feature selection - integer <strong>“Keep features with this many counts”</strong>.</li>
 <li>Minimum number of cells required for feature selection - integer <strong>“In at least this many cells”</strong>.</li>
 <li>Number of initial feature modules - integer <strong>“Select Number of Initial Feature Modules”</strong>.</li>
@@ -293,7 +296,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <li>Select variable features - selection input <strong>“Select number of variable features”</strong>.Input the number of genes that should be identified as variable. Default is 2500.</li>
 </ul></details>
 </div>
-<br><p>After feature selection method and it’s parameters are set, user can click recursive module split button to run <code>recursiveSplitModule</code> function which is used used to cluster features into modules for a range of feature modules (L). Two plots are shown when user runs recursive module split; perplexity plot and rate of perplexity change. To evaluate the performance of individual models we use perplexity plot by calculating the probability of observing expression counts given an estimated Celda model. The perplexity alone often does not show a clear elbow or “leveling off”. However, the rate of perplexity change (RPC) can be more informative.</p>
+<br><p>After feature selection method and it’s parameters are set, user can click recursive module split button to run <code>recursiveSplitModule</code> function which is used used to cluster features into modules for a range of feature modules (L). Two plots are shown when user runs recursive module split; perplexity plot and rate of perplexity change. To evaluate the performance of individual models we use perplexity plot by calculating the probability of observing expression counts given an estimated Celda model. The perplexity alone often does not show a clear elbow or “leveling off.” However, the rate of perplexity change (RPC) can be more informative.</p>
 <p><img src="ui_screenshots/celdaAnalysis/module2.PNG" alt="celdamodule2"><br></p>
 <p><img src="ui_screenshots/celdaAnalysis/module3.PNG" alt="celdamodule3"><br></p>
 <p><strong>2. Identify number of cell clusters</strong></p>
@@ -303,7 +306,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <li>Number of maximum cell modules - integer <strong>“Select Number of Maximum Cell Modules”</strong>. Maximum number of cell populations to try. Default 25.</li>
 </ul>
 <p><img src="ui_screenshots/celdaAnalysis/cluster1.PNG" alt="celdacluster1"><br></p>
-<p>After these two parameters are set, user can click recursive cell split button to run <code>recursiveSplitCell</code> function to cluster cells into population for range of possible sub populations(K). Three plots are shown when user runs recursive cell split; perplexity plot, rate of perplexity change and preliminiary UMAP plot. To evaluate the performance of individual models we use perplexity plot by calculating the probability of observing expression counts given an estimated Celda model. The perplexity alone often does not show a clear elbow or “leveling off”. However, the rate of perplexity change (RPC) can be more informative.</p>
+<p>After these two parameters are set, user can click recursive cell split button to run <code>recursiveSplitCell</code> function to cluster cells into population for range of possible sub populations(K). Three plots are shown when user runs recursive cell split; perplexity plot, rate of perplexity change and preliminiary UMAP plot. To evaluate the performance of individual models we use perplexity plot by calculating the probability of observing expression counts given an estimated Celda model. The perplexity alone often does not show a clear elbow or “leveling off.” However, the rate of perplexity change (RPC) can be more informative.</p>
 <p><img src="ui_screenshots/celdaAnalysis/cluster2.PNG" alt="celdacluster2"><br></p>
 <p><img src="ui_screenshots/celdaAnalysis/cluster3.PNG" alt="celdacluster3"><br></p>
 <p>UMAP plot is useful for visualizing the relationship between cells.</p>
@@ -417,12 +420,12 @@ document.getElementById("ia-button").click();
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

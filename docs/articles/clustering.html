@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -232,7 +235,7 @@
 
       
 
-      </header><script src="clustering_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Clustering</h1>
@@ -314,7 +317,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <p>The visualization is implemented with a scatter plot of a chosen low-dimension embedding, colored with a chosen cluster assignment (the newly generated result by default). SCTK by default uses the matrix used for clustering calculation for the visualization. However, usually, users use a PCA for clustering while needing a UMAP/t-SNE embedding for visualization. To change the embedding used, please click on the blue settings (cog) button on the left-top corner.</p>
 <div class="offset">
 <details><summary><b>Settings</b></summary><ul>
-<li>Cluster annotation selection - radio button selection <strong>“Select from Current Results”</strong> and <strong>“Select from All Present Annotation”</strong>. This selection updates the dropdown menu with the available annotations. Only a successful run of clustering in the current SCTK session adds an option for the new result to “Select from Current Results”, while all the cell annotation stored in background (i.e. <code>colData(sce)</code>) are accessible if “Select from All Present Annotation” is chosen.</li>
+<li>Cluster annotation selection - radio button selection <strong>“Select from Current Results”</strong> and <strong>“Select from All Present Annotation”</strong>. This selection updates the dropdown menu with the available annotations. Only a successful run of clustering in the current SCTK session adds an option for the new result to “Select from Current Results,” while all the cell annotation stored in background (i.e. <code>colData(sce)</code>) are accessible if “Select from All Present Annotation” is chosen.</li>
 <li>Dimension Reduction selection - selection input <strong>“Use Reduction”</strong>. User have to choose a reduction here for plotting. If there is not yet any option, user can obtain one from <a href="dimensionality_reduction.html">Dimension Reduction</a> tab.</li>
 </ul></details>
 </div>
@@ -425,27 +428,34 @@ document.getElementById("ia-button").click();
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references">
-<div id="ref-Aaron2016">
-<p>[1] A. T. L. Lun, D. J. McCarthy, and J. C. Marioni, “A step-by-step workflow for low-level analysis of single-cell rna-seq data with bioconductor,” <em>F1000Research</em>, vol. 5, p. 2122, 2016, doi: <a href="https://doi.org/10.12688/f1000research.9501.2" class="external-link">10.12688/f1000research.9501.2</a>.</p>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-Aaron2016" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">A. T. L. Lun, D. J. McCarthy, and J. C. Marioni, <span>“A step-by-step workflow for low-level analysis of single-cell RNA-seq data with bioconductor,”</span> <em>F1000Research</em>, vol. 5, p. 2122, 2016, doi: <a href="https://doi.org/10.12688/f1000research.9501.2" class="external-link">10.12688/f1000research.9501.2</a>.</div>
 </div>
-<div id="ref-Stuart2019">
-<p>[2] T. Stuart <em>et al.</em>, “Comprehensive Integration of Single-Cell Data,” <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031" class="external-link">10.1016/j.cell.2019.05.031</a>.</p>
+<div id="ref-Stuart2019" class="csl-entry">
+<div class="csl-left-margin">[2] </div>
+<div class="csl-right-inline">T. Stuart <em>et al.</em>, <span>“<span class="nocase">Comprehensive Integration of Single-Cell Data</span>,”</span> <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031" class="external-link">10.1016/j.cell.2019.05.031</a>.</div>
 </div>
-<div id="ref-Forgy65">
-<p>[3] E. Forgy, “Cluster analysis of multivariate data: efficiency versus interpretability of classifications,” <em>Biometrics</em>, vol. 21, pp. 768–780, 1965.</p>
+<div id="ref-Forgy65" class="csl-entry">
+<div class="csl-left-margin">[3] </div>
+<div class="csl-right-inline">E. Forgy, <span>“<span class="nocase">Cluster analysis of multivariate data: efficiency versus interpretability of classifications</span>,”</span> <em>Biometrics</em>, vol. 21, pp. 768–780, 1965.</div>
 </div>
-<div id="ref-Ronhovde2010">
-<p>[4] P. Ronhovde and Z. Nussinov, “Local resolution-limit-free potts model for community detection,” <em>Phys. Rev. E</em>, vol. 81, nos. 46114, 4, 2010, doi: <a href="https://doi.org/10.1103/PhysRevE.81.046114" class="external-link">10.1103/PhysRevE.81.046114</a>.</p>
+<div id="ref-Ronhovde2010" class="csl-entry">
+<div class="csl-left-margin">[4] </div>
+<div class="csl-right-inline">P. Ronhovde and Z. Nussinov, <span>“Local resolution-limit-free potts model for community detection,”</span> <em>Phys. Rev. E</em>, vol. 81, no. 46114, 4, 2010, doi: <a href="https://doi.org/10.1103/PhysRevE.81.046114" class="external-link">10.1103/PhysRevE.81.046114</a>.</div>
 </div>
-<div id="ref-Newman2004">
-<p>[5] M. E. J. Newman and M. Girvan, “Finding and evaluating community structure in networks,” <em>Phys. Rev. E</em>, vol. 69, nos. 26113, 2, 2004, doi: <a href="https://doi.org/10.1103/PhysRevE.69.026113" class="external-link">10.1103/PhysRevE.69.026113</a>.</p>
+<div id="ref-Newman2004" class="csl-entry">
+<div class="csl-left-margin">[5] </div>
+<div class="csl-right-inline">M. E. J. Newman and M. Girvan, <span>“Finding and evaluating community structure in networks,”</span> <em>Phys. Rev. E</em>, vol. 69, no. 26113, 2, 2004, doi: <a href="https://doi.org/10.1103/PhysRevE.69.026113" class="external-link">10.1103/PhysRevE.69.026113</a>.</div>
 </div>
-<div id="ref-Traag2019">
-<p>[6] V. A. Traag, L. Waltman, and N. J. van Eck, “From louvain to leiden: Guaranteeing well-connected communities,” <em>Scientific Reports</em>, vol. 9, no. 5233, 2019, doi: <a href="https://doi.org/10.1038/s41598-019-41695-z" class="external-link">10.1038/s41598-019-41695-z</a>.</p>
+<div id="ref-Traag2019" class="csl-entry">
+<div class="csl-left-margin">[6] </div>
+<div class="csl-right-inline">V. A. Traag, L. Waltman, and N. J. van Eck, <span>“From louvain to leiden: Guaranteeing well-connected communities,”</span> <em>Scientific Reports</em>, vol. 9, no. 5233, 2019, doi: <a href="https://doi.org/10.1038/s41598-019-41695-z" class="external-link">10.1038/s41598-019-41695-z</a>.</div>
 </div>
-<div id="ref-Pons2005">
-<p>[7] P. Pons and M. Latapy, “Computing communities in large networks using random walks,” in <em>Computer and information sciences - iscis 2005</em>, 2005, pp. 284–293. doi: <a href="https://doi.org/10.1007/11569596_31" class="external-link">10.1007/11569596_31</a>.</p>
+<div id="ref-Pons2005" class="csl-entry">
+<div class="csl-left-margin">[7] </div>
+<div class="csl-right-inline">P. Pons and M. Latapy, <span>“Computing communities in large networks using random walks,”</span> in <em>Computer and information sciences - ISCIS 2005</em>, 2005, pp. 284–293. doi: <a href="https://doi.org/10.1007/11569596_31" class="external-link">10.1007/11569596_31</a>.</div>
 </div>
 </div>
 </div>
@@ -463,12 +473,12 @@ document.getElementById("ia-button").click();
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

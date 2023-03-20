@@ -25,6 +25,7 @@ runUMAP(
   minDist = 0.01,
   spread = 1,
   seed = NULL,
+  verbose = TRUE,
   BPPARAM = SerialParam()
 )
 
@@ -121,6 +122,8 @@ information.}
 \item{seed}{Random seed for reproducibility of UMAP results.
 Default \code{NULL} will use global seed in use by the R environment.}
 
+\item{verbose}{Logical. Whether to print log messages. Default \code{TRUE}.}
+
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying whether
 the PCA should be parallelized.}
 
@@ -150,12 +153,6 @@ data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 # Run from raw counts
 sce <- runQuickUMAP(sce)
-\dontrun{
-# Run from PCA
-sce <- scaterlogNormCounts(sce, "logcounts")
-sce <- runModelGeneVar(sce)
-sce <- scaterPCA(sce, useAssay = "logcounts",
-                 useFeatureSubset = "HVG_modelGeneVar2000", scale = TRUE)
-sce <- runUMAP(sce, useReducedDim = "PCA")
-}
+plotDimRed(sce, "UMAP")
+
 }
