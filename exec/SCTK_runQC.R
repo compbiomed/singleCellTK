@@ -612,7 +612,6 @@ if (("FlatFile" %in% formats)) {
     HTANLevel3 <- do.call(base::rbind, level3Meta)
     HTANLevel4 <- do.call(base::rbind, level4Meta)
     write.csv(HTANLevel3, file = file.path(directory, "level3Meta.csv"))
-    #if ((dataType == "Both") | (dataType == "Droplet" & isTRUE(detectCell))) {
     if (!(dataType == "Droplet" && !isTRUE(detectCell))) {
         write.csv(HTANLevel4, file = file.path(directory, "level4Meta.csv"))
     }
