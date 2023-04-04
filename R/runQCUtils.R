@@ -129,3 +129,44 @@
         }
     }
 }
+
+.runCell <- function() {
+
+}
+
+.runDroplet <- function() {
+
+}
+
+.runBoth <- function() {
+    
+}
+
+.exportHTANFlat <- function(dataType, droplet = NULL, cell = NULL, samplename, directory, formats, detectCell = FALSE, level3Meta, level4Meta, i = NULL) {
+    if ((dataType == "Droplet" && isTRUE(detectCell))) {
+        inputType <- "Both"
+    } else {
+        inputType <- dataType
+    }
+    if ("FlatFile" %in% formats) {
+        if ("HTAN" %in% formats) {
+            meta <- generateHTANMeta(dropletSCE = droplet, cellSCE = cell, samplename = samplename,
+                                     dir = directory, htan_biospecimen_id=samplename, inputType)
+        } else {
+                meta <- generateMeta(dropletSCE = droplet, cellSCE = cell, samplename = samplename,
+                                     dir = directory, HTAN=FALSE, inputType)
+        }
+        # in place modification of level3/4Meta
+        if (!is.null(i)) {
+            level3Meta[[i]] <- meta[[1]]
+            level4Meta[[i]] <- meta[[2]]
+        }
+        else {
+            level3Meta <- meta[[1]]
+            level4Meta <- meta[[2]]
+        }
+    } else {
+        warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
+    }
+    return(meta)
+}
