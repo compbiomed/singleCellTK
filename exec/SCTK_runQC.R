@@ -215,21 +215,13 @@ message("The output directory is")
 print(directory)
 
 if (!is.null(basepath)) { basepath <- unlist(strsplit(opt[["basePath"]], ",")) }
-
 if (!is.null(FilterDir)) { FilterDir <- unlist(strsplit(opt[["cellPath"]], ",")) }
-
 if (!is.null(RawDir)) { RawDir <- unlist(strsplit(opt[["rawPath"]], ",")) }
-
 if (!is.null(Reference)) { Reference <- unlist(strsplit(opt[["genome"]], ",")) }
-
 if (!is.null(RawFile)) { RawFile <- unlist(strsplit(opt[["rawData"]], ",")) }
-
 if (!is.null(FilterFile)) { FilterFile <- unlist(strsplit(opt[["cellData"]], ",")) }
-
 if (!is.null(formats)) { formats <- unlist(strsplit(opt[["outputFormat"]], ",")) }
-
 if (!is.null(studyDesign)) { studyDesign <- base::readLines(studyDesign, n=-1) }
-
 if (is.null(subTitles)) {
     subTitles <- paste("SCTK QC HTML report for sample", sample)
 } else {
@@ -321,7 +313,7 @@ level4Meta <- list()
 
 #refactor as follows: one loop for process regardless of length
 
-for(i in seq_along(process)) {
+for (i in seq_along(process)) {
     preproc <- process[i]
     samplename <- sample[i]
     path <- basepath[i]
