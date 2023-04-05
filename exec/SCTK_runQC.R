@@ -180,8 +180,11 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
     optparse::make_option(c("-Q", "--QCReport"),
         type = "logical",
         default = FALSE,
-        help = "Generates QC report when the SCTK-QC pipeline is finished. Default if TRUE")
-    )
+        help = "Generates QC report when the SCTK-QC pipeline is finished. Default if TRUE"),
+    optparse::make_option(c("-p", "--multiple"),
+        type = "logical",
+        default = FALSE,
+        help = "Set this flag to TRUE to process multiple, different files at once. Default is FALSE."))
 ## Define arguments
 arguments <- optparse::parse_args(optparse::OptionParser(option_list=option_list), positional_arguments = TRUE)
 opt <- arguments$options
@@ -210,6 +213,7 @@ CombinedSamplesName <- opt[["outputPrefix"]]
 MitoImport <- opt[["detectMitoLevel"]]
 MitoType <- opt[["mitoType"]]
 QCReport <- opt[["QCReport"]]
+QCMany <- opt[["multiple"]]
 
 message("The output directory is")
 print(directory)
@@ -313,6 +317,121 @@ level4Meta <- list()
 
 #refactor as follows: one loop for process regardless of length
 
+if (is.true(QCMany)) {
+    for (i in seq_along(process)) {
+        preproc <- process[i]
+        samplename <- sample[i]
+        path <- basepath[i]
+        raw <- RawDir[i]
+        fil <- FilterDir[i]
+        ref <- Reference[i]
+        rawFile <- RawFile[i]
+        filFile <- FilterFile[i]
+        subTitle <- subTitles[i]
+        INPUT <- qcInputProcess(preproc,
+                                samplename,
+                                path,
+                                raw,
+                                fil,
+                                ref,
+                                rawFile,
+                                filFile,
+                                dataType)
+        dropletSCE <- INPUT[[1]]
+        cellSCE <- INPUT[[2]]
+        mitoInfo <- .importMito(MitoImport=MitoImport, MitoType=MitoType)
+        cellQCAlgos <- c("QCMetrics", "scDblFinder", "cxds", "bcds", "scrublet", "doubletFinder",
+        "cxds_bcds_hybrid", "decontX", "decontX_bg", "soupX", "soupX_bg")
+        if (dataType == "Cell") {
+            if (is.null(cellSCE) && (preproc %in% c("BUStools", "SEQC"))) {
+                dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
+                ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & (dropletSCE$dropletUtils_emptyDrops_fdr < 0.01)
+                cellSCE <- dropletSCE[,ix]
+            }
+            message(paste0(date(), " .. Running cell QC"))
+            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
+                paramsList=Params, algorithms = cellQCAlgos, background = dropletSCE,
+                mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],
+                mitoGeneLocation = "rownames")
+        }
+
+        if (dataType == "Droplet") {
+            message(paste0(date(), " .. Running droplet QC"))
+            dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
+            if (isTRUE(detectCell)) {
+                if (cellCalling == "EmptyDrops") {
+                    ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
+                } else if (cellCalling == "Knee") {
+                    ix <- dropletSCE$dropletUtils_BarcodeRank_Knee == 1
+                } else {
+                    ix <- dropletSCE$dropletUtils_BarcodeRank_Inflection == 1
+                }
+                cellSCE <- dropletSCE[,ix]
+                message(paste0(date(), " .. Running cell QC"))
+                cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
+                    paramsList=Params, algorithms = cellQCAlgos, background = dropletSCE,
+                    mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],
+                    mitoGeneLocation = "rownames")
+            }
+        }
+
+        if (dataType == "Both") {
+            if (!is.null(dropletSCE)) {
+                message(paste0(date(), " .. Running droplet QC"))
+                dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
+
+                if (is.null(cellSCE)) {
+                    if (cellCalling == "EmptyDrops") {
+                        ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
+                    } else if (cellCalling == "Knee") {
+                        ix <- dropletSCE$dropletUtils_BarcodeRank_Knee == 1
+                    } else {
+                        ix <- dropletSCE$dropletUtils_BarcodeRank_Inflection == 1
+                    }
+                    cellSCE <- dropletSCE[,ix]
+                } else {
+                    ### add indicator which barcodes are in the user-provided cellSCE
+                    cbInCellMat <- colnames(dropletSCE) %in% colnames(cellSCE)
+                    SummarizedExperiment::colData(dropletSCE)$barcodeInCellMatrix <- cbInCellMat
+                }
+            }
+
+            if (!is.null(cellSCE)) {
+                message(paste0(date(), " .. Running cell QC"))
+                cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection,
+                    paramsList = Params, algorithms = cellQCAlgos, background = dropletSCE,
+                    mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],
+                    mitoGeneLocation = "rownames")
+            }
+        }
+    
+    ## merge colData of dropletSCE and FilteredSCE
+    mergedDropletSCE <- NULL
+    mergedFilteredSCE <- NULL
+
+    if (dataType == "Both") {
+        mergedDropletSCE <- mergeSCEColData(dropletSCE, cellSCE)
+        mergedFilteredSCE <- mergeSCEColData(cellSCE, dropletSCE)
+    }
+
+    if (dataType == "Cell") {
+        mergedFilteredSCE <- cellSCE
+    }
+
+    if (dataType == "Droplet") {
+        if (isTRUE(detectCell)) {
+            mergedDropletSCE <- mergeSCEColData(dropletSCE, cellSCE)
+            mergedFilteredSCE <- mergeSCEColData(cellSCE, dropletSCE)
+        } else{
+            mergedDropletSCE <- dropletSCE
+        }
+    }
+    }
+}
+else {
+
+}
+
 for (i in seq_along(process)) {
     preproc <- process[i]
     samplename <- sample[i]
@@ -342,8 +461,6 @@ for (i in seq_along(process)) {
     "cxds_bcds_hybrid", "decontX", "decontX_bg", "soupX", "soupX_bg")
 
     # TODO: refactor using some functions
-
-    
 
     if (dataType == "Cell") {
         if (is.null(cellSCE) && (preproc %in% c("BUStools", "SEQC"))) {
