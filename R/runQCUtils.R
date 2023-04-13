@@ -130,16 +130,51 @@
     }
 }
 
-.runCell <- function() {
-
+.cellQC <- function(cellSCE, geneSetCollection, Params, cellQCAlgos, mitoInfo, dropletSCE = NULL) {
+    message(paste0(date(), " .. Running cell QC"))
+    cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
+        paramsList=Params, algorithms = cellQCAlgos, background = dropletSCE,
+        mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],
+        mitoGeneLocation = "rownames")
+    return(cellSCE)
 }
 
-.runDroplet <- function() {
+.runCell <- function(cellSCE, preproc, geneSetCollection, Params, cellQCAlgos, mitoInfo) {
+    if (is.null(cellSCE) && (preproc %in% c("BUStools", "SEQC"))) {
+        dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
+        ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & (dropletSCE$dropletUtils_emptyDrops_fdr < 0.01)
+        cellSCE <- dropletSCE[,ix]
+    }
+    message(paste0(date(), " .. Running cell QC"))
+    cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
+        paramsList=Params, algorithms = cellQCAlgos, background = dropletSCE,
+        mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],
+        mitoGeneLocation = "rownames")
+}
 
+.runDroplet <- function(dropletSCE, geneSetCollection, Params, mitoInfo, cellQCAlgos, detectCell, cellCalling) {
+    message(paste0(date(), " .. Running droplet QC"))
+    dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
+    if (isTRUE(detectCell)) {
+        if (cellCalling == "EmptyDrops") {
+            ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
+        } else if (cellCalling == "Knee") {
+            ix <- dropletSCE$dropletUtils_BarcodeRank_Knee == 1
+        } else {
+            ix <- dropletSCE$dropletUtils_BarcodeRank_Inflection == 1
+        }
+        cellSCE <- dropletSCE[,ix]
+        message(paste0(date(), " .. Running cell QC"))
+        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
+            paramsList=Params, algorithms = cellQCAlgos, background = dropletSCE,
+            mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],
+            mitoGeneLocation = "rownames")
+    }
 }
 
 .runBoth <- function() {
-    
+    .runCell()
+    .runDroplet()
 }
 
 .exportHTANFlat <- function(dataType, droplet = NULL, cell = NULL, samplename, directory, formats, detectCell = FALSE, level3Meta, level4Meta, i = NULL) {
