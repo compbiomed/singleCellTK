@@ -1,3 +1,11 @@
+#' @title Perform comprehensive single cell QC
+#' @description Utility functions for runQC
+#' @param FilterFile The cell QC object as rendered in R
+#' @param FilterDir The cell QC file location
+#' @param basepath The base/root directory of the QC files.
+#' @param Reference 
+#' @param process
+
 .checkCell <- function(FilterFile, FilterDir, basepath, Reference, process) {
     if (is.null(FilterFile)) {
         if (is.null(basepath)) {
@@ -63,7 +71,7 @@
             if (length(basepath) != length(sample)) {
                 stop('The length of "--basePath" should be the same as ',
                          'the length of "--sample"!')
-            }
+            } 
             if (length(Reference) != sum(process == 'CellRangerV2')) {
                 stop('The length of --genome should be the same as ',
                         'the number of "CellRangerV2" in the "--preproc"!')
