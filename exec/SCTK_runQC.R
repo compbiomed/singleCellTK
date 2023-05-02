@@ -29,7 +29,7 @@ bioc.package.check <- lapply(bioc.packages, FUN = function(x) {
 
 ## tmp function to check the output of QC before generate HTAN meta
 .check_QC <- function(directory, samplename) {
-    absFilterDir <- file.path(directory, samplename, 'FlatFile', 'Cells')
+    absFilterDir <- file.path(directory, samplename, "FlatFile", "Cells")
     print('The layout of the output folder after QC is done')
     print(list.files(absFilterDir, recursive = TRUE))
 
@@ -104,7 +104,7 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
         type = "character",
         default = "\t",
         help = "Delimiter used in GMT file"),
-    optparse::make_option(c("-G","--genome"),
+    optparse::make_option(c("-G", "--genome"),
         type = "character",
         default = NULL,
         help = "The name of genome reference. This is only required for CellRangerV2 data."),
@@ -124,7 +124,7 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
         type = "character",
         default = NULL,
         help = "The full path of the RDS file or Matrix file of the raw gene count matrix. This would be provided only when --preproc is SceRDS or CountMatrix."),
-    optparse::make_option(c("-c","--cellData"),
+    optparse::make_option(c("-c", "--cellData"),
         type = "character",
         default = NULL,
         help = "The full path of the RDS file or Matrix file of the cell count matrix. This would be use only when --preproc is SceRDS or CountMatrix."),
@@ -150,7 +150,7 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
         help = "Detect cells from droplet matrix. Default is FALSE. This argument is only eavluated when -d is 'Droplet'. If set as TRUE, cells will be detected and cell matrixed will be subset from the droplet matrix. Also, quality control will be performed on the detected cell matrix."),
     optparse::make_option(c("-m", "--cellDetectMethod"),
         type = "character",
-        default = 'EmptyDrops',
+        default = "EmptyDrops",
         help = "Methods to detect cells. Default is 'EmptyDrops'. Other options could be 'Knee' or 'Inflection'. More information is provided in the documentation. "),
     optparse::make_option(c("-i", "--studyDesign"),
         type = "character",
@@ -295,31 +295,36 @@ if (!(dataType %in% c("Both", "Droplet", "Cell"))) {
 }
 
 ## Checking argument
-check <- switch(dataType,
-         "cell" = .checkCell(FilterFile, FilterDir, basepath, Reference, process),
-         "droplet" = .checkDroplet(RawFile, RawDir, basepath, Reference, process),
-         "both" = .checkBoth(RawFile, FilterFile, RawDir, FilterDir, basepath, Reference, process))
+#check <- switch(dataType,
+#         "cell" = .checkCell(FilterFile, FilterDir, basepath, Reference, process),
+#         "droplet" = .checkDroplet(RawFile, RawDir, basepath, Reference, process),
+#         "both" = .checkBoth(RawFile, FilterFile, RawDir, FilterDir, basepath, Reference, process))
 
-## Checking to see if the input is a file instead of a directory
-if (file.exists(basepath) && !dir.exists(basepath)) {
+## Checking to see if the input is a file instead of a directory, for RDS and H5AD reading
+if (!dir.exists(basepath)) {
     if (is.null(sample)) {
         stop("In single object mode, a sample name must be provided using the -s/--sample flag.")
     } else {
-        if (tools::file_ext(basepath) == ".rds") {
-            input_data <- importMultipleSources(basepath)
+        if (is.null(RawFile)) {
+            stop("You must provide an RDS file.")
+        }
+        if (tools::file_ext(RawFile) == ".rds") {
+            print(RawFile)
+            input_data <- readRDS(RawFile)
+            
+            #if (dataType == "Droplet" || dataType == "Both") {
+                dropletSCE <- input_data
+            #}
+            #if (dataType == "Cell") {
+            #    cellSCE <- input_data
+            #}
+        } else if (tools::file_ext(file.path(paste(c(basepath, sample, ".h5ad"), sep = "", collapse = ""))) == ".h5ad") {
+            input_data <- importAnnData(basepath, sampleNames = sample)
             if (dataType == "Droplet" || dataType == "Both") {
-                dropletSCE <- input_data$obs
+                dropletSCE <- input_data
             }
-            if (dataType == "Cell" || dataType == "Both") {
-                cellSCE <- input_data$obs
-            }
-        } else if (tools::file_ext(basepath) == ".h5ad") {
-            input_data <- importAnnData(basepath)
-            if (dataType == "Droplet" || dataType == "Both") {
-                dropletSCE <- input_data@assays$counts
-            }
-            if (dataType == "Cell" || dataType == "Both") {
-                cellSCE <- input_data@assays$counts
+            if (dataType == "Cell") {
+                cellSCE <- input_data
             }
         }
         samplesnames <- input_data$sample
@@ -367,7 +372,7 @@ for(i in seq_along(process)) {
         cellSCE <- INPUT[[2]]
     }
 
-    mitoInfo <- .importMito(MitoImport=MitoImport, MitoType=MitoType)
+    mitoInfo <- .importMito(MitoImport = MitoImport, MitoType = MitoType)
 
     cellQCAlgos <- c("QCMetrics", "scDblFinder", "cxds", "bcds", "scrublet", "doubletFinder",
     "cxds_bcds_hybrid", "decontX", "decontX_bg", "soupX", "soupX_bg")
@@ -734,3 +739,5 @@ if (("FlatFile" %in% formats)) {
 }
 
 sessionInfo()
+
+importAnnData()
