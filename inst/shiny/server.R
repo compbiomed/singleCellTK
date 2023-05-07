@@ -429,12 +429,17 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 1: Upload ####
   #-----------------------------------------------------------------------------
-  sysname <- Sys.info()[['sysname']]
-  if (sysname == "Windows") {
-    roots <- getVolumes()()
-  } else {
-    roots <- c(home = "~/")
-  }
+  # sysname <- Sys.info()[['sysname']]
+  # if (sysname == "Windows") {
+  #   roots <- getVolumes()()
+  # } else {
+  #   roots <- c(home = "~/")
+  # }
+  
+  # getVolumnes()() seems to work with all operating systems
+  # Commenting above code because when deployed on linux server, it seems to move into the server directory instead of the user dir
+  roots <- getVolumes()()
+  
   dirPaths <- reactiveValues(
     bDirectory = ".",
     sDirectory = ".",
