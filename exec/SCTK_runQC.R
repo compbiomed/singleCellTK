@@ -294,31 +294,32 @@ if (!(dataType %in% c("Both", "Droplet", "Cell"))) {
     stop("-d / -dataType must be one of the following: 'Both', 'Droplet' or 'Cell'. ")
 }
 
-## Checking argument
-#check <- switch(dataType,
-#         "cell" = .checkCell(FilterFile, FilterDir, basepath, Reference, process),
-#         "droplet" = .checkDroplet(RawFile, RawDir, basepath, Reference, process),
-#         "both" = .checkBoth(RawFile, FilterFile, RawDir, FilterDir, basepath, Reference, process))
+# Checking argument
+check <- switch(dataType,
+         "cell" = .checkCell(FilterFile, FilterDir, basepath, Reference, process),
+         "droplet" = .checkDroplet(RawFile, RawDir, basepath, Reference, process),
+         "both" = .checkBoth(RawFile, FilterFile, RawDir, FilterDir, basepath, Reference, process))
 
-## Checking to see if the input is a file instead of a directory, for RDS and H5AD reading
+# Checking to see if the input is a file instead of a directory, for RDS and H5AD reading
 if (!dir.exists(basepath)) {
     if (is.null(sample)) {
         stop("In single object mode, a sample name must be provided using the -s/--sample flag.")
     } else {
+
         if (is.null(RawFile)) {
-            stop("You must provide an RDS file.")
+            stop("You must provide an input file.")
         }
-        if (tools::file_ext(RawFile) == ".rds") {
+        if (process == "SceRDS") {
             print(RawFile)
             input_data <- readRDS(RawFile)
-            
-            #if (dataType == "Droplet" || dataType == "Both") {
+            if (dataType == "Droplet" || dataType == "Both") {
                 dropletSCE <- input_data
-            #}
-            #if (dataType == "Cell") {
-            #    cellSCE <- input_data
-            #}
-        } else if (tools::file_ext(file.path(paste(c(basepath, sample, ".h5ad"), sep = "", collapse = ""))) == ".h5ad") {
+                cellSCE <- input_data
+            }
+            if (dataType == "Cell") {
+                cellSCE <- input_data
+            }
+        } else if (process == "AnnData") {
             input_data <- importAnnData(basepath, sampleNames = sample)
             if (dataType == "Droplet" || dataType == "Both") {
                 dropletSCE <- input_data
@@ -326,8 +327,63 @@ if (!dir.exists(basepath)) {
             if (dataType == "Cell") {
                 cellSCE <- input_data
             }
+        } else if (process == "Seurat") {
+            input_data <- Seurat::readRDS(RawFile)
+            if (dataType == "Droplet" || dataType == "Both") {
+                dropletSCE <- input_data
+            }
+            if (dataType == "Cell") {
+                cellSCE <- input_data
+            }
         }
-        samplesnames <- input_data$sample
+        samplesnames <- sample
+    }
+}
+
+# merging inputs
+if (length(RawFile) > 1) {
+    for (raw_count_matrix in 2:length(RawFile)) {
+        if (is.null(sample)) {
+        stop("When merging multiple objects, you need to provide a sample name to identify what to merge with the --sample/-s flag.")
+    } else {
+
+        if (is.null(RawFile[raw_count_matrix])) {
+            stop("You must provide a valid set of inputs.")
+        }
+        if (process == "SceRDS") {
+            temp_data <- readRDS(RawFile[raw_count_matrix])
+            if (dataType == "Droplet" || dataType == "Both") {
+                dropletSCE <- temp_data
+                cellSCE <- temp_data
+            }
+            if (dataType == "Cell") {
+                cellSCE <- temp_data
+            }
+        # TODO: get AnnData to loop through files
+        } else if (process == "AnnData") {
+            input_data <- importAnnData(basepath, sampleNames = sample)
+            if (dataType == "Droplet" || dataType == "Both") {
+                dropletSCE <- temp_data
+            }
+            if (dataType == "Cell") {
+                cellSCE <- temp_data
+            }
+        } else if (process == "Seurat") {
+            input_data <- Seurat::readRDS(RawFile)
+            if (dataType == "Droplet" || dataType == "Both") {
+                dropletSCE <- temp_data
+            }
+            if (dataType == "Cell") {
+                cellSCE <- temp_data
+            }
+        }
+    }
+        input_data <- mergeSCEColData(input_data, RawFile[raw_count_matrix])
+    }
+}
+if (length(FilterFile) > 1) {
+    for (filter_count_matrix in 2:length(RawFile)) {
+        input_data <- mergeSCEColData(input_data, RawFile[filter_count_matrix])
     }
 }
 
@@ -732,7 +788,6 @@ if (("FlatFile" %in% formats)) {
     HTANLevel3 <- do.call(base::rbind, level3Meta)
     HTANLevel4 <- do.call(base::rbind, level4Meta)
     write.csv(HTANLevel3, file = file.path(directory, "level3Meta.csv"))
-    #if ((dataType == "Both") | (dataType == "Droplet" & isTRUE(detectCell))) {
     if ( !(dataType == "Droplet" && !isTRUE(detectCell)) ) {
         write.csv(HTANLevel4, file = file.path(directory, "level4Meta.csv"))
     }
