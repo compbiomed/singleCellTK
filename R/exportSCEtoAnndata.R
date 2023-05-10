@@ -55,10 +55,10 @@ exportSCEtoAnnData <- function(sce,
   if (file.exists(filePath) && !isTRUE(overwrite)) {
     stop(paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE."))
   }
-  if (isTRUE(forceDense)) {
-    forceDense <- "True"
-  } else if (isFALSE(forceDense)) {
-    forceDense <- "False"
+  if (isFALSE(forceDense)) {
+    forceDense <- NULL
+  } else if (isTRUE(forceDense)) {
+    forceDense <- "X"
   } else {
     stop("Argument `forceDense` should be `TRUE` or `FALSE`")
   }
@@ -69,13 +69,17 @@ exportSCEtoAnnData <- function(sce,
     }
   }
   annData <- .sce2adata(sce, useAssay)
-  #annData$write_h5ad(filePath,
-  #                   compression = compression,
-  #                   compression_opts = compressionOpts,
-  #                   force_dense = forceDense)
-  anndata::write_h5ad(annData, 
+  if (is.null(forceDense)) {
+    anndata::write_h5ad(annData, 
+                      filePath,
+                      compression = compression,
+                      compression_opts = compressionOpts)
+  }
+  else {
+    anndata::write_h5ad(annData, 
                       filePath,
                       compression = compression,
                       compression_opts = compressionOpts,
-                      force_dense = forceDense)
+                      as.dense = forceDense)
+  }
 }
