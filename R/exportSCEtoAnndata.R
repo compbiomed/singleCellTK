@@ -55,7 +55,7 @@ exportSCEtoAnnData <- function(sce,
   if (file.exists(filePath) && !isTRUE(overwrite)) {
     stop(paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE."))
   }
-  if (isFALSE(forceDense)) {
+  if (!isTRUE(forceDense)) {
     forceDense <- NULL
   } else if (isTRUE(forceDense)) {
     forceDense <- "X"

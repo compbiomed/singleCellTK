@@ -795,15 +795,30 @@ qcInputProcess <- function(preproc,
         return(list(dropletSCE, cellSCE))
     }
     
-    ## todo: AnnData support
     if (preproc == "AnnData") {
         if (dataType == "Both") {
-            dropletSCE <- anndata::read_h5ad(rawFile)
-            cellSCE <- anndata::read_h5ad(filFile)
+            dropletSCE <- importAnnData(rawFile)
+            cellSCE <- importAnnData(filFile)
         } else if (dataType == "Cell") {
-            cellSCE <- anndata::read_h5ad(filFile)
+            cellSCE <- importAnnData(filFile)
         } else if (dataType == "Droplet") {
-            dropletSCE <- anndata::read_h5ad(rawFile) 
+            dropletSCE <- importAnnData(rawFile) 
+        }
+        return(list(dropletSCE, cellSCE))
+    }
+
+    if (preproc == "Seurat") {
+        if (dataType == "Both") {
+            dropletSCE <- readRDS(rawFile)
+            cellSCE <- readRDS(filFile)
+            dropletSCE <- Seurat::as.SingleCellExperiment(dropletSCE)
+            cellSCE <- Seurat::as.SingleCellExperiment(cellSCE)
+        } else if (dataType == "Cell") {
+            cellSCE <- readRDS(filFile)
+            cellSCE <- Seurat::as.SingleCellExperiment(cellSCE)
+        } else if (dataType == "Droplet") {
+            dropletSCE <- readRDS(rawFile)
+            dropletSCE <- Seurat::as.SingleCellExperiment(dropletSCE)
         }
         return(list(dropletSCE, cellSCE))
     }

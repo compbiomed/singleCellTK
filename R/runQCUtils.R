@@ -3,8 +3,8 @@
 #' @param FilterFile The cell QC object as rendered in R
 #' @param FilterDir The cell QC file location
 #' @param basepath The base/root directory of the QC files.
-#' @param Reference 
-#' @param process
+#' @param Reference Reference library for MitoGenes
+#' @param process The method that we are looking it, be it CellRanger, Seurat, SCE, AnnData, or otherwise.
 
 .checkCell <- function(FilterFile, FilterDir, basepath, Reference, process) {
     if (is.null(FilterFile)) {
