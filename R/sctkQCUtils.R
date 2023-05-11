@@ -774,27 +774,6 @@ qcInputProcess <- function(preproc,
         return(list(dropletSCE, cellSCE))
     }
 
-    if (preproc == "CountMatrix") {
-        if (dataType == "Both") {
-            dropletMM <- data.table::fread(rawFile)
-            dropletSCE <- constructSCE(data = dropletMM, samplename = samplename)
-            cellMM <- data.table::fread(filFile)
-            cellSCE <- constructSCE(data = cellMM, samplename = samplename)
-        } else if (dataType == "Cell") {
-            cellMM <- data.table::fread(filFile)
-            cellSCE <- constructSCE(data = cellMM, samplename = samplename)
-        } else if (dataType == "Droplet") {
-            dropletMM <- data.table::fread(rawFile)
-            dropletSCE <- constructSCE(data = dropletMM, samplename = samplename)
-        }
-        return(list(dropletSCE, cellSCE))
-    }
-
-    if (preproc == "Alevin") {
-        cellSCE <- importAlevin(alevinDir = path, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
-        return(list(dropletSCE, cellSCE))
-    }
-    
     if (preproc == "AnnData") {
         if (dataType == "Both") {
             dropletSCE <- importAnnData(rawFile)
@@ -822,7 +801,28 @@ qcInputProcess <- function(preproc,
         }
         return(list(dropletSCE, cellSCE))
     }
-    
+
+    if (preproc == "CountMatrix") {
+        if (dataType == "Both") {
+            dropletMM <- data.table::fread(rawFile)
+            dropletSCE <- constructSCE(data = dropletMM, samplename = samplename)
+            cellMM <- data.table::fread(filFile)
+            cellSCE <- constructSCE(data = cellMM, samplename = samplename)
+        } else if (dataType == "Cell") {
+            cellMM <- data.table::fread(filFile)
+            cellSCE <- constructSCE(data = cellMM, samplename = samplename)
+        } else if (dataType == "Droplet") {
+            dropletMM <- data.table::fread(rawFile)
+            dropletSCE <- constructSCE(data = dropletMM, samplename = samplename)
+        }
+        return(list(dropletSCE, cellSCE))
+    }
+
+    if (preproc == "Alevin") {
+        cellSCE <- importAlevin(alevinDir = path, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+        return(list(dropletSCE, cellSCE))
+    }
+
     ## preproc is not one of the method above. Stop the pipeline.
     stop(paste0("'", preproc, "' not supported."))
 }

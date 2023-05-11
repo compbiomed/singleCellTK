@@ -272,7 +272,6 @@ if (numCores > 1) {
     Params$doubletFinder$nCores <- numCores
 }
 
-
 ### checking output formats
 if (!all(formats %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat"))) {
     warning("Output format must be 'SCE', 'AnnData', 'HTAN', 'Seurat' or 'FlatFile'. Format ",
