@@ -309,70 +309,18 @@ if (!is.null(RawFile) || !is.null(FilterFile)) {
                 if (is.null(FilterFile)) {
                     stop("You must provide a file with cell counts.")
                 }
-                for (i in 1:length(FilterFile)) {
-                    
-                }
+#                for (i in 1:length(FilterFile)) {               }
             }
             if (dataType == "Droplet" || dataType == "Both") {
                 if (is.null(RawFile)) {
                     stop("You must provide a file with raw counts.")
                 }
-                if (length(RawFile)) {
-
-                }
+#                if (length(RawFile)) {               }
             }
         samplesnames <- sample
         }
     }
 }
-
-# # merging inputs
-# if (length(RawFile) > 1) {
-#     for (raw_count_matrix in 2:length(RawFile)) {
-#         if (is.null(sample)) {
-#             stop("When merging multiple objects, you need to provide a sample name to identify what to merge with the --sample/-s flag.")
-#         } else {
-#             if (is.null(RawFile[raw_count_matrix])) {
-#                 stop("You must provide a valid set of inputs.")
-#             }
-#             if (process == "SceRDS") {
-#                 input_data <- readRDS(RawFile[raw_count_matrix])
-#                 if (dataType == "Droplet" || dataType == "Both") {
-#                 #    dropletSCE <- temp_data
-#                 #    cellSCE <- temp_data
-#                 }
-#                 if (dataType == "Cell") {
-#                     cellSCE <- temp_data
-#                 }
-#             # TODO: get AnnData to loop through files
-#             } else if (process == "AnnData") {
-#                 input_data <- importAnnData(basepath, sampleNames = sample)
-#                 if (dataType == "Droplet" || dataType == "Both") {
-#                     dropletSCE <- temp_data
-#                 }
-#                 if (dataType == "Cell") {
-#                     cellSCE <- temp_data
-#                 }
-#             } else if (process == "Seurat") {
-#                 input_data <- readRDS(RawFile)
-#                 input_data <- Seurat::as.SingleCellExperiment(input_data)
-#                 if (dataType == "Droplet" || dataType == "Both") {
-#                     dropletSCE <- temp_data
-#                 }
-#                 if (dataType == "Cell") {
-#                     cellSCE <- temp_data
-#                 }
-#             }
-#         }
-#         # TODO: store in list, call combineSCE instead
-#         inputData <- mergeSCEColData(input_data, RawFile[raw_count_matrix])
-#     }
-# }
-# if (length(FilterFile) > 1) {
-#     for (filter_count_matrix in 2:length(RawFile)) {
-#         input_data <- mergeSCEColData(input_data, RawFile[filter_count_matrix])
-#     }
-# }
 
 if (!cellCalling %in% c("Knee", "Inflection", "EmptyDrops")) {
     stop("The --cellDetectMethod must be 'Knee', 'Inflection' or 'Emptydrops'.")
