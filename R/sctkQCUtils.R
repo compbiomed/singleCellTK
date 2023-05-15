@@ -776,12 +776,16 @@ qcInputProcess <- function(preproc,
 
     if (preproc == "AnnData") {
         if (dataType == "Both") {
-            dropletSCE <- importAnnData(rawFile)
-            cellSCE <- importAnnData(filFile)
+            dropletSCE <- importAnnData(dirname(rawFile), tools::file_path_sans_ext(basename(rawFile)))
+            cellSCE <- importAnnData(dirname(filFile), tools::file_path_sans_ext(basename(filFile)))
         } else if (dataType == "Cell") {
-            cellSCE <- importAnnData(filFile)
+            print(dirname(filFile))
+            print(tools::file_path_sans_ext(basename(filFile)))
+            print(length(dirname(filFile)))
+            print(length(tools::file_path_sans_ext(basename(filFile))))
+            cellSCE <- importAnnData(dirname(filFile), tools::file_path_sans_ext(basename(filFile)))
         } else if (dataType == "Droplet") {
-            dropletSCE <- importAnnData(rawFile) 
+            dropletSCE <- importAnnData(dirname(rawFile), tools::file_path_sans_ext(basename(rawFile)))
         }
         return(list(dropletSCE, cellSCE))
     }

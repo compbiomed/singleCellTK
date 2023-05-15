@@ -27,8 +27,9 @@
                               rowData = sce_rowdata,
                               colData = sce_coldata)
   colnames(sce) <- paste0(sampleName,"_",colnames(sce))
-
-  multi_Assay <- reticulate::py_to_r(dict(anndata$layers))
+  
+  
+  multi_Assay <- reticulate::py_to_r(reticulate::dict(anndata$layers))
   for(assay_name in names(multi_Assay)){
     tryCatch({
       SummarizedExperiment::assay(sce, assay_name, withDimnames = FALSE) <- t(reticulate::py_to_r(multi_Assay[[assay_name]]))
@@ -126,6 +127,8 @@ importAnnData <- function(sampleDirs = NULL,
                           rowNamesDedup = TRUE) {
 
   if (length(sampleDirs)!=length(sampleNames)){
+    print(length(sampleDirs))
+    print(length(sampleNames))
     stop("Number of sampleDirs must be equal to number of SampleNames. Please provide sample names for all input directories")
   }
 
