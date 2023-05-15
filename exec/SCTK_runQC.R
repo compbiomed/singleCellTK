@@ -87,9 +87,7 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
         help="Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus', 'DropEst', 'SceRDS', 'CountMatrix', 'AnnData' and 'Alevin'"),
     optparse::make_option(c("-s","--sample"),
         type="character",
-        help="Name of the sample(s). This can be an individual label, or a series of labels."),
-        # refactor this: supply the same name if separate
-        # but also see if we can take a vector 
+        help="Name of the sample. This can be an individual label, or a series of labels."),
     optparse::make_option(c("-o","--directory"),
         type="character",
         default=".",
@@ -276,8 +274,6 @@ if (numCores > 1) {
 
 
 ### checking output formats
-
-## does not currently support AnnData
 if (!all(formats %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat"))) {
     warning("Output format must be 'SCE', 'AnnData', 'HTAN', 'Seurat' or 'FlatFile'. Format ",
          paste(formats[!formats %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")], collapse = ","),
@@ -298,10 +294,6 @@ if (!(dataType %in% c("Both", "Droplet", "Cell"))) {
     stop("-d / -dataType must be one of the following: 'Both', 'Droplet' or 'Cell'. ")
 }
 ## Checking argument
-
-## TODO: clean 
-## call other functions??
-
 if (dataType == "Both") {
     if (is.null(RawFile) & is.null(FilterFile)) {
         if (is.null(basepath)) {
