@@ -28,7 +28,7 @@
                               colData = sce_coldata)
   colnames(sce) <- paste0(sampleName,"_",colnames(sce))
 
-  multi_Assay <- reticulate::py_to_r(dict(anndata$layers))
+  multi_Assay <- reticulate::py_to_r(reticulate::dict(anndata$layers))
   for(assay_name in names(multi_Assay)){
     tryCatch({
       SummarizedExperiment::assay(sce, assay_name, withDimnames = FALSE) <- t(reticulate::py_to_r(multi_Assay[[assay_name]]))
