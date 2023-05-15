@@ -798,5 +798,3 @@ if (("FlatFile" %in% formats)) {
 }
 
 sessionInfo()
-
-importAnnData()

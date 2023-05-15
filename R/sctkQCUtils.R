@@ -811,4 +811,3 @@ qcInputProcess <- function(preproc,
     ## preproc is not one of the method above. Stop the pipeline.
     stop(paste0("'", preproc, "' not supported."))
 }
-
