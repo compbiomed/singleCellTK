@@ -37,7 +37,7 @@ biocViews: SingleCell, GeneExpression, DifferentialExpression, Alignment,
 LazyData: FALSE
 Imports:
     ape,
-    AnnData,
+    anndata,
     AnnotationHub,
     batchelor,
     BiocParallel,
