@@ -789,6 +789,19 @@ qcInputProcess <- function(preproc,
         }
         return(list(dropletSCE, cellSCE))
     }
+    
+    ## todo: AnnData support
+    if (preproc == "AnnData") {
+        if (dataType == "Both") {
+            dropletSCE <- anndata::read_h5ad(rawFile)
+            cellSCE <- anndata::read_h5ad(filFile)
+        } else if (dataType == "Cell") {
+            cellSCE <- anndata::read_h5ad(filFile)
+        } else if (dataType == "Droplet") {
+            dropletSCE <- anndata::read_h5ad(rawFile) 
+        }
+        return(list(dropletSCE, cellSCE))
+    }
 
     if (preproc == "Alevin") {
         cellSCE <- importAlevin(alevinDir = path, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
