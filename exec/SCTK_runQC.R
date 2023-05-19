@@ -309,13 +309,11 @@ if (!is.null(RawFile) || !is.null(FilterFile)) {
                 if (is.null(FilterFile)) {
                     stop("You must provide a file with cell counts.")
                 }
-#                for (i in 1:length(FilterFile)) {               }
             }
             if (dataType == "Droplet" || dataType == "Both") {
                 if (is.null(RawFile)) {
                     stop("You must provide a file with raw counts.")
                 }
-#                if (length(RawFile)) {               }
             }
         samplesnames <- sample
         }
