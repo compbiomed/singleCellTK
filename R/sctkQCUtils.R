@@ -596,10 +596,15 @@ getSceParams <- function(inSCE,
                          writeYAML = TRUE) {
 
   meta <- S4Vectors::metadata(inSCE)
+  # in list: SCTK object, layers
+  # figure out what in the list is the metadata
   algos <- names(meta)[!names(meta) %in% skip]
   outputs <- '---'
   parList <- list()
   dir <- file.path(directory, samplename)
+
+  # TODO: something wrong here
+  # SCE object metadata???
 
   for (algo in algos) {
     params <- meta[[algo]][[1]]

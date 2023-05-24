@@ -299,27 +299,6 @@ check <- switch(dataType,
          "droplet" = .checkDroplet(RawFile, RawDir, basepath, Reference, process),
          "both" = .checkBoth(RawFile, FilterFile, RawDir, FilterDir, basepath, Reference, process))
 
-# Checking to see if the input is a file instead of a directory, for RDS and H5AD reading
-if (!is.null(RawFile) || !is.null(FilterFile)) {
-    if (!dir.exists(basepath)) {
-        if (is.null(sample)) {
-            stop("In Seurat/SCE/AnnData input mode, a sample name must be provided using the -s/--sample flag.")
-        } else {
-            if (dataType == "Cell" || dataType == "Both") {
-                if (is.null(FilterFile)) {
-                    stop("You must provide a file with cell counts.")
-                }
-            }
-            if (dataType == "Droplet" || dataType == "Both") {
-                if (is.null(RawFile)) {
-                    stop("You must provide a file with raw counts.")
-                }
-            }
-        samplesnames <- sample
-        }
-    }
-}
-
 if (!cellCalling %in% c("Knee", "Inflection", "EmptyDrops")) {
     stop("The --cellDetectMethod must be 'Knee', 'Inflection' or 'Emptydrops'.")
 }
@@ -361,6 +340,29 @@ for(i in seq_along(process)) {
 
     cellQCAlgos <- c("QCMetrics", "scDblFinder", "cxds", "bcds", "scrublet", "doubletFinder",
     "cxds_bcds_hybrid", "decontX", "decontX_bg", "soupX", "soupX_bg")
+
+    # Checking to see if the input is a file instead of a directory, for RDS and H5AD reading
+    # also check to see if the sample name is specified, and if so, set it
+    if (!is.null(rawFile) || !is.null(filFile)) {
+        if (!dir.exists(path)) {
+            if (is.null(samplename)) {
+                stop("In Seurat/SCE/AnnData input mode, a sample name must be provided using the -s/--sample flag.")
+            } else {
+                if (dataType == "Cell" || dataType == "Both") {
+                    if (is.null(filFile)) {
+                        stop("You must provide a file with cell counts.")
+                    }
+                }
+                if (dataType == "Droplet" || dataType == "Both") {
+                    if (is.null(rawFile)) {
+                        stop("You must provide a file with raw counts.")
+                    }
+                }
+            samplesname <- sample
+            }
+        }
+    }
+
 
     if (dataType == "Cell") {
         if (is.null(cellSCE) && (preproc %in% c("BUStools", "SEQC"))) {

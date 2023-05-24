@@ -151,7 +151,7 @@ The required arguments are as follows:
 |Parameter|Description|
 |---|---|
 |`-b`, `--basePath` (**required**)|Base path for the output from the preprocessing algorithm.|
-|`-P`, `--preproc` (**required**)|Algorithm used for preprocessing. One of `CellRangerV2`, `CellRangerV3`, `BUStools`, `STARSolo`, `SEQC`, `Optimus`, `DropEst`, `SceRDS`, `CountMatrix` and `AnnData`.|
+|`-P`, `--preproc` (**required**)|Algorithm used for preprocessing. One of `CellRangerV2`, `CellRangerV3`, `BUStools`, `STARSolo`, `SEQC`, `Optimus`, `DropEst`, `SceRDS`, `Seurat`, `CountMatrix` and `AnnData`.|
 |`-s`, `--sample` (**required**)| Name of the sample. This will be prepended to the cell barcodes.|
 |`-o`, `--directory` (**required**)|Output directory. A new subdirectory will be created with the name "sample". R, Python, and FlatFile directories will be created under the "sample" directory containing the data containers with QC metrics. Default `.`. More information about output directory structure is explained in [*Outputs*](#outputs) section below.|
 |`-F`, `--outputFormat` (**required**)|The output format of this QC pipeline. Currently, it supports `SCE`, `Seurat`, `FlatFile`, `AnnData` and `HTAN` (manifest files that meets HTAN requirement).|

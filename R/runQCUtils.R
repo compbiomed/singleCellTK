@@ -5,7 +5,7 @@
 #' @param basepath The base/root directory of the QC files.
 #' @param Reference Reference library for MitoGenes
 #' @param process The method that we are looking it, be it CellRanger, Seurat, SCE, AnnData, or otherwise.
-
+#' @return 0 if the check is completed successfully, else a premature stop.
 .checkCell <- function(FilterFile, FilterDir, basepath, Reference, process) {
     if (is.null(FilterFile)) {
         if (is.null(basepath)) {
@@ -47,7 +47,17 @@
                      'the length of "--preproc"!')
         }
     }
+    return(0)
 }
+
+#' @title Perform comprehensive single cell QC
+#' @description Utility functions for runQC
+#' @param RawFile The droplet QC object as rendered in R
+#' @param RawDir The droplet QC file location
+#' @param basepath The base/root directory of the QC files.
+#' @param Reference Reference library for MitoGenes
+#' @param process The method that we are looking it, be it CellRanger, Seurat, SCE, AnnData, or otherwise.
+#' @return 0 if the check is completed successfully, else a premature stop.
 .checkDroplet <- function(RawFile, RawDir, basepath, Reference, process) {
     if (is.null(RawFile)) {
         if (is.null(basepath)) {
@@ -88,7 +98,19 @@
                      'the length of "--preproc"!')
         }
     }
+    return(0)
 }
+
+#' @title Perform comprehensive single cell QC
+#' @description Utility functions for runQC
+#' @param RawFile The droplet QC object as rendered in R
+#' @param RawDir The droplet QC file location
+#' @param FilterFile The cell QC object as rendered in R
+#' @param FilterDir The cell QC file location
+#' @param basepath The base/root directory of the QC files.
+#' @param Reference Reference library for MitoGenes
+#' @param process The method that we are looking it, be it CellRanger, Seurat, SCE, AnnData, or otherwise.
+#' @return 0 if the check is completed successfully, else a premature stop.
 .checkBoth <- function(RawFile, FilterFile, RawDir, FilterDir, basepath, Reference, process) {
     if (is.null(RawFile) && is.null(FilterFile)) {
         if (is.null(basepath)) {
@@ -136,6 +158,7 @@
                      'the length of "--preproc"!')
         }
     }
+    return(0)
 }
 
 .cellQC <- function(cellSCE, geneSetCollection, Params, cellQCAlgos, mitoInfo, dropletSCE = NULL) {
