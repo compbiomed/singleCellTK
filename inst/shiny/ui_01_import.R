@@ -240,7 +240,60 @@ shinyPanelImport <- fluidPage(
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'cellRanger3'", "uploadChoice"),
-        actionButton("addCR3Sample", "Add a sample"),
+        h4("Upload data for Cell Ranger (Version 3 or above):"),
+        h5("Select matrix, barcodes and feature files for all samples using the file selectors below:"),
+        fluidRow(
+          column(width = 4,
+                 wellPanel(
+                   h5("Matrix (matrix.mtx) file:"),
+                   tags$a(href = "https://drive.google.com/open?id=1n0CtM6phfkWX0O6xRtgPPg6QuPFP6pY8",
+                          "Download an example matrix.mtx file here.", target = "_blank"),
+                   tags$br(),
+                   fileInput(
+                     "countsfile_custom", "Matrix files:",
+                     accept = c(
+                       "text/csv", "text/comma-separated-values", "mtx",
+                       "text/tab-separated-values", "text/plain", ".csv", ".tsv", ".gz"
+                     ),
+                     multiple = TRUE
+                   )
+                 )
+          ),
+          column(width = 4,
+                 wellPanel(
+                   h5("Barcodes (barcodes.tsv) file:"),
+                   tags$a(href = "https://drive.google.com/open?id=10IDmZQUiASN4wnzO4-WRJQopKvxCNu6J",
+                          "Download an example barcodes.tsv file here.", target = "_blank"),
+                   tags$br(),
+                   fileInput(
+                     "annotFile_custom", "Barcodes files:",
+                     accept = c(
+                       "text/csv", "text/comma-separated-values",
+                       "text/tab-separated-values", "text/plain", ".csv", ".tsv", ".gz"
+                     ),
+                     multiple = TRUE
+                   )
+                 )
+          ),
+          column(width = 4,
+                 wellPanel(
+                   h5("Features (features.tsv) file:"),
+                   tags$a(href = "https://drive.google.com/open?id=1gxXaZPq5Wrn2lNHacEVaCN2a_FHNvs4O",
+                          "Download an example features.tsv file here.", target = "_blank"),
+                   tags$br(),
+                   fileInput(
+                     "featureFile_custom", "Features files:",
+                     accept = c(
+                       "text/csv", "text/comma-separated-values",
+                       "text/tab-separated-values", "text/plain", ".csv", ".tsv", ".gz"
+                     ),
+                     multiple = TRUE
+                   )
+                 )
+          )
+        ),
+        actionButton("addFilesImport_custom", "Add to dataset list")
+        #actionButton("addCR3Sample", "Add a sample"),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'starSolo'", "uploadChoice"),
