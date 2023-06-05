@@ -607,11 +607,13 @@ getSceParams <- function(inSCE,
   # SCE object metadata???
 
   for (algo in algos) {
-    params <- meta[[algo]][[1]]
+    params <- meta$sctk[[algo]][[1]]
     if (length(params) == 1) {params <- params[[1]]} ### extract params from sublist
     params <- params[which(!names(params) %in% ignore)]
     parList[[algo]] <- params
   }
+
+  parList[['scDblfinder.threshold']] <- meta$scDblFinder.threshold[[1]]
 
   outputs <- paste(outputs, yaml::as.yaml(parList), sep='\n')
   if (isTRUE(writeYAML)) {
