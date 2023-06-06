@@ -607,7 +607,6 @@ getSceParams <- function(inSCE,
     params <- meta$sctk[[algo]]
     if (length(params) == 1) {params <- params[[1]]} ### extract params from sublist
     params <- params[which(!names(params) %in% ignore)]
-    params[!params == 'genesets']
     parList[[algo]] <- params
   }
 
