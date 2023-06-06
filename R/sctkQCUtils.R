@@ -597,7 +597,7 @@ getSceParams <- function(inSCE,
 
   meta <- S4Vectors::metadata(inSCE)
   algos <- names(meta$sctk)[!names(meta$sctk) %in% skip]
-  print(algos)
+  algos <- algos[-1]
   outputs <- '---'
   parList <- list()
   dir <- file.path(directory, samplename)
@@ -612,7 +612,7 @@ getSceParams <- function(inSCE,
 
   parList[['scDblfinder.threshold']] <- meta$scDblFinder.threshold[[1]]
 
-  outputs <- paste(outputs, yaml::as.yaml(parList), sep='\n')
+  outputs <- paste(outputs, yaml::as.yaml(parList), line.sep='\n')
   if (isTRUE(writeYAML)) {
     filename <- paste0(samplename, '_QCParameters.yaml')
     cat(outputs, file=file.path(dir, filename))
