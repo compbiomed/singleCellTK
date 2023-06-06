@@ -587,7 +587,7 @@ generateHTANMeta <- function(dropletSCE = NULL,
 #' @return If \code{writeYAML} TRUE, a yaml object will be generated. If FALSE, character object.
 #' @export
 getSceParams <- function(inSCE,
-                         skip = c("scrublet", "runDecontX","runBarcodeRanksMetaOutput"),
+                         skip = c("runScrublet", "runDecontX","runBarcodeRanksMetaOutput","genesets"),
                          ignore = c("algorithms", "estimates","contamination",
                                     "z","sample","rank","BPPARAM","batch","geneSetCollection",
                                     "barcodeArgs"),
@@ -596,20 +596,18 @@ getSceParams <- function(inSCE,
                          writeYAML = TRUE) {
 
   meta <- S4Vectors::metadata(inSCE)
-  # in list: SCTK object, layers
-  # figure out what in the list is the metadata
-  algos <- names(meta)[!names(meta) %in% skip]
+  algos <- names(meta$sctk)[!names(meta$sctk) %in% skip]
+  print(algos)
   outputs <- '---'
   parList <- list()
   dir <- file.path(directory, samplename)
 
-  # TODO: something wrong here
-  # SCE object metadata???
-
+  # TODO: accessor implementation instead of spit and duct tape
   for (algo in algos) {
-    params <- meta$sctk[[algo]][[1]]
+    params <- meta$sctk[[algo]]
     if (length(params) == 1) {params <- params[[1]]} ### extract params from sublist
     params <- params[which(!names(params) %in% ignore)]
+    params[!params == 'genesets']
     parList[[algo]] <- params
   }
 
