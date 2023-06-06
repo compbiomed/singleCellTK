@@ -587,7 +587,7 @@ generateHTANMeta <- function(dropletSCE = NULL,
 #' @return If \code{writeYAML} TRUE, a yaml object will be generated. If FALSE, character object.
 #' @export
 getSceParams <- function(inSCE,
-                         skip = c("runScrublet", "runDecontX","runBarcodeRanksMetaOutput","genesets"),
+                         skip = c("runScrublet","runDecontX","runBarcodeRanksMetaOutput","genesets","runSoupX"),
                          ignore = c("algorithms", "estimates","contamination",
                                     "z","sample","rank","BPPARAM","batch","geneSetCollection",
                                     "barcodeArgs"),
@@ -597,12 +597,15 @@ getSceParams <- function(inSCE,
 
   meta <- S4Vectors::metadata(inSCE)
   algos <- names(meta$sctk)[!names(meta$sctk) %in% skip]
+  # spit duct tape and hope
+  # removed runSoupX until output can be trimmed and reworked
   algos <- algos[-1]
+  algos <- algos[-length(algos)]
   outputs <- '---'
   parList <- list()
   dir <- file.path(directory, samplename)
 
-  # TODO: accessor implementation instead of spit and duct tape
+  # TODO: proper accessor implementation instead of spit and duct tape
   for (algo in algos) {
     params <- meta$sctk[[algo]]
     if (length(params) == 1) {params <- params[[1]]} ### extract params from sublist
