@@ -18,17 +18,20 @@
 #' plotBubble(inSCE=sce, useAssay="counts", feature=c("B2M", "MALAT1"), displayName="feature_name", 
 #' clusters="type", title="cell type test", xlab="gene", ylab="cluster", colorLow="white", colorHigh="blue")
 #' @export
-plotBubble <- function(inSCE, useAssay="logcounts", feature, displayName=NULL, clusters="cluster", title="", xlab=NULL, ylab=NULL, colorLow="white", colorHigh="blue"){
-  summaryMetrics <- runClusterSummaryMetrics(inSCE, useAssay=useAssay, feature=feature, displayName=displayName, clusters=clusters)
-  .ggBubble(summaryMetrics, colorLow, colorHigh, title, xlab, ylab)
+plotBubble <- function(inSCE, useAssay="logcounts", gene, clusters="cluster", title="", colorLow="white", colorHigh="blue"){
+  metrics <- runClusterSummaryMetrics(inSCE, useAssay=useAssay, gene=gene, clusters=clusters)
+  .ggBubble(metrics["avgExpr"], metrics["percExpr"], colorLow, colorHigh, title)
 }
 
-.ggBubble <- function(metrics, colorLow="white", colorHigh="blue", title="", xlab=NULL, ylab=NULL){
-  gg <- ggplot2::ggplot(metrics, ggplot2::aes(x=Gene, y=cluster)) +
-    ggplot2::geom_point(ggplot2::aes(colour=clusterAveExpr, size=clusterExprPerc)) +
+.ggBubble <- function(avgExpr, percExpr, colorLow="white", colorHigh="blue", title=""){
+  metrics = merge(avgExpr, percExpr)
+  df <- data.frame(metrics)
+  gg <- ggplot2::ggplot(df, ggplot2::aes(x=Gene, y=cluster)) +
+    ggplot2::geom_point(ggplot2::aes(color=clusterAveExpr, size=clusterPercExpr)) +
     ggplot2::ggtitle(title) +
-    ggplot2::xlab(xlab) +
-    ggplot2::ylab(ylab) +
-    ggplot2::scale_color_gradient(low=colorLow, high=colorHigh)
+    ggplot2::scale_color_gradient2(low=colorLow, high=colorHigh)
   .ggSCTKTheme(gg)
 }
+
+
+
