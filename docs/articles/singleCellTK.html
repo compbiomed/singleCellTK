@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -236,91 +239,39 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to singleCellTK</h1>
-                        <h4 data-toc-skip class="author">Yichen
-Wang</h4>
+                        <h4 data-toc-skip class="author">Yichen Wang</h4>
             <address class="author_afil">
-      The Section of Computational Biomedicine, Boston University School
-of Medicine, Boston,
-MA<br><h4 data-toc-skip class="author">Irzam
-Sarfraz</h4>
+      The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA<br><h4 data-toc-skip class="author">Irzam Sarfraz</h4>
             <address class="author_afil">
-      The Section of Computational Biomedicine, Boston University School
-of Medicine, Boston,
-MA<br><h4 data-toc-skip class="author">Rui
-Hong</h4>
+      The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA<br><h4 data-toc-skip class="author">Rui Hong</h4>
             <address class="author_afil">
-      The Section of Computational Biomedicine, Boston University School
-of Medicine, Boston, MAProgram in Bioinformatics, Boston University,
-Boston,
-MA<br><h4 data-toc-skip class="author">Yusuke
-Koga</h4>
+      The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MAProgram in Bioinformatics, Boston University, Boston, MA<br><h4 data-toc-skip class="author">Yusuke Koga</h4>
             <address class="author_afil">
-      The Section of Computational Biomedicine, Boston University School
-of Medicine, Boston, MAProgram in Bioinformatics, Boston University,
-Boston,
-MA<br><h4 data-toc-skip class="author">Salam
-Abdullatif</h4>
+      The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MAProgram in Bioinformatics, Boston University, Boston, MA<br><h4 data-toc-skip class="author">Salam Abdullatif</h4>
             <address class="author_afil">
-      The Section of Computational Biomedicine, Boston University School
-of Medicine, Boston,
-MA<br><h4 data-toc-skip class="author">David
-Jenkins</h4>
+      The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA<br><h4 data-toc-skip class="author">Nida Pervaiz</h4>
             <address class="author_afil">
-      The Section of Computational Biomedicine, Boston University School
-of Medicine, Boston, MAProgram in Bioinformatics, Boston University,
-Boston,
-MA<br><h4 data-toc-skip class="author">Vidya
-Akavoor</h4>
+      The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA<br><h4 data-toc-skip class="author">David Jenkins</h4>
             <address class="author_afil">
-      Rafik B. Hariri Institute for Computing and Computational Science
-and Engineering, Boston University, Boston,
-MA<br><h4 data-toc-skip class="author">Xinyun
-Cao</h4>
+      The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MAProgram in Bioinformatics, Boston University, Boston, MA<br><h4 data-toc-skip class="author">Vidya Akavoor</h4>
             <address class="author_afil">
-      Rafik B. Hariri Institute for Computing and Computational Science
-and Engineering, Boston University, Boston,
-MA<br><h4 data-toc-skip class="author">Shruthi
-Bandyadka</h4>
+      Rafik B. Hariri Institute for Computing and Computational Science and Engineering, Boston University, Boston, MA<br><h4 data-toc-skip class="author">Xinyun Cao</h4>
             <address class="author_afil">
-      The Section of Computational Biomedicine, Boston University School
-of Medicine, Boston, MAProgram in Bioinformatics, Boston University,
-Boston,
-MA<br><h4 data-toc-skip class="author">Anastasia
-Leshchyk</h4>
+      Rafik B. Hariri Institute for Computing and Computational Science and Engineering, Boston University, Boston, MA<br><h4 data-toc-skip class="author">Shruthi Bandyadka</h4>
             <address class="author_afil">
-      The Section of Computational Biomedicine, Boston University School
-of Medicine, Boston, MAProgram in Bioinformatics, Boston University,
-Boston,
-MA<br><h4 data-toc-skip class="author">Tyler
-Faits</h4>
+      The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MAProgram in Bioinformatics, Boston University, Boston, MA<br><h4 data-toc-skip class="author">Anastasia Leshchyk</h4>
             <address class="author_afil">
-      The Section of Computational Biomedicine, Boston University School
-of Medicine, Boston, MAProgram in Bioinformatics, Boston University,
-Boston,
-MA<br><h4 data-toc-skip class="author">Mohammed
-Muzamil Khan</h4>
+      The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MAProgram in Bioinformatics, Boston University, Boston, MA<br><h4 data-toc-skip class="author">Tyler Faits</h4>
             <address class="author_afil">
-      The Section of Computational Biomedicine, Boston University School
-of Medicine, Boston, MAProgram in Bioinformatics, Boston University,
-Boston,
-MA<br><h4 data-toc-skip class="author">Zhe
-Wang</h4>
+      The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MAProgram in Bioinformatics, Boston University, Boston, MA<br><h4 data-toc-skip class="author">Mohammed Muzamil Khan</h4>
             <address class="author_afil">
-      The Section of Computational Biomedicine, Boston University School
-of Medicine, Boston, MAProgram in Bioinformatics, Boston University,
-Boston,
-MA<br><h4 data-toc-skip class="author">W.
-Evan Johnson</h4>
+      The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MAProgram in Bioinformatics, Boston University, Boston, MA<br><h4 data-toc-skip class="author">Zhe Wang</h4>
             <address class="author_afil">
-      The Section of Computational Biomedicine, Boston University School
-of Medicine, Boston, MAProgram in Bioinformatics, Boston University,
-Boston,
-MA<br><h4 data-toc-skip class="author">Joshua
-D. Campbell</h4>
+      The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MAProgram in Bioinformatics, Boston University, Boston, MA<br><h4 data-toc-skip class="author">W. Evan Johnson</h4>
             <address class="author_afil">
-      The Section of Computational Biomedicine, Boston University School
-of Medicine, Boston, MAProgram in Bioinformatics, Boston University,
-Boston, MA<br><a class="author_email" href="mailto:#"></a><a href="mailto:camp@bu.edu" class="email">camp@bu.edu</a>
+      The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MAProgram in Bioinformatics, Boston University, Boston, MA<br><h4 data-toc-skip class="author">Joshua D. Campbell</h4>
+            <address class="author_afil">
+      The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MAProgram in Bioinformatics, Boston University, Boston, MA<br><a class="author_email" href="mailto:#"></a><a href="mailto:camp@bu.edu" class="email">camp@bu.edu</a>
       </address>
                   
       
@@ -341,60 +292,55 @@ Boston, MA<br><a class="author_email" href="mailto:#"></a><a href="mailto:camp@b
 </address>
 </address>
 </address>
+</address>
 </div>
 
     
     
-<p>The Single Cell Toolkit (SCTK) is an interactive scRNA-Seq analysis
-package that allows a user to upload raw scRNA-Seq count matrices and
-perform downstream scRNA-Seq analysis interactively through a web
-interface, or through a set of R functions through the command line. The
-package is written in R with a graphical user interface (GUI) written in
-Shiny. Users can perform analysis with modules for conducting quality
-control, clustering, batch correction, differential expression, pathway
-enrichment, and sample size calculator, all in a simple to use point and
-click interface. The toolkit also supports command line data processing,
-and results can be loaded into the GUI for additional exploration and
-downstream analysis.</p>
+<p>The Single Cell Toolkit (SCTK) is an interactive scRNA-Seq analysis package that allows a user to upload raw scRNA-Seq count matrices and perform downstream scRNA-Seq analysis interactively through a web interface, or through a set of R functions through the command line. The package is written in R with a graphical user interface (GUI) written in Shiny. Users can perform analysis with modules for conducting quality control, clustering, batch correction, differential expression, pathway enrichment, and sample size calculator, all in a simple to use point and click interface. The toolkit also supports command line data processing, and results can be loaded into the GUI for additional exploration and downstream analysis.</p>
 <div class="section level2">
 <h2 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a>
 </h2>
-<p>Due to the range of features that are available in SCTK, we have
-prepared several vignettes to help you get started, which are all
-available at <a href="https://www.camplab.net/sctk/" class="external-link">https://www.camplab.net/sctk/</a></p>
+<p>Due to the range of features that are available in SCTK, we have prepared several vignettes to help you get started, which are all available at <a href="https://www.camplab.net/sctk/" class="external-link">https://www.camplab.net/sctk/</a></p>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<pre><code><span><span class="co">## R version 4.2.1 (2022-06-23)</span></span>
-<span><span class="co">## Platform: aarch64-apple-darwin20 (64-bit)</span></span>
-<span><span class="co">## Running under: macOS Monterey 12.6</span></span>
+<pre><code><span><span class="co">## R version 4.2.2 Patched (2022-11-10 r83330)</span></span>
+<span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
+<span><span class="co">## Running under: Ubuntu 20.04.3 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
-<span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/lib/libRblas.0.dylib</span></span>
-<span><span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/lib/libRlapack.dylib</span></span>
+<span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0</span></span>
+<span><span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## locale:</span></span>
-<span><span class="co">## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span></span>
+<span><span class="co">##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></span>
+<span><span class="co">##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span></span>
+<span><span class="co">##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span></span>
+<span><span class="co">##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span></span>
+<span><span class="co">##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span></span>
+<span><span class="co">## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attached base packages:</span></span>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] BiocStyle_2.25.0</span></span>
+<span><span class="co">## [1] BiocStyle_2.26.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] rstudioapi_0.14     knitr_1.40          magrittr_2.0.3     </span></span>
-<span><span class="co">##  [4] R6_2.5.1            ragg_1.2.4          rlang_1.0.6        </span></span>
-<span><span class="co">##  [7] fastmap_1.1.0       stringr_1.4.1       tools_4.2.1        </span></span>
-<span><span class="co">## [10] xfun_0.34           cli_3.4.1           jquerylib_0.1.4    </span></span>
-<span><span class="co">## [13] systemfonts_1.0.4   htmltools_0.5.3     yaml_2.3.6         </span></span>
-<span><span class="co">## [16] digest_0.6.30       rprojroot_2.0.3     pkgdown_2.0.6      </span></span>
-<span><span class="co">## [19] bookdown_0.29       textshaping_0.3.6   BiocManager_1.30.18</span></span>
-<span><span class="co">## [22] purrr_0.3.5         sass_0.4.2          fs_1.5.2           </span></span>
-<span><span class="co">## [25] memoise_2.0.1       cachem_1.0.6        evaluate_0.17      </span></span>
-<span><span class="co">## [28] rmarkdown_2.17      stringi_1.7.8       compiler_4.2.1     </span></span>
-<span><span class="co">## [31] bslib_0.4.0         desc_1.4.2          jsonlite_1.8.3</span></span></code></pre>
+<span><span class="co">##  [1] rstudioapi_0.14     knitr_1.42          magrittr_2.0.3     </span></span>
+<span><span class="co">##  [4] R6_2.5.1            ragg_1.2.5          rlang_1.1.0        </span></span>
+<span><span class="co">##  [7] fastmap_1.1.1       stringr_1.5.0       tools_4.2.2        </span></span>
+<span><span class="co">## [10] xfun_0.37           cli_3.6.0           jquerylib_0.1.4    </span></span>
+<span><span class="co">## [13] systemfonts_1.0.4   htmltools_0.5.4     yaml_2.3.7         </span></span>
+<span><span class="co">## [16] digest_0.6.31       rprojroot_2.0.3     lifecycle_1.0.3    </span></span>
+<span><span class="co">## [19] pkgdown_2.0.7       bookdown_0.33       textshaping_0.3.6  </span></span>
+<span><span class="co">## [22] purrr_1.0.1         BiocManager_1.30.20 vctrs_0.6.0        </span></span>
+<span><span class="co">## [25] sass_0.4.5          fs_1.6.1            memoise_2.0.1      </span></span>
+<span><span class="co">## [28] glue_1.6.2          cachem_1.0.7        evaluate_0.20      </span></span>
+<span><span class="co">## [31] rmarkdown_2.20      stringi_1.7.12      compiler_4.2.2     </span></span>
+<span><span class="co">## [34] bslib_0.4.2         desc_1.4.2          jsonlite_1.8.4</span></span></code></pre>
 </div>
   </div>
 
@@ -410,12 +356,12 @@ available at <a href="https://www.camplab.net/sctk/" class="external-link">https
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

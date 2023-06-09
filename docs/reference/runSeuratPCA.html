@@ -23,7 +23,7 @@ components within the sce object"><!-- mathjax --><script src="https://cdnjs.clo
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -54,6 +54,9 @@ components within the sce object"><!-- mathjax --><script src="https://cdnjs.clo
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul></li>
 <li>
@@ -211,8 +214,8 @@ components within the sce object</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runSeuratPCA</span><span class="op">(</span></span>
 <span>  <span class="va">inSCE</span>,</span>
-<span>  useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>,</span>
-<span>  useFeatureSubset <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"seuratNormData"</span>,</span>
+<span>  useFeatureSubset <span class="op">=</span> <span class="st">"hvf"</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  reducedDimName <span class="op">=</span> <span class="st">"seuratPCA"</span>,</span>
 <span>  nPCs <span class="op">=</span> <span class="fl">20</span>,</span>
@@ -229,14 +232,14 @@ components within the sce object</p>
 
 <dt>useAssay</dt>
 <dd><p>Assay containing scaled counts to use in PCA. Default
-<code>"seuratScaledData"</code>.</p></dd>
+<code>"seuratNormData"</code>.</p></dd>
 
 
 <dt>useFeatureSubset</dt>
 <dd><p>Subset of feature to use for dimension reduction. A
 character string indicating a <code>rowData</code> variable that stores the logical
 vector of HVG selection, or a vector that can subset the rows of
-<code>inSCE</code>. Default <code>NULL</code>.</p></dd>
+<code>inSCE</code>. Default <code>"hvf"</code>.</p></dd>
 
 
 <dt>scale</dt>
@@ -289,6 +292,7 @@ used.</p>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runSeuratNormalizeData.html">runSeuratNormalizeData</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runSeuratFindHVG.html">runSeuratFindHVG</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, featureSubsetName <span class="op">=</span> <span class="st">"hvf"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runSeuratScaleData.html">runSeuratScaleData</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runSeuratPCA</span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
@@ -302,11 +306,11 @@ used.</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

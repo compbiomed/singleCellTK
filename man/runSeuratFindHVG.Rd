@@ -10,6 +10,7 @@ runSeuratFindHVG(
   useAssay = "counts",
   method = c("vst", "dispersion", "mean.var.plot"),
   hvgNumber = 2000,
+  createFeatureSubset = "hvf",
   altExp = FALSE,
   verbose = TRUE
 )
@@ -30,6 +31,11 @@ normalized counts.}
 
 \item{hvgNumber}{numeric value of how many genes to select as highly
 variable. Default \code{2000}}
+
+\item{createFeatureSubset}{Specify a name of the subset to create
+for the identified variable features. Default is \code{"hvf"}.
+Leave it \code{NULL} if you do not want to create a subset of 
+variable features.}
 
 \item{altExp}{Logical value indicating if the input object is an
 altExperiment. Default \code{FALSE}.}

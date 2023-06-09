@@ -7,7 +7,7 @@
 runFeatureSelection(
   inSCE,
   useAssay,
-  method = c("vst", "mean.var.plot", "dispersion", "modelGeneVar")
+  method = c("vst", "mean.var.plot", "dispersion", "modelGeneVar", "cell_ranger")
 )
 }
 \arguments{

@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -249,89 +252,43 @@
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p><img src="ui_screenshots/qc/qc_ui_entry.png" alt="entry"><br></p>
-<p>Single Cell Toolkit (SCTK) provides Rshiny graphical user interface
-(UI) to perform quality control for the single-cell data that users have
-imported. User can open the SCTK Rshiny GUI by running
-<code><a href="../reference/singleCellTK.html">singleCellTK()</a></code> in Rstudio console. Users can navigate to
-quality control page through the tab that is highlighted in the
-screenshot above.</p>
-<p>Here SCTK provides generic QC metrics, as well as contamination
-estimation by <a href="https://rdrr.io/bioc/celda/man/decontX.html" class="external-link">decontX</a> and <a href="https://github.com/constantAmateur/SoupX" class="external-link">SoupX</a>, and doublet
-detection algorithms including <a href="https://rdrr.io/bioc/scDblFinder/" class="external-link">scDblFinder</a>, <a href="https://rdrr.io/bioc/scds/man/cxds.html" class="external-link">cxds</a>, <a href="https://rdrr.io/bioc/scds/man/bcds.html" class="external-link">bcds</a>, <a href="https://rdrr.io/bioc/scds/man/cxds_bcds_hybrid.html" class="external-link">cxds_bcds_hybrid</a>,
-<a href="https://rdrr.io/github/chris-mcginnis-ucsf/DoubletFinder/man/doubletFinder.html" class="external-link">doubletFinder</a>,
-and <a href="https://github.com/swolock/scrublet" class="external-link">scrublet</a>. Note
-that “scrublet” is Python based. Users should have it configured before
-trying to apply it. User can refer to
-<code>Install Python Dependencies</code> section in the <a href="installation.html">Installation</a> page.</p>
+<p>Single Cell Toolkit (SCTK) provides Rshiny graphical user interface (UI) to perform quality control for the single-cell data that users have imported. User can open the SCTK Rshiny GUI by running <code><a href="../reference/singleCellTK.html">singleCellTK()</a></code> in Rstudio console. Users can navigate to quality control page through the tab that is highlighted in the screenshot above.</p>
+<p>Here SCTK provides generic QC metrics, as well as contamination estimation by <a href="https://rdrr.io/bioc/celda/man/decontX.html" class="external-link">decontX</a> and <a href="https://github.com/constantAmateur/SoupX" class="external-link">SoupX</a>, and doublet detection algorithms including <a href="https://rdrr.io/bioc/scDblFinder/" class="external-link">scDblFinder</a>, <a href="https://rdrr.io/bioc/scds/man/cxds.html" class="external-link">cxds</a>, <a href="https://rdrr.io/bioc/scds/man/bcds.html" class="external-link">bcds</a>, <a href="https://rdrr.io/bioc/scds/man/cxds_bcds_hybrid.html" class="external-link">cxds_bcds_hybrid</a>, <a href="https://rdrr.io/github/chris-mcginnis-ucsf/DoubletFinder/man/doubletFinder.html" class="external-link">doubletFinder</a>, and <a href="https://github.com/swolock/scrublet" class="external-link">scrublet</a>. Note that “scrublet” is Python based. Users should have it configured before trying to apply it. User can refer to <code>Install Python Dependencies</code> section in the <a href="installation.html">Installation</a> page.</p>
 </div>
 <div class="section level2">
 <h2 id="import-dataset">Import dataset<a class="anchor" aria-label="anchor" href="#import-dataset"></a>
 </h2>
-<p>SCTK supports the importing of single-cell data from the following
-platforms: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger" class="external-link">10X
-CellRanger</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md" class="external-link">STARSolo</a>,
-<a href="https://www.kallistobus.tools/" class="external-link">BUSTools</a>, <a href="https://github.com/ambrosejcarr/seqc" class="external-link">SEQC</a>, <a href="https://github.com/hms-dbmi/dropEst" class="external-link">DropEST</a>, <a href="https://salmon.readthedocs.io/en/latest/alevin.html" class="external-link">Alevin</a>,
-as well as dataset already stored in <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a>
-object and <a href="https://github.com/theislab/anndata" class="external-link">AnnData</a>
-object. To load your own input data to SCTK UI, please refer
-<code>Importing Single-Cell Datasets</code> under
-<code>Interactive Analysis</code> section in <a href="import_data.html">Import data into SCTK</a> page for detailed
-instruction.</p>
+<p>SCTK supports the importing of single-cell data from the following platforms: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger" class="external-link">10X CellRanger</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md" class="external-link">STARSolo</a>, <a href="https://www.kallistobus.tools/" class="external-link">BUSTools</a>, <a href="https://github.com/ambrosejcarr/seqc" class="external-link">SEQC</a>, <a href="https://github.com/hms-dbmi/dropEst" class="external-link">DropEST</a>, <a href="https://salmon.readthedocs.io/en/latest/alevin.html" class="external-link">Alevin</a>, as well as dataset already stored in <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object and <a href="https://github.com/theislab/anndata" class="external-link">AnnData</a> object. To load your own input data to SCTK UI, please refer <code>Importing Single-Cell Datasets</code> under <code>Interactive Analysis</code> section in <a href="import_data.html">Import data into SCTK</a> page for detailed instruction.</p>
 </div>
 <div class="section level2">
 <h2 id="select-which-algorithms-to-run">Select which algorithms to run<a class="anchor" aria-label="anchor" href="#select-which-algorithms-to-run"></a>
 </h2>
-<p>Users must check all algorithms which they would like to run at once.
-<strong>Rerunning the QC procedure will overwrite previous QC
-results.</strong> The parameters for the corresponding algorithms will
-show up as users check it. Users may adjust the parameters as needed.
-Detailed explanation for each parameter can be accessed via the
-<strong>“Help”</strong> button in the parameter region of each
-algorithm, as shown below.</p>
+<p>Users must check all algorithms which they would like to run at once. <strong>Rerunning the QC procedure will overwrite previous QC results.</strong> The parameters for the corresponding algorithms will show up as users check it. Users may adjust the parameters as needed. Detailed explanation for each parameter can be accessed via the <strong>“Help”</strong> button in the parameter region of each algorithm, as shown below.</p>
 <p><img src="ui_screenshots/qc/qc_ui_checkAlgo.png" alt="check algorithms"><br></p>
 </div>
 <div class="section level2">
 <h2 id="other-settings-before-running">Other settings before running<a class="anchor" aria-label="anchor" href="#other-settings-before-running"></a>
 </h2>
-<p>After checking off all the desired QC algorithms, users should also
-go through other settings including:<br>
-- <strong>Select assay</strong>: Choose the expression matrix that is
-used for quality control analysis. User needs to select the assay which
-stores the raw cell count matrix (unnormalized and unscaled).<br>
-- <strong>Select variable containing sample labels</strong>: QC steps
-will be performed for each sample separately. User needs to select the
-cell level annotation that labels the sample source of each cell.</p>
+<p>After checking off all the desired QC algorithms, users should also go through other settings including:<br>
+- <strong>Select assay</strong>: Choose the expression matrix that is used for quality control analysis. User needs to select the assay which stores the raw cell count matrix (unnormalized and unscaled).<br>
+- <strong>Select variable containing sample labels</strong>: QC steps will be performed for each sample separately. User needs to select the cell level annotation that labels the sample source of each cell.</p>
 <p><img src="ui_screenshots/qc/qc_ui_general.png" alt="general"><br></p>
-<p>A UMAP embedding will be calculated in the end when running SCTK QC
-workflow. It will be used across all QC algorithms for visualization of
-any scores or clusters. The parameters are already described in the UI.
-For more information, please refer to <code><a href="../reference/runUMAP.html">runUMAP()</a></code> <img src="ui_screenshots/qc/qc_ui_umap.png" alt="umap"><br></p>
-<p>Having everything checked and ready, users can then press
-<strong>“Run”</strong> to start the procedure.</p>
+<p>A UMAP embedding will be calculated in the end when running SCTK QC workflow. It will be used across all QC algorithms for visualization of any scores or clusters. The parameters are already described in the UI. For more information, please refer to <code><a href="../reference/runUMAP.html">runUMAP()</a></code> <img src="ui_screenshots/qc/qc_ui_umap.png" alt="umap"><br></p>
+<p>Having everything checked and ready, users can then press <strong>“Run”</strong> to start the procedure.</p>
 </div>
 <div class="section level2">
 <h2 id="plot-the-results">Plot the results<a class="anchor" aria-label="anchor" href="#plot-the-results"></a>
 </h2>
-<p>Once the QC analysis is finished, plots visualizing the QC metrics
-from each algorithm will automatically appear to the right of the QC
-algorithms’ panel in a tab set manner.</p>
-<p>The QC metrics are generated sample wise. For example, in the “counts
-per cell” violin plot below, the results for sample “pbmc3k” and
-“pbmc4k” are plotted separately.</p>
+<p>Once the QC analysis is finished, plots visualizing the QC metrics from each algorithm will automatically appear to the right of the QC algorithms’ panel in a tab set manner.</p>
+<p>The QC metrics are generated sample wise. For example, in the “counts per cell” violin plot below, the results for sample “pbmc3k” and “pbmc4k” are plotted separately.</p>
 <p><img src="ui_screenshots/qc/qc_ui_result1.png" alt="result1"><br></p>
-<p>The visualization of certain algorithms (i.e density plot, UMAP plot)
-will be displayed in sub-tabs for each sample, if multiple sample are
-presented in users dataset and user specify correct sample labels when
-run QC step. The figure below demonstrates the visualization of doublet
-detection for “pbmc3k” and “pbmc4k” sample.</p>
+<p>The visualization of certain algorithms (i.e density plot, UMAP plot) will be displayed in sub-tabs for each sample, if multiple sample are presented in users dataset and user specify correct sample labels when run QC step. The figure below demonstrates the visualization of doublet detection for “pbmc3k” and “pbmc4k” sample.</p>
 <p><img src="ui_screenshots/qc/qc_ui_result2.png" alt="result2"><br></p>
 </div>
 <div class="section level2">
 <h2 id="filtering-poor-quality-data">Filtering poor quality data<a class="anchor" aria-label="anchor" href="#filtering-poor-quality-data"></a>
 </h2>
-<p>Once the QC analysis is finished, user can filter poor quality cells
-based on different QC metrics. The filtering step can be performed using
-UI. Please refer <code>Interactive Analysis</code> section in the <a href="filtering.html">Filtering</a> page for more details.</p>
+<p>Once the QC analysis is finished, user can filter poor quality cells based on different QC metrics. The filtering step can be performed using UI. Please refer <code>Interactive Analysis</code> section in the <a href="filtering.html">Filtering</a> page for more details.</p>
 </div>
   </div>
 
@@ -347,12 +304,12 @@ UI. Please refer <code>Interactive Analysis</code> section in the <a href="filte
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

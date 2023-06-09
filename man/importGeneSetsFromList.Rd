@@ -8,7 +8,8 @@ importGeneSetsFromList(
   inSCE,
   geneSetList,
   collectionName = "GeneSetCollection",
-  by = "rownames"
+  by = "rownames",
+  noMatchError = TRUE
 )
 }
 \arguments{
@@ -35,6 +36,9 @@ the number of gene sets in \code{geneSetList} and the elements of the vector
 can point to different locations within \code{inSCE}. See
 \link{featureIndex} for more information.
 Default \code{"rownames"}.}
+
+\item{noMatchError}{Boolean. Show an error if a collection does not have
+any matching features. Default \code{TRUE}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object

@@ -8,7 +8,8 @@ importGeneSetsFromCollection(
   inSCE,
   geneSetCollection,
   collectionName = "GeneSetCollection",
-  by = "rownames"
+  by = "rownames",
+  noMatchError = TRUE
 )
 }
 \arguments{
@@ -36,6 +37,9 @@ in \code{inSCE} should be saved in the description slot for each gene set
 in the \code{GeneSetCollection}.
 See \link{featureIndex} for more information.
 Default \code{"rownames"}.}
+
+\item{noMatchError}{Boolean. Show an error if a collection does not have
+any matching features. Default \code{TRUE}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object

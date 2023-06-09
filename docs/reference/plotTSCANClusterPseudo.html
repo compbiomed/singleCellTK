@@ -20,7 +20,7 @@ in this cluster. MST has to be pre-calculated with runTSCAN."><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
       </span>
     </div>
 
@@ -51,6 +51,9 @@ in this cluster. MST has to be pre-calculated with runTSCAN."><!-- mathjax --><s
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul></li>
 <li>
@@ -255,14 +258,14 @@ object, while <code>"none"</code> will output a list of plots. Default
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mouseBrainSubsetSCE</span> <span class="op">&lt;-</span> <span class="fu"><a href="runTSCAN.html">runTSCAN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">mouseBrainSubsetSCE</span>,</span></span>
 <span class="r-in"><span>                                useReducedDim <span class="op">=</span> <span class="st">"PCA_logcounts"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:12 2022 ... Running 'scran SNN clustering' with 'louvain' algorithm</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:13 2022 ...   Identified 2 clusters</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:13 2022 ... Running TSCAN to estimate pseudotime</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:13 2022 ...   Clusters involved in path index 2 are: 1, 2</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:13 2022 ...   Number of estimated paths is 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 18 10:30:10 2023 ... Running 'scran SNN clustering' with 'louvain' algorithm</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 18 10:30:10 2023 ...   Identified 2 clusters</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 18 10:30:10 2023 ... Running TSCAN to estimate pseudotime</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 18 10:30:10 2023 ...   Clusters involved in path index 2 are: 1, 2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 18 10:30:10 2023 ...   Number of estimated paths is 1</span>
 <span class="r-in"><span><span class="fu">plotTSCANClusterPseudo</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>, useCluster <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>                       useReducedDim <span class="op">=</span> <span class="st">"TSNE_logcounts"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1 rows containing missing values (geom_text_repel).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1 rows containing missing values (`geom_text_repel()`).</span>
 <span class="r-plt img"><img src="plotTSCANClusterPseudo-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -274,11 +277,11 @@ object, while <code>"none"</code> will output a list of plots. Default
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -45,6 +45,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
       newSce <- importSTARsolo(
         STARsoloDirs = entry$params$STARsoloDirs,
         samples = entry$params$samples,
+        STARsoloOuts = entry$params$STARsoloOuts,
         delayedArray = delayedArray
       )
     } else if (entry$type == "busTools") {

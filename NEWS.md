@@ -1,3 +1,17 @@
+Changes in Version 2.8.1 (2022-03-10)
+================================================================================
+* Added scanpy wrapper functions for use from console
+* Added scanpy UI curated workflow
+* Integrated scanpy to a la carte workflow
+* Fixed a bug in importing fluidigm dataset
+* Updated downloading features in the Shiny app
+* Added error checking around Enrichr functions
+* Minor tweaks to plot defaults
+
+Changes in Version 2.8.0 (2022-12-19)
+================================================================================
+* Updated version to match Bioconductor version
+
 Changes in Version 2.7.3 (2022-10-25)
 ================================================================================
 * Fixed bugs related to dependency updates

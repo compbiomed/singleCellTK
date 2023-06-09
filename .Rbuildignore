@@ -15,3 +15,5 @@ exec/png
 .covrignore
 ^pkgdown$
 ^\.github$
+^vignettes/articles/*
+^images

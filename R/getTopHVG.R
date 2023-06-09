@@ -11,7 +11,8 @@
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object
 #' @param method Specify which method to use for variable gene extraction
 #' from Seurat \code{"vst"}, \code{"mean.var.plot"}, \code{"dispersion"} or
-#' Scran \code{"modelGeneVar"}. Default \code{"vst"}
+#' Scran \code{"modelGeneVar"} or Scanpy \code{"seurat"}, \code{"cell_ranger"}, 
+#' \code{"seurat_v3"}. Default \code{"vst"}
 #' @param hvgNumber Specify the number of top variable genes to extract.
 #' @param useFeatureSubset Get the feature names in the HVG list set by
 #' \code{setTopHVG}. Will ignore \code{method} and \code{hvgNumber} if not
@@ -52,7 +53,8 @@
 #' @importFrom S4Vectors metadata
 getTopHVG <- function(inSCE,
                       method = c("vst", "dispersion",
-                                 "mean.var.plot", "modelGeneVar"),
+                                 "mean.var.plot", "modelGeneVar", "seurat", 
+                                 "seurat_v3", "cell_ranger"),
                       hvgNumber = 2000,
                       useFeatureSubset = NULL,
                       featureDisplay = metadata(inSCE)$featureDisplay) {
@@ -64,7 +66,12 @@ getTopHVG <- function(inSCE,
     } else {
         metrics <- .dfFromHVGMetric(inSCE, method)
         metrics <- metrics[order(-metrics$v_rank),]
-        metrics <- metrics[metrics$v_rank > 0, ]
+        if (method == "seurat"){
+          metrics <- metrics[metrics$v_plot > 0, ]
+        }
+        else{
+          metrics <- metrics[metrics$v_rank > 0, ]
+        }
         if (method == "mean.var.plot") {
             means.use <- (metrics$mean > 0.1) & (metrics$mean < 8)
             dispersions.use <- (metrics$v_plot > 1) & (metrics$v_plot < Inf)
@@ -87,7 +94,8 @@ getTopHVG <- function(inSCE,
 #' @importFrom S4Vectors metadata<-
 setTopHVG <- function(inSCE,
                       method =  c("vst", "dispersion",
-                                  "mean.var.plot", "modelGeneVar"),
+                                  "mean.var.plot", "modelGeneVar", "seurat", 
+                                  "seurat_v3", "cell_ranger"),
                       hvgNumber = 2000,
                       featureSubsetName = NULL,
                       genes = NULL, genesBy = NULL,
@@ -138,13 +146,15 @@ setTopHVG <- function(inSCE,
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object
 #' @param method Specify which method to use for variable gene extraction
 #' from Seurat \code{"vst"}, \code{"mean.var.plot"}, \code{"dispersion"} or
-#' Scran \code{"modelGeneVar"}. Default \code{"vst"}
+#' Scran \code{"modelGeneVar"} or Scanpy \code{"seurat"}, \code{"cell_ranger"}, 
+#' \code{"seurat_v3"}. Default \code{"vst"}
 #' @return data.frame object of HVG metrics calculated by \code{method},
 #' containing columns of \code{"mean"}, \code{"v_rank"}, \code{"v_plot"}
 #' @noRd
 .dfFromHVGMetric <- function(inSCE,
                              method = c("vst", "mean.var.plot", "dispersion",
-                                        "modelGeneVar")) {
+                                        "modelGeneVar", "seurat", 
+                                        "seurat_v3", "cell_ranger")) {
     method <- match.arg(method)
     df <- data.frame(featureNames = rownames(inSCE))
     if (method == "vst") {
@@ -167,6 +177,39 @@ setTopHVG <- function(inSCE,
                  "Run `runSeuratFindHVG()` with 'dispersion' method ",
                  "before using this function!")
         }
+    }else if (method == "seurat_v3") {
+      m <- "means"
+      v_rank <- "variances"
+      v_plot <- "variances_norm"
+      if (is.null(rowData(inSCE)[[v_rank]]) ||
+          is.null(rowData(inSCE)[[m]]) ||
+          is.null(rowData(inSCE)[[v_plot]])) {
+        stop("Scanpy variance metric not found in inSCE. ",
+             "Run `runScanpyFindHVG()` with 'seurat_v3' method ",
+             "before using this function!")
+      }
+    }else if (method == "cell_ranger") {
+      m <- "means"
+      v_rank <- "dispersions"
+      v_plot <- "dispersions_norm"
+      if (is.null(rowData(inSCE)[[v_rank]]) ||
+          is.null(rowData(inSCE)[[m]]) ||
+          is.null(rowData(inSCE)[[v_plot]])) {
+        stop("Scanpy dispersion metric not found in inSCE. ",
+             "Run `runScanpyFindHVG()` with 'cell_ranger' method ",
+             "before using this function!")
+      }
+    }else if (method == "seurat") {
+      m <- "means"
+      v_rank <- "dispersions"
+      v_plot <- "dispersions_norm"
+      if (is.null(rowData(inSCE)[[v_rank]]) ||
+          is.null(rowData(inSCE)[[m]]) ||
+          is.null(rowData(inSCE)[[v_plot]])) {
+        stop("Scanpy dispersion metric not found in inSCE. ",
+             "Run `runScanpyFindHVG()` with 'dispersion' method ",
+             "before using this function!")
+      }
     } else if (method == "modelGeneVar") {
         m <- "scran_modelGeneVar_mean"
         v_rank <- "scran_modelGeneVar_bio"

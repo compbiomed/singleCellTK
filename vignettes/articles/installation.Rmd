@@ -17,7 +17,7 @@ SingleCellTK is an R based package, allowing users to run analysis in system com
 Additionally, singleCellTK wraps a number of useful toolkits, where some of them are Python based. To enable this part of functionality, users need to get Python (v3.x) and a set of Python packages built. The fast `pip` command can be used to easily install all the required dependencies as shown below:  
 
 ```{shell pipInstall, eval=FALSE}
-pip install scipy numpy astroid six scrublet scanpy bbknn scanorama
+pip install scipy numpy astroid six scrublet scanpy bbknn scanorama louvain leidenalg
 ```
 
 [See more details for setting up Python Environment for singleCellTK](#install-python-dependencies)  

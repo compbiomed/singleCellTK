@@ -34,7 +34,6 @@ shinyPanelImport <- fluidPage(
     )
   ),
   tags$br(),
-
   h1("Import"),
   h5(tags$a(href = paste0(docs.artPath, "import_data.html"),
             "(help)", target = "_blank")),
