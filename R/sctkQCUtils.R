@@ -604,10 +604,8 @@ getSceParams <- function(inSCE,
   dir <- file.path(directory, samplename)
 
   # TODO: proper accessor implementation instead of spit and duct tape
-  print(skip)
   for (algo in algos) {
     if (algo %in% skip) {
-      print("skipped\n")
       next
     }
     params <- meta$sctk[[algo]]

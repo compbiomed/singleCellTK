@@ -554,7 +554,7 @@ for(i in seq_along(process)) {
             }
             getSceParams(inSCE = mergedFilteredSCE, directory = directory,
                          samplename = samplename, writeYAML = TRUE,
-                         skip = c("scrublet", "runDecontX", "runBarcodeRanksMetaOutput"))
+                         skip = c("runScrublet","runDecontX","runBarcodeRanksMetaOutput","genesets","runSoupX"))
 
             mergedFilteredSCE <- sampleSummaryStats(mergedFilteredSCE, simple=FALSE, sample = colData(mergedFilteredSCE)$sample) #colData(cellSCE)$Study_ID
             QCsummary <- getSampleSummaryStatsTable(mergedFilteredSCE, statsName = "qc_table")
