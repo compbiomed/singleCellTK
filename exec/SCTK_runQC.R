@@ -474,7 +474,7 @@ for(i in seq_along(process)) {
             ## Get parameters of QC functions
             getSceParams(inSCE = mergedFilteredSCE, directory = directory,
                          samplename = samplename, writeYAML = TRUE,
-                         skip = c("scrublet", "runDecontX", "runBarcodeRanksMetaOutput"))
+                         skip = c("runScrublet","runDecontX","runBarcodeRanksMetaOutput","genesets","runSoupX"))
 
             ## generate meta data
             if ("FlatFile" %in% formats) {

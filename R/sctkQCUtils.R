@@ -596,26 +596,30 @@ getSceParams <- function(inSCE,
                          writeYAML = TRUE) {
 
   meta <- S4Vectors::metadata(inSCE)
-  algos <- names(meta$sctk)[!names(meta$sctk) %in% skip]
+  algos <- names(meta$sctk)[! names(meta$sctk) %in% skip]
   # spit duct tape and hope
   # removed runSoupX until output can be trimmed and reworked
-  algos <- algos[-1]
-  algos <- algos[-length(algos)]
   outputs <- '---'
   parList <- list()
   dir <- file.path(directory, samplename)
 
   # TODO: proper accessor implementation instead of spit and duct tape
+  print(skip)
   for (algo in algos) {
+    if (algo %in% skip) {
+      print("skipped\n")
+      next
+    }
     params <- meta$sctk[[algo]]
     if (length(params) == 1) {params <- params[[1]]} ### extract params from sublist
     params <- params[which(!names(params) %in% ignore)]
     parList[[algo]] <- params
+    outputs <- paste(outputs, yaml::as.yaml(params), line.sep='\n')
   }
 
   parList[['scDblfinder.threshold']] <- meta$scDblFinder.threshold[[1]]
 
-  outputs <- paste(outputs, yaml::as.yaml(parList), line.sep='\n')
+  #outputs <- paste(outputs, yaml::as.yaml(parList), line.sep='\n')
   if (isTRUE(writeYAML)) {
     filename <- paste0(samplename, '_QCParameters.yaml')
     cat(outputs, file=file.path(dir, filename))
