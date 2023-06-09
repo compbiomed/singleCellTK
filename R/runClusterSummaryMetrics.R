@@ -54,7 +54,6 @@ runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", feature, displ
   percExpr <- tidyr::gather(percExpr, key="cluster", value="clusterExprPerc", -Gene)
   
   summaryMetrics <- list("percExpr" = percExpr, "avgExpr" = avgExpr)
-  #summaryMetrics <- merge(percExpr, avgExpr)
   
   return(summaryMetrics)
 }

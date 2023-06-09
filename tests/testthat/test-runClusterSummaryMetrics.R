@@ -9,6 +9,7 @@ test_that(desc = "Testing runClusterSummaryMetrics.R", {
   aveExpr <- c(94, 2, 54)
   
   testthat::expect_true(identical(floor(df$clusterExprPerc), percExpr) & 
+                          
                           identical(floor(df$clusterAveExpr), aveExpr))
   
   testthat::expect_error(runClusterSummaryMetrics(sce, useAssay="counts", feature=c("B2M"), displayName="feature_name", clusters="howdy"),

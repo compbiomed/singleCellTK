@@ -116,7 +116,8 @@ Imports:
     scuttle,
     utils,
     stats,
-    zellkonverter
+    zellkonverter,
+    tidyr
 RoxygenNote: 7.2.3
 Suggests:
     testthat,

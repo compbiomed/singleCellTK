@@ -26,7 +26,7 @@ plotBubble <- function(inSCE, useAssay="logcounts", feature, displayName=NULL, c
 .ggBubble <- function(avgExpr, percExpr, colorLow="white", colorHigh="blue", title=""){
   metrics = merge(avgExpr, percExpr)
   gg <- ggplot2::ggplot(metrics, ggplot2::aes(x=Gene, y=cluster)) +
-    ggplot2::geom_point(ggplot2::aes(color=clusterAveExpr, size=clusterPercExpr)) +
+    ggplot2::geom_point(ggplot2::aes(color=metrics$clusterAveExpr, size=metrics$clusterPercExpr)) +
     ggplot2::ggtitle(title) +
     ggplot2::scale_color_gradient2(low=colorLow, high=colorHigh)
   .ggSCTKTheme(gg)
