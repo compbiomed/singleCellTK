@@ -599,7 +599,7 @@ getSceParams <- function(inSCE,
   algos <- names(meta$sctk)[! names(meta$sctk) %in% skip]
   # spit duct tape and hope
   # removed runSoupX until output can be trimmed and reworked
-  outputs <- '---'
+  outputs <- '---\n'
   parList <- list()
   dir <- file.path(directory, samplename)
 
@@ -612,12 +612,11 @@ getSceParams <- function(inSCE,
     if (length(params) == 1) {params <- params[[1]]} ### extract params from sublist
     params <- params[which(!names(params) %in% ignore)]
     parList[[algo]] <- params
-    outputs <- paste(outputs, yaml::as.yaml(params), line.sep='\n')
   }
 
   parList[['scDblfinder.threshold']] <- meta$scDblFinder.threshold[[1]]
 
-  #outputs <- paste(outputs, yaml::as.yaml(parList), line.sep='\n')
+  outputs <- paste(outputs, yaml::as.yaml(parList), line.sep='\n')
   if (isTRUE(writeYAML)) {
     filename <- paste0(samplename, '_QCParameters.yaml')
     cat(outputs, file=file.path(dir, filename))
