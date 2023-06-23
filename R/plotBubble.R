@@ -13,6 +13,7 @@
 #' @param colorLow The color to be used for lowest value of mean expression
 #' @param colorHigh The color to be used for highest value of mean expression
 #' @return A ggplot of the bubble plot.
+#' @importFrom rlang .data
 #' @examples
 #' data("scExample")
 #' plotBubble(inSCE=sce, useAssay="counts", feature=c("B2M", "MALAT1"), displayName="feature_name", 
@@ -24,11 +25,9 @@ plotBubble <- function(inSCE, useAssay="logcounts", feature, displayName=NULL, c
 }
 
 .ggBubble <- function(avgExpr, percExpr, colorLow="white", colorHigh="blue", title=""){
-  x <- NULL
-  y <- NULL
-  df <- data.frame(x=avgExpr, y=percExpr)
-  gg <- ggplot2::ggplot(df, ggplot2::aes(x=x.Gene, y=y.cluster)) +
-    ggplot2::geom_point(ggplot2::aes(color=x.clusterAveExpr, size=y.clusterExprPerc)) +
+  df <- data.frame(avgExpr, percExpr)
+  gg <- ggplot2::ggplot(df, ggplot2::aes(x = .data[["Gene"]], y = .data[["cluster"]])) +
+    ggplot2::geom_point(ggplot2::aes(color=.data[["clusterAveExpr"]], size=.data[["clusterExprPerc"]])) +
     ggplot2::ggtitle(title) +
     ggplot2::scale_color_gradient2(low=colorLow, high=colorHigh)
   .ggSCTKTheme(gg)
