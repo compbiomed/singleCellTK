@@ -56,7 +56,11 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
       file.copy(paste0(dirname(barcodesFilePath), "/barcodes.tsv.gz"), paste0(mytempdir, "/cellranger/barcodes.tsv.gz"))
       file.copy(paste0(dirname(featuresFilePath), "/features.tsv.gz"), paste0(mytempdir, "/cellranger/features.tsv.gz"))
       
+      # make object
       newSce <- importCellRangerV3Sample(dataDir = paste0(mytempdir, "/cellranger/"))
+      
+      # delete temporary directory
+      unlink(paste0(mytempdir, "/cellranger/"), recursive = TRUE)
     } else if (entry$type == "starSolo") {
       newSce <- importSTARsolo(
         STARsoloDirs = entry$params$STARsoloDirs,
