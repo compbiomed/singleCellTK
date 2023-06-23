@@ -901,6 +901,49 @@ shinyServer(function(input, output, session) {
                    style = list("1. Add sample to import:" = "success"))
 
   })
+  
+  # Event handler to import a file input from CR3
+  observeEvent(input$addFilesImport_custom, {
+    id <- paste0("newSampleFiles", allImportEntries$id_count)
+    entry <- list(type="cellRanger3_files", id = id, params=list(assayFile = input$countsfile_custom$datapath, annotFile = input$annotFile_custom$datapath,
+                                                     featureFile = input$featureFile_custom$datapath, assayName = "counts"))
+    allImportEntries$samples <- c(allImportEntries$samples, list(entry))
+    allImportEntries$id_count <- allImportEntries$id_count+1
+    assayFileCol <- ""
+    annotFileCol <- ""
+    featureFileCol <- ""
+    if (!is.null(input$countsfile_custom$datapath)) {
+      assayFileCol <- paste0("Assay: ", input$countsfile_custom$datapath)
+    }
+    if (!is.null(input$annotFile_custom$datapath)) {
+      annotFileCol <- paste0("Annotation: ", input$annotFile_custom$datapath)
+    }
+    if (!is.null(input$featureFile_custom$datapath)) {
+      featureFileCol <- paste0("Features: ", input$featureFile_custom$datapath)
+    }
+
+    locCol <- paste(c(assayFileCol, annotFileCol, featureFileCol), collapse = "\n")
+
+    addToGeneralSampleTable("files", id, locCol, "counts")
+
+    observeEvent(input[[paste0("remove", id)]],{
+      removeUI(
+        selector = paste0("#", id)
+      )
+      toRemove <- vector()
+      for (entry in allImportEntries$samples) {
+        if (entry$id == id) {
+          toRemove <- c(toRemove, FALSE)
+        } else {
+          toRemove <- c(toRemove, TRUE)
+        }
+      }
+      allImportEntries$samples <- allImportEntries$samples[toRemove]
+    })
+    updateCollapse(session = session, "importUI", open = "2. Create dataset:",
+                   style = list("1. Add sample to import:" = "success"))
+    
+  })
 
   # Event handler to import a file input
   observeEvent(input$addFilesImport, {
@@ -1024,6 +1067,7 @@ shinyServer(function(input, output, session) {
       if (length(allImportEntries$samples) == 0) {
         stop("You have not selected any samples to import.")
       }
+
       sceObj <- importMultipleSources(allImportEntries)
 
       if (input$combineSCEChoice == "addToExistingSCE") {
