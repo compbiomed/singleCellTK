@@ -48,5 +48,6 @@ and the size of the dot being the percent of cells in the cluster expressing the
 \examples{
 data("scExample")
 plotBubble(inSCE=sce, useAssay="counts", feature=c("B2M", "MALAT1"), displayName="feature_name", 
-clusters="type", title="cell type test", xlab="gene", ylab="cluster", colorLow="white", colorHigh="blue")
+clusters="type", title="cell type test", xlab="gene", ylab="cluster", 
+colorLow="white", colorHigh="blue")
 }

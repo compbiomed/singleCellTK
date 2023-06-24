@@ -17,7 +17,8 @@
 #' @examples
 #' data("scExample")
 #' plotBubble(inSCE=sce, useAssay="counts", feature=c("B2M", "MALAT1"), displayName="feature_name", 
-#' clusters="type", title="cell type test", xlab="gene", ylab="cluster", colorLow="white", colorHigh="blue")
+#' clusters="type", title="cell type test", xlab="gene", ylab="cluster", 
+#' colorLow="white", colorHigh="blue")
 #' @export
 plotBubble <- function(inSCE, useAssay="logcounts", feature, displayName=NULL, clusters="cluster", title="", xlab=NULL, ylab=NULL, colorLow="white", colorHigh="blue"){
   metrics <- runClusterSummaryMetrics(inSCE, useAssay=useAssay, feature=feature, displayName=displayName, clusters=clusters)

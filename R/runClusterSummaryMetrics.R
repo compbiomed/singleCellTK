@@ -43,6 +43,8 @@ runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", feature, displ
   avgExpr <- data.frame(assay(scuttle::aggregateAcrossCells(inSCE, ids=SingleCellExperiment::colData(inSCE)[,clusters], 
                                                             statistics="mean", use.assay.type=useAssay, 
                                                             subset.row=feature)), check.names=FALSE)
+  
+  Gene <- NULL
   avgExpr$Gene <- row.names(avgExpr)
   avgExpr <- tidyr::gather(avgExpr, key="cluster", value="clusterAveExpr", -Gene)
   
