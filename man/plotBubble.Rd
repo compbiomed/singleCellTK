@@ -7,7 +7,7 @@
 plotBubble(
   inSCE,
   useAssay = "logcounts",
-  feature,
+  features,
   displayName = NULL,
   clusters = "cluster",
   title = "",
@@ -22,7 +22,7 @@ plotBubble(
 
 \item{useAssay}{The assay to use.}
 
-\item{feature}{A string or vector of strings with each gene to aggregate.}
+\item{features}{A string or vector of strings with each gene to aggregate.}
 
 \item{displayName}{A string that is the name of the column used for genes.}
 
@@ -47,7 +47,7 @@ and the size of the dot being the percent of cells in the cluster expressing the
 }
 \examples{
 data("scExample")
-plotBubble(inSCE=sce, useAssay="counts", feature=c("B2M", "MALAT1"), displayName="feature_name", 
+plotBubble(inSCE=sce, useAssay="counts", features=c("B2M", "MALAT1"), displayName="feature_name", 
 clusters="type", title="cell type test", xlab="gene", ylab="cluster", 
 colorLow="white", colorHigh="blue")
 }

@@ -4,18 +4,18 @@
 #'
 #' @param inSCE The single cell experiment to use.
 #' @param useAssay The assay to use.
-#' @param feature A string or vector of strings with each gene to aggregate.
+#' @param features A string or vector of strings with each gene to aggregate.
 #' @param displayName A string that is the name of the column used for genes.
 #' @param clusters The name of a colData entry that can be used as groups.
 #' @return A dataframe with mean expression and percent of cells in cluster that 
 #' express for each cluster.
 #' @examples
 #' data("scExample")
-#' runClusterSummaryMetrics(inSCE=sce, useAssay="counts", feature=c("B2M", "MALAT1"), 
+#' runClusterSummaryMetrics(inSCE=sce, useAssay="counts", features=c("B2M", "MALAT1"), 
 #' displayName="feature_name", clusters="type")
 #' @export
 
-runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", feature, displayName=NULL, clusters="cluster"){
+runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", features, displayName=NULL, clusters="cluster"){
   
   if (!clusters %in% names(SingleCellExperiment::colData(inSCE))) {
     stop("Specified variable '", clusters, "' not found in colData(inSCE)")
@@ -23,17 +23,17 @@ runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", feature, displ
   if (!is.null(displayName)) {
     dimnames(inSCE)[[1]] <- rowData(inSCE)[[displayName]]
     dimnames(assay(inSCE, i=useAssay, withDimnames=FALSE))[[1]] <- rowData(inSCE)[[displayName]]
-    falseGenes <- setdiff(feature, rowData(inSCE)[[displayName]])
-    feature <- intersect(feature, rowData(inSCE)[[displayName]])
+    falseGenes <- setdiff(features, rowData(inSCE)[[displayName]])
+    features <- intersect(features, rowData(inSCE)[[displayName]])
     warning <- paste0("rowData(inSCE)$", displayName)
   }
   else {
-    falseGenes <- setdiff(feature, dimnames(inSCE)[[1]])
-    feature <- intersect(feature, dimnames(inSCE)[[1]])
+    falseGenes <- setdiff(features, dimnames(inSCE)[[1]])
+    features <- intersect(features, dimnames(inSCE)[[1]])
     warning <- "dimnames"
   }
   
-  if (length(feature) == 0) {
+  if (length(features) == 0) {
     stop("All genes in '", toString(falseGenes), "' not found in ", warning)
   }
   if (length(falseGenes) > 0) {
@@ -41,21 +41,20 @@ runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", feature, displ
   }
   
   
-  avgExpr <- data.frame(assay(scuttle::aggregateAcrossCells(inSCE, ids=SingleCellExperiment::colData(inSCE)[,clusters], 
+  avgExpr <- assay(scuttle::aggregateAcrossCells(inSCE, ids=SingleCellExperiment::colData(inSCE)[,clusters], 
                                                             statistics="mean", use.assay.type=useAssay, 
-                                                            subset.row=feature)), check.names=FALSE)
-  Gene <- NULL
-  avgExpr$Gene <- row.names(avgExpr)
-  avgExpr <- tidyr::gather(avgExpr, key="cluster", value="clusterAveExpr", -Gene)
+                                                            subset.row=features))
+
   
   
-  percExpr <- data.frame(assay(scuttle::aggregateAcrossCells(inSCE, ids=SingleCellExperiment::colData(inSCE)[,clusters], 
+  percExpr <- assay(scuttle::aggregateAcrossCells(inSCE, ids=SingleCellExperiment::colData(inSCE)[,clusters], 
                                                              statistics="prop.detected", use.assay.type=useAssay, 
-                                                             subset.row=feature)), check.names=FALSE)
-  percExpr$Gene <- row.names(percExpr)
-  percExpr <- tidyr::gather(percExpr, key="cluster", value="clusterExprPerc", -Gene)
+                                                             subset.row=features))
   
-  
-  return(data.frame(features = avgExpr$Gene, clusters = avgExpr$cluster, avgExpr=avgExpr$clusterAveExpr, 
-              percExpr=percExpr$clusterExprPerc))
+
+  df <- data.frame(features = features)
+  df$avgExpr <- avgExpr
+  df$percExpr <- percExpr
+  return(df)
+
 }

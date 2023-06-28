@@ -7,9 +7,9 @@ test_that(desc = "Testing runClusterSummaryMetrics.R", {
   percExpr <- c(1, 0, 1)
   aveExpr <- c(94, 2, 54)
   
-  testthat::expect_true(identical(floor(B2M$percExpr), percExpr) & 
+  testthat::expect_true(identical(floor(B2M$percExpr[1:3]), percExpr) & 
                           
-                          identical(floor(B2M$avgExpr), aveExpr))
+                          identical(floor(B2M$avgExpr[1:3]), aveExpr))
   
   testthat::expect_error(runClusterSummaryMetrics(sce, useAssay="counts", feature=c("B2M"), displayName="feature_name", clusters="howdy"),
                          "Specified variable 'howdy' not found in colData(inSCE)", fixed=TRUE)
