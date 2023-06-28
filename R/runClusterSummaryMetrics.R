@@ -40,10 +40,10 @@ runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", feature, displ
     warning("Specified genes '", toString(falseGenes), "' not found in ", warning)
   }
   
+  
   avgExpr <- data.frame(assay(scuttle::aggregateAcrossCells(inSCE, ids=SingleCellExperiment::colData(inSCE)[,clusters], 
                                                             statistics="mean", use.assay.type=useAssay, 
                                                             subset.row=feature)), check.names=FALSE)
-  
   Gene <- NULL
   avgExpr$Gene <- row.names(avgExpr)
   avgExpr <- tidyr::gather(avgExpr, key="cluster", value="clusterAveExpr", -Gene)
@@ -55,7 +55,7 @@ runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", feature, displ
   percExpr$Gene <- row.names(percExpr)
   percExpr <- tidyr::gather(percExpr, key="cluster", value="clusterExprPerc", -Gene)
   
-  summaryMetrics <- list("percExpr" = percExpr, "avgExpr" = avgExpr)
   
-  return(summaryMetrics)
+  return(data.frame(features = avgExpr$Gene, clusters = avgExpr$cluster, avgExpr=avgExpr$clusterAveExpr, 
+              percExpr=percExpr$clusterExprPerc))
 }

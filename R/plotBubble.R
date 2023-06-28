@@ -21,14 +21,16 @@
 #' colorLow="white", colorHigh="blue")
 #' @export
 plotBubble <- function(inSCE, useAssay="logcounts", feature, displayName=NULL, clusters="cluster", title="", xlab=NULL, ylab=NULL, colorLow="white", colorHigh="blue"){
-  metrics <- runClusterSummaryMetrics(inSCE, useAssay=useAssay, feature=feature, displayName=displayName, clusters=clusters)
-  .ggBubble(metrics$avgExpr, metrics$percExpr, colorLow, colorHigh, title)
+  metrics <- runClusterSummaryMetrics(inSCE, useAssay=useAssay, feature=feature, 
+                                      displayName=displayName, clusters=clusters)
+  .ggBubble(features = metrics$features, clusters = metrics$clusters, avgExpr = metrics$avgExpr, 
+            percExpr = metrics$percExpr, colorLow, colorHigh, title)
 }
 
-.ggBubble <- function(avgExpr, percExpr, colorLow="white", colorHigh="blue", title=""){
-  df <- data.frame(avgExpr, percExpr)
-  gg <- ggplot2::ggplot(df, ggplot2::aes(x = .data[["Gene"]], y = .data[["cluster"]])) +
-    ggplot2::geom_point(ggplot2::aes(color=.data[["clusterAveExpr"]], size=.data[["clusterExprPerc"]])) +
+.ggBubble <- function(features, clusters, avgExpr, percExpr, colorLow="white", colorHigh="blue", title=""){
+  df <- data.frame(features, clusters, avgExpr, percExpr)
+  gg <- ggplot2::ggplot(df, ggplot2::aes(x = .data[['features']], y = .data[['clusters']])) +
+    ggplot2::geom_point(ggplot2::aes(color=.data[['avgExpr']], size=.data[['percExpr']])) +
     ggplot2::ggtitle(title) +
     ggplot2::scale_color_gradient2(low=colorLow, high=colorHigh)
   .ggSCTKTheme(gg)
