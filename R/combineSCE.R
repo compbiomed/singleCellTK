@@ -265,6 +265,9 @@ combineSCE <- function(sceList, by.r = NULL, by.c = NULL, combined = TRUE){
   if (length(sceList) == 1) {
     return(sceList[[1]])
   }
+  if (typeof(sceList) != "list") {
+    stop("Error in combineSCE: input must be a list of SCE objects")
+  }
   ##  rowData
   newFeList <- .mergeRowDataSCE(sceList, by.r)
   ## colData
