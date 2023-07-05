@@ -1,0 +1,3 @@
+helloWorld <- fluidPage(
+  "Hello, world!"
+)
