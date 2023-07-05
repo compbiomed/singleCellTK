@@ -1,4 +1,4 @@
-#' @title Perform comprehensive single cell QC
+#' @title Single Cell QC checking
 #' @description Utility functions for runQC - checking cell input for validity
 #' @param FilterFile The cell QC object as rendered in R
 #' @param FilterDir The cell QC file location
@@ -50,7 +50,7 @@
     return(0)
 }
 
-#' @title Perform comprehensive single cell QC
+#' @title Single Cell QC checking
 #' @description Utility functions for runQC - checking droplet input for validity
 #' @param RawFile The droplet QC object as rendered in R
 #' @param RawDir The droplet QC file location
@@ -101,7 +101,7 @@
     return(0)
 }
 
-#' @title Perform comprehensive single cell QC
+#' @title Single Cell QC checking
 #' @description Utility functions for runQC - checking cell and droplet input for validity
 #' @param RawFile The droplet QC object as rendered in R
 #' @param RawDir The droplet QC file location
@@ -174,6 +174,7 @@
 #' @description QC execution function wrapper for cell SCE objects
 #' @param cellSCE The cell SCE object as rendered in R
 #' @param preproc The method that we are looking at, be it CellRanger, Seurat, SCE, AnnData, or otherwise. 
+#' @param geneSetCollection Reference library of genes
 #' @param Params The list of parameters we are using.
 #' @param cellQCAlgos The list of various QC algorithms to use.
 #' @param mitoInfo Reference library for MitoGenes
