@@ -170,7 +170,7 @@
         }
 
         if (gzipped != "auto") {
-            if (length(gzipped) != sampleLength & length(gzipped) != 1) {
+            if (length(gzipped) != sampleLength && length(gzipped) != 1) {
                 stop("'sampleDirs' and 'gzipped' have unequal lengths!")
             }
         }
@@ -235,7 +235,7 @@
             }
 
             if (gzipped != "auto") {
-                if (sampleLength != length(gzipped) & length(gzipped) != 1) {
+                if (sampleLength != length(gzipped) && length(gzipped) != 1) {
                     stop("The length of 'gzipped' does not match",
                         " length of",
                         " subdirectories in 'cellRangerDirs'!")
@@ -294,7 +294,7 @@
             }
 
             if (gzipped != "auto") {
-                if (length(gzipped) != sampleLength & length(gzipped) != 1) {
+                if (length(gzipped) != sampleLength && length(gzipped) != 1) {
                     stop("'gzipped' and 'unlist(sampleDirs)'",
                         " have unequal lengths!")
                 }
@@ -642,7 +642,7 @@ importCellRangerV2 <- function(
     dataTypeV2 <- match.arg(dataTypeV2)
 
     if (is.null(cellRangerOutsV2)) {
-        if (is.null(reference) | is.null(dataTypeV2)) {
+        if (is.null(reference) || is.null(dataTypeV2)) {
             stop("'reference' and 'dataTypeV2' are required ",
                  "when 'cellRangerOutsV2' is not specified!")
         }
