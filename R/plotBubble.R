@@ -25,10 +25,10 @@ plotBubble <- function(inSCE, useAssay="logcounts", featureNames, displayName=NU
   metrics <- runClusterSummaryMetrics(inSCE, useAssay=useAssay, featureNames=featureNames, 
                                       displayName=displayName, groupNames=groupNames)
   .ggBubble(avgExpr = metrics$avgExpr, percExpr = metrics$percExpr, colorLow = colorLow, 
-            colorHigh = colorHigh, title = title)
+            colorHigh = colorHigh, title = title, xlab = xlab, ylab = ylab)
 }
 
-.ggBubble <- function(avgExpr, percExpr, groupNames=NULL, featureNames=NULL, colorLow="white", colorHigh="blue", title=""){
+.ggBubble <- function(avgExpr, percExpr, groupNames=NULL, featureNames=NULL, colorLow="white", colorHigh="blue", title="", xlab=NULL, ylab=NULL){
   if(is.null(featureNames)) {
     if(is.null(rownames(avgExpr))) {
       stop("'featureNames' must be supplied or the 'rownames' of the average expression matrix must be set.")
@@ -64,7 +64,7 @@ plotBubble <- function(inSCE, useAssay="logcounts", featureNames, displayName=NU
   
   gg <- ggplot2::ggplot(df, ggplot2::aes(x = .data[['featureNames']], y = .data[['groupNames']])) +
     ggplot2::geom_point(ggplot2::aes(color=.data[['avgExpr']], size=.data[['percExpr']])) +
-    ggplot2::ggtitle(title) +
+    ggplot2::labs(title = title, x = xlab, y = ylab) +
     ggplot2::scale_color_gradient2(low=colorLow, high=colorHigh)
   .ggSCTKTheme(gg)
 }

@@ -5454,9 +5454,9 @@ shinyServer(function(input, output, session) {
     req(vals$counts)
     output$Bubbleplot <- renderPlot({
       isolate({
-        plotBubble(inSCE=vals$counts, useAssay=input$bpAssay, feature=input$bpFeatures, 
-                   displayName=input$bpRow, clusters=input$bpCluster, title=input$bpTitle, 
-                   xlab=input$bpX, ylab=input$bpX, colorLow=input$bpLow, colorHigh=input$bpHigh)
+        plotBubble(inSCE=vals$counts, useAssay=input$bpAssay, featureNames=input$bpFeatures, 
+                   displayName=input$bpRow, groupNames=input$bpCluster, title=input$bpTitle, 
+                   xlab=input$bpX, ylab=input$bpY, colorLow=input$bpLow, colorHigh=input$bpHigh)
       })
     })
   })
