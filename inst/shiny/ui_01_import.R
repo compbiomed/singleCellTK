@@ -252,7 +252,7 @@ shinyPanelImport <- fluidPage(
                    fileInput(
                      "countsfile_custom", "Matrix files:",
                      accept = c(
-                       "text/csv", "text/comma-separated-values", "mtx",
+                       "text/csv", "text/comma-separated-values", ".mtx",
                        "text/tab-separated-values", "text/plain", ".csv", ".tsv", ".gz"
                      ),
                      multiple = TRUE
@@ -288,6 +288,23 @@ shinyPanelImport <- fluidPage(
                        "text/tab-separated-values", "text/plain", ".csv", ".tsv", ".gz"
                      ),
                      multiple = TRUE
+                   )
+                 )
+          ),
+          column(width = 4,
+                 wellPanel(
+                   h5("OPTIONAL"),
+                   h5("Metrics Summary (summary.csv) file:"),
+                   tags$a(href = "https://drive.google.com/open?id=10IDmZQUiASN4wnzO4-WRJQopKvxCNu6J",
+                          "Download an example barcodes.tsv file here.", target = "_blank"),
+                   tags$br(),
+                   fileInput(
+                     "summaryFile_custom", "Summary file:",
+                     accept = c(
+                       "text/csv", "text/comma-separated-values",
+                       "text/tab-separated-values", "text/plain", ".csv", ".tsv", ".gz"
+                     ),
+                     multiple = FALSE
                    )
                  )
           )
