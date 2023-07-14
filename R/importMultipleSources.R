@@ -42,25 +42,46 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         )
       }
     } else if (entry$type == "cellRanger3_files") {
-      # create temporary directory, rename files, and move to temporary directory cellranger
+      
+      # get current tempDir by shiny
       mytempdir <- tempdir(check=TRUE)
-      dir.exists(mytempdir)
-      matrixFilePath <- entry$params$assayFile
-      barcodesFilePath <- entry$params$annotFile
-      featuresFilePath <- entry$params$featureFile
-      file.rename(matrixFilePath, paste0(dirname(matrixFilePath), "/matrix.mtx.gz"))
-      file.rename(barcodesFilePath, paste0(dirname(barcodesFilePath), "/barcodes.tsv.gz"))
-      file.rename(featuresFilePath, paste0(dirname(featuresFilePath), "/features.tsv.gz"))
-      dir.create(paste0(mytempdir, "/cellranger/"))
-      file.copy(paste0(dirname(matrixFilePath), "/matrix.mtx.gz"), paste0(mytempdir, "/cellranger/matrix.mtx.gz"))
-      file.copy(paste0(dirname(barcodesFilePath), "/barcodes.tsv.gz"), paste0(mytempdir, "/cellranger/barcodes.tsv.gz"))
-      file.copy(paste0(dirname(featuresFilePath), "/features.tsv.gz"), paste0(mytempdir, "/cellranger/features.tsv.gz"))
       
-      # make object
-      newSce <- importCellRangerV3Sample(dataDir = paste0(mytempdir, "/cellranger/"))
+      if(dir.exists(mytempdir)){
+        # get uploaded filepaths
+        matrixFilePath <- entry$params$assayFile
+        barcodesFilePath <- entry$params$annotFile
+        featuresFilePath <- entry$params$featureFile
+        metricsFilePath <- entry$params$summaryFile
+        
+        # rename to original names
+        file.rename(matrixFilePath, paste0(dirname(matrixFilePath), "/matrix.mtx.gz"))
+        file.rename(barcodesFilePath, paste0(dirname(barcodesFilePath), "/barcodes.tsv.gz"))
+        file.rename(featuresFilePath, paste0(dirname(featuresFilePath), "/features.tsv.gz"))
+        if(!is.null(metricsFilePath)){
+          file.rename(metricsFilePath, paste0(dirname(metricsFilePath), "/metrics_summary.csv"))
+        }
+        
+        # create a sample folder
+        dir.create(paste0(mytempdir, "/cellranger/"))
+        if(!is.null(metricsFilePath)){
+          dir.create(paste0(mytempdir, "/cellranger/outs"))
+        }
+        
+        # move files to this sample folder
+        file.copy(paste0(dirname(matrixFilePath), "/matrix.mtx.gz"), paste0(mytempdir, "/cellranger/matrix.mtx.gz"))
+        file.copy(paste0(dirname(barcodesFilePath), "/barcodes.tsv.gz"), paste0(mytempdir, "/cellranger/barcodes.tsv.gz"))
+        file.copy(paste0(dirname(featuresFilePath), "/features.tsv.gz"), paste0(mytempdir, "/cellranger/features.tsv.gz"))
+        if(!is.null(metricsFilePath)){
+          file.copy(paste0(dirname(metricsFilePath), "/metrics_summary.csv"), paste0(mytempdir, "/cellranger/outs/metrics_summary.csv"))
+        }
+        
+        # make object
+        newSce <- importCellRangerV3Sample(dataDir = paste0(mytempdir, "/cellranger/"))
+        
+        # delete sample folder
+        unlink(paste0(mytempdir, "/cellranger/"), recursive = TRUE)
+      }
       
-      # delete temporary directory
-      unlink(paste0(mytempdir, "/cellranger/"), recursive = TRUE)
     } else if (entry$type == "starSolo") {
       newSce <- importSTARsolo(
         STARsoloDirs = entry$params$STARsoloDirs,
