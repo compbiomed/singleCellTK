@@ -906,12 +906,15 @@ shinyServer(function(input, output, session) {
   observeEvent(input$addFilesImport_custom, {
     id <- paste0("newSampleFiles", allImportEntries$id_count)
     entry <- list(type="cellRanger3_files", id = id, params=list(assayFile = input$countsfile_custom$datapath, annotFile = input$annotFile_custom$datapath,
-                                                     featureFile = input$featureFile_custom$datapath, assayName = "counts"))
+                                                     featureFile = input$featureFile_custom$datapath,
+                                                     summaryFile = input$summaryFile_custom$datapath,
+                                                     assayName = "counts"))
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
     assayFileCol <- ""
     annotFileCol <- ""
     featureFileCol <- ""
+    summaryFileCol <- ""
     if (!is.null(input$countsfile_custom$datapath)) {
       assayFileCol <- paste0("Assay: ", input$countsfile_custom$datapath)
     }
@@ -921,8 +924,11 @@ shinyServer(function(input, output, session) {
     if (!is.null(input$featureFile_custom$datapath)) {
       featureFileCol <- paste0("Features: ", input$featureFile_custom$datapath)
     }
+    if (!is.null(input$summaryFile_custom$datapath)) {
+      summaryFileCol <- paste0("Metrics: ", input$summaryFile_custom$datapath)
+    }
 
-    locCol <- paste(c(assayFileCol, annotFileCol, featureFileCol), collapse = "\n")
+    locCol <- paste(c(assayFileCol, annotFileCol, featureFileCol, summaryFileCol), collapse = "\n")
 
     addToGeneralSampleTable("files", id, locCol, "counts")
 
