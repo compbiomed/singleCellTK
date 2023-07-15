@@ -176,7 +176,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         
         # delete sample folder
         unlink(paste0(mytempdir, "/bus_output/"), recursive = TRUE)
-        
+      }
     } else if (entry$type == "seqc") {
       newSce <- importSEQC(
         seqcDirs = entry$params$seqcDirs,
@@ -190,6 +190,48 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         samples = entry$params$samples,
         delayedArray = delayedArray
       )
+    } else if (entry$type == "optimus_files") {
+      # get current tempDir by shiny
+      mytempdir <- tempdir(check=TRUE)
+      
+      if(dir.exists(mytempdir)){
+        # get uploaded filepaths
+        matrixLocation <- entry$params$matrixLocation
+        colIndexLocation <- entry$params$colIndexLocation
+        rowIndexLocation <- entry$params$rowIndexLocation
+        cellMetricsLocation <- entry$params$cellMetricsLocation
+        geneMetricsLocation <- entry$params$geneMetricsLocation
+        emptyDropsLocation <- entry$params$emptyDropsLocation
+        
+        # rename to original names
+        file.rename(matrixLocation, paste0(dirname(matrixLocation), "/sparse_counts.npz"))
+        file.rename(colIndexLocation, paste0(dirname(colIndexLocation), "/sparse_counts_col_index.npy"))
+        file.rename(rowIndexLocation, paste0(dirname(rowIndexLocation), "/sparse_counts_row_index.npy"))
+        file.rename(cellMetricsLocation, paste0(dirname(cellMetricsLocation), "/merged-cell-metrics.csv.gz"))
+        file.rename(geneMetricsLocation, paste0(dirname(geneMetricsLocation), "/merged-gene-metrics.csv.gz"))
+        file.rename(emptyDropsLocation, paste0(dirname(emptyDropsLocation), "/empty_drops_result.csv"))
+        
+        # create a sample folder
+        dir.create(paste0(mytempdir, "/optimus/"))
+        dir.create(paste0(mytempdir, "/optimus/call-MergeCountFiles/"))
+        dir.create(paste0(mytempdir, "/optimus/call-MergeCellMetrics/"))
+        dir.create(paste0(mytempdir, "/optimus/call-MergeGeneMetrics/"))
+        dir.create(paste0(mytempdir, "/optimus/call-RunEmptyDrops/"))
+        
+        # move files to this sample folder
+        file.copy(paste0(dirname(matrixLocation), "/sparse_counts.npz"), paste0(mytempdir, "/optimus/call-MergeCountFiles/sparse_counts.npz"))
+        file.copy(paste0(dirname(colIndexLocation), "/sparse_counts_col_index.npy"), paste0(mytempdir, "/optimus/call-MergeCountFiles/sparse_counts_col_index.npy"))
+        file.copy(paste0(dirname(rowIndexLocation), "/sparse_counts_row_index.npy"), paste0(mytempdir, "/optimus/call-MergeCountFiles/sparse_counts_row_index.npy"))
+        file.copy(paste0(dirname(cellMetricsLocation), "/merged-cell-metrics.csv.gz"), paste0(mytempdir, "/optimus/call-MergeCellMetrics/merged-cell-metrics.csv.gz"))
+        file.copy(paste0(dirname(geneMetricsLocation), "/merged-gene-metrics.csv.gz"), paste0(mytempdir, "/optimus/call-MergeGeneMetrics/merged-gene-metrics.csv.gz"))
+        file.copy(paste0(dirname(emptyDropsLocation), "/empty_drops_result.csv"), paste0(mytempdir, "/optimus/call-RunEmptyDrops/empty_drops_result.csv"))
+
+        # make object
+        newSce <- importOptimus(OptimusDirs = paste0(mytempdir, "/optimus"), samples = "sample1")
+        
+        # delete sample folder
+        unlink(paste0(mytempdir, "/optimus/"), recursive = TRUE)
+      }
     } else if (entry$type == "files") {
       newSce <- importFromFiles(assayFile = entry$params$assayFile,
                                 annotFile = entry$params$annotFile,
@@ -222,7 +264,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
     }
 
     # Begin Set Tags
-    if(entry$type %in% c("cellRanger2", "cellRanger3", "starSolo", "busTools", "seqc", "optimus", "example", "cellRanger3_files", "starSolo_files", "busTools_files")){
+    if(entry$type %in% c("cellRanger2", "cellRanger3", "starSolo", "busTools", "seqc", "optimus", "example", "cellRanger3_files", "starSolo_files", "busTools_files", "optimus_files")){
       newSce <- expSetDataTag(
         inSCE = newSce,
         assayType = "raw",
