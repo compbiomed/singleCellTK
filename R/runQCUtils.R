@@ -1,11 +1,3 @@
-#' @title Single Cell QC checking
-#' @description Utility functions for runQC - checking cell input for validity
-#' @param FilterFile The cell QC object as rendered in R
-#' @param FilterDir The cell QC file location
-#' @param basepath The base/root directory of the QC files.
-#' @param Reference Reference library for MitoGenes
-#' @param process The method that we are looking at, be it CellRanger, Seurat, SCE, AnnData, or otherwise.
-#' @return 0 if the check is completed successfully, else a premature stop.
 .checkCell <- function(FilterFile, FilterDir, basepath, Reference, process) {
     if (is.null(FilterFile)) {
         if (is.null(basepath)) {
@@ -50,14 +42,6 @@
     return(0)
 }
 
-#' @title Single Cell QC checking
-#' @description Utility functions for runQC - checking droplet input for validity
-#' @param RawFile The droplet QC object as rendered in R
-#' @param RawDir The droplet QC file location
-#' @param basepath The base/root directory of the QC files.
-#' @param Reference Reference library for MitoGenes
-#' @param process The method that we are looking at, be it CellRanger, Seurat, SCE, AnnData, or otherwise.
-#' @return 0 if the check is completed successfully, else a premature stop.
 .checkDroplet <- function(RawFile, RawDir, basepath, Reference, process) {
     if (is.null(RawFile)) {
         if (is.null(basepath)) {
@@ -101,16 +85,6 @@
     return(0)
 }
 
-#' @title Single Cell QC checking
-#' @description Utility functions for runQC - checking cell and droplet input for validity
-#' @param RawFile The droplet QC object as rendered in R
-#' @param RawDir The droplet QC file location
-#' @param FilterFile The cell QC object as rendered in R
-#' @param FilterDir The cell QC file location
-#' @param basepath The base/root directory of the QC files.
-#' @param Reference Reference library for MitoGenes
-#' @param process The method that we are looking at, be it CellRanger, Seurat, SCE, AnnData, or otherwise.
-#' @return 0 if the check is completed successfully, else a premature stop.
 .checkBoth <- function(RawFile, FilterFile, RawDir, FilterDir, basepath, Reference, process) {
     if (is.null(RawFile) && is.null(FilterFile)) {
         if (is.null(basepath)) {
@@ -170,15 +144,6 @@
     return(cellSCE)
 }
 
-#' @title Perform comprehensive single cell QC
-#' @description QC execution function wrapper for cell SCE objects
-#' @param cellSCE The cell SCE object as rendered in R
-#' @param preproc The method that we are looking at, be it CellRanger, Seurat, SCE, AnnData, or otherwise. 
-#' @param geneSetCollection Reference library of genes
-#' @param Params The list of parameters we are using.
-#' @param cellQCAlgos The list of various QC algorithms to use.
-#' @param mitoInfo Reference library for MitoGenes
-#' @return No objects are returned, just runs the cell QC and throws an error if problems occur in subfunctions
 .runCell <- function(cellSCE, preproc, geneSetCollection, Params, cellQCAlgos, mitoInfo) {
     if (is.null(cellSCE) && (preproc %in% c("BUStools", "SEQC"))) {
         dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
@@ -192,16 +157,6 @@
         mitoGeneLocation = "rownames")
 }
 
-#' @title Perform comprehensive single cell QC
-#' @description QC execution function wrapper for droplet SCE objects
-#' @param dropletSCE The cell SCE object as rendered in R
-#' @param geneSetCollection Reference library of genes
-#' @param Params The list of parameters we are using.
-#' @param cellQCAlgos The list of various QC algorithms to use.
-#' @param mitoInfo Reference library for MitoGenes
-#' @param detectCell Whether or not to detect the cell SCE object, or not
-#' @param cellCalling The cell algorithm to be used.
-#' @return No objects are returned, just runs the cell QC and throws an error if problems occur in subfunctions
 .runDroplet <- function(dropletSCE, geneSetCollection, Params, mitoInfo, cellQCAlgos, detectCell, cellCalling) {
     message(paste0(date(), " .. Running droplet QC"))
     dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
