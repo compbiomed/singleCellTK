@@ -312,12 +312,69 @@ shinyPanelImport <- fluidPage(
         actionButton("addFilesImport_custom", "Add to dataset list")
         #actionButton("addCR3Sample", "Add a sample"),
       ),
+      # conditionalPanel(
+      #   condition = sprintf("input['%s'] == 'starSolo'", "uploadChoice"),
+      #   wellPanel(
+      #     h5("Please select the directory that contains your /Gene directory as your base directory. ")
+      #   ),
+      #   actionButton("addSSSample", "Add a sample"),
+      # ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'starSolo'", "uploadChoice"),
-        wellPanel(
-          h5("Please select the directory that contains your /Gene directory as your base directory. ")
+        h4("Upload data for starSolo:"),
+        h5("Select matrix, barcodes and feature files for all samples using the file selectors below:"),
+        fluidRow(
+          column(width = 4,
+                 wellPanel(
+                   h5("Matrix (matrix.mtx) file:"),
+                   tags$a(href = "https://drive.google.com/open?id=1n0CtM6phfkWX0O6xRtgPPg6QuPFP6pY8",
+                          "Download an example matrix.mtx file here.", target = "_blank"),
+                   tags$br(),
+                   fileInput(
+                     "countsfile_custom_starSolo", "Matrix files:",
+                     accept = c(
+                       "text/csv", "text/comma-separated-values", ".mtx",
+                       "text/tab-separated-values", "text/plain", ".csv", ".tsv", ".gz"
+                     ),
+                     multiple = TRUE
+                   )
+                 )
+          ),
+          column(width = 4,
+                 wellPanel(
+                   h5("Barcodes (barcodes.tsv) file:"),
+                   tags$a(href = "https://drive.google.com/open?id=10IDmZQUiASN4wnzO4-WRJQopKvxCNu6J",
+                          "Download an example barcodes.tsv file here.", target = "_blank"),
+                   tags$br(),
+                   fileInput(
+                     "annotFile_custom_starSolo", "Barcodes files:",
+                     accept = c(
+                       "text/csv", "text/comma-separated-values",
+                       "text/tab-separated-values", "text/plain", ".csv", ".tsv", ".gz"
+                     ),
+                     multiple = TRUE
+                   )
+                 )
+          ),
+          column(width = 4,
+                 wellPanel(
+                   h5("Features (features.tsv) file:"),
+                   tags$a(href = "https://drive.google.com/open?id=1gxXaZPq5Wrn2lNHacEVaCN2a_FHNvs4O",
+                          "Download an example features.tsv file here.", target = "_blank"),
+                   tags$br(),
+                   fileInput(
+                     "featureFile_custom_starSolo", "Features files:",
+                     accept = c(
+                       "text/csv", "text/comma-separated-values",
+                       "text/tab-separated-values", "text/plain", ".csv", ".tsv", ".gz"
+                     ),
+                     multiple = TRUE
+                   )
+                 )
+          )
         ),
-        actionButton("addSSSample", "Add a sample"),
+        actionButton("addFilesImport_custom_starSolo", "Add to dataset list")
+        #actionButton("addCR3Sample", "Add a sample"),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'busTools'", "uploadChoice"),

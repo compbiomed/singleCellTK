@@ -950,6 +950,51 @@ shinyServer(function(input, output, session) {
                    style = list("1. Add sample to import:" = "success"))
     
   })
+  
+  # Event handler to import a file input from starSolo
+  observeEvent(input$addFilesImport_custom_starSolo, {
+    id <- paste0("newSampleFiles", allImportEntries$id_count)
+    entry <- list(type="starSolo_files", id = id, params=list(assayFile = input$countsfile_custom_starSolo$datapath, annotFile = input$annotFile_custom_starSolo$datapath,
+                                                                 featureFile = input$featureFile_custom_starSolo$datapath,
+                                                                 assayName = "counts"))
+    allImportEntries$samples <- c(allImportEntries$samples, list(entry))
+    allImportEntries$id_count <- allImportEntries$id_count+1
+    assayFileCol <- ""
+    annotFileCol <- ""
+    featureFileCol <- ""
+    summaryFileCol <- ""
+    if (!is.null(input$countsfile_custom_starSolo$datapath)) {
+      assayFileCol <- paste0("Assay: ", input$countsfile_custom_starSolo$datapath)
+    }
+    if (!is.null(input$annotFile_custom$datapath)) {
+      annotFileCol <- paste0("Annotation: ", input$annotFile_custom_starSolo$datapath)
+    }
+    if (!is.null(input$featureFile_custom$datapath)) {
+      featureFileCol <- paste0("Features: ", input$featureFile_custom_starSolo$datapath)
+    }
+    
+    locCol <- paste(c(assayFileCol, annotFileCol, featureFileCol, summaryFileCol), collapse = "\n")
+    
+    addToGeneralSampleTable("files", id, locCol, "counts")
+    
+    observeEvent(input[[paste0("remove", id)]],{
+      removeUI(
+        selector = paste0("#", id)
+      )
+      toRemove <- vector()
+      for (entry in allImportEntries$samples) {
+        if (entry$id == id) {
+          toRemove <- c(toRemove, FALSE)
+        } else {
+          toRemove <- c(toRemove, TRUE)
+        }
+      }
+      allImportEntries$samples <- allImportEntries$samples[toRemove]
+    })
+    updateCollapse(session = session, "importUI", open = "2. Create dataset:",
+                   style = list("1. Add sample to import:" = "success"))
+    
+  })
 
   # Event handler to import a file input
   observeEvent(input$addFilesImport, {
