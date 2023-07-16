@@ -184,6 +184,38 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         prefix = entry$params$prefix,
         delayedArray = delayedArray
       )
+    } else if (entry$type == "seqc_files") {
+      # get current tempDir by shiny
+      mytempdir <- tempdir(check=TRUE)
+      
+      if(dir.exists(mytempdir)){
+        # get uploaded filepaths
+        readCountsLocation <- entry$params$readCountsLocation
+        moleculeCountsLocation <- entry$params$moleculeCountsLocation
+        barcodesLocation <- entry$params$barcodesLocation
+        genesLocation <- entry$params$genesLocation
+        
+        # rename to original names
+        file.rename(readCountsLocation, paste0(dirname(readCountsLocation), "/seqc_sparse_read_counts.mtx"))
+        file.rename(moleculeCountsLocation, paste0(dirname(moleculeCountsLocation), "/seqc_sparse_molecule_counts.mtx"))
+        file.rename(barcodesLocation, paste0(dirname(barcodesLocation), "/seqc_sparse_counts_barcodes.csv"))
+        file.rename(genesLocation, paste0(dirname(genesLocation), "/seqc_sparse_counts_genes.csv"))
+
+        # create a sample folder
+        dir.create(paste0(mytempdir, "/seqc/"))
+        
+        # move files to this sample folder
+        file.copy(paste0(dirname(readCountsLocation), "/seqc_sparse_read_counts.mtx"), paste0(mytempdir, "/seqc/seqc_sparse_read_counts.mtx"))
+        file.copy(paste0(dirname(moleculeCountsLocation), "/seqc_sparse_molecule_counts.mtx"), paste0(mytempdir, "/seqc/seqc_sparse_molecule_counts.mtx"))
+        file.copy(paste0(dirname(barcodesLocation), "/seqc_sparse_counts_barcodes.csv"), paste0(mytempdir, "/seqc/seqc_sparse_counts_barcodes.csv"))
+        file.copy(paste0(dirname(genesLocation), "/seqc_sparse_counts_genes.csv"), paste0(mytempdir, "/seqc/seqc_sparse_counts_genes.csv"))
+        
+        # make object
+        newSce <- importSEQC(seqcDirs = paste0(mytempdir, "/seqc"), samples = "sample1", prefix = "seqc")
+        
+        # delete sample folder
+        unlink(paste0(mytempdir, "/seqc/"), recursive = TRUE)
+      }
     } else if (entry$type == "optimus") {
       newSce <- importOptimus(
         OptimusDirs = entry$params$OptimusDirs,
@@ -264,7 +296,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
     }
 
     # Begin Set Tags
-    if(entry$type %in% c("cellRanger2", "cellRanger3", "starSolo", "busTools", "seqc", "optimus", "example", "cellRanger3_files", "starSolo_files", "busTools_files", "optimus_files")){
+    if(entry$type %in% c("cellRanger2", "cellRanger3", "starSolo", "busTools", "seqc", "optimus", "example", "cellRanger3_files", "starSolo_files", "busTools_files", "optimus_files", "seqc_files")){
       newSce <- expSetDataTag(
         inSCE = newSce,
         assayType = "raw",
