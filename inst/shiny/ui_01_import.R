@@ -447,6 +447,86 @@ shinyPanelImport <- fluidPage(
       #   ),
       #   actionButton("addSEQSample", "Add a sample"),
       # ),
+      # conditionalPanel(
+      #   condition = sprintf("input['%s'] == 'seqc'", "uploadChoice"),
+      #   wellPanel(
+      #     h5("Please select the directory that contains your sample files as your base directory.")
+      #   ),
+      #   actionButton("addSEQSample", "Add a sample"),
+      # ),
+      conditionalPanel(
+        condition = sprintf("input['%s'] == 'seqc'", "uploadChoice"),
+        h4("Upload data for SEQC:"),
+        h5("Select matrix, barcodes and feature files for all samples using the file selectors below:"),
+        fluidRow(
+          column(width = 4,
+                 wellPanel(
+                   h5("Read counts:"),
+                   tags$a(href = "https://drive.google.com/open?id=1n0CtM6phfkWX0O6xRtgPPg6QuPFP6pY8",
+                          "Download an example matrix.mtx file here.", target = "_blank"),
+                   tags$br(),
+                   fileInput(
+                     "readCounts_custom_seqc", "Matrix files:",
+                     accept = c(
+                       "text/csv", "text/comma-separated-values", ".mtx",
+                       "text/tab-separated-values", "text/plain", ".csv", ".tsv", ".gz"
+                     ),
+                     multiple = TRUE
+                   )
+                 )
+          ),
+          column(width = 4,
+                 wellPanel(
+                   h5("Molecule counts:"),
+                   tags$a(href = "https://drive.google.com/open?id=10IDmZQUiASN4wnzO4-WRJQopKvxCNu6J",
+                          "Download an example barcodes.tsv file here.", target = "_blank"),
+                   tags$br(),
+                   fileInput(
+                     "moleculeCounts_custom_seqc", "colIndex files:",
+                     accept = c(
+                       "text/csv", "text/comma-separated-values", ".mtx",
+                       "text/tab-separated-values", "text/plain", ".csv", ".tsv", ".gz"
+                     ),
+                     multiple = TRUE
+                   )
+                 )
+          ),
+          column(width = 4,
+                 wellPanel(
+                   h5("Barcodes file:"),
+                   tags$a(href = "https://drive.google.com/open?id=1gxXaZPq5Wrn2lNHacEVaCN2a_FHNvs4O",
+                          "Download an example features.tsv file here.", target = "_blank"),
+                   tags$br(),
+                   fileInput(
+                     "barcodes_custom_seqc", "rowIndex files:",
+                     accept = c(
+                       "text/csv", "text/comma-separated-values", 
+                       "text/tab-separated-values", "text/plain", ".csv", ".tsv", ".gz"
+                     ),
+                     multiple = TRUE
+                   )
+                 )
+          ),
+          column(width = 4,
+                 wellPanel(
+                   h5("Genes file:"),
+                   tags$a(href = "https://drive.google.com/open?id=1gxXaZPq5Wrn2lNHacEVaCN2a_FHNvs4O",
+                          "Download an example features.tsv file here.", target = "_blank"),
+                   tags$br(),
+                   fileInput(
+                     "genes_custom_seqc", "rowIndex files:",
+                     accept = c(
+                       "text/csv", "text/comma-separated-values",
+                       "text/tab-separated-values", "text/plain", ".csv", ".tsv", ".gz"
+                     ),
+                     multiple = TRUE
+                   )
+                 )
+          )
+        ),
+        actionButton("addFilesImport_custom_seqc", "Add to dataset list")
+        #actionButton("addCR3Sample", "Add a sample"),
+      ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'optimus'", "uploadChoice"),
         h4("Upload data for Optimus:"),
