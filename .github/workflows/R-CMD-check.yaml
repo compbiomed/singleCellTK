@@ -75,7 +75,7 @@ jobs:
         run: |
           install.packages("BiocManager")
           BiocManager::install("ggtree")
-          BiocManager::install("DelayedArray", type = "source", force = TRUE)
+          BiocManager::install("S4Arrays")
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
