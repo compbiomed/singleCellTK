@@ -126,6 +126,8 @@ importAnnData <- function(sampleDirs = NULL,
                           rowNamesDedup = TRUE) {
 
   if (length(sampleDirs)!=length(sampleNames)){
+    print(length(sampleDirs))
+    print(length(sampleNames))
     stop("Number of sampleDirs must be equal to number of SampleNames. Please provide sample names for all input directories")
   }
 
@@ -152,16 +154,3 @@ importAnnData <- function(sampleDirs = NULL,
   
   return(sce)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
