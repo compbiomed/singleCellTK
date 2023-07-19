@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.1</span>
       </span>
     </div>
 
@@ -203,6 +203,14 @@
         </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Web Application</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="articles/webApp.html">FAQs</a>
+        </li>
+      </ul>
+</li>
   </ul>
 </li>
 <li>
@@ -276,19 +284,23 @@
 </h2>
 <p>R package <code>singleCellTK</code> is available on <a href="https://bioconductor.org/packages/release/bioc/html/singleCellTK.html" class="external-link">Bioconductor</a> and can be installed with the following commands:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://bioconductor.github.io/BiocManager/" class="external-link">"BiocManager"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"singleCellTK"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"singleCellTK"</span><span class="op">)</span></span></code></pre></div>
 <p>Additional information on how to install from GitHub, install Python dependencies, and for troubleshooting is available on the <a href="https://camplab.net/sctk/current/articles/installation.html" class="external-link">Installation</a> page.</p>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>If you use SCTK for quality control, please cite our <em>Nature Communication</em> paper</p>
-<blockquote><p>Rui Hong, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Yichen Wang, Vidya Akavoor, Xinyun Cao, Irzam Sarfraz, Zhe Wang, Salam Alabdullatif, Frederick Jansen, Masanao Yajima, W. Evan Johnson &amp; Joshua D. Campbell, “Comprehensive generation, visualization, and reporting of quality control metrics for single-cell RNA sequencing data,” <em>Nature Communications</em>, vol. 13, no. 1688, 2022, doi: 10.1038/s41467-022-29212-9.</p></blockquote>
+<blockquote>
+<p>Rui Hong, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Yichen Wang, Vidya Akavoor, Xinyun Cao, Irzam Sarfraz, Zhe Wang, Salam Alabdullatif, Frederick Jansen, Masanao Yajima, W. Evan Johnson &amp; Joshua D. Campbell, “Comprehensive generation, visualization, and reporting of quality control metrics for single-cell RNA sequencing data,” <em>Nature Communications</em>, vol. 13, no. 1688, 2022, doi: 10.1038/s41467-022-29212-9.</p>
+</blockquote>
 <p>If you use SCTK for analysis in the Rconsole or the interactive graphical user interface, please cite our bioRxiv paper:</p>
-<blockquote><p>Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Vidya Akavoor, Xinyun Cao, Salam Alabdullatif, Nida Pervaiz, Syed Ali Zaib, Zhe Wang, Frederick Jansen, Masanao Yajima, W Evan Johnson, Joshua D Campbell, “Interactive analysis of single-cell data using flexible workflows with SCTK2.0”, <em>bioRxiv</em>, 2022.07.13.499900; doi: <a href="https://doi.org/10.1101/2022.07.13.499900" class="external-link uri">https://doi.org/10.1101/2022.07.13.499900</a>.</p></blockquote>
+<blockquote>
+<p>Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Vidya Akavoor, Xinyun Cao, Salam Alabdullatif, Nida Pervaiz, Syed Ali Zaib, Zhe Wang, Frederick Jansen, Masanao Yajima, W Evan Johnson, Joshua D Campbell, “Interactive analysis of single-cell data using flexible workflows with SCTK2.0”, <em>bioRxiv</em>, 2022.07.13.499900; doi: <a href="https://doi.org/10.1101/2022.07.13.499900" class="external-link uri">https://doi.org/10.1101/2022.07.13.499900</a>.</p>
+</blockquote>
 </div>
 <div class="section level2">
 <h2 id="report-issues">Report Issues<a class="anchor" aria-label="anchor" href="#report-issues"></a>

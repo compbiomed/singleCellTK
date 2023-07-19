@@ -1,4 +1,4 @@
-pandoc: 2.14.0.3
+pandoc: 3.1.1
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
@@ -32,6 +32,7 @@ articles:
   trajectoryAnalysis: trajectoryAnalysis.html
   ui_qc: ui_qc.html
   visualization: visualization.html
+  webApp: webApp.html
   singleCellTK: singleCellTK.html
-last_built: 2023-03-18T14:27Z
+last_built: 2023-07-19T15:10Z
 
