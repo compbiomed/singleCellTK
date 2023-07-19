@@ -903,6 +903,258 @@ shinyServer(function(input, output, session) {
     
   })
   
+  # Event handler to import a file input from CR3
+  observeEvent(input$addFilesImport_custom, {
+    id <- paste0("newSampleFiles", allImportEntries$id_count)
+    entry <- list(type="cellRanger3_files", id = id, params=list(assayFile = input$countsfile_custom$datapath, annotFile = input$annotFile_custom$datapath,
+                                                     featureFile = input$featureFile_custom$datapath,
+                                                     summaryFile = input$summaryFile_custom$datapath,
+                                                     assayName = "counts"))
+    allImportEntries$samples <- c(allImportEntries$samples, list(entry))
+    allImportEntries$id_count <- allImportEntries$id_count+1
+    assayFileCol <- ""
+    annotFileCol <- ""
+    featureFileCol <- ""
+    summaryFileCol <- ""
+    if (!is.null(input$countsfile_custom$datapath)) {
+      assayFileCol <- paste0("Assay: ", input$countsfile_custom$datapath)
+    }
+    if (!is.null(input$annotFile_custom$datapath)) {
+      annotFileCol <- paste0("Annotation: ", input$annotFile_custom$datapath)
+    }
+    if (!is.null(input$featureFile_custom$datapath)) {
+      featureFileCol <- paste0("Features: ", input$featureFile_custom$datapath)
+    }
+    if (!is.null(input$summaryFile_custom$datapath)) {
+      summaryFileCol <- paste0("Metrics: ", input$summaryFile_custom$datapath)
+    }
+
+    locCol <- paste(c(assayFileCol, annotFileCol, featureFileCol, summaryFileCol), collapse = "\n")
+
+    addToGeneralSampleTable("files", id, locCol, "counts")
+
+    observeEvent(input[[paste0("remove", id)]],{
+      removeUI(
+        selector = paste0("#", id)
+      )
+      toRemove <- vector()
+      for (entry in allImportEntries$samples) {
+        if (entry$id == id) {
+          toRemove <- c(toRemove, FALSE)
+        } else {
+          toRemove <- c(toRemove, TRUE)
+        }
+      }
+      allImportEntries$samples <- allImportEntries$samples[toRemove]
+    })
+    updateCollapse(session = session, "importUI", open = "2. Create dataset:",
+                   style = list("1. Add sample to import:" = "success"))
+    
+  })
+  
+  # Event handler to import a file input from starSolo
+  observeEvent(input$addFilesImport_custom_starSolo, {
+    id <- paste0("newSampleFiles", allImportEntries$id_count)
+    entry <- list(type="starSolo_files", id = id, params=list(assayFile = input$countsfile_custom_starSolo$datapath, annotFile = input$annotFile_custom_starSolo$datapath,
+                                                                 featureFile = input$featureFile_custom_starSolo$datapath,
+                                                                 assayName = "counts"))
+    allImportEntries$samples <- c(allImportEntries$samples, list(entry))
+    allImportEntries$id_count <- allImportEntries$id_count+1
+    assayFileCol <- ""
+    annotFileCol <- ""
+    featureFileCol <- ""
+    summaryFileCol <- ""
+    if (!is.null(input$countsfile_custom_starSolo$datapath)) {
+      assayFileCol <- paste0("Assay: ", input$countsfile_custom_starSolo$datapath)
+    }
+    if (!is.null(input$annotFile_custom_starSolo$datapath)) {
+      annotFileCol <- paste0("Annotation: ", input$annotFile_custom_starSolo$datapath)
+    }
+    if (!is.null(input$featureFile_custom_starSolo$datapath)) {
+      featureFileCol <- paste0("Features: ", input$featureFile_custom_starSolo$datapath)
+    }
+    
+    locCol <- paste(c(assayFileCol, annotFileCol, featureFileCol, summaryFileCol), collapse = "\n")
+    
+    addToGeneralSampleTable("files", id, locCol, "counts")
+    
+    observeEvent(input[[paste0("remove", id)]],{
+      removeUI(
+        selector = paste0("#", id)
+      )
+      toRemove <- vector()
+      for (entry in allImportEntries$samples) {
+        if (entry$id == id) {
+          toRemove <- c(toRemove, FALSE)
+        } else {
+          toRemove <- c(toRemove, TRUE)
+        }
+      }
+      allImportEntries$samples <- allImportEntries$samples[toRemove]
+    })
+    updateCollapse(session = session, "importUI", open = "2. Create dataset:",
+                   style = list("1. Add sample to import:" = "success"))
+    
+  })
+  
+  # Event handler to import a file input from busTools
+  observeEvent(input$addFilesImport_custom_busTools, {
+    id <- paste0("newSampleFiles", allImportEntries$id_count)
+    entry <- list(type="busTools_files", id = id, params=list(assayFile = input$countsfile_custom_busTools$datapath, annotFile = input$annotFile_custom_busTools$datapath,
+                                                              featureFile = input$featureFile_custom_busTools$datapath,
+                                                              assayName = "counts"))
+    allImportEntries$samples <- c(allImportEntries$samples, list(entry))
+    allImportEntries$id_count <- allImportEntries$id_count+1
+    assayFileCol <- ""
+    annotFileCol <- ""
+    featureFileCol <- ""
+    summaryFileCol <- ""
+    if (!is.null(input$countsfile_custom_busTools$datapath)) {
+      assayFileCol <- paste0("Assay: ", input$countsfile_custom_busTools$datapath)
+    }
+    if (!is.null(input$annotFile_custom_busTools$datapath)) {
+      annotFileCol <- paste0("Annotation: ", input$annotFile_custom_busTools$datapath)
+    }
+    if (!is.null(input$featureFile_custom_busTools$datapath)) {
+      featureFileCol <- paste0("Features: ", input$featureFile_custom_busTools$datapath)
+    }
+    
+    locCol <- paste(c(assayFileCol, annotFileCol, featureFileCol, summaryFileCol), collapse = "\n")
+    
+    addToGeneralSampleTable("files", id, locCol, "counts")
+    
+    observeEvent(input[[paste0("remove", id)]],{
+      removeUI(
+        selector = paste0("#", id)
+      )
+      toRemove <- vector()
+      for (entry in allImportEntries$samples) {
+        if (entry$id == id) {
+          toRemove <- c(toRemove, FALSE)
+        } else {
+          toRemove <- c(toRemove, TRUE)
+        }
+      }
+      allImportEntries$samples <- allImportEntries$samples[toRemove]
+    })
+    updateCollapse(session = session, "importUI", open = "2. Create dataset:",
+                   style = list("1. Add sample to import:" = "success"))
+    
+  })
+  
+  # Event handler to import a file input from optimus
+  observeEvent(input$addFilesImport_custom_optimus, {
+    id <- paste0("newSampleFiles", allImportEntries$id_count)
+    entry <- list(type="optimus_files", id = id, params=list(matrixLocation = input$matrix_custom_optimus$datapath,
+                                                             colIndexLocation = input$colIndex_custom_optimus$datapath,
+                                                             rowIndexLocation = input$rowIndex_custom_optimus$datapath,
+                                                             cellMetricsLocation = input$cellMetrics_custom_optimus$datapath,
+                                                             geneMetricsLocation = input$geneMetrics_custom_optimus$datapath,
+                                                             emptyDropsLocation = input$emptyDrops_custom_optimus$datapath,
+                                                              assayName = "counts"))
+    allImportEntries$samples <- c(allImportEntries$samples, list(entry))
+    allImportEntries$id_count <- allImportEntries$id_count+1
+    matrixFileCol <- ""
+    colIndexFileCol <- ""
+    rowIndexFileCol <- ""
+    cellMetricsFileCol <- ""
+    geneMetricsFileCol <- ""
+    emptyDropsFileCol <- ""
+    
+    if (!is.null(input$matrix_custom_optimus$datapath)) {
+      matrixFileCol <- paste0("Matrix: ", input$matrix_custom_optimus$datapath)
+    }
+    if (!is.null(input$colIndex_custom_optimus$datapath)) {
+      colIndexFileCol <- paste0("colIndex: ", input$colIndex_custom_optimus$datapath)
+    }
+    if (!is.null(input$rowIndex_custom_optimus$datapath)) {
+      rowIndexFileCol <- paste0("rowIndex: ", input$rowIndex_custom_optimus$datapath)
+    }
+    if (!is.null(input$cellMetrics_custom_optimus$datapath)) {
+      cellMetricsFileCol <- paste0("cellMetrics: ", input$cellMetrics_custom_optimus$datapath)
+    }
+    if (!is.null(input$geneMetrics_custom_optimus$datapath)) {
+      geneMetricsFileCol <- paste0("geneMetrics: ", input$geneMetrics_custom_optimus$datapath)
+    }
+    if (!is.null(input$emptyDrops_custom_optimus$datapath)) {
+      emptyDropsFileCol <- paste0("emptyDrops: ", input$emptyDrops_custom_optimus$datapath)
+    }
+
+    
+    locCol <- paste(c(matrixFileCol, colIndexFileCol, rowIndexFileCol, cellMetricsFileCol, geneMetricsFileCol, emptyDropsFileCol), collapse = "\n")
+    
+    addToGeneralSampleTable("files", id, locCol, "counts")
+    
+    observeEvent(input[[paste0("remove", id)]],{
+      removeUI(
+        selector = paste0("#", id)
+      )
+      toRemove <- vector()
+      for (entry in allImportEntries$samples) {
+        if (entry$id == id) {
+          toRemove <- c(toRemove, FALSE)
+        } else {
+          toRemove <- c(toRemove, TRUE)
+        }
+      }
+      allImportEntries$samples <- allImportEntries$samples[toRemove]
+    })
+    updateCollapse(session = session, "importUI", open = "2. Create dataset:",
+                   style = list("1. Add sample to import:" = "success"))
+    
+  })
+  
+  # Event handler to import a file input from seqc
+  observeEvent(input$addFilesImport_custom_seqc, {
+    id <- paste0("newSampleFiles", allImportEntries$id_count)
+    entry <- list(type="seqc_files", id = id, params=list(readCountsLocation = input$readCounts_custom_seqc$datapath,
+                                                          moleculeCountsLocation = input$moleculeCounts_custom_seqc$datapath,
+                                                          barcodesLocation = input$barcodes_custom_seqc$datapath,
+                                                          genesLocation = input$genes_custom_seqc$datapath,
+                                                          assayName = "counts"))
+    allImportEntries$samples <- c(allImportEntries$samples, list(entry))
+    allImportEntries$id_count <- allImportEntries$id_count+1
+    matrixFileCol <- ""
+    molFileCol <- ""
+    barcodesFileCol <- ""
+    genesFileCol <- ""
+    
+    if (!is.null(input$readCounts_custom_seqc$datapath)) {
+      matrixFileCol <- paste0("Matrix: ", input$readCounts_custom_seqc$datapath)
+    }
+    if (!is.null(input$moleculeCounts_custom_seqc$datapath)) {
+      molFileCol <- paste0("molCounts: ", input$moleculeCounts_custom_seqc$datapath)
+    }
+    if (!is.null(input$barcodes_custom_seqc$datapath)) {
+      barcodesFileCol <- paste0("barcodes: ", input$barcodes_custom_seqc$datapath)
+    }
+    if (!is.null(input$genes_custom_seqc$datapath)) {
+      genesFileCol <- paste0("genes: ", input$genes_custom_seqc$datapath)
+    }
+
+    locCol <- paste(c(matrixFileCol, molFileCol, barcodesFileCol, genesFileCol), collapse = "\n")
+    
+    addToGeneralSampleTable("files", id, locCol, "counts")
+    
+    observeEvent(input[[paste0("remove", id)]],{
+      removeUI(
+        selector = paste0("#", id)
+      )
+      toRemove <- vector()
+      for (entry in allImportEntries$samples) {
+        if (entry$id == id) {
+          toRemove <- c(toRemove, FALSE)
+        } else {
+          toRemove <- c(toRemove, TRUE)
+        }
+      }
+      allImportEntries$samples <- allImportEntries$samples[toRemove]
+    })
+    updateCollapse(session = session, "importUI", open = "2. Create dataset:",
+                   style = list("1. Add sample to import:" = "success"))
+    
+  })
+
   # Event handler to import a file input
   observeEvent(input$addFilesImport, {
     id <- paste0("newSampleFiles", allImportEntries$id_count)
@@ -1025,6 +1277,7 @@ shinyServer(function(input, output, session) {
       if (length(allImportEntries$samples) == 0) {
         stop("You have not selected any samples to import.")
       }
+
       sceObj <- importMultipleSources(allImportEntries)
       
       if (input$combineSCEChoice == "addToExistingSCE") {
