@@ -248,7 +248,7 @@ After done, a scatter plot of all cells on the UMAP dimension will be shown on t
 <div class="tabcontent console">
 ````
 
-A UMAP can be generated with the function `runUMAP()`, which is a wrapper of `scater::calculateUMAP()` method. We will now use `useReducedDim` argument to pass the PCA embedding just generated to the function. The result will be saved in `reducedDim` slot. 
+A UMAP can be generated with the function `runUMAP()`, which is a wrapper of `calculateUMAP()` method in the `scater` package. We will now use `useReducedDim` argument to pass the PCA embedding just generated to the function. The result will be saved in `reducedDim` slot. 
 
 Users can also create the tSNE embedding with `runTSNE()` function, which works in a similar way as `runUMAP()`
 
