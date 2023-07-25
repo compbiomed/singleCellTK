@@ -724,4 +724,5 @@ if (("FlatFile" %in% formats)) {
     }
 }
 
+# output session info
 sessionInfo()

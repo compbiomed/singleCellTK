@@ -1,4 +1,11 @@
-Changes in Version 2.8.1 (2022-03-10)
+Changes in Version 2.10.1 (2023-07-26)
+================================================================================
+* Added bubble plot
+* Added support for batch processing multiple inputs
+* Added support for importing and exporting AnnData objects
+* Fixed a bug causing YAML output files to be empty
+
+Changes in Version 2.8.1 (2023-03-10)
 ================================================================================
 * Added scanpy wrapper functions for use from console
 * Added scanpy UI curated workflow
