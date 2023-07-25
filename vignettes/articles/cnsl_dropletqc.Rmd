@@ -239,7 +239,8 @@ We can compare the average total UMI counts per cell before and after cell filtr
 ```{r, "Count_Violin_after_filtering", echo = TRUE, warning=FALSE, message=FALSE, fig.height = 4, fig.width = 6, fig.align="center"}
 p1 <- plotSCEViolinColData(pbmc4k.droplet.prefilt, coldata = "sum", summary = "mean", title = "Pre-filter", ylab = "Total counts")
 p2 <- plotSCEViolinColData(pbmc4k.droplet, coldata = "sum", summary = "mean", title = "Post-filter", ylab = "Total counts")
-plot(cowplot::plot_grid(p1, p2, ncol = 2))
+library(cowplot)
+plot(plot_grid(p1, p2, ncol = 2))
 ```
 
 <br />

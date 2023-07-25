@@ -99,6 +99,7 @@ reference:
   - runScranSNN
   - runSeuratFindClusters
   - runKMeans
+  - runClusterSummaryMetrics
 - title: "Differential Expression"
 - contents:
   - runDEAnalysis

@@ -20,7 +20,7 @@ construction by buildSNNGraph and graph clustering by
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.1</span>
       </span>
     </div>
 
@@ -165,6 +165,12 @@ construction by buildSNNGraph and graph clustering by
         </li>
         <li>
           <a href="../articles/heatmap.html">Generic Heatmap</a>
+        </li>
+      </ul></li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Web Application</a>
+      <ul class="dropdown-menu" role="menu"><li>
+          <a href="../articles/webApp.html">FAQs</a>
         </li>
       </ul></li>
   </ul></li>
@@ -323,19 +329,19 @@ clustering functions. See Details.</p></dd>
     <h2>Details</h2>
     <p>Different graph based clustering algorithms have diverse sets of
 parameters that users can tweak. The help information can be found here:</p><ul><li><p>for <code>"louvain"</code>, see function help
- <code><a href="https://rdrr.io/pkg/igraph/man/cluster_louvain.html" class="external-link">cluster_louvain</a></code></p></li>
+ <code><a href="https://r.igraph.org/reference/cluster_louvain.html" class="external-link">cluster_louvain</a></code></p></li>
 <li><p>for <code>"leiden"</code>, see function help
- <code><a href="https://rdrr.io/pkg/igraph/man/cluster_leiden.html" class="external-link">cluster_leiden</a></code></p></li>
+ <code><a href="https://r.igraph.org/reference/cluster_leiden.html" class="external-link">cluster_leiden</a></code></p></li>
 <li><p>for <code>"walktrap"</code>, see function help
- <code><a href="https://rdrr.io/pkg/igraph/man/cluster_walktrap.html" class="external-link">cluster_walktrap</a></code></p></li>
+ <code><a href="https://r.igraph.org/reference/cluster_walktrap.html" class="external-link">cluster_walktrap</a></code></p></li>
 <li><p>for <code>"infomap"</code>, see function help
- <code><a href="https://rdrr.io/pkg/igraph/man/cluster_infomap.html" class="external-link">cluster_infomap</a></code></p></li>
+ <code><a href="https://r.igraph.org/reference/cluster_infomap.html" class="external-link">cluster_infomap</a></code></p></li>
 <li><p>for <code>"fastGreedy"</code>, see function help
- <code><a href="https://rdrr.io/pkg/igraph/man/cluster_fast_greedy.html" class="external-link">cluster_fast_greedy</a></code></p></li>
+ <code><a href="https://r.igraph.org/reference/cluster_fast_greedy.html" class="external-link">cluster_fast_greedy</a></code></p></li>
 <li><p>for <code>"labelProp"</code>, see function help
- <code><a href="https://rdrr.io/pkg/igraph/man/cluster_label_prop.html" class="external-link">cluster_label_prop</a></code></p></li>
+ <code><a href="https://r.igraph.org/reference/cluster_label_prop.html" class="external-link">cluster_label_prop</a></code></p></li>
 <li><p>for <code>"leadingEigen"</code>, see function help
- <code><a href="https://rdrr.io/pkg/igraph/man/cluster_leading_eigen.html" class="external-link">cluster_leading_eigen</a></code></p></li>
+ <code><a href="https://r.igraph.org/reference/cluster_leading_eigen.html" class="external-link">cluster_leading_eigen</a></code></p></li>
 </ul><p>The Scran SNN building method can work on specified <code>nComp</code> components.
 When users specify input matrix by <code>useAssay</code> or <code>useAltExp</code> +
 <code>altExpAssay</code>, the method will generate <code>nComp</code> components and use
@@ -353,8 +359,8 @@ components and pass them to the method.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mouseBrainSubsetSCE</span> <span class="op">&lt;-</span> <span class="fu">runScranSNN</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>,</span></span>
 <span class="r-in"><span>                                   useReducedDim <span class="op">=</span> <span class="st">"PCA_logcounts"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 18 10:31:23 2023 ... Running 'scran SNN clustering' with 'louvain' algorithm</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Mar 18 10:31:23 2023 ...   Identified 2 clusters</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Mon Jul 24 16:24:46 2023 ... Running 'scran SNN clustering' with 'louvain' algorithm</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Mon Jul 24 16:24:47 2023 ...   Identified 2 clusters</span>
 </code></pre></div>
     </div>
   </div>
