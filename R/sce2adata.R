@@ -35,9 +35,7 @@
         AnnData$var_names <- rownames(SCE)
     }
     # uns  <- S4Vectors::metadata(SCE)
-    # if(length(uns) > 0){
-    #     AnnData$uns <- uns
-    # }
+    # if(length(uns) > 0){ AnnData$uns <- uns }
     obsmNames <- SingleCellExperiment::reducedDimNames(SCE)
     if(length(obsmNames) > 0){
         for (i in seq_along(obsmNames)) {
@@ -51,10 +49,7 @@
     for (i in seq_along(allAssayNames)) {
         oneName <- allAssayNames[i]
         if (!oneName == useAssay) {
-            AnnData$layers$'__setitem__'(oneName,
-                                         as.matrix(
-                                             t(SummarizedExperiment::assay(
-                                                 SCE, oneName))))
+            AnnData$layers$'__setitem__'(oneName, as.matrix(t(SummarizedExperiment::assay(SCE, oneName))))
         }
     }
     return(AnnData)

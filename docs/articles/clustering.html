@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.1</span>
       </span>
     </div>
 
@@ -203,6 +203,14 @@
         </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Web Application</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/webApp.html">FAQs</a>
+        </li>
+      </ul>
+</li>
   </ul>
 </li>
 <li>
@@ -281,7 +289,7 @@
 div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </style>
 <div class="offset">
-<details><summary><b>Scran SNNs</b></summary><p>For the choices in the algorithm list, please refer to <code><a href="https://r.igraph.org/reference/cluster_louvain.html" class="external-link">igraph::cluster_louvain()</a></code>, <code><a href="https://r.igraph.org/reference/cluster_leiden.html" class="external-link">igraph::cluster_leiden()</a></code>, <code><a href="https://r.igraph.org/reference/cluster_walktrap.html" class="external-link">igraph::cluster_walktrap()</a></code>, <code><a href="https://r.igraph.org/reference/cluster_infomap.html" class="external-link">igraph::cluster_infomap()</a></code>, <code><a href="https://r.igraph.org/reference/cluster_fast_greedy.html" class="external-link">igraph::cluster_fast_greedy()</a></code>, <code><a href="https://r.igraph.org/reference/cluster_label_prop.html" class="external-link">igraph::cluster_label_prop()</a></code>, and <code><a href="https://r.igraph.org/reference/cluster_leading_eigen.html" class="external-link">igraph::cluster_leading_eigen()</a></code>.</p>
+<details><summary><b>Scran SNNs</b></summary><p>For the choices in the algorithm list, please refer to <code>cluster_louvain()</code>, <code>cluster_leiden()</code>, <code>cluster_walktrap()</code>, <code>cluster_infomap()</code>, <code>cluster_fast_greedy()</code>, <code>cluster_label_prop()</code>, and <code>cluster_leading_eigen()</code> in the <code>igraph</code> package documentation.</p>
 <ul>
 <li>Data matrix selection - selection input <strong>“Select Input Matrix”</strong>. Scran SNN method allows various types of data matrices. Either a full-sized or a subsetted expression matrix, technically called <code>assay</code> or <code>altExp</code>, respectively, or a reduced dimension, technically <code>reducedDim</code>, is allowed.</li>
 <li>Resolution related parameters:
@@ -409,10 +417,11 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </details><details><summary><b>Example with Seurat</b></summary><p>Seurat clustering method is recommended to be used in the <a href="seurat_curated_workflow.html">Seurat Curated Workflow</a> in console analysis. When users preprocessed the dataset with other approaches, the clustering with Seurat function can be complicated, since some sorts of Seurat specific metadata is always needed.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Prepare what seurat function needs</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span><span class="va">pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDim</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"PCA"</span><span class="op">)</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"_"</span>, <span class="st">"-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">stdev</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">pca</span>, <span class="st">"percentVar"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">new_pca</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateDimReducObject.html" class="external-link">CreateDimReducObject</a></span><span class="op">(</span>embeddings <span class="op">=</span> <span class="va">pca</span>, assay <span class="op">=</span> <span class="st">"RNA"</span>, stdev <span class="op">=</span> <span class="va">stdev</span>, key <span class="op">=</span> <span class="st">"PC_"</span><span class="op">)</span></span>
+<span><span class="va">new_pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateDimReducObject.html" class="external-link">CreateDimReducObject</a></span><span class="op">(</span>embeddings <span class="op">=</span> <span class="va">pca</span>, assay <span class="op">=</span> <span class="st">"RNA"</span>, stdev <span class="op">=</span> <span class="va">stdev</span>, key <span class="op">=</span> <span class="st">"PC_"</span><span class="op">)</span></span>
 <span><span class="co"># Then we can take the Seurat Curated Workflow independent dimension </span></span>
 <span><span class="co"># reduction as an input. </span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters</a></span><span class="op">(</span><span class="va">sce</span>, externalReduction <span class="op">=</span> <span class="va">new_pca</span><span class="op">)</span></span>
@@ -466,7 +475,7 @@ document.getElementById("ia-button").click();
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Ming Liu, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

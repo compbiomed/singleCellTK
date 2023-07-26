@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.1</span>
       </span>
     </div>
 
@@ -203,6 +203,14 @@
         </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Web Application</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/webApp.html">FAQs</a>
+        </li>
+      </ul>
+</li>
   </ul>
 </li>
 <li>
@@ -297,10 +305,10 @@
 <h4 id="running-sctk-qc-pipeline-using-docker-image">Running SCTK-QC pipeline using docker image<a class="anchor" aria-label="anchor" href="#running-sctk-qc-pipeline-using-docker-image"></a>
 </h4>
 <p>The Docker image can be obtained by running:</p>
-<pre><code>docker pull campbio/sctk_qc:2.10.0</code></pre>
+<pre><code>docker pull campbio/sctk_qc:2.10.1</code></pre>
 <p>The usage of each argument is the same as running command line analysis. Here is an example code to perform QC on CellRangerV3 data with SCTK docker:</p>
 <pre><code>docker run --rm -v /path/to/data:/SCTK_docker \
-  -it campbio/sctk_qc:2.10.0 \
+  -it campbio/sctk_qc:2.10.1 \
   -b /SCTK_docker/cellranger_folder \
   -P CellRangerV3 \
   -s SampleName \
@@ -315,11 +323,11 @@
 <h4 id="running-sctk-qc-pipeline-docker-image-with-singularity">Running SCTK-QC pipeline docker image with singularity<a class="anchor" aria-label="anchor" href="#running-sctk-qc-pipeline-docker-image-with-singularity"></a>
 </h4>
 <p>Users who have not used <a href="https://sylabs.io/guides/2.6/user-guide/introduction.html" class="external-link">Singularity</a> before can install it following the instruction <a href="https://sylabs.io/guides/3.1/user-guide/installation.html" class="external-link">here</a>. The Singularity image for SCTK-QC can be easily built using Docker Hub as a source:</p>
-<pre><code>singularity pull docker://campbio/sctk_qc:2.10.0</code></pre>
+<pre><code>singularity pull docker://campbio/sctk_qc:2.10.1</code></pre>
 <p>The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is <a href="https://sylabs.io/guides/3.1/user-guide/bind_paths_and_mounts.html" class="external-link">automatically overlaid</a>.</p>
 <p>It’s recommended to re-set the home directory when you run singularity. Singularity will mount <code>\$HOME</code> path on your file system by default, which might contain your personal R/Python library folder. If we don’t re-set the home to mount, singularity will try to use R/Python libraries which are not built within the singularity image and cause some conflicts. You can point to some “sanitized home”, which is different from <code>\$HOME</code> path on your machine, using argument <code>-H</code>/<code>--home</code> <a href="https://sylabs.io/guides/3.1/user-guide/bind_paths_and_mounts.html" class="external-link">(see more information)</a>. Or you can disable the <code>\$HOME</code> binding by setting the argument <code>--no-home</code>. Besides, you can use argument <code>--bind</code>/<code>-B</code> to specify your own mount volume, which is the path that contains the dataset and will be used to store the output of QC pipeline. The example is shown as below:</p>
 <pre><code>singularity run --home=/PathToSanitizedHome \
-  --bind /PathToData:/data sctk_qc_2.10.0.sif \
+  --bind /PathToData:/data sctk_qc_2.10.1.sif \
   -b /SCTK_docker/cellranger_folder \
   -P CellRangerV3 \
   -s SampleName \
@@ -339,7 +347,7 @@
 #$ -l cpu_arch=broadwell|haswell|skylake|cascadelake
 
 singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run'
-  --bind /PathToData:/data sctk_qc_2.10.0.sif \
+  --bind /PathToData:/data sctk_qc_2.10.1.sif \
   -b /SCTK_docker/cellranger_folder \
   -P CellRangerV3 \
   -s SampleName \
@@ -363,8 +371,8 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 <p>The required arguments are as follows:</p>
 <table class="table">
 <colgroup>
-<col width="50%">
-<col width="50%">
+<col width="10%">
+<col width="89%">
 </colgroup>
 <thead><tr class="header">
 <th>Parameter</th>
@@ -379,7 +387,7 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 <tr class="even">
 <td>
 <code>-P</code>, <code>--preproc</code> (<strong>required</strong>)</td>
-<td>Algorithm used for preprocessing. One of <code>CellRangerV2</code>, <code>CellRangerV3</code>, <code>BUStools</code>, <code>STARSolo</code>, <code>SEQC</code>, <code>Optimus</code>, <code>DropEst</code>, <code>SceRDS</code>, <code>CountMatrix</code> and <code>AnnData</code>.</td>
+<td>Algorithm used for preprocessing. One of <code>CellRangerV2</code>, <code>CellRangerV3</code>, <code>BUStools</code>, <code>STARSolo</code>, <code>SEQC</code>, <code>Optimus</code>, <code>DropEst</code>, <code>SceRDS</code>, <code>Seurat</code>, <code>CountMatrix</code> and <code>AnnData</code>.</td>
 </tr>
 <tr class="odd">
 <td>
@@ -405,13 +413,59 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 </table>
 </div>
 <div class="section level4">
+<h4 id="batch-processing">Batch processing<a class="anchor" aria-label="anchor" href="#batch-processing"></a>
+</h4>
+<p>When running the pipeline with more than one sample to process, care should be exercised with the -S flag, and whether or not one wishes to combine the samples.</p>
+<p>In addition, the following parameters will need multiple inputs, separated by a <strong>comma</strong> <strong>without any spacing</strong>:</p>
+<table class="table">
+<colgroup>
+<col width="10%">
+<col width="89%">
+</colgroup>
+<thead><tr class="header">
+<th>Parameter</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>
+<code>-b</code>, <code>--basePath</code>
+</td>
+<td>Base path for the output from the preprocessing algorithm; one is required for each sample, even if they are in the same location.</td>
+</tr>
+<tr class="even">
+<td>
+<code>-P</code>, <code>--preproc</code>
+</td>
+<td>In multiple object mode, each entry should have a preprocessing algorithm associated with it; the pipeline supports serial processing of different sample types.</td>
+</tr>
+<tr class="odd">
+<td>
+<code>-s</code>, <code>--sample</code>
+</td>
+<td>Names of the samples.</td>
+</tr>
+</tbody>
+</table>
+<p>An example execution is shown below:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="ex">Rscript</span> SCTK_runQC.R \</span>
+<span id="cb7-2"><a href="#cb7-2"></a>-b /base/path1,/base/path2 \</span>
+<span id="cb7-3"><a href="#cb7-3"></a>-P Preprocessing_Algorithm_1,Preprocess_Algorithm_2 \</span>
+<span id="cb7-4"><a href="#cb7-4"></a>-s SampleName1,SampleName2 \</span>
+<span id="cb7-5"><a href="#cb7-5"></a>-o Output_Directory \</span>
+<span id="cb7-6"><a href="#cb7-6"></a>-S FALSE \</span>
+<span id="cb7-7"><a href="#cb7-7"></a>-F SCE,AnnData,FlatFile \</span>
+<span id="cb7-8"><a href="#cb7-8"></a>-d Droplet \</span>
+<span id="cb7-9"><a href="#cb7-9"></a>-D TRUE \</span></code></pre></div>
+</div>
+<div class="section level4">
 <h4 id="optional-arguments">Optional arguments<a class="anchor" aria-label="anchor" href="#optional-arguments"></a>
 </h4>
 <p>The optional arguments are as follows. Their usage depend on type of data and user-defined behaviour.</p>
 <table class="table">
 <colgroup>
-<col width="50%">
-<col width="50%">
+<col width="11%">
+<col width="88%">
 </colgroup>
 <thead><tr class="header">
 <th>Parameter</th>
@@ -445,13 +499,13 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 <td>
 <code>-c</code>, <code>--cellData</code>
 </td>
-<td>The full path of the RDS file or Matrix file of the cell matrix. This would be use only when <code>--preproc</code> is <code>SceRDS</code> or <code>CountMatrix</code>.</td>
+<td>The full path of the RDS, H5AD or Matrix file of the cell matrix. This would be use only when <code>--preproc</code> is <code>SceRDS</code>, <code>Seurat</code>, <code>AnnData</code>, or <code>CountMatrix</code>.</td>
 </tr>
 <tr class="even">
 <td>
 <code>-r</code>, <code>--rawData</code>
 </td>
-<td>The full path of the RDS file or Matrix file of the droplet matrix. This would be provided only when <code>--preproc</code> is <code>SceRDS</code> or <code>CountMatrix</code>.</td>
+<td>The full path of the RDS file or Matrix file of the droplet matrix. This would be provided only when <code>--preproc</code> is <code>SceRDS</code>, <code>Seurat</code>, <code>AnnData</code>, or <code>CountMatrix</code>.</td>
 </tr>
 <tr class="odd">
 <td>
@@ -569,16 +623,16 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 </h3>
 <p><code>-d</code> argument is used to specify which type of count matrix is used in the pipeline. Default is <code>Both</code>, which means the pipeline will run quality control on both droplet and cell count data.</p>
 <p>Users can also choose to run SCTK-QC pipeline on only the droplet count or cell count matrix, instead of running on both. In this case, the pipeline will only take the single input and perform QC on it. An example is shown below:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="ex">Rscript</span> SCTK_runQC.R \</span>
-<span id="cb8-2"><a href="#cb8-2"></a>-b /base/path \</span>
-<span id="cb8-3"><a href="#cb8-3"></a>-P Preprocessing_Algorithm \</span>
-<span id="cb8-4"><a href="#cb8-4"></a>-s SampleName \</span>
-<span id="cb8-5"><a href="#cb8-5"></a>-o Output_Directory \</span>
-<span id="cb8-6"><a href="#cb8-6"></a>-S TRUE \</span>
-<span id="cb8-7"><a href="#cb8-7"></a>-F SCE,AnnData,FlatFile,Seurat \</span>
-<span id="cb8-8"><a href="#cb8-8"></a>-d Droplet \</span>
-<span id="cb8-9"><a href="#cb8-9"></a>-D TRUE \</span>
-<span id="cb8-10"><a href="#cb8-10"></a>-m EmptyDrops</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="ex">Rscript</span> SCTK_runQC.R \</span>
+<span id="cb9-2"><a href="#cb9-2"></a>-b /base/path \</span>
+<span id="cb9-3"><a href="#cb9-3"></a>-P Preprocessing_Algorithm \</span>
+<span id="cb9-4"><a href="#cb9-4"></a>-s SampleName \</span>
+<span id="cb9-5"><a href="#cb9-5"></a>-o Output_Directory \</span>
+<span id="cb9-6"><a href="#cb9-6"></a>-S TRUE \</span>
+<span id="cb9-7"><a href="#cb9-7"></a>-F SCE,AnnData,FlatFile,Seurat \</span>
+<span id="cb9-8"><a href="#cb9-8"></a>-d Droplet \</span>
+<span id="cb9-9"><a href="#cb9-9"></a>-D TRUE \</span>
+<span id="cb9-10"><a href="#cb9-10"></a>-m EmptyDrops</span></code></pre></div>
 <p>If <code>-d</code> argument is set as <code>Droplet</code>, the QC pipeline will only take droplet count matrix as input and perform quality control. You can choose whether to detect cells from the droplet matrix by setting <code>-D</code> as <code>TRUE</code>. If yes, cell count matrix will be detected and the pipeline will also perform quality control on this matrix and output the result. You could further define the method used to detect cells from droplet matrix by setting <code>-m</code> argument. <code>-m</code> could be one of <code>EmptyDrops</code>, <code>Knee</code> or <code>Inflection</code>. <code>EmptyDrops</code> will keep cells that pass the <code><a href="../reference/runEmptyDrops.html">runEmptyDrops()</a></code> function test. <code>Knee</code> and <code>Inflection</code> will keep cells that pass the knee or inflection point returned from <code><a href="../reference/runBarcodeRankDrops.html">runBarcodeRankDrops()</a></code> function.</p>
 <p>If <code>-d</code> argument is set as <code>Cell</code>, the QC pipeline will only take cell count matrix as input and perform quality control. A figure showing the analysis steps and outputs of different inputs is shown below:</p>
 <p><img src="qc_singleInput.png" alt="QC single input"><br></p>
@@ -594,22 +648,22 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 <li>If the cellranger data set is saved in the default <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/overview" class="external-link">cellranger output directory</a>, you can load the data by running following code:</li>
 </ol>
 <p>For CellRangerV3:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="ex">Rscript</span> SCTK_runQC.R \</span>
-<span id="cb9-2"><a href="#cb9-2"></a>-b /base/path \</span>
-<span id="cb9-3"><a href="#cb9-3"></a>-P CellRangerV3 \</span>
-<span id="cb9-4"><a href="#cb9-4"></a>-s SampleName \</span>
-<span id="cb9-5"><a href="#cb9-5"></a>-o Output_Directory \</span>
-<span id="cb9-6"><a href="#cb9-6"></a>-S TRUE \</span>
-<span id="cb9-7"><a href="#cb9-7"></a>-F SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
-<p>For CellRangerV2, the reference used by cellranger needs to be specified by <code>-G</code>/<code>--genome</code>:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="ex">Rscript</span> SCTK_runQC.R \</span>
 <span id="cb10-2"><a href="#cb10-2"></a>-b /base/path \</span>
-<span id="cb10-3"><a href="#cb10-3"></a>-P CellRangerV2 \</span>
+<span id="cb10-3"><a href="#cb10-3"></a>-P CellRangerV3 \</span>
 <span id="cb10-4"><a href="#cb10-4"></a>-s SampleName \</span>
 <span id="cb10-5"><a href="#cb10-5"></a>-o Output_Directory \</span>
 <span id="cb10-6"><a href="#cb10-6"></a>-S TRUE \</span>
-<span id="cb10-7"><a href="#cb10-7"></a>-G GenomeName \</span>
-<span id="cb10-8"><a href="#cb10-8"></a>-F SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
+<span id="cb10-7"><a href="#cb10-7"></a>-F SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
+<p>For CellRangerV2, the reference used by cellranger needs to be specified by <code>-G</code>/<code>--genome</code>:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1"></a><span class="ex">Rscript</span> SCTK_runQC.R \</span>
+<span id="cb11-2"><a href="#cb11-2"></a>-b /base/path \</span>
+<span id="cb11-3"><a href="#cb11-3"></a>-P CellRangerV2 \</span>
+<span id="cb11-4"><a href="#cb11-4"></a>-s SampleName \</span>
+<span id="cb11-5"><a href="#cb11-5"></a>-o Output_Directory \</span>
+<span id="cb11-6"><a href="#cb11-6"></a>-S TRUE \</span>
+<span id="cb11-7"><a href="#cb11-7"></a>-G GenomeName \</span>
+<span id="cb11-8"><a href="#cb11-8"></a>-F SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
 <p><code>-b</code> specifies the base path and usually it’s the output folder of 10x <code>cellranger-count</code>. <code>-s</code> specifies the sample name, which has to be the same as the name of the sample folder under the base folder. The folder layout would look like the following:</p>
 <pre><code>├── BasePath
 └── SampleName 
@@ -626,41 +680,64 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 <ol start="2" style="list-style-type: decimal">
 <li>If the <code>cellranger-count</code> output have been moved out of the default <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/overview" class="external-link">cellranger output directory</a>, you can specified the path to droplet and cell count matrix using arguments <code>-R</code> and <code>-C</code>:</li>
 </ol>
-<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1"></a><span class="ex">Rscript</span> SCTK_runQC.R \</span>
-<span id="cb12-2"><a href="#cb12-2"></a>-P CellRangerV2 \</span>
-<span id="cb12-3"><a href="#cb12-3"></a>-C /path/to/cell/matrix \</span>
-<span id="cb12-4"><a href="#cb12-4"></a>-R /path/to/droplet/matrix \</span>
-<span id="cb12-5"><a href="#cb12-5"></a>-s SampleName \</span>
-<span id="cb12-6"><a href="#cb12-6"></a>-o Output_Directory \</span>
-<span id="cb12-7"><a href="#cb12-7"></a>-S TRUE \</span>
-<span id="cb12-8"><a href="#cb12-8"></a>-F SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1"></a><span class="ex">Rscript</span> SCTK_runQC.R \</span>
+<span id="cb13-2"><a href="#cb13-2"></a>-P CellRangerV2 \</span>
+<span id="cb13-3"><a href="#cb13-3"></a>-C /path/to/cell/matrix \</span>
+<span id="cb13-4"><a href="#cb13-4"></a>-R /path/to/droplet/matrix \</span>
+<span id="cb13-5"><a href="#cb13-5"></a>-s SampleName \</span>
+<span id="cb13-6"><a href="#cb13-6"></a>-o Output_Directory \</span>
+<span id="cb13-7"><a href="#cb13-7"></a>-S TRUE \</span>
+<span id="cb13-8"><a href="#cb13-8"></a>-F SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
 <p>In this case, you <strong>must</strong> skip <code>-b</code> arguments and you can also skip <code>-G</code> argument for CellRangerV2 data.</p>
 </div>
 <div class="section level4">
-<h4 id="import-data-from-rds-or-matrix-stored-in-a-text-file">Import data from RDS or matrix stored in a text file<a class="anchor" aria-label="anchor" href="#import-data-from-rds-or-matrix-stored-in-a-text-file"></a>
+<h4 id="import-data-from-rds-h5ad-or-matrix-stored-in-a-text-file">Import data from RDS, H5AD or matrix stored in a text file<a class="anchor" aria-label="anchor" href="#import-data-from-rds-h5ad-or-matrix-stored-in-a-text-file"></a>
 </h4>
 <ol style="list-style-type: decimal">
 <li>If your data in stored as a <code>SingleCellExperiment</code> object in RDS file, singleCellTK also supports this type of input. To run quality control with RDS file as input, run the following code:</li>
 </ol>
-<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1"></a><span class="ex">Rscript</span> SCTK_runQC.R \</span>
-<span id="cb13-2"><a href="#cb13-2"></a>-P SceRDS \</span>
-<span id="cb13-3"><a href="#cb13-3"></a>-s Samplename \</span>
-<span id="cb13-4"><a href="#cb13-4"></a>-o Output_Directory \</span>
-<span id="cb13-5"><a href="#cb13-5"></a>-S TRUE \</span>
-<span id="cb13-6"><a href="#cb13-6"></a>-F SCE,AnnData,FlatFile,Seurat \</span>
-<span id="cb13-7"><a href="#cb13-7"></a>-r /path/to/rds/file/droplet.RDS \</span>
-<span id="cb13-8"><a href="#cb13-8"></a>-c /path/to/rds/file/cell.RDS</span></code></pre></div>
-<ol start="2" style="list-style-type: decimal">
-<li>If your input is stored in TXT file as a matrix, which has barcodes as column names and genes as row names, run the following code to start the quality control pipeline:</li>
-</ol>
 <div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1"></a><span class="ex">Rscript</span> SCTK_runQC.R \</span>
-<span id="cb14-2"><a href="#cb14-2"></a>-P CountMatrix \</span>
+<span id="cb14-2"><a href="#cb14-2"></a>-P SceRDS \</span>
 <span id="cb14-3"><a href="#cb14-3"></a>-s Samplename \</span>
 <span id="cb14-4"><a href="#cb14-4"></a>-o Output_Directory \</span>
 <span id="cb14-5"><a href="#cb14-5"></a>-S TRUE \</span>
 <span id="cb14-6"><a href="#cb14-6"></a>-F SCE,AnnData,FlatFile,Seurat \</span>
-<span id="cb14-7"><a href="#cb14-7"></a>-r /path/to/matrix/file/droplet.txt \</span>
-<span id="cb14-8"><a href="#cb14-8"></a>-c path/to/matrix/file/cell.txt</span></code></pre></div>
+<span id="cb14-7"><a href="#cb14-7"></a>-r /path/to/rds/file/droplet.RDS \</span>
+<span id="cb14-8"><a href="#cb14-8"></a>-c /path/to/rds/file/cell.RDS</span></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>If your input is stored as a <code>Seurat</code> object in RDS file, you may use the following code:</li>
+</ol>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1"></a><span class="ex">Rscript</span> SCTK_runQC.R \</span>
+<span id="cb15-2"><a href="#cb15-2"></a>-P Seurat \</span>
+<span id="cb15-3"><a href="#cb15-3"></a>-s Samplename \</span>
+<span id="cb15-4"><a href="#cb15-4"></a>-o Output_Directory \</span>
+<span id="cb15-5"><a href="#cb15-5"></a>-S TRUE \</span>
+<span id="cb15-6"><a href="#cb15-6"></a>-F SCE,AnnData,FlatFile,Seurat \</span>
+<span id="cb15-7"><a href="#cb15-7"></a>-r /path/to/rds/file/droplet.RDS \</span>
+<span id="cb15-8"><a href="#cb15-8"></a>-c /path/to/rds/file/cell.RDS</span></code></pre></div>
+<p><strong>Warning:</strong> Both <code>SingleCellExperiment</code> and <code>Seurat</code> objects use the same RDS format. Be sure which one your data is formatted as or the pipeline may not successfully run.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>If your input as stored as an <code>AnnData</code> object in H5AD file,</li>
+</ol>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1"></a><span class="ex">Rscript</span> SCTK_runQC.R \</span>
+<span id="cb16-2"><a href="#cb16-2"></a>-P AnnData \</span>
+<span id="cb16-3"><a href="#cb16-3"></a>-s Samplename \</span>
+<span id="cb16-4"><a href="#cb16-4"></a>-o Output_Directory \</span>
+<span id="cb16-5"><a href="#cb16-5"></a>-S TRUE \</span>
+<span id="cb16-6"><a href="#cb16-6"></a>-F SCE,AnnData,FlatFile,Seurat \</span>
+<span id="cb16-7"><a href="#cb16-7"></a>-r /path/to/rds/file/droplet.RDS \</span>
+<span id="cb16-8"><a href="#cb16-8"></a>-c /path/to/rds/file/cell.RDS</span></code></pre></div>
+<ol start="4" style="list-style-type: decimal">
+<li>If your input is stored in TXT file as a matrix, which has barcodes as column names and genes as row names, run the following code to start the quality control pipeline:</li>
+</ol>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1"></a><span class="ex">Rscript</span> SCTK_runQC.R \</span>
+<span id="cb17-2"><a href="#cb17-2"></a>-P CountMatrix \</span>
+<span id="cb17-3"><a href="#cb17-3"></a>-s Samplename \</span>
+<span id="cb17-4"><a href="#cb17-4"></a>-o Output_Directory \</span>
+<span id="cb17-5"><a href="#cb17-5"></a>-S TRUE \</span>
+<span id="cb17-6"><a href="#cb17-6"></a>-F SCE,AnnData,FlatFile,Seurat \</span>
+<span id="cb17-7"><a href="#cb17-7"></a>-r /path/to/matrix/file/droplet.txt \</span>
+<span id="cb17-8"><a href="#cb17-8"></a>-c path/to/matrix/file/cell.txt</span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="methods-to-run-pipeline-on-data-set-generated-by-other-algorithms">Methods to run pipeline on data set generated by other algorithms<a class="anchor" aria-label="anchor" href="#methods-to-run-pipeline-on-data-set-generated-by-other-algorithms"></a>
@@ -679,13 +756,13 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 <a href="https://github.com/theislab/anndata" class="external-link">AnnData</a> object saved in HDF5 file</li>
 </ul>
 <p>If your data is preprocessed by other algorithms, you might want to make sure the ‘-b’ argument matches the path storing the data and the ‘-P’ argument matches the right preprocessing tools. Basically, the templated is shown below:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1"></a><span class="ex">Rscript</span> SCTK_runQC.R \</span>
-<span id="cb15-2"><a href="#cb15-2"></a>-b /base/path \</span>
-<span id="cb15-3"><a href="#cb15-3"></a>-P Preprocessing_Algorithm \</span>
-<span id="cb15-4"><a href="#cb15-4"></a>-s SampleName \</span>
-<span id="cb15-5"><a href="#cb15-5"></a>-o Output_Directory \</span>
-<span id="cb15-6"><a href="#cb15-6"></a>-S TRUE \</span>
-<span id="cb15-7"><a href="#cb15-7"></a>-F SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1"></a><span class="ex">Rscript</span> SCTK_runQC.R \</span>
+<span id="cb18-2"><a href="#cb18-2"></a>-b /base/path \</span>
+<span id="cb18-3"><a href="#cb18-3"></a>-P Preprocessing_Algorithm \</span>
+<span id="cb18-4"><a href="#cb18-4"></a>-s SampleName \</span>
+<span id="cb18-5"><a href="#cb18-5"></a>-o Output_Directory \</span>
+<span id="cb18-6"><a href="#cb18-6"></a>-S TRUE \</span>
+<span id="cb18-7"><a href="#cb18-7"></a>-F SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
 <p>The following table describes how SCTK expects the inputs to be structured and passed for each import function. In all cases, SCTK retains the standard output directory structure from upstream tools. All the import functions return the imported counts matrix as an <code>assay</code> in a <code>SingleCellExperiment</code> object, with associated information in respective <code>colData</code>, <code>rowData</code>, <code>reducedDims</code>, and <code>metadata</code> fields.</p>
 <p><img src="qc_inputShell.png" alt="QC data format"><br></p>
 <p>The table above also shows the R console functions for the QC algorithms. Detailed information about function parameters and defaults are available in the <a href="../reference/index.html"><em>Reference</em></a> section.</p>
@@ -800,7 +877,7 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Ming Liu, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

@@ -141,6 +141,7 @@ if (is.null(getShinyOption("theme"))){
   shinyTheme <- getShinyOption("theme")
 }
 
+source("ui_00_helloWorld.R")
 source("ui_01_import.R", local = TRUE) #creates shinyPanelImport variable
 source("ui_01_gene_sets.R", local = TRUE) #creates shinyPanelGeneSets variable
 source("ui_01_columnAnnotation.R", local = TRUE) #creates shinyPanelColumnAnnotation variable
@@ -162,6 +163,7 @@ source("ui_10_1_TSCAN.R", local = TRUE) #creates shinyPanelTSCAN variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
+source("ui_08_4_bubbleplot.R", local = TRUE) #creates shinyPanelBubbleplot variable
 #source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
 source("ui_09_4_scanpyWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
@@ -261,7 +263,9 @@ shinyUI(
       # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
       navbarMenu("Viewers",
                  tabPanel("Cell Viewer", value="CellViewer", shinyPanelCellViewer),
-                 tabPanel("Heatmap", shinyPanelHeatmap)),
+                 tabPanel("Heatmap", shinyPanelHeatmap),
+                 tabPanel("Bubbleplot", shinyPanelBubbleplot)
+                 ),
       footer = includeHTML("www/logo.html"),
       fluidRow(
         column(12, id = "consoleDiv",

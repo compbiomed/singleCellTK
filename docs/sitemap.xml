@@ -88,9 +88,6 @@
     <loc>/articles/scanpy_curated_workflow.html</loc>
   </url>
   <url>
-    <loc>/articles/scanpy_curated_worklfow.html</loc>
-  </url>
-  <url>
     <loc>/articles/seurat_curated_workflow.html</loc>
   </url>
   <url>
@@ -104,6 +101,9 @@
   </url>
   <url>
     <loc>/articles/visualization.html</loc>
+  </url>
+  <url>
+    <loc>/articles/webApp.html</loc>
   </url>
   <url>
     <loc>/authors.html</loc>
@@ -388,6 +388,9 @@
     <loc>/reference/plotBiomarker.html</loc>
   </url>
   <url>
+    <loc>/reference/plotBubble.html</loc>
+  </url>
+  <url>
     <loc>/reference/plotClusterAbundance.html</loc>
   </url>
   <url>
@@ -653,6 +656,9 @@
   </url>
   <url>
     <loc>/reference/runCellQC.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runClusterSummaryMetrics.html</loc>
   </url>
   <url>
     <loc>/reference/runComBat.html</loc>

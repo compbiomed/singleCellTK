@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.1</span>
       </span>
     </div>
 
@@ -200,6 +200,14 @@
         </li>
         <li>
           <a href="../articles/heatmap.html">Generic Heatmap</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Web Application</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/webApp.html">FAQs</a>
         </li>
       </ul>
 </li>
@@ -415,7 +423,7 @@
 <p>After done, a scatter plot of all cells on the UMAP dimension will be shown on the right panel.</p>
 </div>
 <div class="tabcontent console">
-<p>A UMAP can be generated with the function <code><a href="../reference/runUMAP.html">runUMAP()</a></code>, which is a wrapper of <code><a href="https://rdrr.io/pkg/scater/man/runUMAP.html" class="external-link">scater::calculateUMAP()</a></code> method. We will now use <code>useReducedDim</code> argument to pass the PCA embedding just generated to the function. The result will be saved in <code>reducedDim</code> slot.</p>
+<p>A UMAP can be generated with the function <code><a href="../reference/runUMAP.html">runUMAP()</a></code>, which is a wrapper of <code>calculateUMAP()</code> method in the <code>scater</code> package. We will now use <code>useReducedDim</code> argument to pass the PCA embedding just generated to the function. The result will be saved in <code>reducedDim</code> slot.</p>
 <p>Users can also create the tSNE embedding with <code><a href="../reference/runTSNE.html">runTSNE()</a></code> function, which works in a similar way as <code><a href="../reference/runUMAP.html">runUMAP()</a></code></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">sce</span>, initialDims <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></code></pre></div>
@@ -911,7 +919,7 @@ for (var i = 0; i < ia_buttons.length; i++){
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Ming Liu, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
