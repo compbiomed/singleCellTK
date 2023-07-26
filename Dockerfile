@@ -24,7 +24,7 @@ RUN mkdir -p /SCTK_docker/ && mkdir /SCTK_docker/script && mkdir /SCTK_docker/mo
 #ADD ./install_packages.R /SCTK_docker/script
 ADD ./exec/SCTK_runQC.R /SCTK_docker/script
 
-
+#Install necessary R packages
 RUN R -e "install.packages('BiocManager')"
 RUN R -e "BiocManager::install('edgeR')"
 RUN R -e "install.packages('SeuratObject')"
