@@ -89,7 +89,7 @@ Imports:
     reshape2,
     shinyalert,
     circlize,
-    enrichR,
+    enrichR (>= 3.2),
     celda,
     shinycssloaders,
     DropletUtils,
