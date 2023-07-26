@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.0</span>
       </span>
     </div>
 
@@ -235,7 +235,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="scanpy_curated_workflow_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Scanpy Curated Workflow</h1>
@@ -302,7 +302,7 @@
 <li>The plot area from where all computed plots can be viewed by the user.</li>
 </ol>
 <p><img src="ui_screenshots/scanpy/scanpy_pca.png"><br></p>
-<p><strong>4. 2D-Embedding</strong> <br> The relationships between cells can be viewed on 2-D scatter plots using embedding algorithms such as ‘UMAP’ and ‘tSNE.’ In these plots, each point is a cell and cells with more similar expression profiles will be closer together in the plot.</p>
+<p><strong>4. 2D-Embedding</strong> <br> The relationships between cells can be viewed on 2-D scatter plots using embedding algorithms such as ‘UMAP’ and ‘tSNE’. In these plots, each point is a cell and cells with more similar expression profiles will be closer together in the plot.</p>
 <ol style="list-style-type: decimal">
 <li>Click on the ‘2-D Embedding’ vertical tab.</li>
 <li>Select the ‘tSNE’ or ‘UMAP’ sub-tab.</li>
@@ -323,7 +323,7 @@
 <p><strong>6. Find Markers</strong> <br> ‘Find Markers’ tab can be used to identify the marker genes that are enriched in each cluster or group. Markers genes can be identified that are differentially expressed between each cluster and all other cluster or between two selected clusters/groups. Expression of individual marker genes can be visualized in Dot plots, Violin plots, Matrix plots and via a Heatmap.</p>
 <ol style="list-style-type: decimal">
 <li>Click on “Find Markers” vertical tab.</li>
-<li>Change parameters if desired and press “Find Markers.”</li>
+<li>Change parameters if desired and press “Find Markers”.</li>
 <li>Differentially expressed features will be displayed in the table on the right. Additional filters can be applied to further refine the list of differentially expressed genes. For example, specifying a log fold change cutoff in addition to an adjusted p-value cutoff can sometimes help identify better marker genes.</li>
 </ol>
 <p><img src="ui_screenshots/scanpy/scanpy_fm_1.png"><br></p>
@@ -381,7 +381,7 @@
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScanpyPCAGeneRanking.html">plotScanpyPCAGeneRanking</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span><span class="op">)</span></span></code></pre></div>
 <p><img src="scanpy_cnsl_screenshots/scanpy_pca_gene_ranking.png"><br></p>
 <p><strong>5. 2-D Embedding</strong> <br></p>
-<p>The relationships between cells can be viewed on 2-D scatter plots using embedding algorithms such as ‘UMAP’ and ‘tSNE.’ In these plots, each point is a cell and cells with more similar expression profiles will be closer together in the plot. <code><a href="../reference/runScanpyTSNE.html">runScanpyTSNE()</a></code> and <code><a href="../reference/runScanpyUMAP.html">runScanpyUMAP()</a></code> can be used to compute 2-D embeddings which are stored in the <code>reducedDim</code> slot of the SCE object.</p>
+<p>The relationships between cells can be viewed on 2-D scatter plots using embedding algorithms such as ‘UMAP’ and ‘tSNE’. In these plots, each point is a cell and cells with more similar expression profiles will be closer together in the plot. <code><a href="../reference/runScanpyTSNE.html">runScanpyTSNE()</a></code> and <code><a href="../reference/runScanpyUMAP.html">runScanpyUMAP()</a></code> can be used to compute 2-D embeddings which are stored in the <code>reducedDim</code> slot of the SCE object.</p>
 <p>Parameters to both functions include <code>useReducedDim</code> which specifies the reduced dimensional object to use as input, <code>reducedDimName</code> which will be the name of this new reduction, and <code>dims</code> which specifies the number of dimensions to use from the reduced dimensional object. The <code><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding()</a></code> function can be used to visualize the results. Below is an example of calculating and displaying a UMAP:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyUMAP.html">runScanpyUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"scanpyPCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyUMAP"</span><span class="op">)</span></span></code></pre></div>

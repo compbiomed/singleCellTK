@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.0</span>
       </span>
     </div>
 
@@ -235,7 +235,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="01_import_and_qc_tutorial_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Importing and Quality Control Tutorial - PBMC3K</h1>
@@ -273,7 +273,7 @@
 <p><img src="ui_screenshots/ui_tutorial/import.png" alt="import"><br></p>
 <ol style="list-style-type: decimal">
 <li>In collapse box <strong>“1. Add sample to import”</strong>, check the radio button <strong>“Import example datasets”</strong>.</li>
-<li>After step 1, a selection will shown for choosing example datasets. Here we select the default option “PBMC 3K (10X).”</li>
+<li>After step 1, a selection will shown for choosing example datasets. Here we select the default option “PBMC 3K (10X)”.</li>
 <li>Click on button <strong>“Add To Sample List”</strong>. At this point, the second collapse box <strong>“2. Create dataset”</strong> will automatically pop up.</li>
 <li>In collapse box <strong>“2. Create dataset”</strong>, click on button <strong>“Import”</strong>, to start loading the dataset.</li>
 </ol>
@@ -397,7 +397,7 @@
 <li>Click on button <strong>“Add a Filter”</strong> in the first grey panel <strong>“Select Cell Filtering Criteria”</strong>.</li>
 <li>In the pop up, select one of the cell metadata variables that stands for the QC metrics. It should be <code>total</code>, <code>detected</code> and <code>mito_percent</code> for each criteria.</li>
 <li>Set the cut-off for each criteria. If you want to keep cells with value <code>total</code> greater than 600, you would check <strong>“Greater than”</strong>, and enter the number <code>600</code>. Similarly, if you want to keep cells with value <code>mito_percent</code> less than 5, you would check <strong>“Less than”</strong> and enter the number <code>5</code>.</li>
-<li>For every criteria, after entering the cut-off, click on button <strong>OK</strong> to add the filter “to the cart.”</li>
+<li>For every criteria, after entering the cut-off, click on button <strong>OK</strong> to add the filter “to the cart”.</li>
 <li>Repeat step 2-5 to add the three filters. After each criteria is added, you can see a new row inserted to the table, as shown in the dashed box in the screenshot below.</li>
 </ol>
 <p><img src="ui_screenshots/ui_tutorial/filter_run.png" alt="import"><br></p>
@@ -436,10 +436,9 @@ var ia_buttons = document.getElementsByClassName("tablinks ia")
 for (var i = 0; i < ia_buttons.length; i++){
     ia_buttons[i].classList.add("active");
 }
-</script><div id="refs" class="references csl-bib-body">
-<div id="ref-Rui2022" class="csl-entry">
-<div class="csl-left-margin">[1] </div>
-<div class="csl-right-inline">R. Hong <em>et al.</em>, <span>“Comprehensive generation, visualization, and reporting of quality control metrics for single-cell RNA sequencing data,”</span> <em>Nature Communications</em>, vol. 13, no. 1688, 2022, doi: <a href="https://doi.org/10.1038/s41467-022-29212-9" class="external-link">10.1038/s41467-022-29212-9</a>.</div>
+</script><div id="refs" class="references">
+<div id="ref-Rui2022">
+<p>[1] R. Hong <em>et al.</em>, “Comprehensive generation, visualization, and reporting of quality control metrics for single-cell rna sequencing data,” <em>Nature Communications</em>, vol. 13, no. 1688, 2022, doi: <a href="https://doi.org/10.1038/s41467-022-29212-9" class="external-link">10.1038/s41467-022-29212-9</a>.</p>
 </div>
 </div>
 </div>

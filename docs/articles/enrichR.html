@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.0</span>
       </span>
     </div>
 
@@ -235,7 +235,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="enrichR_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Enrichment Analysis with enrichR</h1>
@@ -292,7 +292,7 @@
 <strong>Select Gene(s)</strong> - Users can manually select the genes from the available data here.</li>
 </ol></details><details><summary><b>C. Upload a file that contains gene names</b></summary><ol start="10" style="list-style-type: decimal">
 <li><p>Users can upload a text table file where the first column contains the gene identifiers. A text file with one gene per line works the same. CSV, TSV or TXT formats may be accepted. Depending on the exact situation of the file, selection might be applied in the following options.</p></li>
-<li><p><strong>Header</strong> - If the first line of the file is a header (e.g. column names if it’s a table, “Genes,” “Symbols” or etc. if it’s just the genes), users need to check this option to let the APP ignore the line.</p></li>
+<li><p><strong>Header</strong> - If the first line of the file is a header (e.g. column names if it’s a table, “Genes”, “Symbols” or etc. if it’s just the genes), users need to check this option to let the APP ignore the line.</p></li>
 <li><p><strong>Separator</strong> - If the text file is a table, users need to make sure of the separator of entries and make the corresponding selection here. Usually, “Comma” for CSV files and “Tab” for TSV files.</p></li>
 <li><p><strong>Quote</strong> - Depending on whether each entry in the text table file is quoted, users might make a selection here. Users might open file with a text editor software, or run <code>head ${FILENAME}</code> command on Unix system, to exactly have a check on it.</p></li>
 <li><p><strong>Match feature type</strong> - If the type of the gene identifiers (e.g. symbol, ensembl ID, etc.) provided in the file does not match to the default type for the dataset (denoted as “rownames”), users need to select from available feature metadata to find the match.</p></li>
@@ -361,7 +361,7 @@
 <code class="sourceCode R"><span><span class="co"># Print the first five results</span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getEnrichRResult.html">getEnrichRResult</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"tutorial_test"</span><span class="op">)</span><span class="op">$</span><span class="va">result</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></code></pre></div>
-<table style="width:100%;" class="table">
+<table class="table">
 <colgroup>
 <col width="3%">
 <col width="18%">
@@ -429,6 +429,19 @@
 <td align="left">PON2;HES1;SOX4</td>
 </tr>
 <tr class="even">
+<td align="left">32758</td>
+<td align="left">PFOCR_Pathways_2023</td>
+<td align="left">PMC5640840 F8</td>
+<td align="left">2/7</td>
+<td align="left">1.57e-06</td>
+<td align="left">0.000324</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1999</td>
+<td align="left">26709</td>
+<td align="left">HES1;SOX4</td>
+</tr>
+<tr class="odd">
 <td align="left">5530</td>
 <td align="left">LINCS_L1000_Chem_Pert_up</td>
 <td align="left">LJP006 A375 24H-KIN001-043-1.11</td>
@@ -441,7 +454,7 @@
 <td align="left">2992</td>
 <td align="left">PON2;HES1;SOX4</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">4156</td>
 <td align="left">Genes_Associated_with_NIH_Grants</td>
 <td align="left">R01GM072915</td>
@@ -454,19 +467,6 @@
 <td align="left">21778</td>
 <td align="left">DEK;SOX4</td>
 </tr>
-<tr class="even">
-<td align="left">28671</td>
-<td align="left">PFOCR_Pathways</td>
-<td align="left">PMC4278306 Oncoscience-01-0326-G002</td>
-<td align="left">2/9</td>
-<td align="left">2.70e-06</td>
-<td align="left">0.000231</td>
-<td align="left">0</td>
-<td align="left">0</td>
-<td align="left">1428</td>
-<td align="left">18307</td>
-<td align="left">HES1;SOX4</td>
-</tr>
 </tbody>
 </table></details>
 </div>
@@ -477,14 +477,12 @@ document.getElementById("ia-button").click();
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body">
-<div id="ref-Kuleshov2016" class="csl-entry">
-<div class="csl-left-margin">[1] </div>
-<div class="csl-right-inline">M. V. Kuleshov <em>et al.</em>, <span>“<span class="nocase">Enrichr: a comprehensive gene set enrichment analysis web server 2016 update</span>,”</span> <em>Nucleic acids research</em>, vol. 44, no. W1, pp. W90–W97, Jul. 2016, doi: <a href="https://doi.org/10.1093/nar/gkw377" class="external-link">10.1093/nar/gkw377</a>.</div>
+<div id="refs" class="references">
+<div id="ref-Kuleshov2016">
+<p>[1] M. V. Kuleshov <em>et al.</em>, “Enrichr: a comprehensive gene set enrichment analysis web server 2016 update,” <em>Nucleic acids research</em>, vol. 44, no. W1, pp. W90–W97, Jul. 2016, doi: <a href="https://doi.org/10.1093/nar/gkw377" class="external-link">10.1093/nar/gkw377</a>.</p>
 </div>
-<div id="ref-Chen2013" class="csl-entry">
-<div class="csl-left-margin">[2] </div>
-<div class="csl-right-inline">E. Y. Chen <em>et al.</em>, <span>“<span class="nocase">Enrichr: Interactive and collaborative HTML5 gene list enrichment analysis tool</span>,”</span> <em>BMC Bioinformatics</em>, vol. 14, no. 1, pp. 1–14, Apr. 2013, doi: <a href="https://doi.org/10.1186/1471-2105-14-128" class="external-link">10.1186/1471-2105-14-128</a>.</div>
+<div id="ref-Chen2013">
+<p>[2] E. Y. Chen <em>et al.</em>, “Enrichr: Interactive and collaborative HTML5 gene list enrichment analysis tool,” <em>BMC Bioinformatics</em>, vol. 14, no. 1, pp. 1–14, Apr. 2013, doi: <a href="https://doi.org/10.1186/1471-2105-14-128" class="external-link">10.1186/1471-2105-14-128</a>.</p>
 </div>
 </div>
 </div>

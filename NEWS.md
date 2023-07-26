@@ -1,3 +1,7 @@
+Changes in Version 2.10.0 (2023-04-25)
+================================================================================
+* Updated version to match Bioconductor 3.17
+
 Changes in Version 2.8.1 (2022-03-10)
 ================================================================================
 * Added scanpy wrapper functions for use from console

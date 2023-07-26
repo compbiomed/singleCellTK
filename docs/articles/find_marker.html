@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.0</span>
       </span>
     </div>
 
@@ -235,7 +235,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="find_marker_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Find Marker</h1>
@@ -273,7 +273,7 @@
 <p><img src="ui_screenshots/find_marker/fm_ui_main1.png" alt="main1"><br></p>
 <details><summary><b>Detail: Algorithm Parameters</b></summary><ul>
 <li>Method selection - selection input <strong>“Select Differential Expression Method”</strong>. Users will choose which method to use. The method here means the intrinsic dependency used for differential expression (DE) analysis.</li>
-<li>Assay selection - selection input <strong>“Select Assay”</strong>. Users will choose which expression data matrix to use for marker detection. Note that for method “MAST” and “Limma,” a log-normalized feature expression matrix is required.</li>
+<li>Assay selection - selection input <strong>“Select Assay”</strong>. Users will choose which expression data matrix to use for marker detection. Note that for method “MAST” and “Limma”, a log-normalized feature expression matrix is required.</li>
 <li>Cluster definition - selection input <strong>“Cluster Annotation”</strong>. Users will choose a cell level annotation, which defines the cluster assignment for each cell.</li>
 <li>Covariate selection - selection input <strong>“Covariate(s)”</strong>. A covariate is another set of categorization on the cells involved in the analysis, used for modeling. Multiple selections are acceptable.</li>
 <li>Log2FC cutoff setting - numeric input <strong>“Log2FC greater than”</strong>. The cutoff set here will rule out DE genes with absolute value of Log2FC (logged fold change) smaller than the cutoff from the result.</li>
@@ -290,7 +290,7 @@
 <li>Cluster ordering - radio button <strong>“Order blocks by”</strong>. User will determine here whether to order the columns of the heatmap by the cluster name (i.e. annotation) or the size (i.e. number of cells). Checkbox <strong>“Decreasing”</strong>. Users can check this option for putting the alphabetically latter cluster or cluster with the largest size on the left.</li>
 <li>Top N marker cutoff - checkbox and numeric input <strong>“Plot Top N markers of each cluster”</strong>. If the checkbox is not checked, all markers passing the running filter (mentioned above) and plotting filters (will mention below) will be plotted. Otherwise checked, only the top <code>N</code> markers, as <code>N</code> is the input numeric value in the numeric input below the checkbox, for each cluster will be plotted. The ranking is based on Log2FC value. When less than <code>N</code> markers are detected for one cluster, all of them will be plotted.</li>
 <li>Log2FC cutoff - numeric input <strong>“Plot Log2FC greater than”</strong>. The cutoff set here will rule out markers with absolute value of Log2FC (logged fold change) smaller than the cutoff from the plotting. This will not affect the result saved when running the algorithm.</li>
-<li>FDR cutoff - numeric input <strong>““</strong>. The cutoff set here will rule out markers with FDR (false discovery rate) value more than the cutoff from the plotting. Similarly, this will not affect the result saved when running the algorithm.</li>
+<li>FDR cutoff - numeric input <strong>""</strong>. The cutoff set here will rule out markers with FDR (false discovery rate) value more than the cutoff from the plotting. Similarly, this will not affect the result saved when running the algorithm.</li>
 <li>Expression percentage cutoff - numeric inputs <strong>“Plot Cluster Expression Percentage More Than”</strong> and <strong>“Plot Control Expression Percentage Less Than”</strong>. These are filters that will be applied on the result table. Known that the markers for one cluster is identified by performing DE analysis on this cluster against all other cells, the first parameter rules out the marker genes that are expressed in less than a percentage of cells in the cluster of interests. In a similar way, the second parameter excludes the marker genes expressed in more that a percentage of cells in all other clusters.<br>
 </li>
 <li>Mean expression level cutoff - numeric input <strong>“Plot Mean Cluster Expression Level More Than”</strong>. Following the last bullet point, this parameter will keep only the marker genes with mean expression level in the cluster higher than higher than a value.</li>

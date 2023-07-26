@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.0</span>
       </span>
     </div>
 
@@ -235,7 +235,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="02_a_la_carte_workflow_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>A La Carte Workflow Tutorial - PBMC3K</h1>
@@ -572,7 +572,7 @@
 <span>                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>,</span>
 <span>                     groupName1 <span class="op">=</span> <span class="st">"cluster1"</span>, groupName2 <span class="op">=</span> <span class="st">"cluster2"</span>, </span>
 <span>                     analysisName <span class="op">=</span> <span class="st">"cluster1_VS_2"</span><span class="op">)</span></span></code></pre></div>
-<p>Similarly to the marker detection section, SCTK also has a DE analysis specific heatmap plotting function, <code><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap()</a></code>. Here, users can just easily enter the <code>analysisName</code> specified for one run and the function will automatically arrange the output. The heatmap is also splitted into a “checker board,” by the “conditions” (i.e. the groups selected when running <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code>) and the “regulation” (i.e. “up” if the log2 fold change is positive in “group1” against “group2”).</p>
+<p>Similarly to the marker detection section, SCTK also has a DE analysis specific heatmap plotting function, <code><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap()</a></code>. Here, users can just easily enter the <code>analysisName</code> specified for one run and the function will automatically arrange the output. The heatmap is also splitted into a “checker board”, by the “conditions” (i.e. the groups selected when running <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code>) and the “regulation” (i.e. “up” if the log2 fold change is positive in “group1” against “group2”).</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"cluster1_VS_2"</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0.3</span>, rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/deHeatmap-1.png" width="700"></p>
@@ -862,7 +862,7 @@
 <p>Please refer to the <a href="#differential-expression-analysis">DE analysis section</a> for how to reach the tab for performing DE analysis.</p>
 <p><img src="ui_screenshots/ui_tutorial/pathway_de.png" alt="pathway_de"><br></p>
 <ol style="list-style-type: decimal">
-<li>At the selection <strong>“Select assay”</strong>, scroll down and find the section called “redDims.” From here, select the matrix for the VAM score.</li>
+<li>At the selection <strong>“Select assay”</strong>, scroll down and find the section called “redDims”. From here, select the matrix for the VAM score.</li>
 <li>Enter the analysis settings as introduced before.</li>
 <li>Click on button <strong>“Run”</strong>.</li>
 </ol>

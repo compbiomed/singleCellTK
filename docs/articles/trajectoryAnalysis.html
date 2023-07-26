@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.0</span>
       </span>
     </div>
 
@@ -235,7 +235,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="trajectoryAnalysis_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Trajectory Analysis with TSCAN</h1>
@@ -280,7 +280,7 @@
 <p>For finding the MST trajectory and estimating pseudotime, there are always two essential inputs that users should make selection:</p>
 <ul>
 <li><p><strong>“Select input dimension reduction”</strong> - Used for specifying which low-dimensional representation to be used for MST construction.</p></li>
-<li><p><strong>“Select clustering result:”</strong> - Used for specifying which cluster assignment variable in cell metadata should be used for MST construction. When selecting “Auto generate cluster,” the UI will automatically run scran-SNN based Louvain clustering on the specified dimension reduction, and use this cluster assignment as the guide for MST construction.</p></li>
+<li><p><strong>“Select clustering result:”</strong> - Used for specifying which cluster assignment variable in cell metadata should be used for MST construction. When selecting “Auto generate cluster”, the UI will automatically run scran-SNN based Louvain clustering on the specified dimension reduction, and use this cluster assignment as the guide for MST construction.</p></li>
 </ul>
 <p>After the parameters are set, press button <strong>“Run”</strong> to start the calculation. When the process is successfully done, a scatter plot of cells colored with pseudotime, with the trajectory projected to the coordinates, will be shown on the right. By default SCTK UI use the input dimension reduction for visualization. Users can change it to a UMAP embedding with the option <strong>“Select 2D embedding for visualization”</strong> in the dropdown box.</p>
 <p><img src="ui_screenshots/trajectoryAnalysis/tscan_step1_vis.png" alt="step1"><br></p>
@@ -442,10 +442,9 @@ document.getElementById("ia-button").click();
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body">
-<div id="ref-Ji2016" class="csl-entry">
-<div class="csl-left-margin">[1] </div>
-<div class="csl-right-inline">Z. Ji and H. Ji, <span>“TSCAN: Pseudo-time reconstruction and evaluation in single-cell RNA-seq analysis,”</span> <em>Nucleic Acids Research</em>, vol. 44, 2016, doi: <a href="https://doi.org/10.1093/nar/gkw430" class="external-link">10.1093/nar/gkw430</a>.</div>
+<div id="refs" class="references">
+<div id="ref-Ji2016">
+<p>[1] Z. Ji and H. Ji, “TSCAN: Pseudo-time reconstruction and evaluation in single-cell rna-seq analysis,” <em>Nucleic Acids Research</em>, vol. 44, no. 13, 2016, doi: <a href="https://doi.org/10.1093/nar/gkw430" class="external-link">10.1093/nar/gkw430</a>.</p>
 </div>
 </div>
 </div>

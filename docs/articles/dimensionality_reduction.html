@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.0</span>
       </span>
     </div>
 
@@ -235,7 +235,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="dimensionality_reduction_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Dimensionality Reduction</h1>
@@ -254,7 +254,7 @@
 </h2>
 <p>Dimensionality reduction algorithms (PCA/ICA) can be run through the <strong>singleCellTK</strong> toolkit using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute metrics for dimensionality reduction and then visualize the results using any of the available interactive plots. For the console analysis, the toolkit offers a single wrapper function <code><a href="../reference/runDimReduce.html">runDimReduce()</a></code> to compute metrics for any of the integrated algorithms and multiple methods to visualize the computed results.</p>
 <p>Methods available with the toolkit include <code>PCA</code> from <code>scater</code> <span class="citation">[1]</span> package and <code>PCA</code> &amp; <code>ICA</code> from <code>Seurat</code> <span class="citation">[2]</span><span class="citation">[3]</span><span class="citation">[4]</span><span class="citation">[5]</span> package. Visualization options available for users include 2D Component Plot, Elbow Plot, JackStraw Plot and Heatmap. A complete list of supported visualization options against each method are specified at the bottom of the tabs below.</p>
-<p>To view detailed instructions on how to use these methods, please select ‘Interactive Analysis,’ from the tabs below, for performing dimension reduction in shiny application or ‘Console Analysis’ for using these methods in R console:</p>
+<p>To view detailed instructions on how to use these methods, please select ‘Interactive Analysis’, from the tabs below, for performing dimension reduction in shiny application or ‘Console Analysis’ for using these methods in R console:</p>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </div>
@@ -412,26 +412,21 @@ document.getElementById("ia-button").click();
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body">
-<div id="ref-McCarthy2017" class="csl-entry">
-<div class="csl-left-margin">[1] </div>
-<div class="csl-right-inline">D. J. McCarthy, K. R. Campbell, A. T. L. Lun, and Q. F. Wills, <span>“<span class="nocase">Scater: Pre-processing, quality control, normalization and visualization of single-cell RNA-seq data in R</span>,”</span> <em>Bioinformatics</em>, vol. 33, no. 8, pp. 1179–1186, Apr. 2017, doi: <a href="https://doi.org/10.1093/bioinformatics/btw777" class="external-link">10.1093/bioinformatics/btw777</a>.</div>
+<div id="refs" class="references">
+<div id="ref-McCarthy2017">
+<p>[1] D. J. McCarthy, K. R. Campbell, A. T. L. Lun, and Q. F. Wills, “Scater: Pre-processing, quality control, normalization and visualization of single-cell RNA-seq data in R,” <em>Bioinformatics</em>, vol. 33, no. 8, pp. 1179–1186, Apr. 2017, doi: <a href="https://doi.org/10.1093/bioinformatics/btw777" class="external-link">10.1093/bioinformatics/btw777</a>.</p>
 </div>
-<div id="ref-Butler2018" class="csl-entry">
-<div class="csl-left-margin">[2] </div>
-<div class="csl-right-inline">A. Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, <span>“<span class="nocase">Integrating single-cell transcriptomic data across different conditions, technologies, and species</span>,”</span> <em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018, doi: <a href="https://doi.org/10.1038/nbt.4096" class="external-link">10.1038/nbt.4096</a>.</div>
+<div id="ref-Butler2018">
+<p>[2] A. Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, “Integrating single-cell transcriptomic data across different conditions, technologies, and species,” <em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018, doi: <a href="https://doi.org/10.1038/nbt.4096" class="external-link">10.1038/nbt.4096</a>.</p>
 </div>
-<div id="ref-Stuart2019" class="csl-entry">
-<div class="csl-left-margin">[3] </div>
-<div class="csl-right-inline">T. Stuart <em>et al.</em>, <span>“<span class="nocase">Comprehensive Integration of Single-Cell Data</span>,”</span> <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031" class="external-link">10.1016/j.cell.2019.05.031</a>.</div>
+<div id="ref-Stuart2019">
+<p>[3] T. Stuart <em>et al.</em>, “Comprehensive Integration of Single-Cell Data,” <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031" class="external-link">10.1016/j.cell.2019.05.031</a>.</p>
 </div>
-<div id="ref-Satija2017" class="csl-entry">
-<div class="csl-left-margin">[4] </div>
-<div class="csl-right-inline">R. Satija, J. A. Farrell, D. Gennert, A. F. Schier, and A. Regev, <span>“Spatial reconstruction of single-cell gene expression data,”</span> <em>Nature Biotechnology</em>, vol. 33, pp. 495–502, 2015, doi: <a href="https://doi.org/10.1038/nbt.3192" class="external-link">10.1038/nbt.3192</a>.</div>
+<div id="ref-Satija2017">
+<p>[4] R. Satija, J. A. Farrell, D. Gennert, A. F. Schier, and A. Regev, “Spatial reconstruction of single-cell gene expression data,” <em>Nature Biotechnology</em>, vol. 33, pp. 495–502, 2015, doi: <a href="https://doi.org/10.1038/nbt.3192" class="external-link">10.1038/nbt.3192</a>.</p>
 </div>
-<div id="ref-Hao2021" class="csl-entry">
-<div class="csl-left-margin">[5] </div>
-<div class="csl-right-inline">Y. Hao <em>et al.</em>, <span>“Integrated analysis of multimodal single-cell data,”</span> <em>Cell</em>, 2021, doi: <a href="https://doi.org/10.1016/j.cell.2021.04.048" class="external-link">10.1016/j.cell.2021.04.048</a>.</div>
+<div id="ref-Hao2021">
+<p>[5] Y. Hao <em>et al.</em>, “Integrated analysis of multimodal single-cell data,” <em>Cell</em>, 2021, doi: <a href="https://doi.org/10.1016/j.cell.2021.04.048" class="external-link">10.1016/j.cell.2021.04.048</a>.</p>
 </div>
 </div>
 </div>
