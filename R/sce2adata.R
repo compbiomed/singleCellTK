@@ -39,8 +39,7 @@
     obsmNames <- SingleCellExperiment::reducedDimNames(SCE)
     if(length(obsmNames) > 0){
         for (i in seq_along(obsmNames)) {
-            AnnData$obsm$'__setitem__'(obsmNames[i],
-                                       SingleCellExperiment::reducedDim(SCE, obsmNames[i]))
+            reticulate::py_set_item(AnnData$obsm, obsmNames[i], SingleCellExperiment::reducedDim(SCE, obsmNames[i]))
         }
     }
 
@@ -49,7 +48,7 @@
     for (i in seq_along(allAssayNames)) {
         oneName <- allAssayNames[i]
         if (!oneName == useAssay) {
-            AnnData$layers$'__setitem__'(oneName, as.matrix(t(SummarizedExperiment::assay(SCE, oneName))))
+            reticulate::py_set_item(AnnData$layers, oneName, as.matrix(t(SummarizedExperiment::assay(SCE, oneName))))
         }
     }
     return(AnnData)
