@@ -13,13 +13,51 @@
 #' @return A Python anndata.AnnData object
 #' @noRd
 .sce2adata <- function(SCE, useAssay = 'counts') {
-    # Transfer SCE object back to AnnData
-    # Argument check first
-    stopifnot(inherits(SCE, "SingleCellExperiment"))
 
-    # Extract information that correspond to AnnData structure
-    #X <- as.matrix(t(SummarizedExperiment::assay(SCE, useAssay)))
-    # Sparse matrix conversion supported now, commenting the line above.
+    # TODO: use zellkonverter in the future, temporary fix for now
+    # this is how we used to do it until we started running into problems with the getters and setters
+    # in the future, this function might be depreciated altogether since it is only called internally
+    # and we will use zellkonverter::writeH5AD directly from an SCE object
+
+    # # Transfer SCE object back to AnnData
+    # # Argument check first
+    # stopifnot(inherits(SCE, "SingleCellExperiment"))
+
+    # # Extract information that correspond to AnnData structure
+    # #X <- as.matrix(t(SummarizedExperiment::assay(SCE, useAssay)))
+    # # Sparse matrix conversion supported now, commenting the line above.
+    # X <- t(SummarizedExperiment::assay(SCE, useAssay))
+    # AnnData <- sc$AnnData(X = X)
+    # obs <- as.data.frame(SummarizedExperiment::colData(SCE))
+    # if(length(obs) > 0){
+    #     AnnData$obs = obs
+    # } else {
+    #     AnnData$obs_names <- colnames(SCE)
+    # }
+    # var <- as.data.frame(SummarizedExperiment::rowData(SCE))
+    # if(length(var) > 0){
+    #     AnnData$var = var
+    # } else {
+    #     AnnData$var_names <- rownames(SCE)
+    # }
+    # # uns  <- S4Vectors::metadata(SCE)
+    # # if(length(uns) > 0){ AnnData$uns <- uns }
+    # obsmNames <- SingleCellExperiment::reducedDimNames(SCE)
+    # if(length(obsmNames) > 0){
+    #     for (i in seq_along(obsmNames)) {
+    #         AnnData$obsm$'__setitem__'(obsmNames[i], SingleCellExperiment::reducedDim(SCE, obsmNames[i]))
+    #     }
+    # }
+
+    # # Furthermore, the other assays will for now also be saved to .layers
+    # allAssayNames <- SummarizedExperiment::assayNames(SCE)
+    # for (i in seq_along(allAssayNames)) {
+    #     oneName <- allAssayNames[i]
+    #     if (!oneName == useAssay) {
+    #         AnnData$layers$'__setitem__'(oneName, as.matrix(t(SummarizedExperiment::assay(SCE, oneName))))
+    #     }
+    # }
+
     X <- t(SummarizedExperiment::assay(SCE, useAssay))
     AnnData <- sc$AnnData(X = X)
     obs <- as.data.frame(SummarizedExperiment::colData(SCE))
@@ -34,22 +72,35 @@
     } else {
         AnnData$var_names <- rownames(SCE)
     }
+    # previously commented out by someone else
     # uns  <- S4Vectors::metadata(SCE)
     # if(length(uns) > 0){ AnnData$uns <- uns }
     obsmNames <- SingleCellExperiment::reducedDimNames(SCE)
+    # new method: make a list of dataframes, which Python can process for H5AD construction
+    # initialize empty list for obsm and layers, which are the things we need to do
+    obsm <- list()
+
     if(length(obsmNames) > 0){
         for (i in seq_along(obsmNames)) {
-            reticulate::py_set_item(AnnData$obsm, obsmNames[i], SingleCellExperiment::reducedDim(SCE, obsmNames[i]))
+            obsm[[obsmNames[i]]] <- data.frame(SingleCellExperiment::reducedDim(SCE, obsmNames[i]))
+            #previously using the dunder setter, which doesn't always work
+            #AnnData$obsm$'__setitem__'(obsmNames[i], SingleCellExperiment::reducedDim(SCE, obsmNames[i]))
         }
     }
+    
+    AnnData$obsm <- obsm
 
     # Furthermore, the other assays will for now also be saved to .layers
     allAssayNames <- SummarizedExperiment::assayNames(SCE)
+    layers <- list()
     for (i in seq_along(allAssayNames)) {
         oneName <- allAssayNames[i]
         if (!oneName == useAssay) {
-            reticulate::py_set_item(AnnData$layers, oneName, as.matrix(t(SummarizedExperiment::assay(SCE, oneName))))
+            layers[[allAssayNames[i]]] <- data.frame(as.matrix(t(SummarizedExperiment::assay(SCE, oneName))))
+            # this is the way we used to do it, through a Pythonic dunder setter
+            #AnnData$layers$'__setitem__'(oneName, as.matrix(t(SummarizedExperiment::assay(SCE, oneName))))
         }
     }
+    AnnData$layers <- layers
     return(AnnData)
 }
