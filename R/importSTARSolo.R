@@ -50,7 +50,7 @@
     res <- vector("list", length = length(samples))
 
     temp <- STARsoloOuts
-    STARsoloOuts <- paste0(STARsoloOuts, "/filtered")
+    #STARsoloOuts <- paste0(STARsoloOuts, "/filtered")
     STARsoloOuts <- .getVectorized(STARsoloOuts, length(samples))
     matrixFileNames <- .getVectorized(matrixFileNames, length(samples))
     featuresFileNames <- .getVectorized(featuresFileNames, length(samples))
@@ -169,7 +169,7 @@
 importSTARsolo <- function(
     STARsoloDirs,
     samples,
-    STARsoloOuts = c("Gene", "GeneFull"),
+    STARsoloOuts = c("Gene", "GeneFull", "Gene/raw", "Gene/filtered", "GeneFull/raw", "GeneFull/filtered"),
     matrixFileNames = "matrix.mtx",
     featuresFileNames = "features.tsv",
     barcodesFileNames = "barcodes.tsv",
