@@ -50,7 +50,12 @@
     res <- vector("list", length = length(samples))
 
     temp <- STARsoloOuts
-    #STARsoloOuts <- paste0(STARsoloOuts, "/filtered")
+    # in case the old style arguments get passed in
+    if (length(STARsoloOuts) == 2 && identical(STARsoloOuts, c("Gene", "GeneFull"))) {
+        STARsoloOuts <- paste0(STARsoloOuts, "/filtered")
+    } else if (length(STARsoloOuts) == 1 && (STARsoloOuts == "Gene" || STARsoloOuts == "GeneFull")) {
+        STARsoloOuts <- paste0(STARsoloOuts, "/filtered")
+    }
     STARsoloOuts <- .getVectorized(STARsoloOuts, length(samples))
     matrixFileNames <- .getVectorized(matrixFileNames, length(samples))
     featuresFileNames <- .getVectorized(featuresFileNames, length(samples))
@@ -169,7 +174,7 @@
 importSTARsolo <- function(
     STARsoloDirs,
     samples,
-    STARsoloOuts = c("Gene", "GeneFull", "Gene/raw", "Gene/filtered", "GeneFull/raw", "GeneFull/filtered"),
+    STARsoloOuts = c("Gene", "GeneFull"),
     matrixFileNames = "matrix.mtx",
     featuresFileNames = "features.tsv",
     barcodesFileNames = "barcodes.tsv",
@@ -178,8 +183,14 @@ importSTARsolo <- function(
     delayedArray = FALSE,
     rowNamesDedup = TRUE) {
 
+    # accepted STARSolo output directories
+    STARsoloOutputs <- c("Gene", "GeneFull", "Gene/filtered", "Gene/raw", "GeneFull/raw", "GeneFull/filtered")
     class <- match.arg(class)
-    STARsoloOuts <- match.arg(STARsoloOuts)
+    STARsoloOuts <- match.arg(STARsoloOuts, STARsoloOutputs, several.ok = TRUE)
+    # in case the old style arguments get passed in
+    if (identical(STARsoloOuts, c("Gene", "GeneFull"))) {
+        STARsoloOuts <- paste0(STARsoloOuts, "/filtered")
+    }
 
     .importSTARsolo(
         STARsoloDirs = STARsoloDirs,
