@@ -691,10 +691,14 @@ qcInputProcess <- function(preproc,
         if (dataType == "Both") {
             dropletSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
             cellSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix", delayedArray=FALSE)
-        } else if (dataType == "Cell") {
+        } else if (dataType == "Cell" && !is.null(path)) {
             cellSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix", delayedArray=FALSE)
-        } else if (dataType == "Droplet") {
+        } else if (dataType == "Cell" && !is.null(fil)) {
+            cellSCE <- importSTARsolo(STARsoloDirs = fil, samples = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix", delayedArray=FALSE)
+        } else if (dataType == "Droplet" && !is.null(path)) {
             dropletSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
+        } else if (dataType == "Droplet" && !is.null(raw)) {
+            dropletSCE <- importSTARsolo(STARsoloDirs = raw, samples = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
         }
         return(list(dropletSCE, cellSCE))
     }
