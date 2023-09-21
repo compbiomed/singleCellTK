@@ -435,6 +435,8 @@ for(i in seq_along(process)) {
     if (dataType == "Both") {
         mergedDropletSCE <- mergeSCEColData(dropletSCE, cellSCE)
         mergedFilteredSCE <- mergeSCEColData(cellSCE, dropletSCE)
+        #mergedDropletSCE <- dropletSCE
+        #mergedCellSCE <- cellSCE
     }
 
     if (dataType == "Cell") {
@@ -445,7 +447,7 @@ for(i in seq_along(process)) {
         if (isTRUE(detectCell)) {
             mergedDropletSCE <- mergeSCEColData(dropletSCE, cellSCE)
             mergedFilteredSCE <- mergeSCEColData(cellSCE, dropletSCE)
-        } else{
+        } else {
             mergedDropletSCE <- dropletSCE
         }
     }

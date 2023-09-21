@@ -241,7 +241,7 @@ shinyPanelImport <- fluidPage(
       conditionalPanel(
         condition = sprintf("input['%s'] == 'cellRanger3'", "uploadChoice"),
         h4("Upload data for Cell Ranger:"),
-        h5("Select matrix, barcodes and feature files for all samples using the file selectors below:"),
+        h5("Select matrix, barcodes and feature files for a sample using the file selectors below:"),
         fluidRow(
           column(width = 4,
                  wellPanel(
@@ -306,6 +306,8 @@ shinyPanelImport <- fluidPage(
                  )
           )
         ),
+        textInput("sampleNameCR", "Name for this sample:", value = "sample", placeholder = "sample"),
+        tags$h5("Note: Each sample should be given a unique name", style = "color: red;"),
         actionButton("addFilesImport_custom", "Add to dataset list")
         #actionButton("addCR3Sample", "Add a sample"),
       ),
@@ -319,7 +321,7 @@ shinyPanelImport <- fluidPage(
       conditionalPanel(
         condition = sprintf("input['%s'] == 'starSolo'", "uploadChoice"),
         h4("Upload data for starSolo:"),
-        h5("Select matrix, barcodes and feature files for all samples using the file selectors below:"),
+        h5("Select matrix, barcodes and feature files for a sample using the file selectors below:"),
         fluidRow(
           column(width = 4,
                  wellPanel(
@@ -367,6 +369,8 @@ shinyPanelImport <- fluidPage(
                  )
           )
         ),
+        textInput("sampleNameSS", "Name for this sample:", value = "sample", placeholder = "sample"),
+        tags$h5("Note: Each sample should be given a unique name", style = "color: red;"),
         actionButton("addFilesImport_custom_starSolo", "Add to dataset list")
         #actionButton("addCR3Sample", "Add a sample"),
       ),
@@ -380,7 +384,7 @@ shinyPanelImport <- fluidPage(
       conditionalPanel(
         condition = sprintf("input['%s'] == 'busTools'", "uploadChoice"),
         h4("Upload data for BUSTools:"),
-        h5("Select matrix, barcodes and feature files for all samples using the file selectors below:"),
+        h5("Select matrix, barcodes and feature files for a sample using the file selectors below:"),
         fluidRow(
           column(width = 4,
                  wellPanel(
@@ -428,6 +432,8 @@ shinyPanelImport <- fluidPage(
                  )
           )
         ),
+        textInput("sampleNameBT", "Name for this sample:", value = "sample", placeholder = "sample"),
+        tags$h5("Note: Each sample should be given a unique name", style = "color: red;"),
         actionButton("addFilesImport_custom_busTools", "Add to dataset list")
         #actionButton("addCR3Sample", "Add a sample"),
       ),
@@ -448,7 +454,7 @@ shinyPanelImport <- fluidPage(
       conditionalPanel(
         condition = sprintf("input['%s'] == 'seqc'", "uploadChoice"),
         h4("Upload data for SEQC:"),
-        h5("Select matrix, barcodes and feature files for all samples using the file selectors below:"),
+        h5("Select matrix, barcodes and feature files for a sample using the file selectors below:"),
         fluidRow(
           column(width = 4,
                  wellPanel(
@@ -515,13 +521,15 @@ shinyPanelImport <- fluidPage(
                  )
           )
         ),
+        textInput("sampleNameSC", "Name for this sample:", value = "sample", placeholder = "sample"),
+        tags$h5("Note: Each sample should be given a unique name", style = "color: red;"),
         actionButton("addFilesImport_custom_seqc", "Add to dataset list")
         #actionButton("addCR3Sample", "Add a sample"),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'optimus'", "uploadChoice"),
         h4("Upload data for Optimus:"),
-        h5("Select matrix, barcodes and feature files for all samples using the file selectors below:"),
+        h5("Select matrix, barcodes and feature files for a sample using the file selectors below:"),
         fluidRow(
           column(width = 4,
                  wellPanel(
@@ -620,6 +628,8 @@ shinyPanelImport <- fluidPage(
                  )
           )
         ),
+        textInput("sampleNameOP", "Name for this sample:", value = "sample", placeholder = "sample"),
+        tags$h5("Note: Each sample should be given a unique name", style = "color: red;"),
         actionButton("addFilesImport_custom_optimus", "Add to dataset list")
         #actionButton("addCR3Sample", "Add a sample"),
       ),

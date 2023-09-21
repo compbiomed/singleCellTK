@@ -34,6 +34,7 @@ exportSCEtoAnnData <- function(sce,
                                 compressionOpts = NULL,
                                 forceDense = FALSE){
   compression <- match.arg(compression)
+  # currently not needed
   #forceDense <- match.arg(forceDense)
   if (compression == 'None'){
     compression <- NULL
@@ -68,18 +69,28 @@ exportSCEtoAnnData <- function(sce,
       SummarizedExperiment::assay(sce, assay) <- .convertToMatrix(SummarizedExperiment::assay(sce, assay))
     }
   }
+  # convert to AnnData
   annData <- .sce2adata(sce, useAssay)
-  if (is.null(forceDense)) {
-    anndata::write_h5ad(annData, 
-                      filePath,
-                      compression = compression,
-                      compression_opts = compressionOpts)
-  }
-  else {
-    anndata::write_h5ad(annData, 
-                      filePath,
-                      compression = compression,
-                      compression_opts = compressionOpts,
-                      as.dense = forceDense)
-  }
+  # use zellkonverter to output h5ad, but first we have to turn it back into SCE for it to process
+  # and zellkonverter won't take the output SCE as it stands
+  out <- zellkonverter::AnnData2SCE(annData)
+  zellkonverter::writeH5AD(out, file = filePath, compression = compression)
+
+  # commented out until a permanent fix can be found with zellkonverter
+  # in the future, sce2adata may be depreciated altogether in favor of just this function, since zellkonverter's output takes an SCE object and writes it
+  # and we can drop forceDense from the options, because sparse is default
+
+  #if (is.null(forceDense)) {
+  #  anndata::write_h5ad(annData, 
+  #                    filePath,
+  #                     compression = compression,
+  #                     compression_opts = compressionOpts)
+  # }
+  # else {
+  #   anndata::write_h5ad(annData, 
+  #                     filePath,
+  #                     compression = compression,
+  #                     compression_opts = compressionOpts,
+  #                     as.dense = forceDense)
+  # }
 }
