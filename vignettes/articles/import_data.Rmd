@@ -85,7 +85,7 @@ The preprocessing tools that SCTK supports are circled in the screenshot above a
   <summary><b>Cell Ranger</b></summary>
 ```` 
 
-The import procedure for Cell Ranger versions 2 and 3 are the same. To import a Cell Ranger sample, the user must select how they would like to import the sample: select a base directory that holds multiple sample directories, select a single sample directory, or select a directory holding the data files for a sample. Depending on this selection, the user must then provide the apprpriate directory paths and sample names and then click "OK."  
+The import procedure for Cell Ranger versions 2 and 3 are the same. Users must select the appropriate files (matrix, barcode and feature files) and upload them for each sample separately. Once all samples are uploaded, click on **Import** button to import them for downstream use. 
 
 ![cell ranger](ui_screenshots/import/import_ui_cellRanger.png)\
 
