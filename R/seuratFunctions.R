@@ -1400,7 +1400,7 @@ convertSCEToSeurat <-
           inSCE@metadata$seurat$obj@reductions$umap
       }
       if (!is.null(inSCE@metadata$seurat$obj@meta.data)) {
-        seuratObject@meta.data <- inSCE@metadata$seurat$obj@meta.data
+        seuratObject@meta.data <- inSCE@metadata$seurat$obj@meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj@meta.data)),]
       }
       if (!is.null(inSCE@metadata$seurat$obj@commands)) {
         seuratObject@commands <- inSCE@metadata$seurat$obj@commands
@@ -1461,6 +1461,7 @@ convertSCEToSeurat <-
     }
 
     # Ensuring that colnames from input SCE converted to Seurat object are same in the Seurat metadata slot
+    seuratObject@meta.data <- seuratObject@meta.data[colnames(seuratObject),]
     rownames(seuratObject@meta.data) <- colnames(seuratObject)
 
     return(seuratObject)
