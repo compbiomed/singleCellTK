@@ -156,135 +156,274 @@ runSoupX <- function(inSCE,
 
     message(paste0(date(), " ... Running 'SoupX'"))
 
-    results <- list()
-    sampleIdx <- list()
-    for (s in uniqSample) {
-        message(paste0(date(), " ... Running 'SoupX' on sample: ", s))
-        cellIdx <- sample == s
-        sampleIdx[[s]] <- cellIdx
-        tempSCE <- inSCE[,cellIdx]
-        if (isTRUE(SingleBGBatchForAllBatch)) {
-            res <- .SoupXOneBatch(inSCE = tempSCE,
-                                  useAssay = useAssay,
-                                  background = background,
-                                  bgAssayName = bgAssayName,
-                                  cluster = cluster,
-                                  reducedDimName = reducedDimName,
-                                  tfidfMin = tfidfMin,
-                                  soupQuantile = soupQuantile,
-                                  maxMarkers = maxMarkers,
-                                  contaminationRange = contaminationRange,
-                                  rhoMaxFDR = rhoMaxFDR,
-                                  priorRho = priorRho,
-                                  priorRhoStdDev = priorRhoStdDev,
-                                  forceAccept = forceAccept,
-                                  adjustMethod = adjustMethod,
-                                  roundToInt = roundToInt,
-                                  tol = tol,
-                                  pCut = pCut)
-        } else {
-            if (!is.null(background)) {
-                bgIdx <- bgBatch == s
-                tempBG <- background[,bgIdx]
-            } else {
-                tempBG <- NULL
+    # try/catch block in case SoupX finds no marker genes
+    result <- tryCatch(
+        {
+            results <- list()
+            sampleIdx <- list()
+            for (s in uniqSample) {
+                message(paste0(date(), " ... Running 'SoupX' on sample: ", s))
+                cellIdx <- sample == s
+                sampleIdx[[s]] <- cellIdx
+                tempSCE <- inSCE[,cellIdx]
+                if (isTRUE(SingleBGBatchForAllBatch)) {
+                    res <- .SoupXOneBatch(inSCE = tempSCE,
+                                          useAssay = useAssay,
+                                          background = background,
+                                          bgAssayName = bgAssayName,
+                                          cluster = cluster,
+                                          reducedDimName = reducedDimName,
+                                          tfidfMin = tfidfMin,
+                                          soupQuantile = soupQuantile,
+                                          maxMarkers = maxMarkers,
+                                          contaminationRange = contaminationRange,
+                                          rhoMaxFDR = rhoMaxFDR,
+                                          priorRho = priorRho,
+                                          priorRhoStdDev = priorRhoStdDev,
+                                          forceAccept = forceAccept,
+                                          adjustMethod = adjustMethod,
+                                          roundToInt = roundToInt,
+                                          tol = tol,
+                                          pCut = pCut)
+                } else {
+                    if (!is.null(background)) {
+                        bgIdx <- bgBatch == s
+                        tempBG <- background[,bgIdx]
+                    } else {
+                        tempBG <- NULL
+                    }
+                    res <- .SoupXOneBatch(inSCE = tempSCE,
+                                          useAssay = useAssay,
+                                          background = tempBG,
+                                          bgAssayName = bgAssayName,
+                                          cluster = cluster,
+                                          reducedDimName = reducedDimName,
+                                          tfidfMin = tfidfMin,
+                                          soupQuantile = soupQuantile,
+                                          maxMarkers = maxMarkers,
+                                          contaminationRange = contaminationRange,
+                                          rhoMaxFDR = rhoMaxFDR,
+                                          priorRho = priorRho,
+                                          priorRhoStdDev = priorRhoStdDev,
+                                          forceAccept = forceAccept,
+                                          adjustMethod = adjustMethod,
+                                          roundToInt = roundToInt,
+                                          tol = tol,
+                                          pCut = pCut)
+                }
+                results[[s]] <- res
             }
-            res <- .SoupXOneBatch(inSCE = tempSCE,
-                                  useAssay = useAssay,
-                                  background = tempBG,
-                                  bgAssayName = bgAssayName,
-                                  cluster = cluster,
-                                  reducedDimName = reducedDimName,
-                                  tfidfMin = tfidfMin,
-                                  soupQuantile = soupQuantile,
-                                  maxMarkers = maxMarkers,
-                                  contaminationRange = contaminationRange,
-                                  rhoMaxFDR = rhoMaxFDR,
-                                  priorRho = priorRho,
-                                  priorRhoStdDev = priorRhoStdDev,
-                                  forceAccept = forceAccept,
-                                  adjustMethod = adjustMethod,
-                                  roundToInt = roundToInt,
-                                  tol = tol,
-                                  pCut = pCut)
-        }
-        results[[s]] <- res
-    }
-    # Initiate new assay by copying the input selection
-    # And then replace with new value at sample indices
-    # Similarly for colData and rowData
-    corrAssay <- SummarizedExperiment::assay(inSCE, useAssay)
-    newColData <- SummarizedExperiment::colData(inSCE)
-    if (!is.null(background)) {
-        newColData$soupX_bg_nUMIs <- NA
-        newColData$soupX_bg_clusters <- NA
-        newColData$soupX_bg_contamination <- NA
-    } else {
-        newColData$soupX_nUMIs <- NA
-        newColData$soupX_clusters <- NA
-        newColData$soupX_contamination <- NA
-    }
-    newRowData <- SummarizedExperiment::rowData(inSCE)
+            # Initiate new assay by copying the input selection
+            # And then replace with new value at sample indices
+            # Similarly for colData and rowData
+            corrAssay <- SummarizedExperiment::assay(inSCE, useAssay)
+            newColData <- SummarizedExperiment::colData(inSCE)
+            if (!is.null(background)) {
+                newColData$soupX_bg_nUMIs <- NA
+                newColData$soupX_bg_clusters <- NA
+                newColData$soupX_bg_contamination <- NA
+            } else {
+                newColData$soupX_nUMIs <- NA
+                newColData$soupX_clusters <- NA
+                newColData$soupX_contamination <- NA
+            }
+            newRowData <- SummarizedExperiment::rowData(inSCE)
 
 
-    for (s in names(results)) {
-        corrAssay[,sampleIdx[[s]]] <- results[[s]]$out
-        meta <- results[[s]]$sc$fit
-        meta$nDropUMIs <- results[[s]]$sc$nDropUMIs
-        meta$param <- list(sample = sample, useAssay = useAssay,
-                           bgAssayName = bgAssayName, bgBatch = bgBatch,
-                           assayName = assayName,
-                           tfidfMin = tfidfMin,
-                           soupQuantile = soupQuantile,
-                           maxMarkers = maxMarkers,
-                           contaminationRange = contaminationRange,
-                           rhoMaxFDR = rhoMaxFDR,
-                           priorRho = priorRho,
-                           priorRhoStdDev = priorRhoStdDev,
-                           forceAccept = forceAccept,
-                           adjustMethod = adjustMethod,
-                           roundToInt = roundToInt,
-                           tol = tol,
-                           pCut = pCut,
-                           reducedDimName = paste0(reducedDimName, s),
-                           sessionInfo = utils::sessionInfo())
-        # Output inSCE need to have separated UMAP calculated for each sample
-        sampleUMAP <- matrix(nrow = ncol(inSCE), ncol = 2)
-        rownames(sampleUMAP) <- colnames(inSCE)
-        sampleUMAP[sampleIdx[[s]]] <- results[[s]]$umap
-        if (!is.null(cluster)) {
-            meta$param$cluster <- cluster
-        } else {
-            if (!is.null(background)) {
-                meta$param$cluster <- "soupX_bg_clusters"
-            } else {
-                meta$param$cluster <- "soupX_clusters"
+            for (s in names(results)) {
+                corrAssay[,sampleIdx[[s]]] <- results[[s]]$out
+                meta <- results[[s]]$sc$fit
+                meta$nDropUMIs <- results[[s]]$sc$nDropUMIs
+                meta$param <- list(sample = sample, useAssay = useAssay,
+                                   bgAssayName = bgAssayName, bgBatch = bgBatch,
+                                   assayName = assayName,
+                                   tfidfMin = tfidfMin,
+                                   soupQuantile = soupQuantile,
+                                   maxMarkers = maxMarkers,
+                                   contaminationRange = contaminationRange,
+                                   rhoMaxFDR = rhoMaxFDR,
+                                   priorRho = priorRho,
+                                   priorRhoStdDev = priorRhoStdDev,
+                                   forceAccept = forceAccept,
+                                   adjustMethod = adjustMethod,
+                                   roundToInt = roundToInt,
+                                   tol = tol,
+                                   pCut = pCut,
+                                   reducedDimName = paste0(reducedDimName, s),
+                                   sessionInfo = utils::sessionInfo())
+                # Output inSCE need to have separated UMAP calculated for each sample
+                sampleUMAP <- matrix(nrow = ncol(inSCE), ncol = 2)
+                rownames(sampleUMAP) <- colnames(inSCE)
+                sampleUMAP[sampleIdx[[s]]] <- results[[s]]$umap
+                if (!is.null(cluster)) {
+                    meta$param$cluster <- cluster
+                } else {
+                    if (!is.null(background)) {
+                        meta$param$cluster <- "soupX_bg_clusters"
+                    } else {
+                        meta$param$cluster <- "soupX_clusters"
+                    }
+                }
+                if (!is.null(background)) {
+                    newColData$soupX_bg_nUMIs[sampleIdx[[s]]] <- results[[s]]$sc$metaData$nUMIs
+                    newColData$soupX_bg_clusters[sampleIdx[[s]]] <- paste0(s, "-", results[[s]]$sc$metaData$clusters)
+                    newColData$soupX_bg_contamination[sampleIdx[[s]]] <- results[[s]]$sc$metaData$rho
+                    newRowData[[paste0("soupX_bg_",s,"_est")]] <- results[[s]]$sc$soupProfile$est
+                    newRowData[[paste0("soupX_bg_",s,"_counts")]] <- results[[s]]$sc$soupProfile$counts
+                    getSoupX(inSCE, sampleID = s, background = TRUE) <- meta
+                } else {
+                    newColData$soupX_nUMIs[sampleIdx[[s]]] <- results[[s]]$sc$metaData$nUMIs
+                    newColData$soupX_clusters[sampleIdx[[s]]] <- paste0(s, "-", results[[s]]$sc$metaData$clusters)
+                    newColData$soupX_contamination[sampleIdx[[s]]] <- results[[s]]$sc$metaData$rho
+                    newRowData[[paste0("soupX_",s,"_est")]] <- results[[s]]$sc$soupProfile$est
+                    newRowData[[paste0("soupX_",s,"_counts")]] <- results[[s]]$sc$soupProfile$counts
+                    getSoupX(inSCE, sampleID = s) <- meta
+                }
+                SingleCellExperiment::reducedDim(inSCE,
+                                                paste0(reducedDimName,
+                                                        s)) <- sampleUMAP
             }
+            expData(inSCE, assayName, tag = "raw") <- corrAssay
+            inSCE <- expSetDataTag(inSCE, "raw", assayName)
+            SummarizedExperiment::colData(inSCE) <- newColData
+            SummarizedExperiment::rowData(inSCE) <- newRowData
+        }, 
+        error=function(cond) {
+            message(paste0(date(), " ... Error occured in 'SoupX'; skipping 'SoupX'. Details as follows:"))
+            message(cond)
         }
-        if (!is.null(background)) {
-            newColData$soupX_bg_nUMIs[sampleIdx[[s]]] <- results[[s]]$sc$metaData$nUMIs
-            newColData$soupX_bg_clusters[sampleIdx[[s]]] <- paste0(s, "-", results[[s]]$sc$metaData$clusters)
-            newColData$soupX_bg_contamination[sampleIdx[[s]]] <- results[[s]]$sc$metaData$rho
-            newRowData[[paste0("soupX_bg_",s,"_est")]] <- results[[s]]$sc$soupProfile$est
-            newRowData[[paste0("soupX_bg_",s,"_counts")]] <- results[[s]]$sc$soupProfile$counts
-            getSoupX(inSCE, sampleID = s, background = TRUE) <- meta
-        } else {
-            newColData$soupX_nUMIs[sampleIdx[[s]]] <- results[[s]]$sc$metaData$nUMIs
-            newColData$soupX_clusters[sampleIdx[[s]]] <- paste0(s, "-", results[[s]]$sc$metaData$clusters)
-            newColData$soupX_contamination[sampleIdx[[s]]] <- results[[s]]$sc$metaData$rho
-            newRowData[[paste0("soupX_",s,"_est")]] <- results[[s]]$sc$soupProfile$est
-            newRowData[[paste0("soupX_",s,"_counts")]] <- results[[s]]$sc$soupProfile$counts
-            getSoupX(inSCE, sampleID = s) <- meta
-        }
-        SingleCellExperiment::reducedDim(inSCE,
-                                         paste0(reducedDimName,
-                                                s)) <- sampleUMAP
-    }
-    expData(inSCE, assayName, tag = "raw") <- corrAssay
-    inSCE <- expSetDataTag(inSCE, "raw", assayName)
-    SummarizedExperiment::colData(inSCE) <- newColData
-    SummarizedExperiment::rowData(inSCE) <- newRowData
+    )
     return(inSCE)
+
+    # results <- list()
+    # sampleIdx <- list()
+    # for (s in uniqSample) {
+    #     message(paste0(date(), " ... Running 'SoupX' on sample: ", s))
+    #     cellIdx <- sample == s
+    #     sampleIdx[[s]] <- cellIdx
+    #     tempSCE <- inSCE[,cellIdx]
+    #     if (isTRUE(SingleBGBatchForAllBatch)) {
+    #         res <- .SoupXOneBatch(inSCE = tempSCE,
+    #                               useAssay = useAssay,
+    #                               background = background,
+    #                               bgAssayName = bgAssayName,
+    #                               cluster = cluster,
+    #                               reducedDimName = reducedDimName,
+    #                               tfidfMin = tfidfMin,
+    #                               soupQuantile = soupQuantile,
+    #                               maxMarkers = maxMarkers,
+    #                               contaminationRange = contaminationRange,
+    #                               rhoMaxFDR = rhoMaxFDR,
+    #                               priorRho = priorRho,
+    #                               priorRhoStdDev = priorRhoStdDev,
+    #                               forceAccept = forceAccept,
+    #                               adjustMethod = adjustMethod,
+    #                               roundToInt = roundToInt,
+    #                               tol = tol,
+    #                               pCut = pCut)
+    #     } else {
+    #         if (!is.null(background)) {
+    #             bgIdx <- bgBatch == s
+    #             tempBG <- background[,bgIdx]
+    #         } else {
+    #             tempBG <- NULL
+    #         }
+    #         res <- .SoupXOneBatch(inSCE = tempSCE,
+    #                               useAssay = useAssay,
+    #                               background = tempBG,
+    #                               bgAssayName = bgAssayName,
+    #                               cluster = cluster,
+    #                               reducedDimName = reducedDimName,
+    #                               tfidfMin = tfidfMin,
+    #                               soupQuantile = soupQuantile,
+    #                               maxMarkers = maxMarkers,
+    #                               contaminationRange = contaminationRange,
+    #                               rhoMaxFDR = rhoMaxFDR,
+    #                               priorRho = priorRho,
+    #                               priorRhoStdDev = priorRhoStdDev,
+    #                               forceAccept = forceAccept,
+    #                               adjustMethod = adjustMethod,
+    #                               roundToInt = roundToInt,
+    #                               tol = tol,
+    #                               pCut = pCut)
+    #     }
+    #     results[[s]] <- res
+    # }
+    # # Initiate new assay by copying the input selection
+    # # And then replace with new value at sample indices
+    # # Similarly for colData and rowData
+    # corrAssay <- SummarizedExperiment::assay(inSCE, useAssay)
+    # newColData <- SummarizedExperiment::colData(inSCE)
+    # if (!is.null(background)) {
+    #     newColData$soupX_bg_nUMIs <- NA
+    #     newColData$soupX_bg_clusters <- NA
+    #     newColData$soupX_bg_contamination <- NA
+    # } else {
+    #     newColData$soupX_nUMIs <- NA
+    #     newColData$soupX_clusters <- NA
+    #     newColData$soupX_contamination <- NA
+    # }
+    # newRowData <- SummarizedExperiment::rowData(inSCE)
+
+
+    # for (s in names(results)) {
+    #     corrAssay[,sampleIdx[[s]]] <- results[[s]]$out
+    #     meta <- results[[s]]$sc$fit
+    #     meta$nDropUMIs <- results[[s]]$sc$nDropUMIs
+    #     meta$param <- list(sample = sample, useAssay = useAssay,
+    #                        bgAssayName = bgAssayName, bgBatch = bgBatch,
+    #                        assayName = assayName,
+    #                        tfidfMin = tfidfMin,
+    #                        soupQuantile = soupQuantile,
+    #                        maxMarkers = maxMarkers,
+    #                        contaminationRange = contaminationRange,
+    #                        rhoMaxFDR = rhoMaxFDR,
+    #                        priorRho = priorRho,
+    #                        priorRhoStdDev = priorRhoStdDev,
+    #                        forceAccept = forceAccept,
+    #                        adjustMethod = adjustMethod,
+    #                        roundToInt = roundToInt,
+    #                        tol = tol,
+    #                        pCut = pCut,
+    #                        reducedDimName = paste0(reducedDimName, s),
+    #                        sessionInfo = utils::sessionInfo())
+    #     # Output inSCE need to have separated UMAP calculated for each sample
+    #     sampleUMAP <- matrix(nrow = ncol(inSCE), ncol = 2)
+    #     rownames(sampleUMAP) <- colnames(inSCE)
+    #     sampleUMAP[sampleIdx[[s]]] <- results[[s]]$umap
+    #     if (!is.null(cluster)) {
+    #         meta$param$cluster <- cluster
+    #     } else {
+    #         if (!is.null(background)) {
+    #             meta$param$cluster <- "soupX_bg_clusters"
+    #         } else {
+    #             meta$param$cluster <- "soupX_clusters"
+    #         }
+    #     }
+    #     if (!is.null(background)) {
+    #         newColData$soupX_bg_nUMIs[sampleIdx[[s]]] <- results[[s]]$sc$metaData$nUMIs
+    #         newColData$soupX_bg_clusters[sampleIdx[[s]]] <- paste0(s, "-", results[[s]]$sc$metaData$clusters)
+    #         newColData$soupX_bg_contamination[sampleIdx[[s]]] <- results[[s]]$sc$metaData$rho
+    #         newRowData[[paste0("soupX_bg_",s,"_est")]] <- results[[s]]$sc$soupProfile$est
+    #         newRowData[[paste0("soupX_bg_",s,"_counts")]] <- results[[s]]$sc$soupProfile$counts
+    #         getSoupX(inSCE, sampleID = s, background = TRUE) <- meta
+    #     } else {
+    #         newColData$soupX_nUMIs[sampleIdx[[s]]] <- results[[s]]$sc$metaData$nUMIs
+    #         newColData$soupX_clusters[sampleIdx[[s]]] <- paste0(s, "-", results[[s]]$sc$metaData$clusters)
+    #         newColData$soupX_contamination[sampleIdx[[s]]] <- results[[s]]$sc$metaData$rho
+    #         newRowData[[paste0("soupX_",s,"_est")]] <- results[[s]]$sc$soupProfile$est
+    #         newRowData[[paste0("soupX_",s,"_counts")]] <- results[[s]]$sc$soupProfile$counts
+    #         getSoupX(inSCE, sampleID = s) <- meta
+    #     }
+    #     SingleCellExperiment::reducedDim(inSCE,
+    #                                      paste0(reducedDimName,
+    #                                             s)) <- sampleUMAP
+    # }
+    # expData(inSCE, assayName, tag = "raw") <- corrAssay
+    # inSCE <- expSetDataTag(inSCE, "raw", assayName)
+    # SummarizedExperiment::colData(inSCE) <- newColData
+    # SummarizedExperiment::rowData(inSCE) <- newRowData
+    # return(inSCE)
 }
 
 .SoupXOneBatch <- function(inSCE,
