@@ -29,11 +29,69 @@ shinyPanelBubbleplot <- fluidPage(
                  'bpFeatures',
                  "Select Features",
                  choices = NULL, multiple = TRUE, width = '550px'),
+               h5(style="display: inline-block; margin-top: 0px; margin-bottom: 20px","Scale Data"),
+               switchInput(
+                 inputId = "scaleBubble",
+                 onLabel = "Yes",
+                 offLabel = "No",
+                 value=FALSE,
+                 size="mini",
+                 inline = TRUE
+               ),
                withBusyIndicatorUI(actionButton("plotBubbleplot", "Plot Bubbleplot")),
                hr(),
         ),
         
-        
+        column(
+          width = 3,
+          dropdown(
+            fluidRow(
+              column(
+                width = 12,
+                fluidRow(actionBttn(inputId = "closeDropDownBubble", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+                panel(
+                  fluidRow(
+                    column(width = 4,
+                           textInput("bpTitle", "Title", NULL)
+                    )
+                  ),
+                  fluidRow(
+                    column(width = 4,
+                           textInput("bpX", "X-axis Label", NULL)
+                    ),
+                    column(width = 4,
+                           textInput("bpY", "Y-axis Label", NULL)
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 4,
+                      colourpicker::colourInput('bpLow', 'Low color', value = 'white')
+                    ),
+                    column(
+                      width = 4,
+                      colourpicker::colourInput('bpHigh', 'High color', value = 'blue')
+                    )
+                  )
+                ),
+                withBusyIndicatorUI(
+                  actionBttn(
+                    inputId = "updateBubbleplot",
+                    label = "Update",
+                    style = "bordered",
+                    color = "primary",
+                    size = "sm"
+                  )
+                ),
+              )
+            ),
+            inputId = "dropDownBubble",
+            icon = icon("cog"),
+            status = "primary",
+            circle = FALSE,
+            inline = TRUE
+          )
+        ),
         
         column(
           8,
@@ -43,35 +101,35 @@ shinyPanelBubbleplot <- fluidPage(
               style = 'height:800px;',
               plotOutput("Bubbleplot")
             ),
-            # Others ####
-            h3("Bubbleplot Setting"),
-            p("Settings for title, label, color scheme and etc.",
-              style = "color:grey;"),
-            panel(
-              fluidRow(
-                column(width = 4,
-                       textInput("bpTitle", "Title", NULL)
-                )
-              ),
-              fluidRow(
-                column(width = 4,
-                       textInput("bpX", "X-axis Label", NULL)
-                ),
-                column(width = 4,
-                       textInput("bpY", "Y-axis Label", NULL)
-                )
-              ),
-              fluidRow(
-                column(
-                  width = 4,
-                  colourpicker::colourInput('bpLow', 'Low color', value = 'white')
-                ),
-                column(
-                  width = 4,
-                  colourpicker::colourInput('bpHigh', 'High color', value = 'blue')
-                )
-              )
-            ),
+            # # Others ####
+            # h3("Bubbleplot Setting"),
+            # p("Settings for title, label, color scheme and etc.",
+            #   style = "color:grey;"),
+            # panel(
+            #   fluidRow(
+            #     column(width = 4,
+            #            textInput("bpTitle", "Title", NULL)
+            #     )
+            #   ),
+            #   fluidRow(
+            #     column(width = 4,
+            #            textInput("bpX", "X-axis Label", NULL)
+            #     ),
+            #     column(width = 4,
+            #            textInput("bpY", "Y-axis Label", NULL)
+            #     )
+            #   ),
+            #   fluidRow(
+            #     column(
+            #       width = 4,
+            #       colourpicker::colourInput('bpLow', 'Low color', value = 'white')
+            #     ),
+            #     column(
+            #       width = 4,
+            #       colourpicker::colourInput('bpHigh', 'High color', value = 'blue')
+            #     )
+            #   )
+            # ),
             hr(),
           )
         )

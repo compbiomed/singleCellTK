@@ -7,6 +7,7 @@
 #' @param featureNames A string or vector of strings with each gene to aggregate.
 #' @param displayName A string that is the name of the column used for genes.
 #' @param groupNames The name of a colData entry that can be used as groupNames.
+#' @param scale Option to scale the data
 #' @return A dataframe with mean expression and percent of cells in cluster that 
 #' express for each cluster.
 #' @examples
@@ -15,8 +16,11 @@
 #' displayName="feature_name", groupNames="type")
 #' @export
 
-runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", featureNames, displayName=NULL, groupNames="cluster"){
-  
+runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", featureNames, displayName=NULL, groupNames="cluster", scale = FALSE){
+  if(isTRUE(scale)){
+    runNormalization(inSCE=inSCE, useAssay=useAssay, scale = TRUE, normalizationMethod = NULL, transformation = NULL, 
+                     pseudocountsBeforeNorm = NULL, pseudocountsBeforeTransform = NULL)
+  }
   if (!groupNames %in% names(SingleCellExperiment::colData(inSCE))) {
     stop("Specified variable '", groupNames, "' not found in colData(inSCE)")
   }
@@ -40,16 +44,24 @@ runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", featureNames, 
     warning("Specified genes '", toString(falseGenes), "' not found in ", warning)
   }
   
+  tempSCE <- inSCE[featureNames, ]
+
   
-  avgExpr <- assay(scuttle::aggregateAcrossCells(inSCE, ids=SingleCellExperiment::colData(inSCE)[,groupNames], 
+  if(isTRUE(scale)){
+    runNormalization(inSCE=tempSCE, useAssay=useAssay,scale = TRUE, normalizationMethod = NULL, transformation = NULL,
+                     pseudocountsBeforeNorm = NULL, pseudocountsBeforeTransform = NULL)
+    useAssay <- "counts"
+  }
+  
+  avgExpr <- assay(scuttle::aggregateAcrossCells(tempSCE, ids=SingleCellExperiment::colData(inSCE)[,groupNames], 
                                                             statistics="mean", use.assay.type=useAssay, 
-                                                            subset.row=featureNames))
+                                                 subset.row=NULL))
 
   
   
-  percExpr <- assay(scuttle::aggregateAcrossCells(inSCE, ids=SingleCellExperiment::colData(inSCE)[,groupNames], 
+  percExpr <- assay(scuttle::aggregateAcrossCells(tempSCE, ids=SingleCellExperiment::colData(inSCE)[,groupNames], 
                                                              statistics="prop.detected", use.assay.type=useAssay, 
-                                                             subset.row=featureNames))
+                                                  subset.row=NULL))
   
 
   df <- data.frame(featureNames = featureNames)

@@ -9,7 +9,8 @@ runClusterSummaryMetrics(
   useAssay = "logcounts",
   featureNames,
   displayName = NULL,
-  groupNames = "cluster"
+  groupNames = "cluster",
+  scale = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ runClusterSummaryMetrics(
 \item{displayName}{A string that is the name of the column used for genes.}
 
 \item{groupNames}{The name of a colData entry that can be used as groupNames.}
+
+\item{scale}{Option to scale the data}
 }
 \value{
 A dataframe with mean expression and percent of cells in cluster that 
