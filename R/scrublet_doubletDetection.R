@@ -242,10 +242,8 @@ runScrublet <- function(inSCE,
     error=function(cond) {
         message(paste0(date(), " ... Scrublet did not complete successfully; Returning SCE without changes. Scrublet error:"))
         message(cond)
-    }      
-)
-  
-  # if (inherits(error, "try-error")) {
+    }
+    # if (inherits(error, "try-error")) {
   #   warning("Scrublet did not complete successfully. Returning SCE without",
   #           " making any changes. Error given by Scrublet: \n\n", error)
   # }
@@ -261,5 +259,8 @@ runScrublet <- function(inSCE,
   metadata(tempSCE) <- metadata(inSCE)
   reducedDims(tempSCE) <- reducedDims(inSCE)
   
-  return(tempSCE)
+  return(tempSCE)      
+)
+  
+  
 }
