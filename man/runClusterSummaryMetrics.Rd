@@ -24,7 +24,7 @@ runClusterSummaryMetrics(
 
 \item{groupNames}{The name of a colData entry that can be used as groupNames.}
 
-\item{scale}{Option to scale the data}
+\item{scale}{Option to scale the data. Default: /code{FALSE}. Selected assay will not be scaled.}
 }
 \value{
 A dataframe with mean expression and percent of cells in cluster that 

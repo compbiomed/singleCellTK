@@ -7,7 +7,7 @@
 #' @param featureNames A string or vector of strings with each gene to aggregate.
 #' @param displayName A string that is the name of the column used for genes.
 #' @param groupNames The name of a colData entry that can be used as groupNames.
-#' @param scale Option to scale the data
+#' @param scale Option to scale the data. Default: /code{FALSE}. Selected assay will not be scaled. 
 #' @return A dataframe with mean expression and percent of cells in cluster that 
 #' express for each cluster.
 #' @examples
@@ -48,9 +48,9 @@ runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", featureNames, 
 
   
   if(isTRUE(scale)){
-    runNormalization(inSCE=tempSCE, useAssay=useAssay,scale = TRUE, normalizationMethod = NULL, transformation = NULL,
+    tempSCE <- runNormalization(inSCE=tempSCE, outAssayName = "scaled", useAssay=useAssay,scale = TRUE, normalizationMethod = NULL, transformation = NULL,
                      pseudocountsBeforeNorm = NULL, pseudocountsBeforeTransform = NULL)
-    useAssay <- "counts"
+    useAssay <- "scaled"
   }
   
   avgExpr <- assay(scuttle::aggregateAcrossCells(tempSCE, ids=SingleCellExperiment::colData(inSCE)[,groupNames], 
