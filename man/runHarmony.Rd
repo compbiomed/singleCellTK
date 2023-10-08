@@ -15,6 +15,7 @@ runHarmony(
   theta = 5,
   sigma = 0.1,
   nIter = 10,
+  seed = 12345,
   verbose = TRUE,
   ...
 )
@@ -59,6 +60,8 @@ make soft kmeans cluster approach hard clustering. Default \code{0.1}.}
 
 \item{...}{Other arguments passed to \code{\link[harmony]{HarmonyMatrix}}.
 See details.}
+
+\item{Set}{seed for reproducibility. Default is \code{12345}.}
 }
 \value{
 The input \linkS4class{SingleCellExperiment} object with
