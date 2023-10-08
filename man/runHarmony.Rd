@@ -56,12 +56,12 @@ make soft kmeans cluster approach hard clustering. Default \code{0.1}.}
 \item{nIter}{An integer. The max number of iterations to perform. Default
 \code{10L}.}
 
+\item{seed}{Set seed for reproducibility. Default is \code{12345}.}
+
 \item{verbose}{Whether to print progress messages. Default \code{TRUE}.}
 
 \item{...}{Other arguments passed to \code{\link[harmony]{HarmonyMatrix}}.
 See details.}
-
-\item{Set}{seed for reproducibility. Default is \code{12345}.}
 }
 \value{
 The input \linkS4class{SingleCellExperiment} object with

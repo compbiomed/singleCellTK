@@ -296,7 +296,7 @@ runFastMNN <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
 #' make soft kmeans cluster approach hard clustering. Default \code{0.1}.
 #' @param nIter An integer. The max number of iterations to perform. Default
 #' \code{10L}.
-#' @param Set seed for reproducibility. Default is \code{12345}.
+#' @param seed Set seed for reproducibility. Default is \code{12345}.
 #' @param verbose Whether to print progress messages. Default \code{TRUE}.
 #' @param ... Other arguments passed to \code{\link[harmony]{HarmonyMatrix}}.
 #' See details.
