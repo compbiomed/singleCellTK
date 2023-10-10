@@ -247,6 +247,7 @@ runScrublet <- function(inSCE,
     # if (inherits(error, "try-error")) {
   #   warning("Scrublet did not complete successfully. Returning SCE without",
   #           " making any changes. Error given by Scrublet: \n\n", error)
+  #   return(inSCE)
   # }
   
   ## convert doublet call from TRUE/FALSE to Singlet/Doublet
