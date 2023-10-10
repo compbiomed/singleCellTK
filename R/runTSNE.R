@@ -134,7 +134,7 @@ runTSNE <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
   # Rtsne requires a matrix input
   mat <- as.matrix(mat)
   message(paste0(date(), " ... Computing Rtsne."))
-  .withSeed(seed, {
+  withr::with_seed(seed, {
     tsneOut <- Rtsne::Rtsne(mat, pca_scale = scale, pca_center = center,
                             pca = pca, partial_pca = partialPCA,
                             perplexity = perplexity,

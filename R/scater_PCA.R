@@ -57,7 +57,7 @@ scaterPCA <- function(inSCE, useAssay = "logcounts", useFeatureSubset = NULL,
   subset_row <- .parseUseFeatureSubset(inSCE, useFeatureSubset,
                                        altExpObj = sce, returnType = "logical")
   message(paste0(date(), " ... Computing Scater PCA."))
-  .withSeed(seed, {
+  withr::with_seed(seed, {
     pca <- scater::calculatePCA(useMat$mat, ncomponents = nComponents,
                                 scale = scale, ntop = ntop,
                                 subset_row = subset_row, BPPARAM = BPPARAM)

@@ -66,7 +66,7 @@ runScDblFinder <- function(inSCE,
     inSCE <- inSCE[,-rm.ix]
     sample <- sample[-rm.ix]
   }
-  .withSeed(seed, {
+  withr::with_seed(seed, {
     inSCE <- scDblFinder::scDblFinder(sce = inSCE,
                                       samples = sample,
                                       artificialDoublets = simDoublets,

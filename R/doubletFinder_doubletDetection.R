@@ -397,7 +397,7 @@ runDoubletFinder <- function(inSCE,
       if (length(seuratPcs) > ncol(mat)) {
         seuratPcs <- seq(ncol(mat))
       }
-      .withSeed(seed, {
+      withr::with_seed(seed, {
         result <- .runDoubletFinder(
           counts = mat,
           seuratPcs = seuratPcs,
