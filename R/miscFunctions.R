@@ -472,3 +472,23 @@ getGenesetNamesFromCollection <- function(inSCE, geneSetCollectionName) {
                      code)
   }
 }
+
+
+renameClusters <- function(inSCE, clusterName, from, to, newClusterName = NULL) {
+  # Get clusterName from colData of SCE
+  clusterLabels <- colData(inSCE)[,clusterName]
+  
+  # Use mapvalues function in plyr package to change labels
+  renamedLabels <- mapvalues(clusterLabels, from = from, to = to)
+   
+  
+  # If newClusterName is specified, make a new variable in colData of SCE, otherwise overwrite the previous one.
+  if (!is.null(newClusterName)) {
+    colData(inSCE)[,newClusterName]  <- renamedLabels
+  } else {
+    colData(inSCE)[,clusterName] <- renamedLabels
+  }
+  
+  return(inSCE)
+}
+
