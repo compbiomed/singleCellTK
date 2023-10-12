@@ -238,31 +238,30 @@ runScrublet <- function(inSCE,
         colData(inSCE)$scrublet_call <- NULL
         
         colData(inSCE) = cbind(colData(inSCE), output)
+        
+        ## convert doublet call from TRUE/FALSE to Singlet/Doublet
+        inSCE$scrublet_call <- as.factor(inSCE$scrublet_call)
+        
+        levels(inSCE$scrublet_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
+        
+        reducedDim(inSCE,'scrublet_TSNE') <- tsneDims
+        reducedDim(inSCE,'scrublet_UMAP') <- umapDims
+        
+        colData(tempSCE) <- colData(inSCE)
+        metadata(tempSCE) <- metadata(inSCE)
+        reducedDims(tempSCE) <- reducedDims(inSCE)
+        
+        return(tempSCE)   
     },
     error=function(cond) {
         message(paste0(date(), " ... Scrublet did not complete successfully; Returning SCE without changes. Scrublet error:"))
         message(cond)
         return(inSCE)
-    },
+    }
     # if (inherits(error, "try-error")) {
   #   warning("Scrublet did not complete successfully. Returning SCE without",
   #           " making any changes. Error given by Scrublet: \n\n", error)
   #   return(inSCE)
   # }
-  
-  ## convert doublet call from TRUE/FALSE to Singlet/Doublet
-  inSCE$scrublet_call <- as.factor(inSCE$scrublet_call)
-  levels(inSCE$scrublet_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
-  
-  reducedDim(inSCE,'scrublet_TSNE') <- tsneDims
-  reducedDim(inSCE,'scrublet_UMAP') <- umapDims
-  
-  colData(tempSCE) <- colData(inSCE)
-  metadata(tempSCE) <- metadata(inSCE)
-  reducedDims(tempSCE) <- reducedDims(inSCE)
-  
-  return(tempSCE)      
-)
-  
-  
+  )
 }
