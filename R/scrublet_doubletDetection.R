@@ -154,6 +154,10 @@ runScrublet <- function(inSCE,
   ## Loop through each sample and run scrublet
 
   # try/catch block for when Scrublet fails (which can be often)
+
+  # boolean flag variable for if the try/catch works
+  successful = FALSE
+
   result <- tryCatch(
     {
         samples <- unique(sample)
@@ -251,12 +255,21 @@ runScrublet <- function(inSCE,
         metadata(tempSCE) <- metadata(inSCE)
         reducedDims(tempSCE) <- reducedDims(inSCE)
         
+        successful = TRUE
         return(tempSCE)   
     },
     error=function(cond) {
         message(paste0(date(), " ... Scrublet did not complete successfully; Returning SCE without changes. Scrublet error:"))
         message(cond)
         return(inSCE)
+    },
+    finally={
+        if (isTRUE(successful)) {
+          return(tempSCE)
+        }
+        else {
+          return(inSCE)
+        }
     }
     # if (inherits(error, "try-error")) {
   #   warning("Scrublet did not complete successfully. Returning SCE without",
