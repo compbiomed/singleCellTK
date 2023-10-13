@@ -127,8 +127,8 @@ runUMAP <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
                    samples[i], "'."))
     }
     
-    .withSeed(seed, {
-      umapRes <- scater::calculateUMAP(sceSample, exprs_values = useAssayTemp,
+    umapRes <- withr::with_seed(seed, {
+      scater::calculateUMAP(sceSample, exprs_values = useAssayTemp,
                                        dimred = useReducedDim, scale = scale,
                                        n_neighbors = nNeighbors,
                                        learning_rate = alpha,
