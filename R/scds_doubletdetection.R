@@ -78,7 +78,7 @@ runCxds <- function(
     nGene <- ntop
     while (!inherits(result, "SingleCellExperiment") & nGene > 0) {
       try({
-        result <- .withSeed(seed, {
+        result <- withr::with_seed(seed, {
           scds::cxds(sce = sceSample,
                      ntop = nGene,
                      binThresh = binThresh,
@@ -210,7 +210,7 @@ runBcds <- function(
     nGene <- ntop
     while (!inherits(result, "SingleCellExperiment") & nGene > 0) {
       try({
-        result <- .withSeed(seed, {
+        result <- withr::with_seed(seed, {
           scds::bcds(sce = sceSample,
                      ntop = nGene,
                      srat = srat,
@@ -349,7 +349,7 @@ runCxdsBcdsHybrid <- function(inSCE,
     nGene <- min(nGene.cxds, nGene.bcds)
     while (!inherits(result, "SingleCellExperiment") & nGene > 0) {
       try({
-        result <- .withSeed(seed, {
+        result <- withr::with_seed(seed, {
           scds::cxds_bcds_hybrid(sce = sceSample,
                                  cxdsArgs = c(list(ntop = nGene.cxds), 
                                               cxdsArgs),
