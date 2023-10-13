@@ -264,4 +264,5 @@ runScrublet <- function(inSCE,
   #   return(inSCE)
   # }
   )
+  return(result)
 }
