@@ -153,8 +153,9 @@ runSoupX <- function(inSCE,
         }
         uniqSample <- "all_cells"
     }
-
-    message(paste0(date(), " ... Running 'SoupX'"))
+    
+    p <- paste0(date(), " ... Running 'SoupX'")
+    message(p)
 
     # try/catch block in case SoupX finds no marker genes
     result <- tryCatch(
@@ -162,7 +163,8 @@ runSoupX <- function(inSCE,
             results <- list()
             sampleIdx <- list()
             for (s in uniqSample) {
-                message(paste0(date(), " ... Running 'SoupX' on sample: ", s))
+                p <- paste0(date(), " ... Running 'SoupX' on sample: ", s)
+                message(p)
                 cellIdx <- sample == s
                 sampleIdx[[s]] <- cellIdx
                 tempSCE <- inSCE[,cellIdx]
@@ -289,7 +291,8 @@ runSoupX <- function(inSCE,
             SummarizedExperiment::rowData(inSCE) <- newRowData
         }, 
         error=function(cond) {
-            message(paste0(date(), " ... Error occured in 'SoupX'; skipping 'SoupX'. Details as follows:"))
+            p <- paste0(date(), " ... Error occured in 'SoupX'; skipping 'SoupX'. Details as follows:")
+            message(p)
             message(cond)
         }
     )
@@ -477,7 +480,8 @@ runSoupX <- function(inSCE,
             stop("Invalid cluster specification")
         }
     } else {
-        message(paste0(date(), " ... Cluster info not supplied. Generating clusters with Scran SNN"))
+        p <- paste0(date(), " ... Cluster info not supplied. Generating clusters with Scran SNN")
+        message(p)
         suppressMessages({
             c <- scran::quickCluster(inSCE, assay.type = useAssay,
                                      method = "igraph")

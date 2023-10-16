@@ -129,7 +129,8 @@ runComBatSeq <- function(inSCE, useAssay = "counts", batch = 'batch',
     stop("\"inSCE\" should be a SingleCellExperiment Object.")
   }
   if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-    stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
+    p <- paste("\"useAssay\" (assay) name: ", useAssay, " not found.")
+    stop(p)
   }
   if(any(!c(batch, covariates, bioCond) %in%
          names(SummarizedExperiment::colData(inSCE)))){
@@ -778,10 +779,12 @@ runZINBWaVE <- function(inSCE, useAssay = 'counts', batch = 'batch',
     stop("\"inSCE\" should be a SingleCellExperiment Object.")
   }
   if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-    stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found"))
+    p <- paste("\"useAssay\" (assay) name: ", useAssay, " not found")
+    stop(p)
   }
   if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
-    stop(paste("\"batch name:", batch, "not found."))
+    p <- paste("\"batch name:", batch, "not found.")
+    stop(p)
   }
   reducedDimName <- gsub(' ', '_', reducedDimName)
   nHVG <- as.integer(nHVG)

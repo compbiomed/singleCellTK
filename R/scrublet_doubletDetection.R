@@ -135,7 +135,8 @@ runScrublet <- function(inSCE,
   #assayNames(inSCE)[which(useAssay %in% assayNames(inSCE))] <- "counts"
   #useAssay <- "counts"
   
-  message(paste0(date(), " ... Running 'scrublet'"))
+  p <- paste0(date(), " ... Running 'scrublet'")
+  message(p)
   
   ##  Getting current arguments values
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
@@ -240,7 +241,8 @@ runScrublet <- function(inSCE,
         colData(inSCE) = cbind(colData(inSCE), output)
     },
     error=function(cond) {
-        message(paste0(date(), " ... Scrublet did not complete successfully; Returning SCE without changes. Scrublet error:"))
+        p <- paste0(date(), " ... Scrublet did not complete successfully; Returning SCE without changes. Scrublet error:")
+        message(p)
         message(cond)
     }      
 )

@@ -1443,11 +1443,12 @@ convertSCEToSeurat <-
             seuratObject@reductions[[eval(parse(text = paste0(i, "ReducedDim")))]]
           seuratObject@reductions[[eval(parse(text = paste0(i, "ReducedDim")))]] <-
             NULL
+          p <- paste0(
+            i, "ReducedDim"
+          )
           message(
             "'",
-            eval(parse(text = paste0(
-              i, "ReducedDim"
-            ))),
+            eval(parse(text = p)),
             "' reducedDim from input SCE object saved to the default ",
             i,
             " slot of seurat object."
@@ -1597,7 +1598,8 @@ runSeuratIntegration <- function(inSCE,
                                  kWeight,
                                  ndims = 10) {
   if (!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-    stop(paste(useAssay, "not found in the input object assays"))
+    p <- paste(useAssay, "not found in the input object assays")
+    stop(p)
   }
   if (is.null(batch)) {
     stop("batch variable must be provided for batch-correction")
