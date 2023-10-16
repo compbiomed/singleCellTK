@@ -13,6 +13,7 @@
 #' @source DOI: 10.1126/science.aaa1934
 #' @keywords datasets
 #' @usage data("mouseBrainSubsetSCE")
+#' @return A subset of 30 cells from a single cell RNA-Seq experiment
 #' @examples
 #' data("mouseBrainSubsetSCE")
 "mouseBrainSubsetSCE"
@@ -33,6 +34,8 @@
 #' @format A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @keywords datasets
 #' @usage data("scExample")
+#' @return Example Single Cell RNA-Seq data in SingleCellExperiment Object,
+#' subset of 10x public dataset
 #' @examples
 #' data("scExample")
 "sce"
@@ -47,6 +50,8 @@
 #' `'beta'`, that could be found in both original studies with relatively
 #' large population were kept for cleaner demonstration.
 #' @usage data('sceBatches')
+#' @return Example Single Cell RNA-Seq data in SingleCellExperiment object, with
+#' different batches annotated
 "sceBatches"
 
 #' Stably Expressed Gene (SEG) list obect, with SEG sets for human and mouse.
@@ -59,6 +64,7 @@
 #' @source \code{data('segList', package='scMerge')}
 #' @keywords datasets
 #' @usage data('SEG')
+#' @return Stably Expressed Gene (SEG) list obect, with SEG sets for human and mouse.
 #' @examples
 #' data('SEG')
 #' humanSEG <- SEG$human
@@ -77,6 +83,7 @@
 #' @format A data.frame.
 #' @keywords datasets
 #' @usage data("msigdb_table")
+#' @return A table of gene set categories
 #' @examples
 #' data("msigdb_table")
 "msigdb_table"
@@ -93,6 +100,7 @@
 #' @format A list
 #' @keywords datasets
 #' @usage data("MitoGenes")
+#' @return List of mitochondrial genes of multiple reference
 #' @examples
 #' data("MitoGenes")
 "MitoGenes"

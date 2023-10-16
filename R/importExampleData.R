@@ -58,7 +58,8 @@ importExampleData <- function(dataset, class = c("Matrix", "matrix"),
   
   if(dataset %in% scRNAseqDatasets) {
     if(!("scRNAseq" %in% rownames(utils::installed.packages()))) {
-      stop(paste0("Package 'scRNAseq' is not installed. Please install to load dataset '", dataset, "'."))
+      p <- paste0("Package 'scRNAseq' is not installed. Please install to load dataset '", dataset, "'.")
+      stop(p)
     }
     if (dataset == "fluidigm_pollen") {
       temp <- scRNAseq::ReprocessedFluidigmData()
@@ -84,7 +85,8 @@ importExampleData <- function(dataset, class = c("Matrix", "matrix"),
     }
   } else if (dataset %in% tenxPbmcDatasets) {
     if(!("TENxPBMCData" %in% rownames(utils::installed.packages()))) {
-      stop(paste0("Package 'TENxPBMCData' is not installed. Please install to load dataset '", dataset, "'."))
+      p <- paste0("Package 'TENxPBMCData' is not installed. Please install to load dataset '", dataset, "'.")
+      stop(p)
     }
     temp <- TENxPBMCData::TENxPBMCData(dataset = dataset)
     colnames(temp) <- paste(temp$Sample, temp$Barcode, sep="_")
