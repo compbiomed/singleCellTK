@@ -155,6 +155,10 @@ runScrublet <- function(inSCE,
   ## Loop through each sample and run scrublet
 
   # try/catch block for when Scrublet fails (which can be often)
+
+  # boolean flag variable for if the try/catch works
+  successful = FALSE
+
   result <- tryCatch(
     {
         samples <- unique(sample)
@@ -239,29 +243,41 @@ runScrublet <- function(inSCE,
         colData(inSCE)$scrublet_call <- NULL
         
         colData(inSCE) = cbind(colData(inSCE), output)
+        
+        ## convert doublet call from TRUE/FALSE to Singlet/Doublet
+        inSCE$scrublet_call <- as.factor(inSCE$scrublet_call)
+        
+        levels(inSCE$scrublet_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
+        
+        reducedDim(inSCE,'scrublet_TSNE') <- tsneDims
+        reducedDim(inSCE,'scrublet_UMAP') <- umapDims
+        
+        colData(tempSCE) <- colData(inSCE)
+        metadata(tempSCE) <- metadata(inSCE)
+        reducedDims(tempSCE) <- reducedDims(inSCE)
+        
+        successful = TRUE
+        return(tempSCE)   
     },
     error=function(cond) {
         p <- paste0(date(), " ... Scrublet did not complete successfully; Returning SCE without changes. Scrublet error:")
         message(p)
         message(cond)
-    }      
-)
-  
-  # if (inherits(error, "try-error")) {
+        return(inSCE)
+    },
+    finally={
+        if (isTRUE(successful)) {
+          return(tempSCE)
+        }
+        else {
+          return(inSCE)
+        }
+    }
+    # if (inherits(error, "try-error")) {
   #   warning("Scrublet did not complete successfully. Returning SCE without",
   #           " making any changes. Error given by Scrublet: \n\n", error)
+  #   return(inSCE)
   # }
-  
-  ## convert doublet call from TRUE/FALSE to Singlet/Doublet
-  inSCE$scrublet_call <- as.factor(inSCE$scrublet_call)
-  levels(inSCE$scrublet_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
-  
-  reducedDim(inSCE,'scrublet_TSNE') <- tsneDims
-  reducedDim(inSCE,'scrublet_UMAP') <- umapDims
-  
-  colData(tempSCE) <- colData(inSCE)
-  metadata(tempSCE) <- metadata(inSCE)
-  reducedDims(tempSCE) <- reducedDims(inSCE)
-  
-  return(tempSCE)
+  )
+  return(result)
 }
