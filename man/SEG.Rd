@@ -14,6 +14,9 @@ charactor vector.
 \usage{
 data('SEG')
 }
+\value{
+Stably Expressed Gene (SEG) list obect, with SEG sets for human and mouse.
+}
 \description{
 The two gene sets came from dataset called `segList` of package `scMerge`.
 }

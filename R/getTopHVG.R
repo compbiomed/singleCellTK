@@ -126,8 +126,9 @@ setTopHVG <- function(inSCE,
         }
     }
     rowSubset(inSCE, featureSubsetName) <- features
-    message(paste0(date(), " ... Feature subset variable '", featureSubsetName,
-                   "' created."))
+    p <- paste0(date(), " ... Feature subset variable '", featureSubsetName,
+                "' created.")
+    message(p)
     metadata(inSCE)$sctk$featureSubsets[[featureSubsetName]] <-
         list(method = method,
              number = nFeature,

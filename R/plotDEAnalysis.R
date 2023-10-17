@@ -16,12 +16,14 @@
     stop('"diffExp" not in metadata, please run runMAST() first.')
   }
   if(!useResult %in% names(S4Vectors::metadata(inSCE)$diffExp)){
-    stop(paste0('"', useResult, '"', ' not in metadata(inSCE)$diffExp. '),
+    p <- paste0('"', useResult, '"', ' not in metadata(inSCE)$diffExp. ')
+    stop(p,
          'Please check.')
   }
   result <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]
   if(!all(c('groupNames', 'select', 'result', 'useAssay') %in% names(result))){
-    stop(paste0('"', useResult, '"', ' result is not complete. '),
+    p <- paste0('"', useResult, '"', ' result is not complete. ')
+    stop(p,
          'You might need to rerun it.')
   }
   if(!is.null(labelBy)){

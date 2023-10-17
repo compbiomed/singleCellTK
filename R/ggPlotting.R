@@ -1089,7 +1089,8 @@ plotSCEViolinColData <- function(inSCE,
   
   if (!is.null(coldata)) {
     if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
-      stop("'", paste(coldata), "' is not found in ColData.")
+      p <- paste(coldata)
+      stop("'", p, "' is not found in ColData.")
     }
     coldata <- SummarizedExperiment::colData(inSCE)[, coldata]
   } else {
@@ -1105,7 +1106,8 @@ plotSCEViolinColData <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p, "' is not found in ColData.")
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
@@ -1314,7 +1316,8 @@ plotSCEViolinAssayData <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p , "' is not found in ColData.")
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
@@ -1547,7 +1550,8 @@ plotSCEViolin <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p , "' is not found in ColData.")
       }
       groupBy <- SummarizedExperiment::colData(inSCE)[, groupBy]
     }
@@ -1768,7 +1772,8 @@ plotSCEDensityColData <- function(inSCE,
   
   if (!is.null(coldata)) {
     if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
-      stop("'", paste(coldata), "' is not found in ColData.")
+      p <- paste(coldata)
+      stop("'", p , "' is not found in ColData.")
     }
     coldata <- SummarizedExperiment::colData(inSCE)[, coldata]
   } else {
@@ -1784,7 +1789,8 @@ plotSCEDensityColData <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p , "' is not found in ColData.")
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
@@ -1939,7 +1945,8 @@ plotSCEDensityAssayData <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p , "' is not found in ColData.")
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
@@ -2103,7 +2110,8 @@ plotSCEDensity <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p , "' is not found in ColData.")
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
@@ -2640,7 +2648,8 @@ plotSCEBarColData <- function(inSCE,
                               combinePlot = TRUE) {
   if (!is.null(coldata)) {
     if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
-      stop("'", paste(coldata), "' is not found in ColData.")
+      p <- paste(coldata)
+      stop("'", p , "' is not found in ColData.")
     }
     coldata <- SummarizedExperiment::colData(inSCE)[, coldata]
   } else {
@@ -2656,7 +2665,8 @@ plotSCEBarColData <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p , "' is not found in ColData.")
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
@@ -2775,7 +2785,8 @@ plotSCEBarAssayData <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p , "' is not found in ColData.")
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
