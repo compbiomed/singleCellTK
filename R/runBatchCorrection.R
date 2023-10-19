@@ -129,7 +129,8 @@ runComBatSeq <- function(inSCE, useAssay = "counts", batch = 'batch',
     stop("\"inSCE\" should be a SingleCellExperiment Object.")
   }
   if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-    stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
+    p <- paste("\"useAssay\" (assay) name: ", useAssay, " not found.")
+    stop(p)
   }
   if(any(!c(batch, covariates, bioCond) %in%
          names(SummarizedExperiment::colData(inSCE)))){
@@ -296,6 +297,7 @@ runFastMNN <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
 #' make soft kmeans cluster approach hard clustering. Default \code{0.1}.
 #' @param nIter An integer. The max number of iterations to perform. Default
 #' \code{10L}.
+#' @param seed Set seed for reproducibility. Default is \code{12345}.
 #' @param verbose Whether to print progress messages. Default \code{TRUE}.
 #' @param ... Other arguments passed to \code{\link[harmony]{HarmonyMatrix}}.
 #' See details.
@@ -318,7 +320,7 @@ runFastMNN <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
 runHarmony <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
                        batch = "batch", reducedDimName = "HARMONY",
                        nComponents = 50, lambda = 0.1, theta = 5,
-                       sigma = 0.1, nIter = 10, verbose = TRUE, ...) {
+                       sigma = 0.1, nIter = 10, seed = 12345, verbose = TRUE, ...) {
   if (!requireNamespace("harmony", quietly = TRUE)) {
     stop("The Harmony package is required to run this function. ",
          "Install harmony with: ",
@@ -342,11 +344,13 @@ runHarmony <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
     }
     mat <- mat[,seq(nComponents)]
   }
-  h <- harmony::HarmonyMatrix(data_mat = mat, meta_data = batchVec,
-                              do_pca = do_pca, npcs = nComponents,
-                              lambda = lambda, theta = theta,
-                              sigma = sigma, max.iter.harmony = nIter,
-                              verbose = verbose, return_object = FALSE, ...)
+  h <- withr::with_seed(seed, {
+    harmony::HarmonyMatrix(data_mat = mat, meta_data = batchVec,
+                           do_pca = do_pca, npcs = nComponents,
+                           lambda = lambda, theta = theta,
+                           sigma = sigma, max.iter.harmony = nIter,
+                           verbose = verbose, return_object = FALSE, ...)
+  })
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- h
   S4Vectors::metadata(inSCE)$batchCorr[[reducedDimName]] <-
     list(useAssay = useAssay, origLogged = TRUE, method = "harmony",
@@ -775,10 +779,12 @@ runZINBWaVE <- function(inSCE, useAssay = 'counts', batch = 'batch',
     stop("\"inSCE\" should be a SingleCellExperiment Object.")
   }
   if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-    stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found"))
+    p <- paste("\"useAssay\" (assay) name: ", useAssay, " not found")
+    stop(p)
   }
   if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
-    stop(paste("\"batch name:", batch, "not found."))
+    p <- paste("\"batch name:", batch, "not found.")
+    stop(p)
   }
   reducedDimName <- gsub(' ', '_', reducedDimName)
   nHVG <- as.integer(nHVG)

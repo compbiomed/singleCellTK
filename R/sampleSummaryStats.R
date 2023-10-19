@@ -22,13 +22,15 @@ setReplaceMethod("setSampleSummaryStatsTable", c("SingleCellExperiment", "ANY"),
 #' @importFrom S4Vectors metadata
 setMethod("listSampleSummaryStatsTables", "SingleCellExperiment", function(inSCE, ...){
     if(is.null(metadata(inSCE)$sctk$sample_summary)){
-        stop(paste("No sample-level QC tables are available.",
-                     "Please try executing functions such as sampleSummaryStats first."))
+        p <- paste("No sample-level QC tables are available.",
+                   "Please try executing functions such as sampleSummaryStats first.")
+        stop(p)
     }else{
         allStatsNames <- names(metadata(inSCE)$sctk$sample_summary)
         if(is.null(allStatsNames) || length(allStatsNames) == 0){
-            stop(paste("No sample-level QC tables are available.",
-                         "Please try executing functions such as sampleSummaryStats first."))
+            paste("No sample-level QC tables are available.",
+                "Please try executing functions such as sampleSummaryStats first.")
+            stop(p)
         }else{
             return(names(metadata(inSCE)$sctk$sample_summary))
         }

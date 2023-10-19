@@ -54,7 +54,8 @@ exportSCEtoAnnData <- function(sce,
   fileName <- paste0(prefix,".h5ad")
   filePath <- file.path(outputDir,fileName)
   if (file.exists(filePath) && !isTRUE(overwrite)) {
-    stop(paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE."))
+    p <- paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE.")
+    stop(p)
   }
   if (isFALSE(forceDense)) {
     forceDense <- NULL

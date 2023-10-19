@@ -44,14 +44,23 @@ SCTK allows importing dataset from various type of sources, such as preprocessin
 
 After starting the UI, the landing page will be for importing the scRNAseq data. To import the PBMC3K dataset previously mentioned, users should follow these steps:
 
-![import](ui_screenshots/ui_tutorial/import.png)\
+![import](ui_screenshots/ui_tutorial/import_1.png)\
 
-1. In collapse box **"1. Add sample to import"**, check the radio button **"Import example datasets"**.
-2. After step 1, a selection will shown for choosing example datasets. Here we select the default option "PBMC 3K (10X)".
-3. Click on button **"Add To Sample List"**. At this point, the second collapse box **"2. Create dataset"** will automatically pop up. 
-4. In collapse box **"2. Create dataset"**, click on button **"Import"**, to start loading the dataset.
+1. If you are not already at the starting import page, you start by going to the **Data** tab and selecting the **Import Single Cell Data** option (2). 
 
-![import](ui_screenshots/ui_tutorial/import2.png)\
+![import](ui_screenshots/ui_tutorial/import_2.png)\
+
+3. Select the relevant way to import data. For the purpose of this example, we use pbmc3k filtered raw data using the **CellRanger** option. This data can be downloaded from [here](https://cf.10xgenomics.com/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz). 
+
+![import](ui_screenshots/ui_tutorial/import_3.png)\
+
+4. In the appropriate input boxes, we select the matrix, feature and barcode files and upload each sample individually by giving a unique sample name (5). 
+
+![import](ui_screenshots/ui_tutorial/import_4.png)\
+
+6. Now either **import** samples or **Add one more sample**. You can keep adding more samples until all samples have been added and then finally import all of them together.
+
+![import](ui_screenshots/ui_tutorial/import_5.png)\
 
 After successfully importing, the third collapse box will pop up and show users the basic summary stats of the imported dataset. Meanwhile, users can set feature display options here. Most of the time, the dataset has default feature ID (usually seen as row names of a matrix) together with other types of ID (e.g. symbol) in the feature metadata. The first option **"Set feature ID"** sets the type of default feature ID, which should be unique and has no `NA` value. The second option **"Set feature names to be displayed in downstream visualization"** does what it says. When we need to show features on a plot, such as a heatmap or a volcano plot, usually it is better to show gene symbols rather than ensembl IDs. 
 

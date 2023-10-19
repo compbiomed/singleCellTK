@@ -733,6 +733,7 @@ plotSeuratReduction <-
 #' not. Default \code{TRUE}.
 #' @param resolution Set the resolution parameter to find larger (value above 1)
 #' or smaller (value below 1) number of communities. Default \code{0.8}.
+#' @param seed Specify the seed value. Default \code{12345}.
 #' @param externalReduction Pass DimReduc object if PCA/ICA computed through
 #' other libraries. Default \code{NULL}.
 #' @param verbose Logical value indicating if informative messages should
@@ -755,6 +756,7 @@ runSeuratFindClusters <- function(inSCE,
                                   algorithm = c("louvain", "multilevel", "SLM"),
                                   groupSingletons = TRUE,
                                   resolution = 0.8,
+                                  seed = 12345,
                                   externalReduction = NULL,
                                   verbose = TRUE) {
   algorithm <- match.arg(algorithm)
@@ -773,12 +775,14 @@ runSeuratFindClusters <- function(inSCE,
     }
   }
 
-  seuratObject <- Seurat::FindNeighbors(
-    seuratObject,
-    reduction = useReduction,
-    dims = seq(dims),
-    verbose = verbose
-  )
+  seuratObject <- withr::with_seed(seed, {
+    Seurat::FindNeighbors(
+      seuratObject,
+      reduction = useReduction,
+      dims = seq(dims),
+      verbose = verbose
+    )
+  })
 
   no_algorithm <- 1
   if (algorithm == "louvain") {
@@ -790,13 +794,15 @@ runSeuratFindClusters <- function(inSCE,
   }
   tempSeuratObject <- seuratObject
   tempSeuratObject@meta.data <- data.frame()
-  tempSeuratObject <- Seurat::FindClusters(
-    tempSeuratObject,
-    algorithm = no_algorithm,
-    group.singletons = groupSingletons,
-    resolution = resolution,
-    verbose = verbose
-  )
+  tempSeuratObject <- withr::with_seed(seed, {
+    Seurat::FindClusters(
+      tempSeuratObject,
+      algorithm = no_algorithm,
+      group.singletons = groupSingletons,
+      resolution = resolution,
+      verbose = verbose
+    )
+  })
   seuratObject@meta.data$seurat_clusters <-
     tempSeuratObject@meta.data$seurat_clusters
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
@@ -1400,7 +1406,7 @@ convertSCEToSeurat <-
           inSCE@metadata$seurat$obj@reductions$umap
       }
       if (!is.null(inSCE@metadata$seurat$obj@meta.data)) {
-        seuratObject@meta.data <- inSCE@metadata$seurat$obj@meta.data
+        seuratObject@meta.data <- inSCE@metadata$seurat$obj@meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj@meta.data)),]
       }
       if (!is.null(inSCE@metadata$seurat$obj@commands)) {
         seuratObject@commands <- inSCE@metadata$seurat$obj@commands
@@ -1437,11 +1443,12 @@ convertSCEToSeurat <-
             seuratObject@reductions[[eval(parse(text = paste0(i, "ReducedDim")))]]
           seuratObject@reductions[[eval(parse(text = paste0(i, "ReducedDim")))]] <-
             NULL
+          p <- paste0(
+            i, "ReducedDim"
+          )
           message(
             "'",
-            eval(parse(text = paste0(
-              i, "ReducedDim"
-            ))),
+            eval(parse(text = p)),
             "' reducedDim from input SCE object saved to the default ",
             i,
             " slot of seurat object."
@@ -1461,6 +1468,7 @@ convertSCEToSeurat <-
     }
 
     # Ensuring that colnames from input SCE converted to Seurat object are same in the Seurat metadata slot
+    seuratObject@meta.data <- seuratObject@meta.data[colnames(seuratObject),]
     rownames(seuratObject@meta.data) <- colnames(seuratObject)
 
     return(seuratObject)
@@ -1590,7 +1598,8 @@ runSeuratIntegration <- function(inSCE,
                                  kWeight,
                                  ndims = 10) {
   if (!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-    stop(paste(useAssay, "not found in the input object assays"))
+    p <- paste(useAssay, "not found in the input object assays")
+    stop(p)
   }
   if (is.null(batch)) {
     stop("batch variable must be provided for batch-correction")

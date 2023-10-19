@@ -14,6 +14,9 @@ DOI: 10.1126/science.aaa1934
 \usage{
 data("mouseBrainSubsetSCE")
 }
+\value{
+A subset of 30 cells from a single cell RNA-Seq experiment
+}
 \description{
 A subset of 30 cells from a single cell RNA-Seq experiment from Zeisel, et
 al. Science 2015. The data was produced from cells from the mouse

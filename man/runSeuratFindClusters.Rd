@@ -14,6 +14,7 @@ runSeuratFindClusters(
   algorithm = c("louvain", "multilevel", "SLM"),
   groupSingletons = TRUE,
   resolution = 0.8,
+  seed = 12345,
   externalReduction = NULL,
   verbose = TRUE
 )
@@ -40,6 +41,8 @@ not. Default \code{TRUE}.}
 
 \item{resolution}{Set the resolution parameter to find larger (value above 1)
 or smaller (value below 1) number of communities. Default \code{0.8}.}
+
+\item{seed}{Specify the seed value. Default \code{12345}.}
 
 \item{externalReduction}{Pass DimReduc object if PCA/ICA computed through
 other libraries. Default \code{NULL}.}

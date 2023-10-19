@@ -10,6 +10,9 @@ A data.frame.
 \usage{
 data("msigdb_table")
 }
+\value{
+A table of gene set categories
+}
 \description{
 A table of gene set categories that can be download from MSigDB. The
 categories and descriptions can be found here:
