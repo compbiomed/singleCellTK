@@ -179,7 +179,7 @@ runSeuratScaleData <- function(inSCE,
 #' variable. Default \code{2000}
 #' @param createFeatureSubset Specify a name of the subset to create
 #' for the identified variable features. Default is \code{"hvf"}.
-#' Leave it \code{NULL} if you do not want to create a subset of 
+#' Leave it \code{NULL} if you do not want to create a subset of
 #' variable features.
 #' @param altExp Logical value indicating if the input object is an
 #' altExperiment. Default \code{FALSE}.
@@ -278,15 +278,15 @@ runSeuratFindHVG <- function(inSCE,
         )
       )
   }
-  
+
   # create a feature subset
   if(!is.null(createFeatureSubset)){
-    inSCE <- setTopHVG(inSCE = inSCE, 
-                       method = method, 
-                       hvgNumber = hvgNumber, 
-                       featureSubsetName = createFeatureSubset) 
+    inSCE <- setTopHVG(inSCE = inSCE,
+                       method = method,
+                       hvgNumber = hvgNumber,
+                       featureSubsetName = createFeatureSubset)
   }
-  
+
   return(inSCE)
 }
 
@@ -1786,6 +1786,8 @@ runSeuratFindMarkers <- function(inSCE,
 #' @param splitBy Specify the column name from the colData slot that should be
 #' used to split samples.
 #'  Default is \code{NULL}.
+#' @param reducedDimName saved dimension reduction name in the
+#' SingleCellExperiment object. Default \code{seuratUMAP}.
 #' @param cols Specify two colors to form a gradient between. Default is
 #' \code{c("lightgrey", "blue")}.
 #' @param ncol Visualizations will be adjusted in "ncol" number of columns.
@@ -1808,7 +1810,7 @@ plotSeuratGenes <- function(inSCE,
                             ncol = 1,
                             combine = FALSE) {
   #setup seurat object and the corresponding groups
-  seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
+  seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay, copyReducedDim = TRUE)
   seuratObject <-
     Seurat::ScaleData(seuratObject, features = features)
   indices <- list()
@@ -1856,7 +1858,8 @@ plotSeuratGenes <- function(inSCE,
         cols = cols,
         ncol = ncol,
         split.by = splitBy,
-        combine = combine
+        combine = combine,
+        reduction = useReducedDim
       )
     )
   }

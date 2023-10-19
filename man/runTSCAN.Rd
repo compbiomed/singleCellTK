@@ -4,7 +4,13 @@
 \alias{runTSCAN}
 \title{Run TSCAN to obtain pseudotime values for cells}
 \usage{
-runTSCAN(inSCE, useReducedDim = "PCA", cluster = NULL, seed = 12345)
+runTSCAN(
+  inSCE,
+  useReducedDim = "PCA",
+  cluster = NULL,
+  starter = NULL,
+  seed = 12345
+)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
@@ -17,6 +23,9 @@ specified and MST construction. Default \code{"PCA"}.}
 length to the number of the cells in \code{inSCE}, or a single character for
 retriving \code{colData} variable. Default \code{NULL}, will run
 \code{runScranSNN} to obtain.}
+
+\item{starter}{Character. Specifies the starting node from which to compute
+the pseudotime. Default \code{NULL}, will select an arbitrary node.}
 
 \item{seed}{An integer. Random seed for clustering if \code{cluster} is not
 specified. Default \code{12345}.}
