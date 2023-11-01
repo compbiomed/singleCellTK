@@ -274,9 +274,12 @@ runFastMNN <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
 #' conditions.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object
 #' @param useAssay A single character indicating the name of the assay requiring
-#' batch correction. Default \code{"logcounts"}.
+#' batch correction. Default \code{NULL}. It is recommended to use a reducedDim
+#' such as PCA through the `useReducedDim` parameter of this function.
 #' @param useReducedDim A single character indicating the name of the reducedDim
-#' used to be corrected. Specifying this will ignore \code{useAssay}. Default
+#' to be used. It is recommended to use a reducedDim instead of a full assay as 
+#' using an assay might cause the algorithm to not converge and throw error.
+#' Specifying this will ignore \code{useAssay}. Default
 #' \code{NULL}.
 #' @param batch A single character indicating a field in \code{colData} that
 #' annotates the batches of each cell; or a vector/factor with the same length
@@ -317,7 +320,7 @@ runFastMNN <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
 #' if (require("harmony"))
 #'     sceCorr <- runHarmony(sceBatches)
 #' }
-runHarmony <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
+runHarmony <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
                        batch = "batch", reducedDimName = "HARMONY",
                        nComponents = 50, lambda = 0.1, theta = 5,
                        sigma = 0.1, nIter = 10, seed = 12345, verbose = TRUE, ...) {
@@ -327,6 +330,17 @@ runHarmony <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
          "install.packages('harmony')",
          call. = FALSE)
   }
+  
+  # Check if both useAssay and useReducedDim are not NULL
+  if(is.null(useAssay) && is.null(useReducedDim)){
+    stop("Both 'useAssay' & 'useReducedDim' cannot be NULL. It is recommended to use a reducedDim (PCA) for this algorithm but a full-sized assay can also be used. However, using an assay may cause the algorithm to not converge.")
+  }
+  
+  # If using useAssay, send a warning to recommend using PCA
+  if((!is.null(useAssay)) && is.null(useReducedDim)){
+    warning("You are using a full-sized assay with Harmony. It is recommended to use a reducedDim (PCA) for better results, as using a full sized assay may cause the algorithm to not converge. Computation will proceed with selected assay ...")
+  }
+  
   ## Input check
   useMat <- .selectSCEMatrix(inSCE, useAssay, useReducedDim,
                              useAltExp = NULL, returnMatrix = TRUE)
