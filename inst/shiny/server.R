@@ -909,6 +909,7 @@ shinyServer(function(input, output, session) {
     entry <- list(type="cellRanger3_files", id = id, params=list(assayFile = input$countsfile_custom$datapath, annotFile = input$annotFile_custom$datapath,
                                                      featureFile = input$featureFile_custom$datapath,
                                                      summaryFile = input$summaryFile_custom$datapath,
+                                                     sampleName = input$sampleNameCR,
                                                      assayName = "counts"))
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
@@ -916,6 +917,7 @@ shinyServer(function(input, output, session) {
     annotFileCol <- ""
     featureFileCol <- ""
     summaryFileCol <- ""
+    sampleFileName <- ""
     if (!is.null(input$countsfile_custom$datapath)) {
       assayFileCol <- paste0("Assay: ", input$countsfile_custom$datapath)
     }
@@ -928,10 +930,13 @@ shinyServer(function(input, output, session) {
     if (!is.null(input$summaryFile_custom$datapath)) {
       summaryFileCol <- paste0("Metrics: ", input$summaryFile_custom$datapath)
     }
+    if (!is.null(input$sampleNameCR)) {
+      sampleFileName <- paste0("Sample Name: ", input$sampleNameCR)
+    }
 
-    locCol <- paste(c(assayFileCol, annotFileCol, featureFileCol, summaryFileCol), collapse = "\n")
+    locCol <- paste(c(assayFileCol, annotFileCol, featureFileCol, summaryFileCol, sampleFileName), collapse = "\n")
 
-    addToGeneralSampleTable("files", id, locCol, "counts")
+    addToGeneralSampleTable("files", id, locCol, input$sampleNameCR)
 
     observeEvent(input[[paste0("remove", id)]],{
       removeUI(
@@ -957,6 +962,7 @@ shinyServer(function(input, output, session) {
     id <- paste0("newSampleFiles", allImportEntries$id_count)
     entry <- list(type="starSolo_files", id = id, params=list(assayFile = input$countsfile_custom_starSolo$datapath, annotFile = input$annotFile_custom_starSolo$datapath,
                                                                  featureFile = input$featureFile_custom_starSolo$datapath,
+                                                                 sampleName = input$sampleNameSS,
                                                                  assayName = "counts"))
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
@@ -964,6 +970,8 @@ shinyServer(function(input, output, session) {
     annotFileCol <- ""
     featureFileCol <- ""
     summaryFileCol <- ""
+    sampleFileName <- ""
+    
     if (!is.null(input$countsfile_custom_starSolo$datapath)) {
       assayFileCol <- paste0("Assay: ", input$countsfile_custom_starSolo$datapath)
     }
@@ -973,10 +981,13 @@ shinyServer(function(input, output, session) {
     if (!is.null(input$featureFile_custom_starSolo$datapath)) {
       featureFileCol <- paste0("Features: ", input$featureFile_custom_starSolo$datapath)
     }
+    if (!is.null(input$sampleNameSS)) {
+      sampleFileName <- paste0("Sample Name: ", input$sampleNameSS)
+    }
     
-    locCol <- paste(c(assayFileCol, annotFileCol, featureFileCol, summaryFileCol), collapse = "\n")
+    locCol <- paste(c(assayFileCol, annotFileCol, featureFileCol, summaryFileCol, sampleFileName), collapse = "\n")
     
-    addToGeneralSampleTable("files", id, locCol, "counts")
+    addToGeneralSampleTable("files", id, locCol, input$sampleNameSS)
     
     observeEvent(input[[paste0("remove", id)]],{
       removeUI(
@@ -1002,6 +1013,7 @@ shinyServer(function(input, output, session) {
     id <- paste0("newSampleFiles", allImportEntries$id_count)
     entry <- list(type="busTools_files", id = id, params=list(assayFile = input$countsfile_custom_busTools$datapath, annotFile = input$annotFile_custom_busTools$datapath,
                                                               featureFile = input$featureFile_custom_busTools$datapath,
+                                                              sampleName = input$sampleNameBT,
                                                               assayName = "counts"))
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
@@ -1009,6 +1021,8 @@ shinyServer(function(input, output, session) {
     annotFileCol <- ""
     featureFileCol <- ""
     summaryFileCol <- ""
+    sampleFileName <- ""
+    
     if (!is.null(input$countsfile_custom_busTools$datapath)) {
       assayFileCol <- paste0("Assay: ", input$countsfile_custom_busTools$datapath)
     }
@@ -1018,10 +1032,13 @@ shinyServer(function(input, output, session) {
     if (!is.null(input$featureFile_custom_busTools$datapath)) {
       featureFileCol <- paste0("Features: ", input$featureFile_custom_busTools$datapath)
     }
+    if (!is.null(input$sampleNameSS)) {
+      sampleFileName <- paste0("Sample Name: ", input$sampleNameBT)
+    }
     
     locCol <- paste(c(assayFileCol, annotFileCol, featureFileCol, summaryFileCol), collapse = "\n")
     
-    addToGeneralSampleTable("files", id, locCol, "counts")
+    addToGeneralSampleTable("files", id, locCol, input$sampleNameBT)
     
     observeEvent(input[[paste0("remove", id)]],{
       removeUI(
@@ -1051,6 +1068,7 @@ shinyServer(function(input, output, session) {
                                                              cellMetricsLocation = input$cellMetrics_custom_optimus$datapath,
                                                              geneMetricsLocation = input$geneMetrics_custom_optimus$datapath,
                                                              emptyDropsLocation = input$emptyDrops_custom_optimus$datapath,
+                                                             sampleName = input$sampleNameOP,
                                                               assayName = "counts"))
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
@@ -1060,6 +1078,7 @@ shinyServer(function(input, output, session) {
     cellMetricsFileCol <- ""
     geneMetricsFileCol <- ""
     emptyDropsFileCol <- ""
+    sampleFileName <- ""
     
     if (!is.null(input$matrix_custom_optimus$datapath)) {
       matrixFileCol <- paste0("Matrix: ", input$matrix_custom_optimus$datapath)
@@ -1079,11 +1098,14 @@ shinyServer(function(input, output, session) {
     if (!is.null(input$emptyDrops_custom_optimus$datapath)) {
       emptyDropsFileCol <- paste0("emptyDrops: ", input$emptyDrops_custom_optimus$datapath)
     }
+    if (!is.null(input$sampleNameOP)) {
+      sampleFileName <- paste0("Sample Name: ", input$sampleNameOP)
+    }
 
     
-    locCol <- paste(c(matrixFileCol, colIndexFileCol, rowIndexFileCol, cellMetricsFileCol, geneMetricsFileCol, emptyDropsFileCol), collapse = "\n")
+    locCol <- paste(c(matrixFileCol, colIndexFileCol, rowIndexFileCol, cellMetricsFileCol, geneMetricsFileCol, emptyDropsFileCol, sampleFileName), collapse = "\n")
     
-    addToGeneralSampleTable("files", id, locCol, "counts")
+    addToGeneralSampleTable("files", id, locCol, input$sampleNameOP)
     
     observeEvent(input[[paste0("remove", id)]],{
       removeUI(
@@ -1111,6 +1133,7 @@ shinyServer(function(input, output, session) {
                                                           moleculeCountsLocation = input$moleculeCounts_custom_seqc$datapath,
                                                           barcodesLocation = input$barcodes_custom_seqc$datapath,
                                                           genesLocation = input$genes_custom_seqc$datapath,
+                                                          sampleName = input$sampleNameSC,
                                                           assayName = "counts"))
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
@@ -1118,6 +1141,7 @@ shinyServer(function(input, output, session) {
     molFileCol <- ""
     barcodesFileCol <- ""
     genesFileCol <- ""
+    sampleFileName <- ""
     
     if (!is.null(input$readCounts_custom_seqc$datapath)) {
       matrixFileCol <- paste0("Matrix: ", input$readCounts_custom_seqc$datapath)
@@ -1131,10 +1155,13 @@ shinyServer(function(input, output, session) {
     if (!is.null(input$genes_custom_seqc$datapath)) {
       genesFileCol <- paste0("genes: ", input$genes_custom_seqc$datapath)
     }
+    if (!is.null(input$sampleNameSC)) {
+      sampleFileName <- paste0("Sample Name: ", input$sampleNameSC)
+    }
 
-    locCol <- paste(c(matrixFileCol, molFileCol, barcodesFileCol, genesFileCol), collapse = "\n")
+    locCol <- paste(c(matrixFileCol, molFileCol, barcodesFileCol, genesFileCol, sampleFileName), collapse = "\n")
     
-    addToGeneralSampleTable("files", id, locCol, "counts")
+    addToGeneralSampleTable("files", id, locCol, input$sampleNameSC)
     
     observeEvent(input[[paste0("remove", id)]],{
       removeUI(

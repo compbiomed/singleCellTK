@@ -464,6 +464,9 @@ getGenesetNamesFromCollection <- function(inSCE, geneSetCollectionName) {
   return(names(geneSet))
 }
 
+# deprecating
+# does not work as intended
+# instead directly using withr::with_seed
 .withSeed <- function(seed, code) {
   if (is.null(seed)) {
     code
