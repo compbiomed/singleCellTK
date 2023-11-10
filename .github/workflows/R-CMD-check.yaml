@@ -78,6 +78,9 @@ jobs:
           install.packages("BiocManager")
           BiocManager::install("ggtree")
           install.packages("remotes")
+          remotes::install_version("assertive.properties", version = "0.0.5", repos = "http://cran.us.r-project.org")
+          remotes::install_version("assertive.types", version = "0.0.3", repos = "http://cran.us.r-project.org")
+          remotes::install_version("multipanelfigure", version = "2.1.2", repos = "http://cran.us.r-project.org")
           remotes::install_version("Matrix", version = "1.6-0", repos = "http://cran.us.r-project.org")
           remotes::install_version("Seurat", version = "4.4.0", repos = "http://cran.us.r-project.org")
         shell: Rscript {0}
