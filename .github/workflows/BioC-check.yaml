@@ -33,7 +33,7 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: false
+          use-public-rspm: true
 
       - name: Install fftw3 on macOS
         if: runner.os == 'macOS'
