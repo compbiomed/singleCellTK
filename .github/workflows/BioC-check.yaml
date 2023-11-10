@@ -47,7 +47,9 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: rcmdcheck
+          extra-packages: |
+            any::rcmdcheck
+            url::https://cran.r-project.org/src/contrib/Archive/Matrix/Matrix_1.6-0.tar.gz
           cache-version: 2
 
       - name: Install XQuartz on macOS
