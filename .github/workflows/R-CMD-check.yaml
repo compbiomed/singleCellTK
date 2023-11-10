@@ -63,7 +63,7 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
+          use-public-rspm: false
 
       - name: Install fftw3 on Linux
         if: runner.os == 'Linux'
@@ -85,6 +85,7 @@ jobs:
           extra-packages: |
             any::rcmdcheck
             url::https://cran.r-project.org/src/contrib/Archive/Matrix/Matrix_1.6-0.tar.gz
+            url::https://cran.r-project.org/src/contrib/Archive/Seurat/Seurat_4.4.0.tar.gz
           needs: check
 
       - name: Install XQuartz on macOS
