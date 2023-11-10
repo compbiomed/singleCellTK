@@ -77,6 +77,9 @@ jobs:
         run: |
           install.packages("BiocManager")
           BiocManager::install("ggtree")
+          install.packages("remotes")
+          remotes::install_version("Matrix", version = "1.6-0", repos = "http://cran.us.r-project.org")
+          remotes::install_version("Seurat", version = "4.4.0", repos = "http://cran.us.r-project.org")
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
@@ -84,8 +87,6 @@ jobs:
           cache-version: 2
           extra-packages: |
             any::rcmdcheck
-            url::https://cran.r-project.org/src/contrib/Archive/Matrix/Matrix_1.6-0.tar.gz
-            url::https://cran.r-project.org/src/contrib/Archive/Seurat/Seurat_4.4.0.tar.gz
           needs: check
 
       - name: Install XQuartz on macOS
