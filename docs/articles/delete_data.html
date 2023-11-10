@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.0</span>
       </span>
     </div>
 
@@ -293,9 +293,9 @@
 <p>This data can be removed as below by simply setting the required slots to <code>NULL</code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Remove a certain cell annotation (colData)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">Tissue_status</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">Tissue_status</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span><span class="co">## Remove a certain feature annotation (rowData)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">Symbol</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span><span class="fu">rowData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">Symbol</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span><span class="co">## Remove a certain feature expression matrix (expData)</span></span>
 <span><span class="fu"><a href="../reference/expData.html">expData</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"logcounts"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span><span class="co">## Remove a certain feature subset (altExp)</span></span>
