@@ -84,6 +84,8 @@ jobs:
           remotes::install_version("multipanelfigure", version = "2.1.2", repos = "http://cran.us.r-project.org")
           remotes::install_version("Matrix", version = "1.6-0", repos = "http://cran.us.r-project.org")
           remotes::install_version("Seurat", version = "4.4.0", repos = "http://cran.us.r-project.org")
+          BiocManager::install("celda")
+
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
