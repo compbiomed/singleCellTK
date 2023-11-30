@@ -217,7 +217,7 @@ If the cell typing is already given, it is strongly recommended to specify `shap
 | ComBatSeq [@ZhangY2020]  | `runComBatSeq()` | raw counts | `assay` |
 | FastMNN [@Haghverdi2018]  | `runFastMNN()` | log-normalized | `reducedDim` |
 | MNN [@Haghverdi2018] | `runMNNCorrect()` | log-normalized | `assay` |
-| Harmony [@Korsunsky2019]  | `runHarmony()` | log-normalized | `reducedDim` |
+| Harmony [@Korsunsky2019]  | `runHarmony()` | PCA | `reducedDim` |
 | LIGER [@LiuL2020] | `runLIGER()` | raw counts | `reducedDim` |
 | Limma [@Ritchie2015] | `runLimmaBC()` | log-normalized | `assay` |
 | Scanorama [@Hie2019] | `runSCANORAMA()` | log-normalized | `assay` |
