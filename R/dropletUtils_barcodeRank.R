@@ -69,7 +69,8 @@ runBarcodeRankDrops <- function(inSCE,
                                 df = 20
 ) {
   
-  message(paste0(date(), " ... Running 'barcodeRanks'"))
+  p <- paste0(date(), " ... Running 'barcodeRanks'")
+  message(p)
   
   ##  Getting current arguments values
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))

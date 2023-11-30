@@ -1,9 +1,15 @@
 Changes in Version 2.10.1 (2023-07-26)
 ================================================================================
-* Added bubble plot
-* Added support for batch processing multiple inputs
-* Added support for importing and exporting AnnData objects
-* Fixed a bug causing YAML output files to be empty
+* Added function for bubble plot
+* In SCTK-QC pipeline, added support for batch processing multiple inputs
+* In SCTK-QC pipeline, added support for importing and exporting AnnData objects
+* In SCTK-QC pipeline, fixed a bug causing YAML output files to be empty
+* Update the SCTK-QC tutorial 
+* Fixed bug in combineSCE causing it to create multiple copies of row or column data
+
+Changes in Version 2.10.0 (2023-04-25)
+================================================================================
+* Updated version to match Bioconductor 3.17
 
 Changes in Version 2.8.1 (2023-03-10)
 ================================================================================

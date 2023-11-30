@@ -136,7 +136,8 @@
 }
 
 .cellQC <- function(cellSCE, geneSetCollection, Params, cellQCAlgos, mitoInfo, dropletSCE = NULL) {
-    message(paste0(date(), " .. Running cell QC"))
+    p <- paste0(date(), " .. Running cell QC")
+    message(p)
     cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
         paramsList=Params, algorithms = cellQCAlgos, background = dropletSCE,
         mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],
@@ -150,7 +151,8 @@
         ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & (dropletSCE$dropletUtils_emptyDrops_fdr < 0.01)
         cellSCE <- dropletSCE[,ix]
     }
-    message(paste0(date(), " .. Running cell QC"))
+    p <- paste0(date(), " .. Running cell QC")
+    message(p)
     cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
         paramsList=Params, algorithms = cellQCAlgos, background = dropletSCE,
         mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],
@@ -158,7 +160,8 @@
 }
 
 .runDroplet <- function(dropletSCE, geneSetCollection, Params, mitoInfo, cellQCAlgos, detectCell, cellCalling) {
-    message(paste0(date(), " .. Running droplet QC"))
+    p <- paste0(date(), " .. Running droplet QC")
+    message(p)
     dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
     if (isTRUE(detectCell)) {
         if (cellCalling == "EmptyDrops") {
@@ -169,7 +172,8 @@
             ix <- dropletSCE$dropletUtils_BarcodeRank_Inflection == 1
         }
         cellSCE <- dropletSCE[,ix]
-        message(paste0(date(), " .. Running cell QC"))
+        p <- paste0(date(), " .. Running cell QC")
+        message(p)
         cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
             paramsList=Params, algorithms = cellQCAlgos, background = dropletSCE,
             mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],

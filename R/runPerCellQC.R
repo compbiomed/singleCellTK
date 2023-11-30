@@ -118,7 +118,8 @@ runPerCellQC <- function(inSCE,
                          BPPARAM = BiocParallel::SerialParam()
 ) {
 
-  message(paste0(date(), " ... Running 'perCellQCMetrics'"))
+  p <- paste0(date(), " ... Running 'perCellQCMetrics'")
+  message(p)
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
   mitoRef <- match.arg(mitoRef)
   mitoIDType <- match.arg(mitoIDType)
@@ -272,9 +273,10 @@ runPerCellQC <- function(inSCE,
           gs.index <- which(rowData(inSCE)[,temp.location] %in% gs.i)
           geneSets[[names(geneSetList)[i]]] <- rownames(inSCE)[gs.index]
         } else {
-          warning(paste0("No features for gene set '", names(geneSetList)[i],
-                         "' were found in 'rowData(inSCE)' under column '",
-                         temp.location, "'. Excluding this gene set.", sep=""))
+          p <- paste0("No features for gene set '", names(geneSetList)[i],
+                      "' were found in 'rowData(inSCE)' under column '",
+                      temp.location, "'. Excluding this gene set.", sep="")
+          warning(p)
         }
 
         if(length(gs.diff) > 0 & length(gs.i) > 0) {

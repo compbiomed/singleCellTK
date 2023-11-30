@@ -151,8 +151,8 @@ runDecontX <- function(inSCE,
   }
 
 
-
-  message(paste0(date(), " ... Running 'DecontX'"))
+  p <- paste0(date(), " ... Running 'DecontX'")
+  message(p)
 
   ## keep a copy of original decontX result, if there's any
   oldColData <- NULL

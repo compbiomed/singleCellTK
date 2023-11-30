@@ -62,9 +62,10 @@
   }, silent = TRUE)
 
   if(inherits(error, "try-error")) {
-    stop(paste0("importOptimus did not complete successfully. SCE could not be",
+    p <- paste0("importOptimus did not complete successfully. SCE could not be",
                 "generated. Error given during the import process: \n\n", 
-                error))
+                error)
+    stop(p)
   }
 
   if (class == "matrix") {

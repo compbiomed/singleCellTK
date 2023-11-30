@@ -374,7 +374,8 @@ reportSeuratRun <- function(inSCE,
 
   path <- paste0(outputPath, "SCE_SeuratRun", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratRun", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  p <- paste0("SCE_SeuratRun", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  message("Output SCE object stored as ", p , " in ", outputPath, ".")
   message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
 
   return(data)
@@ -506,7 +507,8 @@ reportSeuratResults <- function(inSCE,
 
   path <- paste0(outputPath, "SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  p <- paste0("SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  message("Output SCE object stored as ", p , " in ", outputPath, ".")
   message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
 
   return(data)
@@ -593,7 +595,8 @@ reportSeuratDimRed <- function(inSCE,
 
   path <- paste0(outputPath, "SCE_SeuratDimRed", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratDimRed", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  p <- paste0("SCE_SeuratDimRed", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  message("Output SCE object stored as ", p , " in ", outputPath, ".")
   message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
 
   return(data)
@@ -660,7 +663,8 @@ reportSeuratNormalization <- function(inSCE,
 
   path <- paste0(outputPath, "SCE_SeuratNormalization", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratNormalization", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  p <- paste0("SCE_SeuratNormalization", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  message("Output SCE object stored as ", p , " in ", outputPath, ".")
   message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
 
   return(data)
@@ -735,7 +739,8 @@ reportSeuratFeatureSelection <- function(inSCE,
 
   path <- paste0(outputPath, "SCE_SeuratFeatureSelection", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratFeatureSelection", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  p <- paste0("SCE_SeuratFeatureSelection", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  message("Output SCE object stored as ", p , " in ", outputPath, ".")
   message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
 
   return(data)
@@ -802,7 +807,8 @@ reportSeuratScaling <- function(inSCE,
 
   path <- paste0(outputPath, "SCE_SeuratScaleData", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratScaleData", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  p <- paste0("SCE_SeuratScaleData", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  message("Output SCE object stored as ", p , " in ", outputPath, ".")
   message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
 
   return(data)
@@ -914,7 +920,8 @@ reportSeuratClustering <- function(inSCE,
 
   path <- paste0(outputPath, "SCE_SeuratClustering", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratClustering", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  p <- paste0("SCE_SeuratClustering", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  message("Output SCE object stored as ", p , " in ", outputPath, ".")
   message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
 
   return(data)
@@ -1018,7 +1025,8 @@ reportSeuratMarkerSelection <- function(inSCE,
 
   path <- paste0(outputPath, "SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  p <- paste0("SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  message("Output SCE object stored as ", p , " in ", outputPath, ".")
   message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
 
   return(data)
@@ -1184,7 +1192,8 @@ reportSeurat <- function(
 
   path <- paste0(outputPath, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  p <- paste0("SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  message("Output SCE object stored as ", p , " in ", outputPath, ".")
   message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
 
   return(data)

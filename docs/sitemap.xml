@@ -4,6 +4,9 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/LICENSE-text.html</loc>
+  </url>
+  <url>
     <loc>/articles/01_import_and_qc_tutorial.html</loc>
   </url>
   <url>
@@ -109,10 +112,19 @@
     <loc>/index.html</loc>
   </url>
   <url>
-    <loc>/LICENSE-text.html</loc>
+    <loc>/news/index.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>/reference/MitoGenes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/SCtkExperiment-class.html</loc>
+  </url>
+  <url>
+    <loc>/reference/SCtkExperiment.html</loc>
+  </url>
+  <url>
+    <loc>/reference/SEG.html</loc>
   </url>
   <url>
     <loc>/reference/alignSingleCellData.html</loc>
@@ -184,22 +196,22 @@
     <loc>/reference/expDeleteDataTag.html</loc>
   </url>
   <url>
+    <loc>/reference/expSetDataTag.html</loc>
+  </url>
+  <url>
+    <loc>/reference/expTaggedData.html</loc>
+  </url>
+  <url>
     <loc>/reference/exportSCE.html</loc>
+  </url>
+  <url>
+    <loc>/reference/exportSCEToSeurat.html</loc>
   </url>
   <url>
     <loc>/reference/exportSCEtoAnnData.html</loc>
   </url>
   <url>
     <loc>/reference/exportSCEtoFlatFile.html</loc>
-  </url>
-  <url>
-    <loc>/reference/exportSCEToSeurat.html</loc>
-  </url>
-  <url>
-    <loc>/reference/expSetDataTag.html</loc>
-  </url>
-  <url>
-    <loc>/reference/expTaggedData.html</loc>
   </url>
   <url>
     <loc>/reference/featureIndex.html</loc>
@@ -265,13 +277,13 @@
     <loc>/reference/getSoupX.html</loc>
   </url>
   <url>
-    <loc>/reference/getTopHVG.html</loc>
-  </url>
-  <url>
     <loc>/reference/getTSCANResults.html</loc>
   </url>
   <url>
     <loc>/reference/getTSNE.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getTopHVG.html</loc>
   </url>
   <url>
     <loc>/reference/getUMAP.html</loc>
@@ -343,9 +355,6 @@
     <loc>/reference/mergeSCEColData.html</loc>
   </url>
   <url>
-    <loc>/reference/MitoGenes.html</loc>
-  </url>
-  <url>
     <loc>/reference/mouseBrainSubsetSCE.html</loc>
   </url>
   <url>
@@ -391,9 +400,6 @@
     <loc>/reference/plotCxdsResults.html</loc>
   </url>
   <url>
-    <loc>/reference/plotDecontXResults.html</loc>
-  </url>
-  <url>
     <loc>/reference/plotDEGHeatmap.html</loc>
   </url>
   <url>
@@ -404,6 +410,9 @@
   </url>
   <url>
     <loc>/reference/plotDEGVolcano.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotDecontXResults.html</loc>
   </url>
   <url>
     <loc>/reference/plotDimRed.html</loc>
@@ -424,67 +433,19 @@
     <loc>/reference/plotFindMarkerHeatmap.html</loc>
   </url>
   <url>
-    <loc>/reference/plotMarkerDiffExp.html</loc>
-  </url>
-  <url>
     <loc>/reference/plotMASTThresholdGenes.html</loc>
   </url>
   <url>
-    <loc>/reference/plotPathway.html</loc>
+    <loc>/reference/plotMarkerDiffExp.html</loc>
   </url>
   <url>
     <loc>/reference/plotPCA.html</loc>
   </url>
   <url>
+    <loc>/reference/plotPathway.html</loc>
+  </url>
+  <url>
     <loc>/reference/plotRunPerCellQCResults.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScanpyDotPlot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScanpyEmbedding.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScanpyHeatmap.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScanpyHVG.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScanpyMarkerGenes.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScanpyMarkerGenesDotPlot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScanpyMarkerGenesHeatmap.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScanpyMarkerGenesMatrixPlot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScanpyMarkerGenesViolin.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScanpyMatrixPlot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScanpyPCA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScanpyPCAGeneRanking.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScanpyPCAVariance.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScanpyViolin.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScDblFinderResults.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScdsHybridResults.html</loc>
   </url>
   <url>
     <loc>/reference/plotSCEBarAssayData.html</loc>
@@ -526,6 +487,54 @@
     <loc>/reference/plotSCEViolinColData.html</loc>
   </url>
   <url>
+    <loc>/reference/plotScDblFinderResults.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyDotPlot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyEmbedding.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyHVG.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyHeatmap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyMarkerGenes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyMarkerGenesDotPlot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyMarkerGenesHeatmap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyMarkerGenesMatrixPlot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyMarkerGenesViolin.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyMatrixPlot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyPCA.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyPCAGeneRanking.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyPCAVariance.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScanpyViolin.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScdsHybridResults.html</loc>
+  </url>
+  <url>
     <loc>/reference/plotScrubletResults.html</loc>
   </url>
   <url>
@@ -535,10 +544,10 @@
     <loc>/reference/plotSeuratGenes.html</loc>
   </url>
   <url>
-    <loc>/reference/plotSeuratHeatmap.html</loc>
+    <loc>/reference/plotSeuratHVG.html</loc>
   </url>
   <url>
-    <loc>/reference/plotSeuratHVG.html</loc>
+    <loc>/reference/plotSeuratHeatmap.html</loc>
   </url>
   <url>
     <loc>/reference/plotSeuratJackStraw.html</loc>
@@ -548,9 +557,6 @@
   </url>
   <url>
     <loc>/reference/plotSoupXResults.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotTopHVG.html</loc>
   </url>
   <url>
     <loc>/reference/plotTSCANClusterDEG.html</loc>
@@ -575,6 +581,9 @@
   </url>
   <url>
     <loc>/reference/plotTSNE.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotTopHVG.html</loc>
   </url>
   <url>
     <loc>/reference/plotUMAP.html</loc>
@@ -637,10 +646,10 @@
     <loc>/reference/retrieveSCEIndex.html</loc>
   </url>
   <url>
-    <loc>/reference/runBarcodeRankDrops.html</loc>
+    <loc>/reference/runBBKNN.html</loc>
   </url>
   <url>
-    <loc>/reference/runBBKNN.html</loc>
+    <loc>/reference/runBarcodeRankDrops.html</loc>
   </url>
   <url>
     <loc>/reference/runBcds.html</loc>
@@ -727,6 +736,15 @@
     <loc>/reference/runSCANORAMA.html</loc>
   </url>
   <url>
+    <loc>/reference/runSCGEN.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runSCMerge.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runScDblFinder.html</loc>
+  </url>
+  <url>
     <loc>/reference/runScanpyFindClusters.html</loc>
   </url>
   <url>
@@ -749,15 +767,6 @@
   </url>
   <url>
     <loc>/reference/runScanpyUMAP.html</loc>
-  </url>
-  <url>
-    <loc>/reference/runScDblFinder.html</loc>
-  </url>
-  <url>
-    <loc>/reference/runSCGEN.html</loc>
-  </url>
-  <url>
-    <loc>/reference/runSCMerge.html</loc>
   </url>
   <url>
     <loc>/reference/runScranSNN.html</loc>
@@ -799,10 +808,10 @@
     <loc>/reference/runSeuratPCA.html</loc>
   </url>
   <url>
-    <loc>/reference/runSeuratScaleData.html</loc>
+    <loc>/reference/runSeuratSCTransform.html</loc>
   </url>
   <url>
-    <loc>/reference/runSeuratSCTransform.html</loc>
+    <loc>/reference/runSeuratScaleData.html</loc>
   </url>
   <url>
     <loc>/reference/runSeuratTSNE.html</loc>
@@ -844,13 +853,13 @@
     <loc>/reference/scaterCPM.html</loc>
   </url>
   <url>
-    <loc>/reference/scaterlogNormCounts.html</loc>
-  </url>
-  <url>
     <loc>/reference/scaterPCA.html</loc>
   </url>
   <url>
     <loc>/reference/scater_logNormCounts.html</loc>
+  </url>
+  <url>
+    <loc>/reference/scaterlogNormCounts.html</loc>
   </url>
   <url>
     <loc>/reference/sce.html</loc>
@@ -865,12 +874,6 @@
     <loc>/reference/scran_modelGeneVar.html</loc>
   </url>
   <url>
-    <loc>/reference/SCtkExperiment-class.html</loc>
-  </url>
-  <url>
-    <loc>/reference/SCtkExperiment.html</loc>
-  </url>
-  <url>
     <loc>/reference/sctkListGeneSetCollections.html</loc>
   </url>
   <url>
@@ -878,9 +881,6 @@
   </url>
   <url>
     <loc>/reference/sctkPythonInstallVirtualEnv.html</loc>
-  </url>
-  <url>
-    <loc>/reference/SEG.html</loc>
   </url>
   <url>
     <loc>/reference/selectSCTKConda.html</loc>
@@ -892,10 +892,10 @@
     <loc>/reference/setRowNames.html</loc>
   </url>
   <url>
-    <loc>/reference/setSampleSummaryStatsTable-set.html</loc>
+    <loc>/reference/setSCTKDisplayRow.html</loc>
   </url>
   <url>
-    <loc>/reference/setSCTKDisplayRow.html</loc>
+    <loc>/reference/setSampleSummaryStatsTable-set.html</loc>
   </url>
   <url>
     <loc>/reference/simpleLog.html</loc>

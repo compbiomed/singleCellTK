@@ -123,8 +123,9 @@ runUMAP <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
     
     nNeighbors <- min(ncol(sceSample), nNeighbors)
     if(isTRUE(verbose)) {
-      message(paste0(date(), " ... Computing Scater UMAP for sample '",
-                   samples[i], "'."))
+      p <- paste0(date(), " ... Computing Scater UMAP for sample '",
+                  samples[i], "'.")
+      message(p)
     }
     
     umapRes <- withr::with_seed(seed, {

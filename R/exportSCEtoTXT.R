@@ -40,7 +40,8 @@ exportSCEtoFlatFile <- function(sce,
 
 .checkOverwrite <- function(path, overwrite) {
   if (file.exists(path) && !isTRUE(overwrite)) {
-    stop(paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE."))
+    p <- paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE.")
+    stop(p)
   }
 }
 
@@ -86,7 +87,8 @@ exportSCEtoFlatFile <- function(sce,
 
       if(isTRUE(gzipped)) {
         .checkOverwrite(paste0(assaypath, ".gz"), overwrite)
-        message(date(), " .. Compressing into ", paste0(assaypath, ".gz"))
+        p <- paste0(assaypath, ".gz")
+        message(date(), " .. Compressing into ", p)
         R.utils::gzip(filename = assaypath, overwrite = overwrite)
       }
     }
