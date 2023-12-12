@@ -46,6 +46,9 @@ separate ggplot objects for each feature. Only works when \code{plotType}
 parameter is \code{"feature"}, \code{"violin"} or \code{"ridge"}. For
 \code{"heatmap"} and \code{"dot"}, plots for all features are always
 combined into a single plot. Default \code{FALSE}.}
+
+\item{reducedDimName}{saved dimension reduction name in the
+SingleCellExperiment object. Default \code{seuratUMAP}.}
 }
 \value{
 Plot object
