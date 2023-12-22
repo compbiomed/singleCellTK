@@ -34,7 +34,8 @@ exportSCEToSeurat <- function(inSCE, prefix="sample", outputDir="./", overwrite=
   }
 
   if (file.exists(filePath) && !isTRUE(overwrite)) {
-    stop(paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE."))
+    p <- paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE.")
+    stop(p)
   }
 
 
@@ -66,8 +67,9 @@ exportSCE <- function(inSCE,
                       format = c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")) {
 
     if (any(!format %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat"))) {
+        p <- paste(format[!format %in% c("SCE", "AnnData", "FlatFile", "HTAN")], sep = ",")
         warning("Output format must be 'SCE', 'AnnData', 'HTAN', 'Seurat' or 'FlatFile'. Format ",
-             paste(format[!format %in% c("SCE", "AnnData", "FlatFile", "HTAN")], sep = ","),
+             p,
              " is not supported now. ") #             "Only output the supported formats in the provided options. "
     }
 
@@ -691,10 +693,14 @@ qcInputProcess <- function(preproc,
         if (dataType == "Both") {
             dropletSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
             cellSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix", delayedArray=FALSE)
-        } else if (dataType == "Cell") {
+        } else if (dataType == "Cell" && !is.null(path)) {
             cellSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix", delayedArray=FALSE)
-        } else if (dataType == "Droplet") {
+        } else if (dataType == "Cell" && !is.null(fil)) {
+            cellSCE <- importSTARsolo(STARsoloDirs = fil, samples = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix", delayedArray=FALSE)
+        } else if (dataType == "Droplet" && !is.null(path)) {
             dropletSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
+        } else if (dataType == "Droplet" && !is.null(raw)) {
+            dropletSCE <- importSTARsolo(STARsoloDirs = raw, samples = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
         }
         return(list(dropletSCE, cellSCE))
     }
@@ -845,6 +851,7 @@ qcInputProcess <- function(preproc,
     }
 
     ## preproc is not one of the method above. Stop the pipeline.
-    stop(paste0("'", preproc, "' not supported."))
+    p <- paste0("'", preproc, "' not supported.")
+    stop(p)
 }
 

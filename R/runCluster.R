@@ -235,7 +235,7 @@ runKMeans <- function(inSCE, nCenters, useReducedDim = "PCA",
     if (nComp < ncol(mat)) {
         mat <- mat[,seq(nComp)]
     }
-    .withSeed(seed, {
+    withr::with_seed(seed, {
         clust.kmeans <- stats::kmeans(mat, centers = nCenters, iter.max = nIter,
                                   nstart = nStart, algorithm = algorithm)
     })

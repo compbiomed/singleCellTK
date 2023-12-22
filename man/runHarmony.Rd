@@ -6,7 +6,7 @@
 \usage{
 runHarmony(
   inSCE,
-  useAssay = "logcounts",
+  useAssay = NULL,
   useReducedDim = NULL,
   batch = "batch",
   reducedDimName = "HARMONY",
@@ -15,6 +15,7 @@ runHarmony(
   theta = 5,
   sigma = 0.1,
   nIter = 10,
+  seed = 12345,
   verbose = TRUE,
   ...
 )
@@ -23,10 +24,13 @@ runHarmony(
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
-batch correction. Default \code{"logcounts"}.}
+batch correction. Default \code{NULL}. It is recommended to use a reducedDim
+such as PCA through the `useReducedDim` parameter of this function.}
 
 \item{useReducedDim}{A single character indicating the name of the reducedDim
-used to be corrected. Specifying this will ignore \code{useAssay}. Default
+to be used. It is recommended to use a reducedDim instead of a full assay as 
+using an assay might cause the algorithm to not converge and throw error.
+Specifying this will ignore \code{useAssay}. Default
 \code{NULL}.}
 
 \item{batch}{A single character indicating a field in \code{colData} that
@@ -54,6 +58,8 @@ make soft kmeans cluster approach hard clustering. Default \code{0.1}.}
 
 \item{nIter}{An integer. The max number of iterations to perform. Default
 \code{10L}.}
+
+\item{seed}{Set seed for reproducibility. Default is \code{12345}.}
 
 \item{verbose}{Whether to print progress messages. Default \code{TRUE}.}
 

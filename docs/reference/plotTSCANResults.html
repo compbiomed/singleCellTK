@@ -19,7 +19,7 @@ and project them onto the MST."><!-- mathjax --><script src="https://cdnjs.cloud
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.1</span>
       </span>
     </div>
 
@@ -243,11 +243,11 @@ colored on a cell 2D embedding, and the MST path drawn on it.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mouseBrainSubsetSCE</span> <span class="op">&lt;-</span> <span class="fu"><a href="runTSCAN.html">runTSCAN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">mouseBrainSubsetSCE</span>,</span></span>
 <span class="r-in"><span>                                useReducedDim <span class="op">=</span> <span class="st">"PCA_logcounts"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Mon Jul 24 16:22:35 2023 ... Running 'scran SNN clustering' with 'louvain' algorithm</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Mon Jul 24 16:22:36 2023 ...   Identified 2 clusters</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Mon Jul 24 16:22:36 2023 ... Running TSCAN to estimate pseudotime</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Mon Jul 24 16:22:37 2023 ...   Clusters involved in path index 2 are: 1, 2</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Mon Jul 24 16:22:37 2023 ...   Number of estimated paths is 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Jul 26 14:58:57 2023 ... Running 'scran SNN clustering' with 'louvain' algorithm</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Jul 26 14:58:58 2023 ...   Identified 2 clusters</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Jul 26 14:58:58 2023 ... Running TSCAN to estimate pseudotime</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Jul 26 14:58:58 2023 ...   Clusters involved in path index 2 are: 1, 2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Jul 26 14:58:58 2023 ...   Number of estimated paths is 1</span>
 <span class="r-in"><span><span class="fu">plotTSCANResults</span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">mouseBrainSubsetSCE</span>,</span></span>
 <span class="r-in"><span>                 useReducedDim <span class="op">=</span> <span class="st">"TSNE_logcounts"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Scale for <span style="color: #00BB00;">colour</span> is already present.</span>
@@ -263,7 +263,7 @@ colored on a cell 2D embedding, and the MST path drawn on it.</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Ming Liu, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

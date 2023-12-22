@@ -411,8 +411,9 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
     gs.names <- unique(gs$gs_name)
     num.gs.names <- length(gs.names)
     if(isTRUE(verbose)){
-      message(paste0(date(), " .. Importing '", categoryIDs[i],
-                     "' gene sets (n = ", num.gs.names, ")"))
+      p <- paste0(date(), " .. Importing '", categoryIDs[i],
+                  "' gene sets (n = ", num.gs.names, ")")
+      message(p)
     }
 
     for(j in seq_along(gs.names)) {
@@ -424,19 +425,22 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
                           subCategory = subcat))
       if(j %% 1000 == 0) {
         if(isTRUE(verbose)) {
-          message(paste0(date(), " .... Completed ", j, " out of ",
-                         num.gs.names, " gene sets"))
+          p <- paste0(date(), " .... Completed ", j, " out of ",
+                      num.gs.names, " gene sets")
+          message(p)
         }
       }
     }
     if(isTRUE(verbose)) {
-      message(paste0(date(), " .... Completed ", num.gs.names, " gene sets ",
-                   "for ", i))
+      p <- paste0(date(), " .... Completed ", num.gs.names, " gene sets ",
+                  "for ", i)
+      message(p)
     }
 
     # Add to SCE
     if(isTRUE(verbose)) {
-      message(paste0(date(), " .. Matching gene sets to '", by, "'"))
+      p <- paste0(date(), " .. Matching gene sets to '", by, "'")
+      message(p)
     }
     gsc <- GSEABase::GeneSetCollection(gs.list)
     inSCE <- importGeneSetsFromCollection(inSCE = inSCE,

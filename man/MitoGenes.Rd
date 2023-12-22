@@ -10,6 +10,9 @@ A list
 \usage{
 data("MitoGenes")
 }
+\value{
+List of mitochondrial genes of multiple reference
+}
 \description{
 A list of gene set that contains mitochondrial genes of multiple reference
 (hg38, hg19, mm10 and mm9). It contains multiple types of gene identifier:

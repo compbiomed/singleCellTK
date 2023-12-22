@@ -52,6 +52,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         barcodesFilePath <- entry$params$annotFile
         featuresFilePath <- entry$params$featureFile
         metricsFilePath <- entry$params$summaryFile
+        sampleFileName <- entry$params$sampleName
         
         # rename to original names
         file.rename(matrixFilePath, paste0(dirname(matrixFilePath), "/matrix.mtx.gz"))
@@ -76,7 +77,8 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         }
         
         # make object
-        newSce <- importCellRangerV3Sample(dataDir = paste0(mytempdir, "/cellranger/"))
+        newSce <- importCellRangerV3Sample(dataDir = paste0(mytempdir, "/cellranger/"), 
+                                           sampleName = sampleFileName)
         
         # delete sample folder
         unlink(paste0(mytempdir, "/cellranger/"), recursive = TRUE)
@@ -100,6 +102,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         barcodesFilePath <- entry$params$annotFile
         featuresFilePath <- entry$params$featureFile
         # metricsFilePath <- entry$params$summaryFile
+        sampleFileName <- entry$params$sampleName
         
         # rename to original names
         file.rename(matrixFilePath, paste0(dirname(matrixFilePath), "/matrix.mtx"))
@@ -126,7 +129,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         # }
         
         # make object
-        newSce <- importSTARsolo(STARsoloDirs = paste0(mytempdir, "/Solo.out"), samples = "sample1")
+        newSce <- importSTARsolo(STARsoloDirs = paste0(mytempdir, "/Solo.out"), samples = sampleFileName)
         
         # delete sample folder
         unlink(paste0(mytempdir, "/Solo.out/"), recursive = TRUE)
@@ -154,6 +157,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         barcodesFilePath <- entry$params$annotFile
         featuresFilePath <- entry$params$featureFile
         # metricsFilePath <- entry$params$summaryFile
+        sampleFileName <- entry$params$sampleName
         
         # rename to original names
         file.rename(matrixFilePath, paste0(dirname(matrixFilePath), "/genes.mtx"))
@@ -172,7 +176,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         file.copy(paste0(dirname(featuresFilePath), "/genes.genes.txt"), paste0(mytempdir, "/bus_output/genes.genes.txt"))
         
         # make object
-        newSce <- importBUStools(BUStoolsDirs = paste0(mytempdir, "/bus_output"), samples = "sample1")
+        newSce <- importBUStools(BUStoolsDirs = paste0(mytempdir, "/bus_output"), samples = sampleFileName)
         
         # delete sample folder
         unlink(paste0(mytempdir, "/bus_output/"), recursive = TRUE)
@@ -194,6 +198,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         moleculeCountsLocation <- entry$params$moleculeCountsLocation
         barcodesLocation <- entry$params$barcodesLocation
         genesLocation <- entry$params$genesLocation
+        sampleFileName <- entry$params$sampleName
         
         # rename to original names
         file.rename(readCountsLocation, paste0(dirname(readCountsLocation), "/seqc_sparse_read_counts.mtx"))
@@ -211,7 +216,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         file.copy(paste0(dirname(genesLocation), "/seqc_sparse_counts_genes.csv"), paste0(mytempdir, "/seqc/seqc_sparse_counts_genes.csv"))
         
         # make object
-        newSce <- importSEQC(seqcDirs = paste0(mytempdir, "/seqc"), samples = "sample1", prefix = "seqc")
+        newSce <- importSEQC(seqcDirs = paste0(mytempdir, "/seqc"), samples = sampleFileName, prefix = "seqc")
         
         # delete sample folder
         unlink(paste0(mytempdir, "/seqc/"), recursive = TRUE)
@@ -234,6 +239,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         cellMetricsLocation <- entry$params$cellMetricsLocation
         geneMetricsLocation <- entry$params$geneMetricsLocation
         emptyDropsLocation <- entry$params$emptyDropsLocation
+        sampleFileName <- entry$params$sampleName
         
         # rename to original names
         file.rename(matrixLocation, paste0(dirname(matrixLocation), "/sparse_counts.npz"))
@@ -259,7 +265,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         file.copy(paste0(dirname(emptyDropsLocation), "/empty_drops_result.csv"), paste0(mytempdir, "/optimus/call-RunEmptyDrops/empty_drops_result.csv"))
 
         # make object
-        newSce <- importOptimus(OptimusDirs = paste0(mytempdir, "/optimus"), samples = "sample1")
+        newSce <- importOptimus(OptimusDirs = paste0(mytempdir, "/optimus"), samples = sampleFileName)
         
         # delete sample folder
         unlink(paste0(mytempdir, "/optimus/"), recursive = TRUE)
