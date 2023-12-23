@@ -101,35 +101,6 @@ shinyPanelBubbleplot <- fluidPage(
               style = 'height:800px;',
               plotOutput("Bubbleplot")
             ),
-            # # Others ####
-            # h3("Bubbleplot Setting"),
-            # p("Settings for title, label, color scheme and etc.",
-            #   style = "color:grey;"),
-            # panel(
-            #   fluidRow(
-            #     column(width = 4,
-            #            textInput("bpTitle", "Title", NULL)
-            #     )
-            #   ),
-            #   fluidRow(
-            #     column(width = 4,
-            #            textInput("bpX", "X-axis Label", NULL)
-            #     ),
-            #     column(width = 4,
-            #            textInput("bpY", "Y-axis Label", NULL)
-            #     )
-            #   ),
-            #   fluidRow(
-            #     column(
-            #       width = 4,
-            #       colourpicker::colourInput('bpLow', 'Low color', value = 'white')
-            #     ),
-            #     column(
-            #       width = 4,
-            #       colourpicker::colourInput('bpHigh', 'High color', value = 'blue')
-            #     )
-            #   )
-            # ),
             hr(),
           )
         )

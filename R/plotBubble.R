@@ -69,6 +69,9 @@ plotBubble <- function(inSCE, useAssay="logcounts", featureNames, displayName=NU
     ggplot2::xlab(xlab) + 
     ggplot2::ylab(ylab) + 
     ggplot2::scale_color_gradient2(low=colorLow, high=colorHigh)
-  .ggSCTKTheme(gg)
+  g <- .ggSCTKTheme(gg)
+  
+  g <- g + ggplot2::theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  g
 }
 
