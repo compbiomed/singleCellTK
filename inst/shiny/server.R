@@ -5713,7 +5713,7 @@ shinyServer(function(input, output, session) {
     req(vals$counts)
     selectInput(
       'bpCluster',
-      "Select Feature to Cluster on",
+      "Select Feature for Annotation",
       colnames(colData(vals$counts)), multiple = FALSE, width = '550px')
   })
   
