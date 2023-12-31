@@ -13,6 +13,7 @@ plotSeuratGenes(
   splitBy = NULL,
   cols = c("lightgrey", "blue"),
   ncol = 1,
+  useReduction = c("umap", "pca", "ica", "tsne"),
   combine = FALSE
 )
 }
@@ -40,15 +41,15 @@ used to split samples.
 \item{ncol}{Visualizations will be adjusted in "ncol" number of columns.
 Default is \code{1}.}
 
+\item{useReduction}{Dimentionality reduction to plot. One of "pca", "ica",
+"tsne", or "umap". Default \code{"umap"}.}
+
 \item{combine}{A logical value that indicates if the plots should be combined
 together into a single plot if \code{TRUE}, else if \code{FALSE} returns
 separate ggplot objects for each feature. Only works when \code{plotType}
 parameter is \code{"feature"}, \code{"violin"} or \code{"ridge"}. For
 \code{"heatmap"} and \code{"dot"}, plots for all features are always
 combined into a single plot. Default \code{FALSE}.}
-
-\item{reducedDimName}{saved dimension reduction name in the
-SingleCellExperiment object. Default \code{seuratUMAP}.}
 }
 \value{
 Plot object

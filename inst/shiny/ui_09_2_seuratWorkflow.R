@@ -330,11 +330,18 @@ shinyPanelSeurat <- fluidPage(
                                                                           "poisson", "LR",
                                                                           "DESeq2")
                                                           ),
+                                                          selectInput(
+                                                              inputId = "seuratFeatureUseReduction",
+                                                              label = "Select reduction method for feature plot:",
+                                                              choices = c("umap", "tsne",
+                                                                          "pca", "ica")
+                                                          ),
                                                           materialSwitch(
                                                               inputId = "seuratFindMarkerPosOnly",
                                                               label = "Only return positive markers?",
                                                               value = FALSE
                                                           ),
+                                                          
                                                       actionButton(inputId = "seuratFindMarkerRun", "Find Markers")
                                                   )
                                            )
