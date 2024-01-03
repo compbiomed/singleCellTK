@@ -5713,22 +5713,17 @@ shinyServer(function(input, output, session) {
     req(vals$counts)
     selectInput(
       'bpCluster',
-      "Select Feature for Annotation",
+      "",
       colnames(colData(vals$counts)), multiple = FALSE, width = '550px')
   })
   
-  output$bpRowUI <- renderUI({
-    req(vals$counts)
-    selectNonNARowData <- names(apply(rowData(vals$counts), 2, anyNA)[apply(rowData(vals$counts), 2, anyNA) == FALSE])
-    selectInput(
-      "bpRow",
-      "Select Row Data Name",
-      selectNonNARowData, selected = names(rowData(vals$counts))[1], multiple = FALSE, width = '550px')
-  })
-  
-  observeEvent(input$bpRow, {
-    req(vals$counts)
-    updateSelectizeInput(session, "bpFeatures", choices = rowData(vals$counts)[[input$bpRow]], server = TRUE)
+  observe({
+    req(vals$counts) 
+    
+    if (!is.null(metadata(vals$counts)$featureDisplay) && metadata(vals$counts)$featureDisplay %in% names(rowData(vals$counts))) {
+      featureDisplayValue <- metadata(vals$counts)$featureDisplay
+      updateSelectizeInput(session, "bpFeatures", choices = rowData(vals$counts)[[featureDisplayValue]], server = TRUE)
+    }
   })
   
   observeEvent(input$plotBubbleplot, {

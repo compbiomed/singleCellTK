@@ -10,7 +10,7 @@ shinyPanelBubbleplot <- fluidPage(
         column(width = 4,
                hr(),
                # Subset ####
-               h3("Select Annotation"),
+               h3("Select Cell Annotation"),
                uiOutput("bpClusterUI"),
                h3("Feature"),
                fluidRow(
@@ -24,7 +24,6 @@ shinyPanelBubbleplot <- fluidPage(
                           options = NULL)
                  )
                ),
-               uiOutput('bpRowUI'),
                selectizeInput(
                  'bpFeatures',
                  "Select Features",
