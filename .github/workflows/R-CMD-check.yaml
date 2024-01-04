@@ -63,7 +63,7 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
+          use-public-rspm: false
 
       - name: Install fftw3 on Linux
         if: runner.os == 'Linux'
