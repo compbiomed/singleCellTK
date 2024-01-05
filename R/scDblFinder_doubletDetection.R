@@ -96,7 +96,7 @@ runScDblFinder <- function(inSCE,
   if (all(sample == 1)) {
     metadata(inSCE)$sctk$runScDblFinder$all_cells <- argsList
   } else {
-    metadata(inSCE)$sctk$runScDblFinder <- vapply(unique(sample), 
+    metadata(inSCE)$sctk$runScDblFinder <- sapply(unique(sample), 
                                                   function(x) return(argsList),
                                                   simplify = FALSE, 
                                                   USE.NAMES = TRUE)

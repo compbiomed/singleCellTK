@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.0</span>
       </span>
     </div>
 
@@ -243,11 +243,12 @@
 
       
 
-      </header><script src="find_marker_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Find Marker</h1>
-                        <h4 data-toc-skip class="author">Yichen Wang</h4>
+                        <h4 data-toc-skip class="author">Yichen
+Wang</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/find_marker.Rmd" class="external-link"><code>vignettes/articles/find_marker.Rmd</code></a></small>
@@ -262,8 +263,19 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This section comes together with the previous section <a href="differential_expression.html">Differential Expression</a>. The basic strategy singleCellTK (SCTK) uses to find biomarkers is to iteratively identify the significantly up-regulated features of each group of cells against all the other cells. This means, the function we have (<code><a href="../reference/runFindMarker.html">runFindMarker()</a></code>) is a wrapper of functions that do differential expression (DE) analysis, which would be invoked in a loop. For the detail of the DE functions and DE computation methods, please refer to the <a href="differential_expression.html">Differential Expression documentation</a>.</p>
-<p>To view detailed instructions on how to use these methods, please select ‘Interactive Analysis’ for shiny application or ‘Console Analysis’ for using these methods on R console from the tabs below: <br></p>
+<p>This section comes together with the previous section <a href="differential_expression.html">Differential Expression</a>. The
+basic strategy singleCellTK (SCTK) uses to find biomarkers is to
+iteratively identify the significantly up-regulated features of each
+group of cells against all the other cells. This means, the function we
+have (<code><a href="../reference/runFindMarker.html">runFindMarker()</a></code>) is a wrapper of functions that do
+differential expression (DE) analysis, which would be invoked in a loop.
+For the detail of the DE functions and DE computation methods, please
+refer to the <a href="differential_expression.html">Differential
+Expression documentation</a>.</p>
+<p>To view detailed instructions on how to use these methods, please
+select ‘Interactive Analysis’ for shiny application or ‘Console
+Analysis’ for using these methods on R console from the tabs below:
+<br></p>
 </div>
 <div class="section level2">
 <h2 id="workflow-guide">Workflow Guide<a class="anchor" aria-label="anchor" href="#workflow-guide"></a>
@@ -275,46 +287,139 @@
 
 <div id="interactive" class="tabcontent">
 <p><strong>Entry of The Panel</strong></p>
-<p>From anywhere of the UI, the panel for marker finding can be accessed from the top navigation panel at the circled tab shown below.</p>
+<p>From anywhere of the UI, the panel for marker finding can be accessed
+from the top navigation panel at the circled tab shown below.</p>
 <p><img src="ui_screenshots/find_marker/fm_ui_entry.png" alt="Entry"><br></p>
-<p>The UI is constructed in a sidebar pattern. The sidebar on the left is mainly for the parameters essential for running the marker finding algorithm. The main panel on the right is for demonstrating the results, including the marker table and the heatmap visualization.</p>
+<p>The UI is constructed in a sidebar pattern. The sidebar on the left
+is mainly for the parameters essential for running the marker finding
+algorithm. The main panel on the right is for demonstrating the results,
+including the marker table and the heatmap visualization.</p>
 <p><img src="ui_screenshots/find_marker/fm_ui_main1.png" alt="main1"><br></p>
 <details><summary><b>Detail: Algorithm Parameters</b></summary><ul>
-<li>Method selection - selection input <strong>“Select Differential Expression Method”</strong>. Users will choose which method to use. The method here means the intrinsic dependency used for differential expression (DE) analysis.</li>
-<li>Assay selection - selection input <strong>“Select Assay”</strong>. Users will choose which expression data matrix to use for marker detection. Note that for method “MAST” and “Limma”, a log-normalized feature expression matrix is required.</li>
-<li>Cluster definition - selection input <strong>“Cluster Annotation”</strong>. Users will choose a cell level annotation, which defines the cluster assignment for each cell.</li>
-<li>Covariate selection - selection input <strong>“Covariate(s)”</strong>. A covariate is another set of categorization on the cells involved in the analysis, used for modeling. Multiple selections are acceptable.</li>
-<li>Log2FC cutoff setting - numeric input <strong>“Log2FC greater than”</strong>. The cutoff set here will rule out DE genes with absolute value of Log2FC (logged fold change) smaller than the cutoff from the result.</li>
-<li>FDR cutoff setting - numeric input <strong>“FDR less than”</strong>. The cutoff set here will rule out DE genes with FDR (false discovery rate) value more than the cutoff from the result.</li>
-<li>Expression percentage cutoff - numeric inputs <strong>“Minimum Expressed Percentage in Cluster”</strong> and <strong>“Maximum Expressed Percentage in Control”</strong>. These are filters that will be applied on the result table. Known that the markers for one cluster is identified by performing DE analysis on this cluster against all other cells, the first parameter rules out the marker genes that are expressed in less than a percentage of cells in the cluster of interests. In a similar way, the second parameter excludes the marker genes expressed in more that a percentage of cells in all other clusters.<br>
+<li>Method selection - selection input <strong>“Select Differential
+Expression Method”</strong>. Users will choose which method to use. The
+method here means the intrinsic dependency used for differential
+expression (DE) analysis.</li>
+<li>Assay selection - selection input <strong>“Select Assay”</strong>.
+Users will choose which expression data matrix to use for marker
+detection. Note that for method “MAST” and “Limma”, a log-normalized
+feature expression matrix is required.</li>
+<li>Cluster definition - selection input <strong>“Cluster
+Annotation”</strong>. Users will choose a cell level annotation, which
+defines the cluster assignment for each cell.</li>
+<li>Covariate selection - selection input
+<strong>“Covariate(s)”</strong>. A covariate is another set of
+categorization on the cells involved in the analysis, used for modeling.
+Multiple selections are acceptable.</li>
+<li>Log2FC cutoff setting - numeric input <strong>“Log2FC greater
+than”</strong>. The cutoff set here will rule out DE genes with absolute
+value of Log2FC (logged fold change) smaller than the cutoff from the
+result.</li>
+<li>FDR cutoff setting - numeric input <strong>“FDR less than”</strong>.
+The cutoff set here will rule out DE genes with FDR (false discovery
+rate) value more than the cutoff from the result.</li>
+<li>Expression percentage cutoff - numeric inputs <strong>“Minimum
+Expressed Percentage in Cluster”</strong> and <strong>“Maximum Expressed
+Percentage in Control”</strong>. These are filters that will be applied
+on the result table. Known that the markers for one cluster is
+identified by performing DE analysis on this cluster against all other
+cells, the first parameter rules out the marker genes that are expressed
+in less than a percentage of cells in the cluster of interests. In a
+similar way, the second parameter excludes the marker genes expressed in
+more that a percentage of cells in all other clusters.<br>
 </li>
-<li>Mean expression level cutoff - numeric input <strong>“Minimum Mean Expression Level in Cluster”</strong>. Following the last bullet point, this parameter will keep only the marker genes with mean expression level in the cluster higher than higher than a value.</li>
+<li>Mean expression level cutoff - numeric input <strong>“Minimum Mean
+Expression Level in Cluster”</strong>. Following the last bullet point,
+this parameter will keep only the marker genes with mean expression
+level in the cluster higher than higher than a value.</li>
 </ul></details><br><p><strong>Main Panel - Result Table</strong></p>
-<p>The table is shown in the figure above. In this tab, there will be a table for all the markers detected and passed the filters. It is constructed with 5 columns, including <strong>“Gene”</strong> - the default feature identifiers (not necessarily a gene ID or symbol, depending on the background SCE object); <strong>“Log2_FC”</strong>, <strong>“Pvalue”</strong> and <strong>“FDR”</strong> - the statistics that supports the detection; and the fifth one that labels which cluster the marker is for, and the column name is exactly the <strong>“cluster annotation”</strong> selected in the sidebar. Users can also download the table in comma-separated value (CSV) format, by clicking <strong>“Download Result Table”</strong> button.</p>
+<p>The table is shown in the figure above. In this tab, there will be a
+table for all the markers detected and passed the filters. It is
+constructed with 5 columns, including <strong>“Gene”</strong> - the
+default feature identifiers (not necessarily a gene ID or symbol,
+depending on the background SCE object); <strong>“Log2_FC”</strong>,
+<strong>“Pvalue”</strong> and <strong>“FDR”</strong> - the statistics
+that supports the detection; and the fifth one that labels which cluster
+the marker is for, and the column name is exactly the <strong>“cluster
+annotation”</strong> selected in the sidebar. Users can also download
+the table in comma-separated value (CSV) format, by clicking
+<strong>“Download Result Table”</strong> button.</p>
 <p><strong>Main Panel - Heatmap</strong></p>
 <p><img src="ui_screenshots/find_marker/fm_ui_main2.png" alt="main2"><br></p>
-<p>A heatmap will be automatically generated after running the marker detection process. Users can tweak the options for plotting by clicking on the blue clog button on the top-left.</p>
+<p>A heatmap will be automatically generated after running the marker
+detection process. Users can tweak the options for plotting by clicking
+on the blue clog button on the top-left.</p>
 <details><summary><b>Detail: Heatmap Plotting Options</b></summary><ul>
-<li>Cluster ordering - radio button <strong>“Order blocks by”</strong>. User will determine here whether to order the columns of the heatmap by the cluster name (i.e. annotation) or the size (i.e. number of cells). Checkbox <strong>“Decreasing”</strong>. Users can check this option for putting the alphabetically latter cluster or cluster with the largest size on the left.</li>
-<li>Top N marker cutoff - checkbox and numeric input <strong>“Plot Top N markers of each cluster”</strong>. If the checkbox is not checked, all markers passing the running filter (mentioned above) and plotting filters (will mention below) will be plotted. Otherwise checked, only the top <code>N</code> markers, as <code>N</code> is the input numeric value in the numeric input below the checkbox, for each cluster will be plotted. The ranking is based on Log2FC value. When less than <code>N</code> markers are detected for one cluster, all of them will be plotted.</li>
-<li>Log2FC cutoff - numeric input <strong>“Plot Log2FC greater than”</strong>. The cutoff set here will rule out markers with absolute value of Log2FC (logged fold change) smaller than the cutoff from the plotting. This will not affect the result saved when running the algorithm.</li>
-<li>FDR cutoff - numeric input <strong>""</strong>. The cutoff set here will rule out markers with FDR (false discovery rate) value more than the cutoff from the plotting. Similarly, this will not affect the result saved when running the algorithm.</li>
-<li>Expression percentage cutoff - numeric inputs <strong>“Plot Cluster Expression Percentage More Than”</strong> and <strong>“Plot Control Expression Percentage Less Than”</strong>. These are filters that will be applied on the result table. Known that the markers for one cluster is identified by performing DE analysis on this cluster against all other cells, the first parameter rules out the marker genes that are expressed in less than a percentage of cells in the cluster of interests. In a similar way, the second parameter excludes the marker genes expressed in more that a percentage of cells in all other clusters.<br>
+<li>Cluster ordering - radio button <strong>“Order blocks by”</strong>.
+User will determine here whether to order the columns of the heatmap by
+the cluster name (i.e. annotation) or the size (i.e. number of cells).
+Checkbox <strong>“Decreasing”</strong>. Users can check this option for
+putting the alphabetically latter cluster or cluster with the largest
+size on the left.</li>
+<li>Top N marker cutoff - checkbox and numeric input <strong>“Plot Top N
+markers of each cluster”</strong>. If the checkbox is not checked, all
+markers passing the running filter (mentioned above) and plotting
+filters (will mention below) will be plotted. Otherwise checked, only
+the top <code>N</code> markers, as <code>N</code> is the input numeric
+value in the numeric input below the checkbox, for each cluster will be
+plotted. The ranking is based on Log2FC value. When less than
+<code>N</code> markers are detected for one cluster, all of them will be
+plotted.</li>
+<li>Log2FC cutoff - numeric input <strong>“Plot Log2FC greater
+than”</strong>. The cutoff set here will rule out markers with absolute
+value of Log2FC (logged fold change) smaller than the cutoff from the
+plotting. This will not affect the result saved when running the
+algorithm.</li>
+<li>FDR cutoff - numeric input <strong>““</strong>. The cutoff set here
+will rule out markers with FDR (false discovery rate) value more than
+the cutoff from the plotting. Similarly, this will not affect the result
+saved when running the algorithm.</li>
+<li>Expression percentage cutoff - numeric inputs <strong>“Plot Cluster
+Expression Percentage More Than”</strong> and <strong>“Plot Control
+Expression Percentage Less Than”</strong>. These are filters that will
+be applied on the result table. Known that the markers for one cluster
+is identified by performing DE analysis on this cluster against all
+other cells, the first parameter rules out the marker genes that are
+expressed in less than a percentage of cells in the cluster of
+interests. In a similar way, the second parameter excludes the marker
+genes expressed in more that a percentage of cells in all other
+clusters.<br>
 </li>
-<li>Mean expression level cutoff - numeric input <strong>“Plot Mean Cluster Expression Level More Than”</strong>. Following the last bullet point, this parameter will keep only the marker genes with mean expression level in the cluster higher than higher than a value.</li>
-<li>Additional annotation - multiple selection input <strong>“Additional feature annotation”</strong> and <strong>“Additional cell annotation”</strong>. User can add up more cell or gene annotation to the heatmap legend.</li>
+<li>Mean expression level cutoff - numeric input <strong>“Plot Mean
+Cluster Expression Level More Than”</strong>. Following the last bullet
+point, this parameter will keep only the marker genes with mean
+expression level in the cluster higher than higher than a value.</li>
+<li>Additional annotation - multiple selection input <strong>“Additional
+feature annotation”</strong> and <strong>“Additional cell
+annotation”</strong>. User can add up more cell or gene annotation to
+the heatmap legend.</li>
 </ul></details><br>
 </div>
 
 <div id="console" class="tabcontent">
 <p><strong>Parameters</strong></p>
-<p>As per SCTK’s strategy, the primary input is limited to an <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> (SCE) object, which has been through preprocessing steps with cluster labels annotated. While the iteration is a fixed pattern, the parameters needed are rather simple:</p>
+<p>As per SCTK’s strategy, the primary input is limited to an <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a>
+(SCE) object, which has been through preprocessing steps with cluster
+labels annotated. While the iteration is a fixed pattern, the parameters
+needed are rather simple:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runFindMarker.html">runFindMarker</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span>, covariates <span class="op">=</span> <span class="cn">NULL</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0.25</span>, fdrThreshold <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></code></pre></div>
-<p>Here all arguments execpt the input SCE object (<code>inSCE</code>) are set by default. <code>method</code> can only be chosen from the table above. <code>cluster</code> and <code>covariates</code> should be given a single string which is present in <code>names(colData(inSCE))</code>. <code>cluster</code> is required for grouping cells, while <code>covariates</code> is optional for DE detection. <code>log2fcThreshold</code> and <code>fdrThreshold</code> are numeric and has to be set in plausible range. <code>log2fcThrshold</code> has to be positive and <code>fdrThreshold</code> has to be greater than zero and less than one.</p>
-<p>The returned SCE object will contain the updated information of the markers identified in its <code>metadata</code> slot.</p>
+<p>Here all arguments execpt the input SCE object (<code>inSCE</code>)
+are set by default. <code>method</code> can only be chosen from the
+table above. <code>cluster</code> and <code>covariates</code> should be
+given a single string which is present in
+<code>names(colData(inSCE))</code>. <code>cluster</code> is required for
+grouping cells, while <code>covariates</code> is optional for DE
+detection. <code>log2fcThreshold</code> and <code>fdrThreshold</code>
+are numeric and has to be set in plausible range.
+<code>log2fcThrshold</code> has to be positive and
+<code>fdrThreshold</code> has to be greater than zero and less than
+one.</p>
+<p>The returned SCE object will contain the updated information of the
+markers identified in its <code>metadata</code> slot.</p>
 <details><summary><b>Example</b></summary><p><strong>Preprocessing</strong></p>
-<p>The preprocessing for obtaining cluster assignment was done using the exactly same workflow presented in the <a href="02_a_la_carte_workflow.html">A La Carte Workflow Tutorial</a>.</p>
+<p>The preprocessing for obtaining cluster assignment was done using the
+exactly same workflow presented in the <a href="02_a_la_carte_workflow.html">A La Carte Workflow Tutorial</a>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></span>
@@ -328,16 +433,22 @@
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, nComp <span class="op">=</span> <span class="fl">10</span>, k <span class="op">=</span> <span class="fl">14</span>,</span>
 <span>                   weightType <span class="op">=</span> <span class="st">"jaccard"</span>, clusterName <span class="op">=</span> <span class="st">"cluster"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, initialDims <span class="op">=</span> <span class="fl">10</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></code></pre></div>
-<p>And we can visualize the cell populations on the UMAP with cluster labeled.</p>
+<p>And we can visualize the cell populations on the UMAP with cluster
+labeled.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"cluster"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="find_marker_files/figure-html/de_prep_plot-1.png" width="700"></p>
 <p><strong>Get Markers</strong></p>
-<p>Then we call <code><a href="../reference/runFindMarker.html">runFindMarker()</a></code> on the clustered data, with the cluster annotation just obtained, <code>"cluster"</code>.</p>
+<p>Then we call <code><a href="../reference/runFindMarker.html">runFindMarker()</a></code> on the clustered data, with
+the cluster annotation just obtained, <code>"cluster"</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runFindMarker.html">runFindMarker</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span><span class="op">)</span></span></code></pre></div>
 </details><br><p><strong>Results</strong></p>
-<p>After successfully running <code><a href="../reference/runFindMarker.html">runFindMarker()</a></code>, the result marker table would be stored in <code>metadata(sce)</code>. This table can be fetched by <code><a href="../reference/getFindMarkerTopTable.html">getFindMarkerTopTable()</a></code>. Argument <code>topN</code> controls how many top markers, that pass filters, to include for each clsuter.</p>
+<p>After successfully running <code><a href="../reference/runFindMarker.html">runFindMarker()</a></code>, the result
+marker table would be stored in <code>metadata(sce)</code>. This table
+can be fetched by <code><a href="../reference/getFindMarkerTopTable.html">getFindMarkerTopTable()</a></code>. Argument
+<code>topN</code> controls how many top markers, that pass filters, to
+include for each clsuter.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getFindMarkerTopTable.html">getFindMarkerTopTable</a></span><span class="op">(</span><span class="va">sce</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, topN <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##          Gene   Log2_FC        Pvalue           FDR cluster clusterExprPerc</span></span>
@@ -360,11 +471,16 @@
 <span><span class="co">## 310761      0.25687702       4.781861</span></span>
 <span><span class="co">## 288182      0.39113680       4.371755</span></span>
 <span><span class="co">## 7697        0.02406417       5.989445</span></span></code></pre>
-<p>Similarly to the Differential Expression section, we also provide a automated and organized <strong>heatmap plotting</strong> for the markers:</p>
+<p>Similarly to the Differential Expression section, we also provide a
+automated and organized <strong>heatmap plotting</strong> for the
+markers:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotFindMarkerHeatmap.html">plotFindMarkerHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, maxCtrlExprPerc <span class="op">=</span> <span class="fl">0.5</span>, rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="find_marker_files/figure-html/plotMarkers-1.png" width="672"></p>
-<p>Note that when plotting the heatmap, the genes that are identified as up-regulated in multiple clusters will be considered only for the one cluster with the highest fold-change, while all of them are still kept in the table in <code>metadata</code>.</p>
+<p>Note that when plotting the heatmap, the genes that are identified as
+up-regulated in multiple clusters will be considered only for the one
+cluster with the highest fold-change, while all of them are still kept
+in the table in <code>metadata</code>.</p>
 </div>
 <script>
 document.getElementById("ia-button").click();

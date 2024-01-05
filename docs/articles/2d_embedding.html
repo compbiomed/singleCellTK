@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.0</span>
       </span>
     </div>
 
@@ -243,11 +243,12 @@
 
       
 
-      </header><script src="2d_embedding_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>2D Embedding</h1>
-                        <h4 data-toc-skip class="author">Irzam Sarfraz</h4>
+                        <h4 data-toc-skip class="author">Irzam
+Sarfraz</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/2d_embedding.Rmd" class="external-link"><code>vignettes/articles/2d_embedding.Rmd</code></a></small>
@@ -262,9 +263,20 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Non-linear 2D embedding algorithms can be run through Single-Cell Toolkit (SCTK) using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute the embedding and then visualize the results. For the console analysis, SCTK offers a generic function <code><a href="../reference/runDimReduce.html">runDimReduce()</a></code> to compute the 2D embedding.</p>
-<p>Methods available with the toolkit include tSNE and UMAP from <em>Seurat</em> <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[3]</span><span class="citation">[4]</span> package, tSNE from <em>Rtsne</em> <span class="citation">[5]</span><span class="citation">[6]</span> package and UMAP from <em>scater</em> <span class="citation">[7]</span> package.</p>
-<p>To view detailed instructions on how to use these methods, please select “Interactive Analysis”, from the tabs below, for the usage in Shiny application or “Console Analysis” for using these methods in R console:</p>
+<p>Non-linear 2D embedding algorithms can be run through Single-Cell
+Toolkit (SCTK) using both interactive shiny application and R console.
+For the interactive analysis, the toolkit offers a streamlined workflow
+to both compute the embedding and then visualize the results. For the
+console analysis, SCTK offers a generic function
+<code><a href="../reference/runDimReduce.html">runDimReduce()</a></code> to compute the 2D embedding.</p>
+<p>Methods available with the toolkit include tSNE and UMAP from
+<em>Seurat</em> [<span class="citation">[1]</span>]<span class="citation">[2]</span>[<span class="citation">[3]</span>]<span class="citation">[4]</span> package, tSNE from <em>Rtsne</em> [<span class="citation">[5]</span>]<span class="citation">[6]</span> package
+and UMAP from <em>scater</em> <span class="citation">[7]</span>
+package.</p>
+<p>To view detailed instructions on how to use these methods, please
+select “Interactive Analysis”, from the tabs below, for the usage in
+Shiny application or “Console Analysis” for using these methods in R
+console:</p>
 </div>
 <div class="section level2">
 <h2 id="workflow-guide">Workflow Guide<a class="anchor" aria-label="anchor" href="#workflow-guide"></a>
@@ -275,9 +287,15 @@
 </div>
 
 <div id="interactive" class="tabcontent">
-<p>In general, the UI offers options for selection of data items and choice of parameters on the left side, and a visualization panel on the right side of the interface.</p>
+<p>In general, the UI offers options for selection of data items and
+choice of parameters on the left side, and a visualization panel on the
+right side of the interface.</p>
 <ol style="list-style-type: decimal">
-<li>To begin with, click on the <strong>“Feature Selection &amp; Dimensionality Reduction”</strong> tab from the top menu. This workflow assumes that before proceeding towards computation of 2D embedding, data has been uploaded, filtered, normalized and dimension reduction has been performed through the preceding tabs.</li>
+<li>To begin with, click on the <strong>“Feature Selection &amp;
+Dimensionality Reduction”</strong> tab from the top menu. This workflow
+assumes that before proceeding towards computation of 2D embedding, data
+has been uploaded, filtered, normalized and dimension reduction has been
+performed through the preceding tabs.</li>
 </ol>
 <p><img src="ui_screenshots/embedding/dr_1.PNG"><br></p>
 <ol start="2" style="list-style-type: decimal">
@@ -285,30 +303,60 @@
 </ol>
 <p><img src="ui_screenshots/embedding/e1.png"><br></p>
 <ol start="3" style="list-style-type: decimal">
-<li>Select an input matrix to use with the tSNE or UMAP algorithm. A dimension reduction is recommended and can be obtained from <a href="dimensionality_reduction.html">Dimension Reduction</a> tab.</li>
-<li>Select a specific tSNE or UMAP method for computation. Available methods include tSNE and UMAP from <em>Seurat</em> package, tSNE from <em>Rtsne</em> package and UMAP from <em>scater</em> package.</li>
+<li>Select an input matrix to use with the tSNE or UMAP algorithm. A
+dimension reduction is recommended and can be obtained from <a href="dimensionality_reduction.html">Dimension Reduction</a> tab.</li>
+<li>Select a specific tSNE or UMAP method for computation. Available
+methods include tSNE and UMAP from <em>Seurat</em> package, tSNE from
+<em>Rtsne</em> package and UMAP from <em>scater</em> package.</li>
 <li>Specify a name for the output embedding.</li>
-<li>(Optional) If selected input in step 3. is an feature expression matrix, users can specify preprocessing here before the embedding is computed. HVG list refers to a feature subset which could be obtained in <a href="feature_selection.html">Feature Selection</a> tab. Preprocessing is only available for scater UMAP and Rtsne tSNE methods.</li>
-<li>Number of top dimensions (components) to use from the input dimension reduction (or the PCA generated with preprocessing specified by step 6.). Methods for determining this number have been provided in <a href="dimensionality_reduction.html">Dimension Reduction</a> tab. And we recommend using the same number for the dimension reduction used for <a href="clustering.html">clustering</a>, in order to get the best visualization of the clustering result.</li>
-<li>Embedding method specific parameters. These vary when different methods are selected in step 3.</li>
-<li>Set the seed of randomized computation process. A fixed seed generates reproducible result each run.</li>
-<li>Start computation of selected method with the specified parameters.</li>
-<li>Once computation is complete, a scatter plot of the cells on the selected 2D embedding is shown in the panel with additional options available in step 12.</li>
+<li>(Optional) If selected input in step 3. is an feature expression
+matrix, users can specify preprocessing here before the embedding is
+computed. HVG list refers to a feature subset which could be obtained in
+<a href="feature_selection.html">Feature Selection</a> tab.
+Preprocessing is only available for scater UMAP and Rtsne tSNE
+methods.</li>
+<li>Number of top dimensions (components) to use from the input
+dimension reduction (or the PCA generated with preprocessing specified
+by step 6.). Methods for determining this number have been provided in
+<a href="dimensionality_reduction.html">Dimension Reduction</a> tab. And
+we recommend using the same number for the dimension reduction used for
+<a href="clustering.html">clustering</a>, in order to get the best
+visualization of the clustering result.</li>
+<li>Embedding method specific parameters. These vary when different
+methods are selected in step 3.</li>
+<li>Set the seed of randomized computation process. A fixed seed
+generates reproducible result each run.</li>
+<li>Start computation of selected method with the specified
+parameters.</li>
+<li>Once computation is complete, a scatter plot of the cells on the
+selected 2D embedding is shown in the panel with additional options
+available in step 12.</li>
 </ol>
 <p><img src="ui_screenshots/embedding/e2.png"><br></p>
 <ol start="12" style="list-style-type: decimal">
-<li>Users can select another computed embedding to visualize through dropdown box.</li>
+<li>Users can select another computed embedding to visualize through
+dropdown box.</li>
 </ol>
 <p><img src="ui_screenshots/embedding/e3.png"><br></p>
 </div>
 <div id="console" class="tabcontent">
-<p>Here we show how to generate 2D embedding with the generic function <code><a href="../reference/runDimReduce.html">runDimReduce()</a></code>, together with the method to visualize and explore the results.</p>
+<p>Here we show how to generate 2D embedding with the generic function
+<code><a href="../reference/runDimReduce.html">runDimReduce()</a></code>, together with the method to visualize and
+explore the results.</p>
 <p><strong>1. Compute 2D embedding</strong></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"scaterUMAP"</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
-<p>The generic function <code><a href="../reference/runDimReduce.html">runDimReduce()</a></code> allows <code>"scaterUMAP"</code> from <em>scater</em>, <code>"rTSNE"</code> from <em>Rtsne</em>, <code>"seuratUMAP"</code> and <code>"seuratTSNE"</code> from <em>Seurat</em> as options of 2D embedding for <code>method</code> argument. For detailed parameter description, please click on the function name to be redirected to its reference page.</p>
+<p>The generic function <code><a href="../reference/runDimReduce.html">runDimReduce()</a></code> allows
+<code>"scaterUMAP"</code> from <em>scater</em>, <code>"rTSNE"</code>
+from <em>Rtsne</em>, <code>"seuratUMAP"</code> and
+<code>"seuratTSNE"</code> from <em>Seurat</em> as options of 2D
+embedding for <code>method</code> argument. For detailed parameter
+description, please click on the function name to be redirected to its
+reference page.</p>
 <p><strong>2. Visualization</strong></p>
-<p>There are multiple functions that can create scatter plot using dimensions stored in <code>reducedDims</code> slot of the SCE object.</p>
+<p>There are multiple functions that can create scatter plot using
+dimensions stored in <code>reducedDims</code> slot of the SCE
+object.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Make scatter plot without annotation</span></span>
 <span><span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span>
@@ -333,7 +381,11 @@
 <span><span class="co"># Plot UMAP</span></span>
 <span><span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="2d_embedding_files/figure-html/dm_console_example-1.png" width="700"></p>
-</details><details><summary><b>Individual Functions</b></summary><p>While the <code><a href="../reference/runDimReduce.html">runDimReduce()</a></code> wrapper function can be used for all 2D embedding algorithms including tSNE and UMAP, and additionally for dimension reduction methods like PCA and ICA, separate functions are also available for all of the included methods. The following functions can be used for specific methods:</p>
+</details><details><summary><b>Individual Functions</b></summary><p>While the <code><a href="../reference/runDimReduce.html">runDimReduce()</a></code> wrapper function can be used
+for all 2D embedding algorithms including tSNE and UMAP, and
+additionally for dimension reduction methods like PCA and ICA, separate
+functions are also available for all of the included methods. The
+following functions can be used for specific methods:</p>
 <p>Running tSNE from <em>Rtsne</em> package:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runTSNE.html">runTSNE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"TSNE"</span><span class="op">)</span></span></code></pre></div>
@@ -359,27 +411,57 @@ document.getElementById("ia-button").click();
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references">
-<div id="ref-Butler2018">
-<p>[1] A. Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, “Integrating single-cell transcriptomic data across different conditions, technologies, and species,” <em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018, doi: <a href="https://doi.org/10.1038/nbt.4096" class="external-link">10.1038/nbt.4096</a>.</p>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-Butler2018" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">A.
+Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, <span>“<span class="nocase">Integrating single-cell transcriptomic data across
+different conditions, technologies, and species</span>,”</span>
+<em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018,
+doi: <a href="https://doi.org/10.1038/nbt.4096" class="external-link">10.1038/nbt.4096</a>.</div>
 </div>
-<div id="ref-Stuart2019">
-<p>[2] T. Stuart <em>et al.</em>, “Comprehensive Integration of Single-Cell Data,” <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031" class="external-link">10.1016/j.cell.2019.05.031</a>.</p>
+<div id="ref-Stuart2019" class="csl-entry">
+<div class="csl-left-margin">[2] </div>
+<div class="csl-right-inline">T.
+Stuart <em>et al.</em>, <span>“<span class="nocase">Comprehensive
+Integration of Single-Cell Data</span>,”</span> <em>Cell</em>, vol. 177,
+no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031" class="external-link">10.1016/j.cell.2019.05.031</a>.</div>
 </div>
-<div id="ref-Satija2017">
-<p>[3] R. Satija, J. A. Farrell, D. Gennert, A. F. Schier, and A. Regev, “Spatial reconstruction of single-cell gene expression data,” <em>Nature Biotechnology</em>, vol. 33, pp. 495–502, 2015, doi: <a href="https://doi.org/10.1038/nbt.3192" class="external-link">10.1038/nbt.3192</a>.</p>
+<div id="ref-Satija2017" class="csl-entry">
+<div class="csl-left-margin">[3] </div>
+<div class="csl-right-inline">R.
+Satija, J. A. Farrell, D. Gennert, A. F. Schier, and A. Regev,
+<span>“Spatial reconstruction of single-cell gene expression
+data,”</span> <em>Nature Biotechnology</em>, vol. 33, pp. 495–502, 2015,
+doi: <a href="https://doi.org/10.1038/nbt.3192" class="external-link">10.1038/nbt.3192</a>.</div>
 </div>
-<div id="ref-Hao2021">
-<p>[4] Y. Hao <em>et al.</em>, “Integrated analysis of multimodal single-cell data,” <em>Cell</em>, 2021, doi: <a href="https://doi.org/10.1016/j.cell.2021.04.048" class="external-link">10.1016/j.cell.2021.04.048</a>.</p>
+<div id="ref-Hao2021" class="csl-entry">
+<div class="csl-left-margin">[4] </div>
+<div class="csl-right-inline">Y.
+Hao <em>et al.</em>, <span>“Integrated analysis of multimodal
+single-cell data,”</span> <em>Cell</em>, 2021, doi: <a href="https://doi.org/10.1016/j.cell.2021.04.048" class="external-link">10.1016/j.cell.2021.04.048</a>.</div>
 </div>
-<div id="ref-Maaten2014">
-<p>[5] L. J. P. van der Maaten, “Accelerating t-sne using tree-based algorithms,” <em>Journal of Machine Learning Research</em>, vol. 15, pp. 3221–3245, 2014.</p>
+<div id="ref-Maaten2014" class="csl-entry">
+<div class="csl-left-margin">[5] </div>
+<div class="csl-right-inline">L.
+J. P. van der Maaten, <span>“Accelerating t-SNE using tree-based
+algorithms,”</span> <em>Journal of Machine Learning Research</em>, vol.
+15, pp. 3221–3245, 2014.</div>
 </div>
-<div id="ref-Maaten2008">
-<p>[6] L. J. P. van der Maaten and G. E. Hinton, “Visualizing high-dimensional data using t-sne,” <em>Journal of Machine Learning Research</em>, vol. 9, pp. 2579–2605, 2008.</p>
+<div id="ref-Maaten2008" class="csl-entry">
+<div class="csl-left-margin">[6] </div>
+<div class="csl-right-inline">L.
+J. P. van der Maaten and G. E. Hinton, <span>“Visualizing
+high-dimensional data using t-SNE,”</span> <em>Journal of Machine
+Learning Research</em>, vol. 9, pp. 2579–2605, 2008.</div>
 </div>
-<div id="ref-McCarthy2017">
-<p>[7] D. J. McCarthy, K. R. Campbell, A. T. L. Lun, and Q. F. Wills, “Scater: Pre-processing, quality control, normalization and visualization of single-cell RNA-seq data in R,” <em>Bioinformatics</em>, vol. 33, no. 8, pp. 1179–1186, Apr. 2017, doi: <a href="https://doi.org/10.1093/bioinformatics/btw777" class="external-link">10.1093/bioinformatics/btw777</a>.</p>
+<div id="ref-McCarthy2017" class="csl-entry">
+<div class="csl-left-margin">[7] </div>
+<div class="csl-right-inline">D.
+J. McCarthy, K. R. Campbell, A. T. L. Lun, and Q. F. Wills, <span>“<span class="nocase">Scater: Pre-processing, quality control, normalization
+and visualization of single-cell RNA-seq data in R</span>,”</span>
+<em>Bioinformatics</em>, vol. 33, no. 8, pp. 1179–1186, Apr. 2017, doi:
+<a href="https://doi.org/10.1093/bioinformatics/btw777" class="external-link">10.1093/bioinformatics/btw777</a>.</div>
 </div>
 </div>
 </div>

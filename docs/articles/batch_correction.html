@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.0</span>
       </span>
     </div>
 
@@ -243,11 +243,12 @@
 
       
 
-      </header><script src="batch_correction_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Batch Correction</h1>
-                        <h4 data-toc-skip class="author">Yichen Wang</h4>
+                        <h4 data-toc-skip class="author">Yichen
+Wang</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/batch_correction.Rmd" class="external-link"><code>vignettes/articles/batch_correction.Rmd</code></a></small>
@@ -262,8 +263,22 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This guide helps users with performing batch correction when necessary. SingleCellTK provides 11 methods that are already published including <code>BBKNN</code>, <code>ComBatSeq</code>, <code>FastMNN</code>, <code>MNN</code>, <code>Harmony</code>, <code>LIGER</code>, <code>Limma</code>, <code>Scanorama</code>, <code>scMerge</code>, <code>Seurat</code> integration and <code>ZINBWaVE</code>. All of these methods are available to use through our shiny ui application as well as through the R console environment through our wrapper functions.</p>
-<p>These methods accept various type of input expression matrices (e.g. raw counts or log-normalized counts), and generate either a new corrected expression matrix or a low-dimensional representation. Users should choose a function according to their needs. More detailed instructions on how to use these methods either through the shiny ui application (select “Interactive Analysis”) or through the R console (select “Console Analysis”) are described below:</p>
+<p>This guide helps users with performing batch correction when
+necessary. SingleCellTK provides 11 methods that are already published
+including <code>BBKNN</code>, <code>ComBatSeq</code>,
+<code>FastMNN</code>, <code>MNN</code>, <code>Harmony</code>,
+<code>LIGER</code>, <code>Limma</code>, <code>Scanorama</code>,
+<code>scMerge</code>, <code>Seurat</code> integration and
+<code>ZINBWaVE</code>. All of these methods are available to use through
+our shiny ui application as well as through the R console environment
+through our wrapper functions.</p>
+<p>These methods accept various type of input expression matrices
+(e.g. raw counts or log-normalized counts), and generate either a new
+corrected expression matrix or a low-dimensional representation. Users
+should choose a function according to their needs. More detailed
+instructions on how to use these methods either through the shiny ui
+application (select “Interactive Analysis”) or through the R console
+(select “Console Analysis”) are described below:</p>
 </div>
 <div class="section level2">
 <h2 id="workflow-guide">Workflow Guide<a class="anchor" aria-label="anchor" href="#workflow-guide"></a>
@@ -275,39 +290,86 @@
 
 <div id="interactive" class="tabcontent">
 <p><strong>Entry of the Panel</strong></p>
-<p>From anywhere of the UI, the panel for normalization and batch correction can be accessed from the top navigation panel at the boxed tab. After this, click on the second boxed tab to enter the sub-page for batch correction.</p>
+<p>From anywhere of the UI, the panel for normalization and batch
+correction can be accessed from the top navigation panel at the boxed
+tab. After this, click on the second boxed tab to enter the sub-page for
+batch correction.</p>
 <p><img src="ui_screenshots/batch_correction/bc_ui_entry.png" alt="Entry"><br></p>
 <p><strong>Perform the Correction</strong></p>
-<p>The UI is constructed in a sidebar style, where the left-sided sidebar works for selecting method, setting the parameters and running the batch correction, and the right part main panel is for visualization checking.</p>
+<p>The UI is constructed in a sidebar style, where the left-sided
+sidebar works for selecting method, setting the parameters and running
+the batch correction, and the right part main panel is for visualization
+checking.</p>
 <p><img src="ui_screenshots/batch_correction/bc_ui_param.png" alt="Parameters"><br></p>
-<p>For running any types of batch correction, there are always three essential inputs that users should be sure with:</p>
+<p>For running any types of batch correction, there are always three
+essential inputs that users should be sure with:</p>
 <ul>
-<li>The batch correction method - selection input <strong>“Select Batch Correction Method”</strong>. All methods supported are listed as options, in the alphabetic order.</li>
-<li>The data matrix to correct - selection input <strong>“Select Assay”</strong>. In terms of batch correction, SCTK always requires a full-sized feature expression data (i.e. assay) as a valid input.</li>
-<li>The annotation for batches - selection input <strong>“Select Batch Annotation”</strong>. Users will choose from the cell annotation list. The chosen annotation class should be able to define from which batch each cell sampled. Usually, <code>"Sample"</code> or <code>"sample"</code>, as the preprocessing steps generate this annotation by default.</li>
+<li>The batch correction method - selection input <strong>“Select Batch
+Correction Method”</strong>. All methods supported are listed as
+options, in the alphabetic order.</li>
+<li>The data matrix to correct - selection input <strong>“Select
+Assay”</strong>. In terms of batch correction, SCTK always requires a
+full-sized feature expression data (i.e. assay) as a valid input.</li>
+<li>The annotation for batches - selection input <strong>“Select Batch
+Annotation”</strong>. Users will choose from the cell annotation list.
+The chosen annotation class should be able to define from which batch
+each cell sampled. Usually, <code>"Sample"</code> or
+<code>"sample"</code>, as the preprocessing steps generate this
+annotation by default.</li>
 </ul>
-<p>After the batch correction method is confirmed, the lower part will dynamically switch to the method specific settings. Different types of method have various parameter requirements, and various forms of output. For the detailed help information of each method, users can go to <a href="../reference/index.html#batch-effect-correction">reference</a> page and click on the function that stands for the method chosen, or click on the “(help for {method})” link in the UI.</p>
+<p>After the batch correction method is confirmed, the lower part will
+dynamically switch to the method specific settings. Different types of
+method have various parameter requirements, and various forms of output.
+For the detailed help information of each method, users can go to <a href="../reference/index.html#batch-effect-correction">reference</a>
+page and click on the function that stands for the method chosen, or
+click on the “(help for {method})” link in the UI.</p>
 <p><strong>Visualization</strong></p>
 <p><img src="ui_screenshots/batch_correction/bc_ui_vis.png" alt="Visualization"><br></p>
-<p>SCTK adopts two approaches to demonstrate the effect of batch correction:</p>
+<p>SCTK adopts two approaches to demonstrate the effect of batch
+correction:</p>
  <style>
 div.offset { background-color:inherit ; border-radius: 5px; margin-left: 25px;}
 </style>
 <div class="offset">
 1. SCTK attempts to plot the variance explained by annotations calculated with the assay to correct and the output data matrix. 
-<details><summary><b>Explanation: Explained Variance Plot</b></summary><p>There will be three columns in the plots for the variance explained. The third one is for the variance explained by batch division, the second is for that of an additional condition, which is optional, and the first one is the variance explained by combining both annotations. The additional condition is usually an annotation that indicates the differences between cells that should not be eliminated, such as cell types and treatments. In the first plot, the combined variance should ideally be close to the sum of the two types of variance. (i.e. the height of the first column should be closed to the sum of the heights of the other two) As a result that makes sense, the changes between the two plots in the second column should not be too much, while the third column should be largely eliminated after correction.</p>
+<details><summary><b>Explanation: Explained Variance Plot</b></summary><p>There will be three columns in the plots for the variance explained.
+The third one is for the variance explained by batch division, the
+second is for that of an additional condition, which is optional, and
+the first one is the variance explained by combining both annotations.
+The additional condition is usually an annotation that indicates the
+differences between cells that should not be eliminated, such as cell
+types and treatments. In the first plot, the combined variance should
+ideally be close to the sum of the two types of variance. (i.e. the
+height of the first column should be closed to the sum of the heights of
+the other two) As a result that makes sense, the changes between the two
+plots in the second column should not be too much, while the third
+column should be largely eliminated after correction.</p>
 </details>
 </div>
 <br><div class="offset">
 2. SCTK plots the PCA projections of the assay selected for correction, and the output corrected data matrix. For both cases, user should use the same batch annotation as used when running the algorithm to see a plausible result.  
-<details><summary><b>Explanation: PCA plots</b></summary><p>In the PCA plots, cells (i.e. dots) will be labeled with different colors to mark the batch belonging, and different shapes to mark for the additional condition, which was mentioned in the previous paragraph. Usually in the result, in the plot for the output, users can observe that different colors of dots are mixed up together, while different shapes are still grouped into separate clusters.</p>
+<details><summary><b>Explanation: PCA plots</b></summary><p>In the PCA plots, cells (i.e. dots) will be labeled with different
+colors to mark the batch belonging, and different shapes to mark for the
+additional condition, which was mentioned in the previous paragraph.
+Usually in the result, in the plot for the output, users can observe
+that different colors of dots are mixed up together, while different
+shapes are still grouped into separate clusters.</p>
 </details>
 </div>
 <br><details><summary><b>Visualization Parameters</b></summary><ul>
-<li>The data matrix used for correction - selection input <strong>“Original Assay”</strong>. User should choose the one that was used when generating the result they want to visualize.</li>
-<li>The batch annotation used for correction - selection input <strong>“Batch Annotation”</strong>. User should choose the one that was used when generating the result they want to visualize.</li>
-<li>The additional condition - selection input <strong>“Additional Condition (optional)”</strong>. See the explanation in the previous paragraphs. Such a condition that makes the most sense does not always exist, so it becomes optional in SCTK.</li>
-<li>The result to visualize - selection input <strong>“Corrected Matrix”</strong>. Only the results generated in the current SCTK UI session will be gathered in the option list here.</li>
+<li>The data matrix used for correction - selection input
+<strong>“Original Assay”</strong>. User should choose the one that was
+used when generating the result they want to visualize.</li>
+<li>The batch annotation used for correction - selection input
+<strong>“Batch Annotation”</strong>. User should choose the one that was
+used when generating the result they want to visualize.</li>
+<li>The additional condition - selection input <strong>“Additional
+Condition (optional)”</strong>. See the explanation in the previous
+paragraphs. Such a condition that makes the most sense does not always
+exist, so it becomes optional in SCTK.</li>
+<li>The result to visualize - selection input <strong>“Corrected
+Matrix”</strong>. Only the results generated in the current SCTK UI
+session will be gathered in the option list here.</li>
 </ul></details>
 </div>
 
@@ -318,14 +380,34 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 25px;}
 <li>An assay of expression value, usually pre-processed.</li>
 <li>The annotation of the batches.</li>
 </ul>
-<p>As we adopt <a href="https://rdrr.io/bioc/SingleCellExperiment/" class="external-link"><code>SingleCellExperiment</code></a> (<code>sce</code>) object through out the whole SCTK for a collection of all matrices and metadatas of the dataset of interests, the assay to be corrected, called <code>"assayToCorr"</code>, has to be saved at <code>assay(sce, "assayToCorr")</code>. Meanwhile, the batch annotation information has to be saved in a column of <code>colData(sce)</code>.</p>
+<p>As we adopt <a href="https://rdrr.io/bioc/SingleCellExperiment/" class="external-link"><code>SingleCellExperiment</code></a>
+(<code>sce</code>) object through out the whole SCTK for a collection of
+all matrices and metadatas of the dataset of interests, the assay to be
+corrected, called <code>"assayToCorr"</code>, has to be saved at
+<code>assay(sce, "assayToCorr")</code>. Meanwhile, the batch annotation
+information has to be saved in a column of
+<code>colData(sce)</code>.</p>
 <blockquote>
-<p>Note that the batch annotation should better be saved as a <code>factor</code> in the <code>colData</code>, especially when the batches are represented by integer numbers, because some downstream analysis are likely to parse the non-character and non-logical information as continuous values instead of categorical values.</p>
+<p>Note that the batch annotation should better be saved as a
+<code>factor</code> in the <code>colData</code>, especially when the
+batches are represented by integer numbers, because some downstream
+analysis are likely to parse the non-character and non-logical
+information as continuous values instead of categorical values.</p>
 </blockquote>
 <p><strong>Choosing a Method</strong></p>
-<p>As mentioned in the introduction, our 11 methods vary in type of input and output. Input type for the expression matrix could be raw counts, log-transformed counts or scaled counts. Users need to make sure the assay being used is of the correct type. The output matrix can be an expression matrix (<code>assay</code>), a low-dimensional representation (<code>reducedDim</code>), or a subset features of expression matrix (<code>altExp</code>). Users need to choose a method that produce a matrix that fits in their analysis.</p>
+<p>As mentioned in the introduction, our 11 methods vary in type of
+input and output. Input type for the expression matrix could be raw
+counts, log-transformed counts or scaled counts. Users need to make sure
+the assay being used is of the correct type. The output matrix can be an
+expression matrix (<code>assay</code>), a low-dimensional representation
+(<code>reducedDim</code>), or a subset features of expression matrix
+(<code>altExp</code>). Users need to choose a method that produce a
+matrix that fits in their analysis.</p>
 <details><summary><b>Example</b></summary><p><strong>1. Prepare an SCE object with multiple batches</strong></p>
-<p>Here we present an example dataset that is combined from “pbmc3k” and “pbmc4k”, originally available from package <a href="https://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html" class="external-link">TENxPBMCData</a>, which you can import by a function called <code><a href="../reference/importExampleData.html">importExampleData()</a></code>.</p>
+<p>Here we present an example dataset that is combined from “pbmc3k” and
+“pbmc4k”, originally available from package <a href="https://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html" class="external-link">TENxPBMCData</a>,
+which you can import by a function called
+<code><a href="../reference/importExampleData.html">importExampleData()</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
 <span><span class="va">pbmc6k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">'pbmc6k'</span><span class="op">)</span></span>
@@ -334,7 +416,13 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 25px;}
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">pbmc8k</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'genes'</span>, <span class="st">'cells'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "32738 genes" "5419 cells" </span></span>
 <span><span class="co">## [1] "33694 genes" "8381 cells"</span></span></code></pre>
-<p>SCTK has a function called <code><a href="../reference/combineSCE.html">combineSCE()</a></code>, which accepts a list of SCE objects as input and returns a combined SCE object. This function requires that the number of genes in each SCE object has to be the same, and the gene metadata (i.e. <code>rowData</code>) has to match with each other if the same fields exist. Therefore, we need some pre-process for the combination. Users do not necessarily have to follow the same way, depending on how the raw datasets are provided.</p>
+<p>SCTK has a function called <code><a href="../reference/combineSCE.html">combineSCE()</a></code>, which accepts a
+list of SCE objects as input and returns a combined SCE object. This
+function requires that the number of genes in each SCE object has to be
+the same, and the gene metadata (i.e. <code>rowData</code>) has to match
+with each other if the same fields exist. Therefore, we need some
+pre-process for the combination. Users do not necessarily have to follow
+the same way, depending on how the raw datasets are provided.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Combine the two SCE objects</span></span>
 <span><span class="va">sce.combine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/combineSCE.html">combineSCE</a></span><span class="op">(</span>sceList <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>pbmc6k <span class="op">=</span> <span class="va">pbmc6k</span>, pbmc8k <span class="op">=</span> <span class="va">pbmc8k</span><span class="op">)</span>, by.r <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">pbmc6k</span><span class="op">)</span><span class="op">)</span>, by.c <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc6k</span><span class="op">)</span><span class="op">)</span>, combined <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -342,8 +430,14 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 25px;}
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## pbmc6k pbmc8k </span></span>
 <span><span class="co">##   5419   8381</span></span></code></pre>
-<p>In this manual, we only present a toy example instead of a best practice for real data. Therefore, QC and filtering are skipped.<br>
-Additionally, most of the batch correction methods provided <strong>require a log-normalized assay</strong> as input, users can check the required assay type of each method by looking at its default setting. (i.e. if by default <code>useAssay = "logcounts"</code>, then it requires log-normalized assay; else if by default <code>useAssay = "counts"</code>, then the raw count assay.)</p>
+<p>In this manual, we only present a toy example instead of a best
+practice for real data. Therefore, QC and filtering are skipped.<br>
+Additionally, most of the batch correction methods provided
+<strong>require a log-normalized assay</strong> as input, users can
+check the required assay type of each method by looking at its default
+setting. (i.e. if by default <code>useAssay = "logcounts"</code>, then
+it requires log-normalized assay; else if by default
+<code>useAssay = "counts"</code>, then the raw count assay.)</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Simply filter out the genes that are expressed in less than 1% of all cells.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">sce.combine</span><span class="op">)</span><span class="op">$</span><span class="va">expPerc</span> <span class="op">&lt;-</span> <span class="fu">rowSums</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">sce.combine</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce.combine</span><span class="op">)</span></span>
@@ -368,17 +462,24 @@ Additionally, most of the batch correction methods provided <strong>require a lo
 <span><span class="co">## dim: 800 800 </span></span>
 <span><span class="co">## metadata(1): assayType</span></span>
 <span><span class="co">## assays(2): counts logcounts</span></span>
-<span><span class="co">## rownames(800): PPM1N KLHL12 ... CBL CEBPG</span></span>
+<span><span class="co">## rownames(800): MEMO1 KXD1 ... MRPL43 WRN</span></span>
 <span><span class="co">## rowData names(5): rownames ENSEMBL_ID Symbol_TENx Symbol expPerc</span></span>
-<span><span class="co">## colnames(800): pbmc8k_ACACTGAAGCCGATTT-1 pbmc8k_GTTACAGGTAAACACA-1 ...</span></span>
-<span><span class="co">##   pbmc6k_CACTGCTGAGGTTC-1 pbmc6k_CCCAAAGACCATAG-1</span></span>
+<span><span class="co">## colnames(800): pbmc6k_TCCATAACTGTGAC-1 pbmc6k_TCTTACGACCTTAT-1 ...</span></span>
+<span><span class="co">##   pbmc8k_TGCCAAAAGGAGTTTA-1 pbmc6k_CGAGTATGTAGTCG-1</span></span>
 <span><span class="co">## colData names(14): rownames Sample ... sample sizeFactor</span></span>
 <span><span class="co">## reducedDimNames(0):</span></span>
 <span><span class="co">## mainExpName: NULL</span></span>
 <span><span class="co">## altExpNames(0):</span></span></code></pre>
-<p><strong>2. Run a batch correction method on the prepared SCE object</strong></p>
-<p>The basic way to run a batch correction method from SingleCellTK is to select a function for the corresponding <strong>method</strong>, input the <strong>SCE object</strong>, specify the <strong>assay</strong> to correct, and the <strong>batch annotation</strong>.</p>
-<p>For example, here we will try the batch correction method provided by <a href="https://rdrr.io/bioc/limma/man/removeBatchEffect.html" class="external-link">Limma</a>, which fits a linear model to the data.</p>
+<p><strong>2. Run a batch correction method on the prepared SCE
+object</strong></p>
+<p>The basic way to run a batch correction method from SingleCellTK is
+to select a function for the corresponding <strong>method</strong>,
+input the <strong>SCE object</strong>, specify the
+<strong>assay</strong> to correct, and the <strong>batch
+annotation</strong>.</p>
+<p>For example, here we will try the batch correction method provided by
+<a href="https://rdrr.io/bioc/limma/man/removeBatchEffect.html" class="external-link">Limma</a>,
+which fits a linear model to the data.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce.small</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runLimmaBC.html">runLimmaBC</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce.small</span>, useAssay <span class="op">=</span> <span class="st">'logcounts'</span>, batch <span class="op">=</span> <span class="st">'sample'</span>, assayName <span class="op">=</span> <span class="st">'LIMMA'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sce.small</span><span class="op">)</span></span></code></pre></div>
@@ -386,21 +487,31 @@ Additionally, most of the batch correction methods provided <strong>require a lo
 <span><span class="co">## dim: 800 800 </span></span>
 <span><span class="co">## metadata(2): assayType batchCorr</span></span>
 <span><span class="co">## assays(3): counts logcounts LIMMA</span></span>
-<span><span class="co">## rownames(800): PPM1N KLHL12 ... CBL CEBPG</span></span>
+<span><span class="co">## rownames(800): MEMO1 KXD1 ... MRPL43 WRN</span></span>
 <span><span class="co">## rowData names(5): rownames ENSEMBL_ID Symbol_TENx Symbol expPerc</span></span>
-<span><span class="co">## colnames(800): pbmc8k_ACACTGAAGCCGATTT-1 pbmc8k_GTTACAGGTAAACACA-1 ...</span></span>
-<span><span class="co">##   pbmc6k_CACTGCTGAGGTTC-1 pbmc6k_CCCAAAGACCATAG-1</span></span>
+<span><span class="co">## colnames(800): pbmc6k_TCCATAACTGTGAC-1 pbmc6k_TCTTACGACCTTAT-1 ...</span></span>
+<span><span class="co">##   pbmc8k_TGCCAAAAGGAGTTTA-1 pbmc6k_CGAGTATGTAGTCG-1</span></span>
 <span><span class="co">## colData names(14): rownames Sample ... sample sizeFactor</span></span>
 <span><span class="co">## reducedDimNames(0):</span></span>
 <span><span class="co">## mainExpName: NULL</span></span>
 <span><span class="co">## altExpNames(0):</span></span></code></pre>
 <p><strong>3. Visualization</strong></p>
-<p>In this documentation, we provide three ways to examine the removal of batch effect, in terms of visualization.</p>
+<p>In this documentation, we provide three ways to examine the removal
+of batch effect, in terms of visualization.</p>
 <ol style="list-style-type: decimal">
-<li>Plot the variation explained by the batch annotation and another condition.</li>
+<li>Plot the variation explained by the batch annotation and another
+condition.</li>
 </ol>
-<p>This functionality is implemented in <code><a href="../reference/plotBatchVariance.html">plotBatchVariance()</a></code>. It plots a violin plot of the variation explained by the given batch annotation, an additional condition, and the variation explained by combining these two conditions.<br>
-This plot would be useful for examining whether the existing batch effect is different than another condition (e.g. subtype) or is confounded by that. However, the additional condition labels (e.g. cell types) do not necessarily exist when batch effect removal is wanted, so only plotting the variation explained by batches is also supported.</p>
+<p>This functionality is implemented in
+<code><a href="../reference/plotBatchVariance.html">plotBatchVariance()</a></code>. It plots a violin plot of the
+variation explained by the given batch annotation, an additional
+condition, and the variation explained by combining these two
+conditions.<br>
+This plot would be useful for examining whether the existing batch
+effect is different than another condition (e.g. subtype) or is
+confounded by that. However, the additional condition labels (e.g. cell
+types) do not necessarily exist when batch effect removal is wanted, so
+only plotting the variation explained by batches is also supported.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBatchVariance.html">plotBatchVariance</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce.small</span>, useAssay <span class="op">=</span> <span class="st">'logcounts'</span>, batch <span class="op">=</span> <span class="st">'sample'</span>, title <span class="op">=</span> <span class="st">'Variation Before Correction'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="batch_correction_files/figure-html/batchVarBefore-1.png" width="700"></p>
@@ -408,13 +519,22 @@ This plot would be useful for examining whether the existing batch effect is dif
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBatchVariance.html">plotBatchVariance</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce.small</span>, useAssay <span class="op">=</span> <span class="st">'LIMMA'</span>, batch <span class="op">=</span> <span class="st">'sample'</span>, title <span class="op">=</span> <span class="st">'Variation After Correction'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="batch_correction_files/figure-html/batchVarAfter-1.png" width="700"></p>
 <ol start="2" style="list-style-type: decimal">
-<li>Plot the mean expression level of each gene separately for each batch.</li>
+<li>Plot the mean expression level of each gene separately for each
+batch.</li>
 </ol>
-<p>This functionality is implemented in <code><a href="../reference/plotSCEBatchFeatureMean.html">plotSCEBatchFeatureMean()</a></code>. The methodology is straight forward, which plots violin plots for all the batches, and within each batch, the plot illustrates the distribution of the mean expression level of each gene. Thus the batch effect can be observed from the mean and standard deviation of each batch.</p>
+<p>This functionality is implemented in
+<code><a href="../reference/plotSCEBatchFeatureMean.html">plotSCEBatchFeatureMean()</a></code>. The methodology is straight
+forward, which plots violin plots for all the batches, and within each
+batch, the plot illustrates the distribution of the mean expression
+level of each gene. Thus the batch effect can be observed from the mean
+and standard deviation of each batch.</p>
 <ol start="3" style="list-style-type: decimal">
 <li>Plot an embedding to see the grouping of cells</li>
 </ol>
-<p>There is no function special for batch correction, but this can be achieved simply by using the <a href="dimensionality_reduction.html">dimension reduction</a>/<a href="2d_embedding.html">2D embedding</a> calculation functions (e.g. <code><a href="../reference/scaterPCA.html">scaterPCA()</a></code>, <code><a href="../reference/runUMAP.html">runUMAP()</a></code> and <code>run</code>TSNE()<code>) and</code>plotSCEDimReduceColData()`.</p>
+<p>There is no function special for batch correction, but this can be
+achieved simply by using the <a href="dimensionality_reduction.html">dimension reduction</a>/<a href="2d_embedding.html">2D embedding</a> calculation functions
+(e.g. <code><a href="../reference/scaterPCA.html">scaterPCA()</a></code>, <code><a href="../reference/runUMAP.html">runUMAP()</a></code> and
+<code>run</code>TSNE()<code>) and</code>plotSCEDimReduceColData()`.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce.small</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce.small</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useReducedDim <span class="op">=</span> <span class="cn">NULL</span>, logNorm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce.small</span>, colorBy <span class="op">=</span> <span class="st">'sample'</span>, reducedDimName <span class="op">=</span> <span class="st">'UMAP'</span>, title <span class="op">=</span> <span class="st">'UMAP Before Correction'</span><span class="op">)</span></span></code></pre></div>
@@ -423,8 +543,17 @@ This plot would be useful for examining whether the existing batch effect is dif
 <code class="sourceCode R"><span><span class="va">sce.small</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce.small</span>, useAssay <span class="op">=</span> <span class="st">'LIMMA'</span>, useReducedDim <span class="op">=</span> <span class="cn">NULL</span>, logNorm <span class="op">=</span> <span class="cn">FALSE</span>, reducedDimName <span class="op">=</span> <span class="st">'UMAP_LIMMA'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce.small</span>, colorBy <span class="op">=</span> <span class="st">'sample'</span>, reducedDimName <span class="op">=</span> <span class="st">'UMAP_LIMMA'</span>, title <span class="op">=</span> <span class="st">'UMAP After Correction'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="batch_correction_files/figure-html/umapAfter-1.png" width="700"></p>
-<p>If the cell typing is already given, it is strongly recommended to specify <code>shape = {colData colname for cell typing}</code> in <code><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData()</a></code> to visualize the grouping simultaneously.</p>
+<p>If the cell typing is already given, it is strongly recommended to
+specify <code>shape = {colData colname for cell typing}</code> in
+<code><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData()</a></code> to visualize the grouping
+simultaneously.</p>
 </details><details><summary><b>Method Reference</b></summary><table class="table">
+<colgroup>
+<col width="25%">
+<col width="25%">
+<col width="25%">
+<col width="25%">
+</colgroup>
 <thead><tr class="header">
 <th align="center">Method</th>
 <th align="center">Function</th>
@@ -519,36 +648,84 @@ document.getElementById("ia-button").click();
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references">
-<div id="ref-Polanski2020">
-<p>[1] K. Polański, M. D. Young, Z. Miao, K. B. Meyer, S. A. Teichmann, and J. E. Park, “BBKNN: fast batch alignment of single cell transcriptomes,” <em>Bioinformatics</em>, vol. 36, pp. 964–965, Aug. 2020, doi: <a href="https://doi.org/10.1093/bioinformatics/btz625" class="external-link">10.1093/bioinformatics/btz625</a>.</p>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-Polanski2020" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">K.
+Polański, M. D. Young, Z. Miao, K. B. Meyer, S. A. Teichmann, and J. E.
+Park, <span>“<span class="nocase">BBKNN: fast batch alignment of single
+cell transcriptomes</span>,”</span> <em>Bioinformatics</em>, vol. 36,
+pp. 964--965, Aug. 2020, doi: <a href="https://doi.org/10.1093/bioinformatics/btz625" class="external-link">10.1093/bioinformatics/btz625</a>.</div>
 </div>
-<div id="ref-ZhangY2020">
-<p>[2] Y. Zhang, G. Parmigiani, and W. E. Johnson, “ComBat-seq: batch effect adjustment for RNA-seq count data,” <em>NAR Genomics and Bioinformatics</em>, vol. 2, p. lqaa078, Sep. 2020, doi: <a href="https://doi.org/10.1093/nargab/lqaa078" class="external-link">10.1093/nargab/lqaa078</a>.</p>
+<div id="ref-ZhangY2020" class="csl-entry">
+<div class="csl-left-margin">[2] </div>
+<div class="csl-right-inline">Y.
+Zhang, G. Parmigiani, and W. E. Johnson, <span>“<span class="nocase">ComBat-seq: batch effect adjustment for RNA-seq count
+data</span>,”</span> <em>NAR Genomics and Bioinformatics</em>, vol. 2,
+p. lqaa078, Sep. 2020, doi: <a href="https://doi.org/10.1093/nargab/lqaa078" class="external-link">10.1093/nargab/lqaa078</a>.</div>
 </div>
-<div id="ref-Haghverdi2018">
-<p>[3] L. Haghverdi, A. T. L. Lun, M. D. Morgan, and J. C. Marioni, “Batch effects in single-cell RNA-sequencing data are corrected by matching mutual nearest neighbors,” <em>Nature Biotechnology</em>, vol. 36, pp. 421–427, Apr. 2018, doi: <a href="https://doi.org/10.1038/nbt.4091" class="external-link">10.1038/nbt.4091</a>.</p>
+<div id="ref-Haghverdi2018" class="csl-entry">
+<div class="csl-left-margin">[3] </div>
+<div class="csl-right-inline">L.
+Haghverdi, A. T. L. Lun, M. D. Morgan, and J. C. Marioni, <span>“<span class="nocase">Batch effects in single-cell RNA-sequencing data are
+corrected by matching mutual nearest neighbors</span>,”</span>
+<em>Nature Biotechnology</em>, vol. 36, pp. 421--427, Apr. 2018, doi: <a href="https://doi.org/10.1038/nbt.4091" class="external-link">10.1038/nbt.4091</a>.</div>
 </div>
-<div id="ref-Korsunsky2019">
-<p>[4] I. Korsunsky <em>et al.</em>, “ Fast, sensitive and accurate integration of single-cell data with Harmony,” <em>Nature Methods</em>, vol. 16, pp. 1289–1296, Nov. 2019, doi: <a href="https://doi.org/10.1038/s41592-019-0619-0" class="external-link">10.1038/s41592-019-0619-0</a>.</p>
+<div id="ref-Korsunsky2019" class="csl-entry">
+<div class="csl-left-margin">[4] </div>
+<div class="csl-right-inline">I.
+Korsunsky <em>et al.</em>,<span>“<span class="nocase"> Fast, sensitive
+and accurate integration of single-cell data with
+Harmony</span>,”</span> <em>Nature Methods</em>, vol. 16, pp.
+1289--1296, Nov. 2019, doi: <a href="https://doi.org/10.1038/s41592-019-0619-0" class="external-link">10.1038/s41592-019-0619-0</a>.</div>
 </div>
-<div id="ref-LiuL2020">
-<p>[5] J. Liu, C. Gao, J. Sodicoff, V. Kozareva, E. Z. Macosko, and J. D. Welch, “Jointly defining cell types from multiple single-cell datasets using LIGER,” <em>Nature Protocols</em>, vol. 15, pp. 3632–3662, Oct. 2020, doi: <a href="https://doi.org/10.1038/s41596-020-0391-8" class="external-link">10.1038/s41596-020-0391-8</a>.</p>
+<div id="ref-LiuL2020" class="csl-entry">
+<div class="csl-left-margin">[5] </div>
+<div class="csl-right-inline">J.
+Liu, C. Gao, J. Sodicoff, V. Kozareva, E. Z. Macosko, and J. D. Welch,
+<span>“<span class="nocase">Jointly defining cell types from multiple
+single-cell datasets using LIGER</span>,”</span> <em>Nature
+Protocols</em>, vol. 15, pp. 3632--3662, Oct. 2020, doi: <a href="https://doi.org/10.1038/s41596-020-0391-8" class="external-link">10.1038/s41596-020-0391-8</a>.</div>
 </div>
-<div id="ref-Ritchie2015">
-<p>[6] M. E. Ritchie <em>et al.</em>, “limma powers differential expression analyses for RNA-sequencing and microarray studies,” <em>Nucleic Acids Research</em>, vol. 43, no. 7, p. e47, Apr. 2015, doi: <a href="https://doi.org/10.1093/nar/gkv007" class="external-link">10.1093/nar/gkv007</a>.</p>
+<div id="ref-Ritchie2015" class="csl-entry">
+<div class="csl-left-margin">[6] </div>
+<div class="csl-right-inline">M.
+E. Ritchie <em>et al.</em>, <span>“<span class="nocase">limma powers
+differential expression analyses for RNA-sequencing and microarray
+studies</span>,”</span> <em>Nucleic Acids Research</em>, vol. 43, p.
+e47, Apr. 2015, doi: <a href="https://doi.org/10.1093/nar/gkv007" class="external-link">10.1093/nar/gkv007</a>.</div>
 </div>
-<div id="ref-Hie2019">
-<p>[7] B. Hie, B. Bryson, and B. Berger, “Efficient integration of heterogeneous single-cell transcriptomes using Scanorama,” <em>Nature Biotechnology</em>, vol. 37, pp. 685–691, May 2019, doi: <a href="https://doi.org/10.1038/s41587-019-0113-3" class="external-link">10.1038/s41587-019-0113-3</a>.</p>
+<div id="ref-Hie2019" class="csl-entry">
+<div class="csl-left-margin">[7] </div>
+<div class="csl-right-inline">B.
+Hie, B. Bryson, and B. Berger, <span>“<span class="nocase">Efficient
+integration of heterogeneous single-cell transcriptomes using
+Scanorama</span>,”</span> <em>Nature Biotechnology</em>, vol. 37, pp.
+685--691, May 2019, doi: <a href="https://doi.org/10.1038/s41587-019-0113-3" class="external-link">10.1038/s41587-019-0113-3</a>.</div>
 </div>
-<div id="ref-LinY2019">
-<p>[8] Y. Lin <em>et al.</em>, “scMerge leverages factor analysis, stable expression, and pseudoreplication to merge multiple single-cell RNA-seq datasets,” <em>PNAS</em>, vol. 116, pp. 9775–9784, May 2019, doi: <a href="https://doi.org/10.1073/pnas.1820006116" class="external-link">10.1073/pnas.1820006116</a>.</p>
+<div id="ref-LinY2019" class="csl-entry">
+<div class="csl-left-margin">[8] </div>
+<div class="csl-right-inline">Y.
+Lin <em>et al.</em>, <span>“<span class="nocase">scMerge leverages
+factor analysis, stable expression, and pseudoreplication to merge
+multiple single-cell RNA-seq datasets</span>,”</span> <em>PNAS</em>,
+vol. 116, pp. 9775–9784, May 2019, doi: <a href="https://doi.org/10.1073/pnas.1820006116" class="external-link">10.1073/pnas.1820006116</a>.</div>
 </div>
-<div id="ref-Butler2018a">
-<p>[9] A. Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, “Integrating single-cell transcriptomic data across different conditions, technologies, and species,” <em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018, doi: <a href="https://doi.org/10.1038/nbt.4096" class="external-link">10.1038/nbt.4096</a>.</p>
+<div id="ref-Butler2018a" class="csl-entry">
+<div class="csl-left-margin">[9] </div>
+<div class="csl-right-inline">A.
+Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, <span>“<span class="nocase">Integrating single-cell transcriptomic data across
+different conditions, technologies, and species</span>,”</span>
+<em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018,
+doi: <a href="https://doi.org/10.1038/nbt.4096" class="external-link">10.1038/nbt.4096</a>.</div>
 </div>
-<div id="ref-Risso2018">
-<p>[10] D. Risso, F. Perraudeau, S. Gribkova, S. Dudoit, and J.-P. Vert, “A general and flexible method for signal extraction from single-cell RNA-seq data,” <em>Nature Communications</em>, vol. 9, no. 284, Jan. 2018, doi: <a href="https://doi.org/10.1038/s41467-017-02554-5" class="external-link">10.1038/s41467-017-02554-5</a>.</p>
+<div id="ref-Risso2018" class="csl-entry">
+<div class="csl-left-margin">[10] </div>
+<div class="csl-right-inline">D.
+Risso, F. Perraudeau, S. Gribkova, S. Dudoit, and J.-P. Vert,
+<span>“<span class="nocase">A general and flexible method for signal
+extraction from single-cell RNA-seq data</span>,”</span> <em>Nature
+Communications</em>, vol. 9, no. 284, Jan. 2018, doi: <a href="https://doi.org/10.1038/s41467-017-02554-5" class="external-link">10.1038/s41467-017-02554-5</a>.</div>
 </div>
 </div>
 </div>
