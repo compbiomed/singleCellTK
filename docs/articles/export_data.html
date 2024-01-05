@@ -243,11 +243,12 @@
 
       
 
-      </header><script src="export_data_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Export Data</h1>
-                        <h4 data-toc-skip class="author">Yichen Wang</h4>
+                        <h4 data-toc-skip class="author">Yichen
+Wang</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/export_data.Rmd" class="external-link"><code>vignettes/articles/export_data.Rmd</code></a></small>
@@ -262,15 +263,25 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Users can export/save their dataset after analyzing with SCTK, in three different formats:</p>
+<p>Users can export/save their dataset after analyzing with SCTK, in
+three different formats:</p>
 <ol style="list-style-type: decimal">
-<li>Save as <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object, which can be used in R and analyzed with SCTK and many other choices of tools.<br>
+<li>Save as <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a>
+object, which can be used in R and analyzed with SCTK and many other
+choices of tools.<br>
 </li>
-<li>Save as <a href="https://anndata.readthedocs.io/en/latest/" class="external-link">AnnData</a> object, which is Python based, and can be analyzed with <a href="https://scanpy.readthedocs.io/en/stable/" class="external-link">scanpy</a> and many other choices of tools.<br>
+<li>Save as <a href="https://anndata.readthedocs.io/en/latest/" class="external-link">AnnData</a> object,
+which is Python based, and can be analyzed with <a href="https://scanpy.readthedocs.io/en/stable/" class="external-link">scanpy</a> and many
+other choices of tools.<br>
 </li>
-<li>Save as text files. The count matrices (assays), cell/feature annotation tables, dimension reduction matrices, feature subsets and metadata will be saved separately within a folder.</li>
+<li>Save as text files. The count matrices (assays), cell/feature
+annotation tables, dimension reduction matrices, feature subsets and
+metadata will be saved separately within a folder.</li>
 </ol>
-<p>To view detailed instructions on how to export data, please select ‘Interactive Analysis’ for exporting through the shiny application or ‘Console Analysis’ for exporting through the R console from the tabs below: <br></p>
+<p>To view detailed instructions on how to export data, please select
+‘Interactive Analysis’ for exporting through the shiny application or
+‘Console Analysis’ for exporting through the R console from the tabs
+below: <br></p>
 </div>
 <div class="section level2">
 <h2 id="workflow-guide">Workflow Guide<a class="anchor" aria-label="anchor" href="#workflow-guide"></a>
@@ -282,7 +293,8 @@
 
 <div id="interactive" class="tabcontent">
 <p><img src="ui_screenshots/export/export_ui_entry.png" alt="entry"><br></p>
-<p>To export data through the user-interface, users should open up the “Export Single Cell Data” tab as shown above.</p>
+<p>To export data through the user-interface, users should open up the
+“Export Single Cell Data” tab as shown above.</p>
  <style>
 div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </style>
@@ -292,54 +304,81 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <ol style="list-style-type: decimal">
 <li>Select the path at <strong>“Select directory”</strong><br>
 </li>
-<li>Choose the option <strong>“Download as RDS file”</strong> from the radiobuttons<br>
+<li>Choose the option <strong>“Download as RDS file”</strong> from the
+radiobuttons<br>
 </li>
-<li>Specify the file name at the text input <strong>“File Name”</strong><br>
+<li>Specify the file name at the text input <strong>“File
+Name”</strong><br>
 </li>
 <li>Click on <strong>“Download”</strong> button</li>
 </ol></details><details><summary><b>Save as AnnData (H5AD file)</b></summary><p><img src="ui_screenshots/export/export_ui_anndata.png" alt="anndata"><br></p>
-<p>The simplest steps to save the analysis to AnnData format is similar as how users save an RDS file. To save the analysis to RDS file, users need to:</p>
+<p>The simplest steps to save the analysis to AnnData format is similar
+as how users save an RDS file. To save the analysis to RDS file, users
+need to:</p>
 <ol style="list-style-type: decimal">
 <li>Select the path at <strong>“Select directory”</strong><br>
 </li>
-<li>Choose the option <strong>“Python annData object”</strong> from the radiobuttons<br>
+<li>Choose the option <strong>“Python annData object”</strong> from the
+radiobuttons<br>
 </li>
-<li>Specify the file name at the text input <strong>“File Name”</strong><br>
+<li>Specify the file name at the text input <strong>“File
+Name”</strong><br>
 </li>
 <li>Click on <strong>“Download”</strong> button</li>
 </ol>
 <p>For Python’s AnnData object, there are a few more specifications.</p>
 <ul>
-<li>Unlike the data structure (SingleCellExperiment) that SCTK adopts, AnnData does not hold multiple assays at the same time. Users will need to make sure which assay should be the main count matrix to use, at the selection input “<strong>select assays</strong>”.<br>
+<li>Unlike the data structure (SingleCellExperiment) that SCTK adopts,
+AnnData does not hold multiple assays at the same time. Users will need
+to make sure which assay should be the main count matrix to use, at the
+selection input “<strong>select assays</strong>”.<br>
 </li>
-<li>Anndata offers the functionality to compress the saved file, so users can also choose to increase the compression level at the numeric input <strong>“Compression Opts”</strong>.<br>
+<li>Anndata offers the functionality to compress the saved file, so
+users can also choose to increase the compression level at the numeric
+input <strong>“Compression Opts”</strong>.<br>
 </li>
-<li>Usually the specified main matrix will be saved as a sparse matrix, which saves a lot of computation memory. Users can also choose to save it as dense matrix by checking the option <strong>“Force Dense”</strong>.<br>
+<li>Usually the specified main matrix will be saved as a sparse matrix,
+which saves a lot of computation memory. Users can also choose to save
+it as dense matrix by checking the option <strong>“Force
+Dense”</strong>.<br>
 </li>
-<li>If <strong>“Overwrite”</strong> is checked, the exported file will be directly written to the specified path. If it is unchecked, the data will not be exported if a file with the same name and path already exists.</li>
+<li>If <strong>“Overwrite”</strong> is checked, the exported file will
+be directly written to the specified path. If it is unchecked, the data
+will not be exported if a file with the same name and path already
+exists.</li>
 </ul></details><details><summary><b>Save to flat files</b></summary><p><img src="ui_screenshots/export/export_ui_flat.png" alt="flat"><br></p>
 <p>Similarly,</p>
 <ol style="list-style-type: decimal">
 <li>Select the path at <strong>“Select directory”</strong><br>
 </li>
-<li>Choose the option <strong>“Flat text files”</strong> from the radiobuttons<br>
+<li>Choose the option <strong>“Flat text files”</strong> from the
+radiobuttons<br>
 </li>
-<li>Specify the file name at the text input <strong>“File prefix”</strong><br>
+<li>Specify the file name at the text input <strong>“File
+prefix”</strong><br>
 </li>
 <li>Click on <strong>“Download”</strong> button</li>
 </ol>
-<p>As mentioned at the beginning of the documentation, there will be several files for different information being saved. SCTK will create a directory under the path that users select at the first step, named by “File prefix”, all text files will be stored in this folder.</p>
+<p>As mentioned at the beginning of the documentation, there will be
+several files for different information being saved. SCTK will create a
+directory under the path that users select at the first step, named by
+“File prefix”, all text files will be stored in this folder.</p>
 <p>For additional specifications:</p>
 <ul>
-<li>If <strong>“Gzip Compress”</strong> is checked, each of the file will be compressed within the output folder.<br>
+<li>If <strong>“Gzip Compress”</strong> is checked, each of the file
+will be compressed within the output folder.<br>
 </li>
-<li>If <strong>“Overwrite”</strong> is checked, the exported file will be directly written to the specified path. If it is unchecked, the data will not be exported if a file with the same name and path already exists.</li>
+<li>If <strong>“Overwrite”</strong> is checked, the exported file will
+be directly written to the specified path. If it is unchecked, the data
+will not be exported if a file with the same name and path already
+exists.</li>
 </ul></details>
 </div>
 </div>
 
 <div id="console" class="tabcontent">
-<p>As how SCTK is designed, we assume users are attempting to save their data already in a SingleCellExperiment object:</p>
+<p>As how SCTK is designed, we assume users are attempting to save their
+data already in a SingleCellExperiment object:</p>
 <p><strong>Directly saving the object to RDS file</strong></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"sce_exported.rds"</span><span class="op">)</span></span></code></pre></div>
@@ -352,7 +391,8 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <p><strong>Exporting as Seurat object</strong></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/exportSCEToSeurat.html">exportSCEToSeurat</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
-<p>For detailed specifications, please click on the function name and look at the reference page.</p>
+<p>For detailed specifications, please click on the function name and
+look at the reference page.</p>
 </div>
 <script>
 document.getElementById("ia-button").click();
