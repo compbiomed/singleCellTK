@@ -83,15 +83,13 @@ jobs:
           remotes::install_version("assertive.types", version = "0.0.3", repos = "http://cran.us.r-project.org", upgrade = "never")
           remotes::install_version("multipanelfigure", version = "2.1.2", repos = "http://cran.us.r-project.org", upgrade = "never")
           remotes::install_version("Matrix", version = "1.6.4", repos = "http://cran.us.r-project.org", upgrade = "never")
-          remotes::install_version("SeuratObject", version = "4.1.4", repos = "http://cran.us.r-project.org", upgrade = "never")
-          remotes::install_version("Seurat", version = "4.4.0", repos = "http://cran.us.r-project.org", upgrade = "never")
           BiocManager::install("celda")
 
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache-version: 2
+          cache: false
           extra-packages: |
             any::rcmdcheck
           needs: check
@@ -99,6 +97,13 @@ jobs:
       - name: Install XQuartz on macOS
         if: runner.os == 'macOS'
         run: brew install xquartz --cask
+
+      - name: Install Old Seurat
+        run: |
+          remotes::install_version("Matrix", version = "1.6.4", repos = "http://cran.us.r-project.org", upgrade = "never")
+          remotes::install_version("SeuratObject", version = "4.1.4", repos = "http://cran.us.r-project.org", upgrade = "never")
+          remotes::install_version("Seurat", version = "4.4.0", repos = "http://cran.us.r-project.org", upgrade = "never")
+        shell: Rscript {0}
 
       - name: Check
         env:
