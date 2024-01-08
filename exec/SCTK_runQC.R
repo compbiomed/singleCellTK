@@ -19,6 +19,11 @@ bioc.package.check <- lapply(bioc.packages, FUN = function(x) {
     }
 })
 
+# check for optparse (possibly redundant)
+if(!require("optparse")) {
+    install.packages("optparse")
+}
+
 ## Function to parse arguments from yaml file
 .parseConfig <- function(sctkConfig, arguments) {
   for (i in seq_along(arguments)) {
