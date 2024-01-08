@@ -853,22 +853,22 @@ qcInputProcess <- function(preproc,
     }
 
     # construct cell SCE from FlatFile
-    if (preproc == "LooseFiles") {
+    if (preproc == "FlatFile") {
         if (dataType == "Both") {
-            dropletSCE <- importFromFiles(assayFile = looseFiles[[1]],
-                                          annotFile = looseFiles[[2]],
-                                          featureFile = looseFiles[[3]])
-            cellSCE <- importFromFiles(assayFile = looseFiles[[4]],
-                                       annotFile = looseFiles[[5]],
-                                       featureFile = looseFiles[[6]])
+            dropletSCE <- importFromFiles(assayFile = flatFiles[[1]],
+                                          annotFile = flatFiles[[2]],
+                                          featureFile = flatFiles[[3]])
+            cellSCE <- importFromFiles(assayFile = flatFiles[[4]],
+                                       annotFile = flatFiles[[5]],
+                                       featureFile = flatFiles[[6]])
         } else if (dataType == "Cell") {
-            cellSCE <- importFromFiles(assayFile = looseFiles[[1]],
-                                       annotFile = looseFiles[[2]],
-                                       featureFile = looseFiles[[3]])
+            cellSCE <- importFromFiles(assayFile = flatFiles[[1]],
+                                       annotFile = flatFiles[[2]],
+                                       featureFile = flatFiles[[3]])
         } else if (dataType == "Droplet") {
-            dropletSCE <- importFromFiles(assayFile = looseFiles[[1]],
-                                          annotFile = looseFiles[[2]],
-                                          featureFile = looseFiles[[3]])
+            dropletSCE <- importFromFiles(assayFile = flatFiles[[1]],
+                                          annotFile = flatFiles[[2]],
+                                          featureFile = flatFiles[[3]])
         }
         return(list(dropletSCE, cellSCE))
     }
