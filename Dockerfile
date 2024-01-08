@@ -42,7 +42,7 @@ RUN R -e "BiocManager::install('scRNAseq')"
 RUN R -e "BiocManager::install('celda')"
 #RUN R -e "devtools::install_github('wleepang/shiny-directory-input')"
 RUN R -e "options(timeout=360000)" \
-	&& R -e "devtools::install_github('compbiomed/singleCellTK@v2.10.1', ref = 'devel', force = TRUE, dependencies = TRUE)"
+	&& R -e "devtools::install_github('compbiomed/singleCellTK@v2.10.1', force = TRUE, dependencies = TRUE)"
 
 RUN R -e "install.packages('reticulate')"
 RUN R -e "Sys.setenv(RETICULATE_PYTHON = '/usr/bin/python3')"
