@@ -10,6 +10,7 @@ plotSeuratGenes(
   plotType,
   features,
   groupVariable,
+  reducedDimName = "seuratUMAP",
   splitBy = NULL,
   cols = c("lightgrey", "blue"),
   ncol = 1,
@@ -30,6 +31,9 @@ to "ridge", "violin", "feature", "dot" and "heatmap".}
 \item{groupVariable}{Specify the column name from the colData slot that
 should be used as grouping variable.}
 
+\item{reducedDimName}{saved dimension reduction name in the
+SingleCellExperiment object. Default \code{seuratUMAP}.}
+
 \item{splitBy}{Specify the column name from the colData slot that should be
 used to split samples.
  Default is \code{NULL}.}
@@ -46,9 +50,6 @@ separate ggplot objects for each feature. Only works when \code{plotType}
 parameter is \code{"feature"}, \code{"violin"} or \code{"ridge"}. For
 \code{"heatmap"} and \code{"dot"}, plots for all features are always
 combined into a single plot. Default \code{FALSE}.}
-
-\item{reducedDimName}{saved dimension reduction name in the
-SingleCellExperiment object. Default \code{seuratUMAP}.}
 }
 \value{
 Plot object
