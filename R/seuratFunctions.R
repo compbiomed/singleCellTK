@@ -1814,6 +1814,7 @@ plotSeuratGenes <- function(inSCE,
                             plotType,
                             features,
                             groupVariable,
+                            reducedDimName = "seuratUMAP",
                             splitBy = NULL,
                             cols = c("lightgrey", "blue"),
                             ncol = 1,
@@ -1868,7 +1869,7 @@ plotSeuratGenes <- function(inSCE,
         ncol = ncol,
         split.by = splitBy,
         combine = combine,
-        reduction = useReducedDim
+        reduction = reducedDimName
       )
     )
   }
