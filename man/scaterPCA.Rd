@@ -13,7 +13,7 @@ scaterPCA(
   nComponents = 50,
   ntop = 2000,
   useAltExp = NULL,
-  seed = NULL,
+  seed = 12345,
   BPPARAM = BiocParallel::SerialParam()
 )
 }

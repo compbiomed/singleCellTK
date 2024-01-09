@@ -24,7 +24,7 @@ runUMAP(
   alpha = 1,
   minDist = 0.01,
   spread = 1,
-  seed = NULL,
+  seed = 12345,
   verbose = TRUE,
   BPPARAM = SerialParam()
 )
@@ -49,7 +49,7 @@ getUMAP(
   alpha = 1,
   minDist = 0.01,
   spread = 1,
-  seed = NULL,
+  seed = 12345,
   BPPARAM = SerialParam()
 )
 }
