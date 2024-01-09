@@ -192,8 +192,18 @@
                 }
             }
 
-            sampleLength <- length(unlist(lapply(cellRangerDirs,
-                list.dirs, recursive = FALSE)))
+            # check cellRangerDirs sample length
+            sampleLength = 0
+            for (i in cellRangerDirs) {
+                temp = paste0(i, "/outs")
+                if (dir.exists(temp) == TRUE) {
+                    sampleLength = sampleLength + 1
+                }
+                rm(temp)
+            }
+
+            #sampleLength <- length(unlist(lapply(cellRangerDirs,
+            #    list.dirs, recursive = FALSE)))
 
             if (!is.null(sampleNames)) {
                 if (sampleLength != length(sampleNames)) {
