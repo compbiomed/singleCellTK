@@ -38,7 +38,7 @@
 #' @importFrom S4Vectors metadata<-
 scaterPCA <- function(inSCE, useAssay = "logcounts", useFeatureSubset = NULL,
                       scale = TRUE, reducedDimName = "PCA", nComponents = 50,
-                      ntop = 2000, useAltExp = NULL, seed = NULL,
+                      ntop = 2000, useAltExp = NULL, seed = 12345,
                       BPPARAM = BiocParallel::SerialParam()) {
   params <- as.list(environment())
   params$inSCE <- NULL
