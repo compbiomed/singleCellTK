@@ -24,7 +24,7 @@ runTSNE(
   perplexity = 30,
   nIterations = 1000,
   numThreads = 1,
-  seed = NULL
+  seed = 12345
 )
 
 runQuickTSNE(inSCE, useAssay = "counts", ...)
@@ -47,7 +47,7 @@ getTSNE(
   perplexity = 30,
   nIterations = 1000,
   numThreads = 1,
-  seed = NULL
+  seed = 12345
 )
 }
 \arguments{

@@ -74,7 +74,7 @@ runTSNE <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
                     useFeatureSubset = NULL, nTop = 2000, center = TRUE,
                     scale = TRUE, pca = TRUE, partialPCA = FALSE,
                     initialDims = 25, theta = 0.5, perplexity = 30,
-                    nIterations = 1000, numThreads = 1, seed = NULL) {
+                    nIterations = 1000, numThreads = 1, seed = 12345) {
   params <- as.list(environment())
   params$inSCE <- NULL
   # Note: useMat = list(useAssay = useAssay, ...)
@@ -174,7 +174,7 @@ getTSNE <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
                     useFeatureSubset = NULL, nTop = 2000, center = TRUE,
                     scale = TRUE, pca = TRUE, partialPCA = FALSE,
                     initialDims = 25, theta = 0.5, perplexity = 30,
-                    nIterations = 1000, numThreads = 1, seed = NULL) {
+                    nIterations = 1000, numThreads = 1, seed = 12345) {
   .Deprecated("runTSNE")
   runTSNE(inSCE = inSCE, useReducedDim = useReducedDim, useAssay = useAssay, 
           useAltExp = useAltExp, reducedDimName = reducedDimName, 
