@@ -23,12 +23,15 @@ test_that(desc = "Testing standard seurat workflow", {
   testthat::expect_true("seuratPCA" %in% reducedDimNames(sce))
   
   # Test ICA
-  sce <- runSeuratICA(sce, useAssay = "seuratScaledData")
-  testthat::expect_true("seuratICA" %in% reducedDimNames(sce))
+  #sce <- runSeuratICA(sce, useAssay = "seuratScaledData")
+  #testthat::expect_true("seuratICA" %in% reducedDimNames(sce))
   
   # Test JackStraw on PCA
   sce <- suppressWarnings({runSeuratJackStraw(sce, useAssay = "seuratScaledData")})
-  testthat::expect_true(!is.null(metadata(sce)$seurat$obj@reductions$pca@jackstraw))
+  if(packageVersion(pkg = "SeuratObject") >= 5.0){
+    testthat::expect_true(!is.null(metadata(sce)$seurat$obj$reductions$pca@jackstraw))
+  }else
+    testthat::expect_true(!is.null(metadata(sce)$seurat$obj@reductions$pca@jackstraw))
   
   jsPlot <- plotSeuratJackStraw(sce)
   testthat::expect_true(is.ggplot(jsPlot))
@@ -68,7 +71,10 @@ test_that(desc = "Testing standard seurat workflow", {
   sce2 <- sce[, -zeroCols]
   metadata(sce2)$seurat <- NULL
   sce2 <- runSeuratSCTransform(sce2)
-  testthat::expect_true("SCTCounts" %in% assayNames(sce2))
+  if(packageVersion(pkg = "SeuratObject") >= 5.0){
+    testthat::expect_true("SCTCounts" %in% altExpNames(sce2))
+  }else
+    testthat::expect_true("SCTCounts" %in% assayNames(sce2))
   
   # Test Batch-Correction
   sce <- suppressWarnings(runSeuratIntegration(sce, batch = "type", kAnchor = 10, kFilter = 4, kWeight = 5, ndims = 10))

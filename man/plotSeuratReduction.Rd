@@ -43,5 +43,6 @@ sce <- runSeuratNormalizeData(sce, useAssay = "counts")
 sce <- runSeuratFindHVG(sce, useAssay = "counts")
 sce <- runSeuratScaleData(sce, useAssay = "counts")
 sce <- runSeuratPCA(sce, useAssay = "counts")
-plotSeuratReduction(sce, useReductionPlot = "pca")}
+plotSeuratReduction(sce, useReduction = "pca")
+}
 }
