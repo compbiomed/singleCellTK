@@ -48,8 +48,8 @@
 #'  outAssayName = "logcounts")
 runNormalization <- function(inSCE,
                              useAssay = "counts",
-                             outAssayName = "customNormalizedAssay",
-                             normalizationMethod = NULL,
+                             outAssayName = "logcounts",
+                             normalizationMethod = "logNormCounts",
                              scale = FALSE,
                              seuratScaleFactor = 10000,
                              transformation = NULL,

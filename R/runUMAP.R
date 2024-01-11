@@ -83,7 +83,7 @@ runUMAP <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
                     logNorm = TRUE, useFeatureSubset = NULL, nTop = 2000,
                     scale = TRUE, pca = TRUE, initialDims = 25, nNeighbors = 30,
                     nIterations = 200, alpha = 1, minDist = 0.01, spread = 1,
-                    seed = NULL, verbose = TRUE, BPPARAM = SerialParam()) {
+                    seed = 12345, verbose = TRUE, BPPARAM = SerialParam()) {
   params <- as.list(environment())
   params$inSCE <- NULL
   params$BPPARAM <- NULL
@@ -177,7 +177,7 @@ getUMAP <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
                     logNorm = TRUE, useFeatureSubset = NULL, nTop = 2000,
                     scale = TRUE, pca = TRUE, initialDims = 25, nNeighbors = 30,
                     nIterations = 200, alpha = 1, minDist = 0.01, spread = 1,
-                    seed = NULL, BPPARAM = SerialParam()) {
+                    seed = 12345, BPPARAM = SerialParam()) {
   .Deprecated("runUMAP")
   runUMAP(inSCE, useReducedDim = useReducedDim, useAssay = useAssay, 
           useAltExp = useAltExp, sample = sample, 

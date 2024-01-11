@@ -15,7 +15,7 @@ runDimReduce(
   nComponents = 20,
   useFeatureSubset = NULL,
   scale = FALSE,
-  seed = NULL,
+  seed = 12345,
   ...
 )
 }

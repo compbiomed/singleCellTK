@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.1</span>
       </span>
     </div>
 
@@ -243,12 +243,11 @@
 
       
 
-      </header><div class="row">
+      </header><script src="delete_data_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Delete Data</h1>
-                        <h4 data-toc-skip class="author">Yichen
-Wang</h4>
+                        <h4 data-toc-skip class="author">Yichen Wang</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/delete_data.Rmd" class="external-link"><code>vignettes/articles/delete_data.Rmd</code></a></small>
@@ -263,13 +262,8 @@ Wang</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>While analyzing with SCTK, there might be excessive data that should
-be removed. Here we briefly talk about the way to clean up the unwanted
-information.</p>
-<p>To view detailed instructions on how to delete data, please select
-‘Interactive Analysis’ for deletion through the shiny application or
-‘Console Analysis’ for deletion through the R console from the tabs
-below: <br></p>
+<p>While analyzing with SCTK, there might be excessive data that should be removed. Here we briefly talk about the way to clean up the unwanted information.</p>
+<p>To view detailed instructions on how to delete data, please select ‘Interactive Analysis’ for deletion through the shiny application or ‘Console Analysis’ for deletion through the R console from the tabs below: <br></p>
 </div>
 <div class="section level2">
 <h2 id="workflow-guide">Workflow Guide<a class="anchor" aria-label="anchor" href="#workflow-guide"></a>
@@ -281,24 +275,14 @@ below: <br></p>
 
 <div id="interactive" class="tabcontent">
 <p><img src="ui_screenshots/delete_data/del_ui_entry.png" alt="entry"><br></p>
-<p>SCTK provides a page that allows users to delete existing data,
-including count matrices (assays), cell (column) annotation, feature
-(row) annotation, dimension reduction and subsets. To delete data, open
-up the “Delete Single Cell Data” tab as shown above.</p>
+<p>SCTK provides a page that allows users to delete existing data, including count matrices (assays), cell (column) annotation, feature (row) annotation, dimension reduction and subsets. To delete data, open up the “Delete Single Cell Data” tab as shown above.</p>
 <p><img src="ui_screenshots/delete_data/del_ui_panel.png" alt="panel"><br></p>
-<p>The operation here is intuitive. As shown in the screenshot above,
-users can easily delete any unwanted or useless information by checking
-the corresponding checkboxes. Users have to be careful when checking the
-data because this deletion operation is <strong>not reversible</strong>.
-Finally, click on <strong>“Delete”</strong> button to finish the
-operation.</p>
+<p>The operation here is intuitive. As shown in the screenshot above, users can easily delete any unwanted or useless information by checking the corresponding checkboxes. Users have to be careful when checking the data because this deletion operation is <strong>not reversible</strong>. Finally, click on <strong>“Delete”</strong> button to finish the operation.</p>
 </div>
 
 <div id="console" class="tabcontent">
-<p>SCTK uses the <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a>
-object as the container of users’ datasets.</p>
-<p>For example, some data has been computed and stored in the object as
-below:</p>
+<p>SCTK uses the <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object as the container of users’ datasets.</p>
+<p>For example, some data has been computed and stored in the object as below:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get a SingleCellExperiment object</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
@@ -306,8 +290,7 @@ below:</p>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"logcounts"</span><span class="op">)</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCERows.html">subsetSCERows</a></span><span class="op">(</span><span class="va">sce</span>, index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, returnAsAltExp <span class="op">=</span> <span class="cn">TRUE</span>, altExpName <span class="op">=</span> <span class="st">"subset"</span><span class="op">)</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterPCA.html">scaterPCA</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span></code></pre></div>
-<p>This data can be removed as below by simply setting the required
-slots to <code>NULL</code>:</p>
+<p>This data can be removed as below by simply setting the required slots to <code>NULL</code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Remove a certain cell annotation (colData)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">Tissue_status</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>

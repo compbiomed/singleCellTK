@@ -1,3 +1,12 @@
+Changes in Version 2.12.1 (2024-01-10)
+================================================================================
+* Updates to documentation
+* Fixes to runTSCAN and plotSeurat Genes
+* Added support for flat file import into SCTK-QC
+* Fixed directory issue in importCellRanger
+* Added Bubble plot to Shiny GUI
+* Updated Dockerfile
+
 Changes in Version 2.12.0 (2023-10-24)
 ================================================================================
 * Updated version to match Bioconductor 3.18
