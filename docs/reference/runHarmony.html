@@ -19,7 +19,7 @@ conditions."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.1</span>
       </span>
     </div>
 
@@ -214,7 +214,7 @@ conditions.</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runHarmony</span><span class="op">(</span></span>
 <span>  <span class="va">inSCE</span>,</span>
-<span>  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  batch <span class="op">=</span> <span class="st">"batch"</span>,</span>
 <span>  reducedDimName <span class="op">=</span> <span class="st">"HARMONY"</span>,</span>
@@ -237,12 +237,15 @@ conditions.</p>
 
 <dt>useAssay</dt>
 <dd><p>A single character indicating the name of the assay requiring
-batch correction. Default <code>"logcounts"</code>.</p></dd>
+batch correction. Default <code>NULL</code>. It is recommended to use a reducedDim
+such as PCA through the `useReducedDim` parameter of this function.</p></dd>
 
 
 <dt>useReducedDim</dt>
 <dd><p>A single character indicating the name of the reducedDim
-used to be corrected. Specifying this will ignore <code>useAssay</code>. Default
+to be used. It is recommended to use a reducedDim instead of a full assay as 
+using an assay might cause the algorithm to not converge and throw error.
+Specifying this will ignore <code>useAssay</code>. Default
 <code>NULL</code>.</p></dd>
 
 
@@ -295,7 +298,7 @@ make soft kmeans cluster approach hard clustering. Default <code>0.1</code>.</p>
 
 
 <dt>...</dt>
-<dd><p>Other arguments passed to <code>HarmonyMatrix</code>.
+<dd><p>Other arguments passed to <code><a href="https://rdrr.io/pkg/harmony/man/HarmonyMatrix.html" class="external-link">HarmonyMatrix</a></code>.
 See details.</p></dd>
 
 </dl></div>
@@ -308,7 +311,7 @@ See details.</p></dd>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Since some of the arguments of <code>HarmonyMatrix</code>
+    <p>Since some of the arguments of <code><a href="https://rdrr.io/pkg/harmony/man/HarmonyMatrix.html" class="external-link">HarmonyMatrix</a></code>
 is controlled by this wrapper function. The additional arguments users can
 work with only include: <code>nclust</code>, <code>tau</code>, <code>block.size</code>,
 <code>max.iter.cluster</code>, <code>epsilon.cluster</code>, <code>epsilon.harmony</code>,

@@ -43,13 +43,13 @@ Additional information on how to install from GitHub, install Python dependencie
 
 ## Citation
 
-If you use SCTK for quality control, please cite our *Nature Communication* paper
+If you use SCTK for quality control, please cite our *Nature Communication* paper:
 
 > Rui Hong, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Yichen Wang, Vidya Akavoor, Xinyun Cao, Irzam Sarfraz, Zhe Wang, Salam Alabdullatif, Frederick Jansen, Masanao Yajima, W. Evan Johnson & Joshua D. Campbell, "Comprehensive generation, visualization, and reporting of quality control metrics for single-cell RNA sequencing data," *Nature Communications*, vol. 13, no. 1688, 2022, doi: 10.1038/s41467-022-29212-9.
 
-If you use SCTK for analysis in the Rconsole or the interactive graphical user interface, please cite our bioRxiv paper:
+If you use SCTK for analysis in the Rconsole or the interactive graphical user interface, please cite our *Patterns* paper:
 
-> Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Vidya Akavoor, Xinyun Cao, Salam Alabdullatif, Nida Pervaiz, Syed Ali Zaib, Zhe Wang, Frederick Jansen, Masanao Yajima, W Evan Johnson, Joshua D Campbell, "Interactive analysis of single-cell data using flexible workflows with SCTK2.0", *bioRxiv*, 2022.07.13.499900; doi: <https://doi.org/10.1101/2022.07.13.499900>.
+> Yichen Wang, Irzam Sarfraz, Nida Pervaiz, Rui Hong, Yusuke Koga, Vidya Akavoor, Xinyun Cao, Salam Alabdullatif, Syed Ali Zaib, Zhe Wang, Frederick Jansen, Masanao Yajima, W Evan Johnson, Joshua D Campbell, "Interactive analysis of single-cell data using flexible workflows with SCTK2", *Patterns (N Y)*, Aug 3;4(8):100814, 2023, doi: 10.1016/j.patter.2023.100814.
 
 ## Report Issues
 
