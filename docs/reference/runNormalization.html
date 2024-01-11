@@ -22,7 +22,7 @@ between a range of values."><!-- mathjax --><script src="https://cdnjs.cloudflar
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.1</span>
       </span>
     </div>
 
@@ -221,8 +221,8 @@ between a range of values.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runNormalization</span><span class="op">(</span></span>
 <span>  <span class="va">inSCE</span>,</span>
 <span>  useAssay <span class="op">=</span> <span class="st">"counts"</span>,</span>
-<span>  outAssayName <span class="op">=</span> <span class="st">"customNormalizedAssay"</span>,</span>
-<span>  normalizationMethod <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  outAssayName <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>  normalizationMethod <span class="op">=</span> <span class="st">"logNormCounts"</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  seuratScaleFactor <span class="op">=</span> <span class="fl">10000</span>,</span>
 <span>  transformation <span class="op">=</span> <span class="cn">NULL</span>,</span>
