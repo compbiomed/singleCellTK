@@ -13,7 +13,7 @@ runSeuratPCA(
   scale = TRUE,
   reducedDimName = "seuratPCA",
   nPCs = 20,
-  seed = NULL,
+  seed = 12345,
   verbose = TRUE
 )
 }

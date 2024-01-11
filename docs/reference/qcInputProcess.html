@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.1</span>
       </span>
     </div>
 
@@ -217,6 +217,7 @@
 <span>  <span class="va">ref</span>,</span>
 <span>  <span class="va">rawFile</span>,</span>
 <span>  <span class="va">filFile</span>,</span>
+<span>  <span class="va">flatFiles</span>,</span>
 <span>  <span class="va">dataType</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -253,6 +254,10 @@
 
 <dt>filFile</dt>
 <dd><p>The full path of the RDS file or Matrix file of the cell count matrix. It's one of the path provided in --cell_data argument.</p></dd>
+
+
+<dt>flatFiles</dt>
+<dd><p>The full paths of the matrix, barcode, and features (in that order) files used to construct an SCE object.</p></dd>
 
 
 <dt>dataType</dt>

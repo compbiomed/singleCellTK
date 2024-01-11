@@ -58,7 +58,7 @@ runDimReduce <- function(inSCE,
                          useAssay = NULL, useReducedDim = NULL,
                          useAltExp = NULL, reducedDimName = method,
                          nComponents = 20, useFeatureSubset = NULL,
-                         scale = FALSE, seed = NULL, ...)
+                         scale = FALSE, seed = 12345, ...)
 {
 
   method <- match.arg(method)

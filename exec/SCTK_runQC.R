@@ -19,6 +19,11 @@ bioc.package.check <- lapply(bioc.packages, FUN = function(x) {
     }
 })
 
+# check for optparse (possibly redundant)
+if(!require("optparse")) {
+    install.packages("optparse")
+}
+
 ## Function to parse arguments from yaml file
 .parseConfig <- function(sctkConfig, arguments) {
   for (i in seq_along(arguments)) {
@@ -84,7 +89,7 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
     optparse::make_option(c("-P", "--preproc"),
         type = "character",
         default = NULL,
-        help = "Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus', 'DropEst', 'SceRDS', 'CountMatrix', 'AnnData', 'Seurat' and 'Alevin'"),
+        help = "Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus', 'DropEst', 'SceRDS', 'CountMatrix', 'AnnData', 'Seurat', 'Alevin', and 'FlatFile'."),
     optparse::make_option(c("-s", "--sample"),
         type = "character",
         help = "Name of the sample. This will be prepended to the cell barcodes."),
@@ -128,6 +133,10 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
         type = "character",
         default = NULL,
         help = "The full path of the RDS file or Matrix file of the cell count matrix. This would be use only when --preproc is SceRDS or CountMatrix."),
+    optparse::make_option(c("-f", "--flatFiles"),
+        type = "character",
+        default = NULL,
+        help = "The full paths of the matrix, barcodes, and features files needed to construct an SCE object from flat files."),
     optparse::make_option(c("-F", "--outputFormat"),
         type = "character",
         default = NULL,
@@ -192,6 +201,7 @@ FilterDir <- opt[["cellPath"]]
 RawDir <- opt[["rawPath"]]
 Reference <- opt[["genome"]]
 RawFile <- opt[["rawData"]]
+flatFiles <- opt[["flatFiles"]]
 FilterFile <- opt[["cellData"]]
 yamlFile <- opt[["yamlFile"]]
 formats <- opt[["outputFormat"]]
@@ -221,6 +231,8 @@ if (!is.null(Reference)) { Reference <- unlist(strsplit(opt[["genome"]], ",")) }
 if (!is.null(RawFile)) { RawFile <- unlist(strsplit(opt[["rawData"]], ",")) }
 
 if (!is.null(FilterFile)) { FilterFile <- unlist(strsplit(opt[["cellData"]], ",")) }
+
+if (!is.null(flatFiles)) { flatFiles <- unlist(strsplit(opt[["flatFiles"]], ",")) }
 
 if (!is.null(formats)) { formats <- unlist(strsplit(opt[["outputFormat"]], ",")) }
 
@@ -314,6 +326,11 @@ if (!is.null(gmt)) {
 
 level3Meta <- list()
 level4Meta <- list()
+
+if (!is.null(flatFiles)) {
+    flatFiles <- split(flatFiles, ceiling(seq_along(flatFiles)/3))
+}
+
 for(i in seq_along(process)) {
     preproc <- process[i]
     samplename <- sample[i]
@@ -321,6 +338,7 @@ for(i in seq_along(process)) {
     raw <- RawDir[i]
     fil <- FilterDir[i]
     ref <- Reference[i]
+    flatFiles <- flatFiles[[i]]
     rawFile <- RawFile[i]
     filFile <- FilterFile[i]
     subTitle <- subTitles[i]
@@ -332,6 +350,7 @@ for(i in seq_along(process)) {
                             ref,
                             rawFile,
                             filFile,
+                            flatFiles,
                             dataType)
     dropletSCE <- INPUT[[1]]
     cellSCE <- INPUT[[2]]
@@ -362,7 +381,6 @@ for(i in seq_along(process)) {
             }
         }
     }
-
 
     if (dataType == "Cell") {
         if (is.null(cellSCE) && (preproc %in% c("BUStools", "SEQC"))) {

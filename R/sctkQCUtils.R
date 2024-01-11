@@ -662,6 +662,7 @@ constructSCE <- function(data, samplename) {
 #' @param ref The name of reference used by cellranger. Only need for CellrangerV2 data.
 #' @param rawFile The full path of the RDS file or Matrix file of the raw gene count matrix. It's one of the path provided in --raw_data argument.
 #' @param filFile The full path of the RDS file or Matrix file of the cell count matrix. It's one of the path provided in --cell_data argument.
+#' @param flatFiles The full paths of the matrix, barcode, and features (in that order) files used to construct an SCE object.
 #' @param dataType Type of the input. It can be "Both", "Droplet" or "Cell". It's one of the path provided in --genome argument.
 #' @return A list of \link[SingleCellExperiment]{SingleCellExperiment} object containing
 #' the droplet or cell data or both,depending on the dataType that users provided.
@@ -674,6 +675,7 @@ qcInputProcess <- function(preproc,
     ref,
     rawFile,
     filFile,
+    flatFiles,
     dataType) {
 
     dropletSCE <- NULL
@@ -847,6 +849,27 @@ qcInputProcess <- function(preproc,
 
     if (preproc == "Alevin") {
         cellSCE <- importAlevin(alevinDir = path, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+        return(list(dropletSCE, cellSCE))
+    }
+
+    # construct cell SCE from FlatFile
+    if (preproc == "FlatFile") {
+        if (dataType == "Both") {
+            dropletSCE <- importFromFiles(assayFile = flatFiles[[1]],
+                                          annotFile = flatFiles[[2]],
+                                          featureFile = flatFiles[[3]])
+            cellSCE <- importFromFiles(assayFile = flatFiles[[4]],
+                                       annotFile = flatFiles[[5]],
+                                       featureFile = flatFiles[[6]])
+        } else if (dataType == "Cell") {
+            cellSCE <- importFromFiles(assayFile = flatFiles[[1]],
+                                       annotFile = flatFiles[[2]],
+                                       featureFile = flatFiles[[3]])
+        } else if (dataType == "Droplet") {
+            dropletSCE <- importFromFiles(assayFile = flatFiles[[1]],
+                                          annotFile = flatFiles[[2]],
+                                          featureFile = flatFiles[[3]])
+        }
         return(list(dropletSCE, cellSCE))
     }
 

@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.1</span>
       </span>
     </div>
 
@@ -309,10 +309,10 @@ text-align: justify}
 <p>All droplet-based QC functions are able to be run under the wrapper function <code><a href="../reference/runDropletQC.html">runDropletQC()</a></code>. By default all possible QC algorithms will be run.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDropletQC.html">runDropletQC</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Wed Jul 26 15:27:44 2023 ... Running 'perCellQCMetrics'</span></span></code></pre>
-<pre><code><span><span class="co">## Wed Jul 26 15:27:44 2023 ...... Attempting to find mitochondrial genes by identifying features in 'rownames' that match mitochondrial genes from reference 'human' and ID type 'ensembl'.</span></span></code></pre>
-<pre><code><span><span class="co">## Wed Jul 26 15:27:47 2023 ... Running 'emptyDrops'</span></span></code></pre>
-<pre><code><span><span class="co">## Wed Jul 26 15:28:05 2023 ... Running 'barcodeRanks'</span></span></code></pre>
+<pre><code><span><span class="co">## Wed Jan 10 18:28:54 2024 ... Running 'perCellQCMetrics'</span></span></code></pre>
+<pre><code><span><span class="co">## Wed Jan 10 18:28:55 2024 ...... Attempting to find mitochondrial genes by identifying features in 'rownames' that match mitochondrial genes from reference 'human' and ID type 'ensembl'.</span></span></code></pre>
+<pre><code><span><span class="co">## Wed Jan 10 18:28:59 2024 ... Running 'emptyDrops'</span></span></code></pre>
+<pre><code><span><span class="co">## Wed Jan 10 18:29:24 2024 ... Running 'barcodeRanks'</span></span></code></pre>
 <p>If users choose to only run a specific set of algorithms, they can specify which to run with the <code>algorithms</code> parameter.</p>
 <p>After running QC functions with SCTK, the output will be stored in the <code>colData</code> slot of the <code>SingleCellExperiment</code> object.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -320,67 +320,67 @@ text-align: justify}
 <pre><code><span><span class="co">## DataFrame with 5 rows and 19 columns</span></span>
 <span><span class="co">##                         sample            Barcode       sum  detected</span></span>
 <span><span class="co">##                    &lt;character&gt;        &lt;character&gt; &lt;numeric&gt; &lt;integer&gt;</span></span>
-<span><span class="co">## CGCCAAGCAAACCTAC-1      pbmc4k CGCCAAGCAAACCTAC-1         0         0</span></span>
-<span><span class="co">## CCACTACCATAGTAAG-1      pbmc4k CCACTACCATAGTAAG-1         0         0</span></span>
-<span><span class="co">## AAAGCAACACTGCCAG-1      pbmc4k AAAGCAACACTGCCAG-1         0         0</span></span>
-<span><span class="co">## CTCAGAAGTCTTGCGG-1      pbmc4k CTCAGAAGTCTTGCGG-1         0         0</span></span>
-<span><span class="co">## CATCAAGCACACGCTG-1      pbmc4k CATCAAGCACACGCTG-1         0         0</span></span>
+<span><span class="co">## GTGGGTCTCTTCTGGC-1      pbmc4k GTGGGTCTCTTCTGGC-1         0         0</span></span>
+<span><span class="co">## GCGCGATGTAGCGTCC-1      pbmc4k GCGCGATGTAGCGTCC-1         0         0</span></span>
+<span><span class="co">## AGCGTCGGTTAAAGTG-1      pbmc4k AGCGTCGGTTAAAGTG-1        13        13</span></span>
+<span><span class="co">## GGGACCTAGTCGATAA-1      pbmc4k GGGACCTAGTCGATAA-1         3         3</span></span>
+<span><span class="co">## ACTTACTAGAATAGGG-1      pbmc4k ACTTACTAGAATAGGG-1         0         0</span></span>
 <span><span class="co">##                    percent.top_50 percent.top_100 percent.top_200</span></span>
 <span><span class="co">##                         &lt;numeric&gt;       &lt;numeric&gt;       &lt;numeric&gt;</span></span>
-<span><span class="co">## CGCCAAGCAAACCTAC-1            NaN             NaN             NaN</span></span>
-<span><span class="co">## CCACTACCATAGTAAG-1            NaN             NaN             NaN</span></span>
-<span><span class="co">## AAAGCAACACTGCCAG-1            NaN             NaN             NaN</span></span>
-<span><span class="co">## CTCAGAAGTCTTGCGG-1            NaN             NaN             NaN</span></span>
-<span><span class="co">## CATCAAGCACACGCTG-1            NaN             NaN             NaN</span></span>
+<span><span class="co">## GTGGGTCTCTTCTGGC-1            NaN             NaN             NaN</span></span>
+<span><span class="co">## GCGCGATGTAGCGTCC-1            NaN             NaN             NaN</span></span>
+<span><span class="co">## AGCGTCGGTTAAAGTG-1            100             100             100</span></span>
+<span><span class="co">## GGGACCTAGTCGATAA-1            100             100             100</span></span>
+<span><span class="co">## ACTTACTAGAATAGGG-1            NaN             NaN             NaN</span></span>
 <span><span class="co">##                    percent.top_500  mito_sum mito_detected mito_percent</span></span>
 <span><span class="co">##                          &lt;numeric&gt; &lt;numeric&gt;     &lt;integer&gt;    &lt;numeric&gt;</span></span>
-<span><span class="co">## CGCCAAGCAAACCTAC-1             NaN         0             0          NaN</span></span>
-<span><span class="co">## CCACTACCATAGTAAG-1             NaN         0             0          NaN</span></span>
-<span><span class="co">## AAAGCAACACTGCCAG-1             NaN         0             0          NaN</span></span>
-<span><span class="co">## CTCAGAAGTCTTGCGG-1             NaN         0             0          NaN</span></span>
-<span><span class="co">## CATCAAGCACACGCTG-1             NaN         0             0          NaN</span></span>
+<span><span class="co">## GTGGGTCTCTTCTGGC-1             NaN         0             0          NaN</span></span>
+<span><span class="co">## GCGCGATGTAGCGTCC-1             NaN         0             0          NaN</span></span>
+<span><span class="co">## AGCGTCGGTTAAAGTG-1             100         0             0       0.0000</span></span>
+<span><span class="co">## GGGACCTAGTCGATAA-1             100         1             1      33.3333</span></span>
+<span><span class="co">## ACTTACTAGAATAGGG-1             NaN         0             0          NaN</span></span>
 <span><span class="co">##                        total dropletUtils_emptyDrops_total</span></span>
 <span><span class="co">##                    &lt;numeric&gt;                     &lt;integer&gt;</span></span>
-<span><span class="co">## CGCCAAGCAAACCTAC-1         0                             0</span></span>
-<span><span class="co">## CCACTACCATAGTAAG-1         0                             0</span></span>
-<span><span class="co">## AAAGCAACACTGCCAG-1         0                             0</span></span>
-<span><span class="co">## CTCAGAAGTCTTGCGG-1         0                             0</span></span>
-<span><span class="co">## CATCAAGCACACGCTG-1         0                             0</span></span>
+<span><span class="co">## GTGGGTCTCTTCTGGC-1         0                             0</span></span>
+<span><span class="co">## GCGCGATGTAGCGTCC-1         0                             0</span></span>
+<span><span class="co">## AGCGTCGGTTAAAGTG-1        13                            13</span></span>
+<span><span class="co">## GGGACCTAGTCGATAA-1         3                             3</span></span>
+<span><span class="co">## ACTTACTAGAATAGGG-1         0                             0</span></span>
 <span><span class="co">##                    dropletUtils_emptyDrops_logprob</span></span>
 <span><span class="co">##                                          &lt;numeric&gt;</span></span>
-<span><span class="co">## CGCCAAGCAAACCTAC-1                              NA</span></span>
-<span><span class="co">## CCACTACCATAGTAAG-1                              NA</span></span>
-<span><span class="co">## AAAGCAACACTGCCAG-1                              NA</span></span>
-<span><span class="co">## CTCAGAAGTCTTGCGG-1                              NA</span></span>
-<span><span class="co">## CATCAAGCACACGCTG-1                              NA</span></span>
+<span><span class="co">## GTGGGTCTCTTCTGGC-1                              NA</span></span>
+<span><span class="co">## GCGCGATGTAGCGTCC-1                              NA</span></span>
+<span><span class="co">## AGCGTCGGTTAAAGTG-1                              NA</span></span>
+<span><span class="co">## GGGACCTAGTCGATAA-1                              NA</span></span>
+<span><span class="co">## ACTTACTAGAATAGGG-1                              NA</span></span>
 <span><span class="co">##                    dropletUtils_emptyDrops_pvalue</span></span>
 <span><span class="co">##                                         &lt;numeric&gt;</span></span>
-<span><span class="co">## CGCCAAGCAAACCTAC-1                             NA</span></span>
-<span><span class="co">## CCACTACCATAGTAAG-1                             NA</span></span>
-<span><span class="co">## AAAGCAACACTGCCAG-1                             NA</span></span>
-<span><span class="co">## CTCAGAAGTCTTGCGG-1                             NA</span></span>
-<span><span class="co">## CATCAAGCACACGCTG-1                             NA</span></span>
+<span><span class="co">## GTGGGTCTCTTCTGGC-1                             NA</span></span>
+<span><span class="co">## GCGCGATGTAGCGTCC-1                             NA</span></span>
+<span><span class="co">## AGCGTCGGTTAAAGTG-1                             NA</span></span>
+<span><span class="co">## GGGACCTAGTCGATAA-1                             NA</span></span>
+<span><span class="co">## ACTTACTAGAATAGGG-1                             NA</span></span>
 <span><span class="co">##                    dropletUtils_emptyDrops_limited dropletUtils_emptyDrops_fdr</span></span>
 <span><span class="co">##                                          &lt;logical&gt;                   &lt;numeric&gt;</span></span>
-<span><span class="co">## CGCCAAGCAAACCTAC-1                              NA                          NA</span></span>
-<span><span class="co">## CCACTACCATAGTAAG-1                              NA                          NA</span></span>
-<span><span class="co">## AAAGCAACACTGCCAG-1                              NA                          NA</span></span>
-<span><span class="co">## CTCAGAAGTCTTGCGG-1                              NA                          NA</span></span>
-<span><span class="co">## CATCAAGCACACGCTG-1                              NA                          NA</span></span>
+<span><span class="co">## GTGGGTCTCTTCTGGC-1                              NA                          NA</span></span>
+<span><span class="co">## GCGCGATGTAGCGTCC-1                              NA                          NA</span></span>
+<span><span class="co">## AGCGTCGGTTAAAGTG-1                              NA                          NA</span></span>
+<span><span class="co">## GGGACCTAGTCGATAA-1                              NA                          NA</span></span>
+<span><span class="co">## ACTTACTAGAATAGGG-1                              NA                          NA</span></span>
 <span><span class="co">##                    dropletUtils_BarcodeRank_Knee</span></span>
 <span><span class="co">##                                        &lt;integer&gt;</span></span>
-<span><span class="co">## CGCCAAGCAAACCTAC-1                             0</span></span>
-<span><span class="co">## CCACTACCATAGTAAG-1                             0</span></span>
-<span><span class="co">## AAAGCAACACTGCCAG-1                             0</span></span>
-<span><span class="co">## CTCAGAAGTCTTGCGG-1                             0</span></span>
-<span><span class="co">## CATCAAGCACACGCTG-1                             0</span></span>
+<span><span class="co">## GTGGGTCTCTTCTGGC-1                             0</span></span>
+<span><span class="co">## GCGCGATGTAGCGTCC-1                             0</span></span>
+<span><span class="co">## AGCGTCGGTTAAAGTG-1                             0</span></span>
+<span><span class="co">## GGGACCTAGTCGATAA-1                             0</span></span>
+<span><span class="co">## ACTTACTAGAATAGGG-1                             0</span></span>
 <span><span class="co">##                    dropletUtils_BarcodeRank_Inflection</span></span>
 <span><span class="co">##                                              &lt;integer&gt;</span></span>
-<span><span class="co">## CGCCAAGCAAACCTAC-1                                   0</span></span>
-<span><span class="co">## CCACTACCATAGTAAG-1                                   0</span></span>
-<span><span class="co">## AAAGCAACACTGCCAG-1                                   0</span></span>
-<span><span class="co">## CTCAGAAGTCTTGCGG-1                                   0</span></span>
-<span><span class="co">## CATCAAGCACACGCTG-1                                   0</span></span></code></pre>
+<span><span class="co">## GTGGGTCTCTTCTGGC-1                                   0</span></span>
+<span><span class="co">## GCGCGATGTAGCGTCC-1                                   0</span></span>
+<span><span class="co">## AGCGTCGGTTAAAGTG-1                                   0</span></span>
+<span><span class="co">## GGGACCTAGTCGATAA-1                                   0</span></span>
+<span><span class="co">## ACTTACTAGAATAGGG-1                                   0</span></span></code></pre>
 <div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:80%; ">
 <table class="table table" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -447,13 +447,13 @@ dropletUtils_BarcodeRank_Inflection
 <tbody>
 <tr>
 <td style="text-align:left;">
-CGCCAAGCAAACCTAC-1
+GTGGGTCTCTTCTGGC-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-CGCCAAGCAAACCTAC-1
+GTGGGTCTCTTCTGGC-1
 </td>
 <td style="text-align:right;">
 0
@@ -509,13 +509,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-CCACTACCATAGTAAG-1
+GCGCGATGTAGCGTCC-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-CCACTACCATAGTAAG-1
+GCGCGATGTAGCGTCC-1
 </td>
 <td style="text-align:right;">
 0
@@ -571,13 +571,31 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-AAAGCAACACTGCCAG-1
+AGCGTCGGTTAAAGTG-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-AAAGCAACACTGCCAG-1
+AGCGTCGGTTAAAGTG-1
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
 </td>
 <td style="text-align:right;">
 0
@@ -586,31 +604,13 @@ AAAGCAACACTGCCAG-1
 0
 </td>
 <td style="text-align:right;">
-NaN
+0.00000
 </td>
 <td style="text-align:right;">
-NaN
+13
 </td>
 <td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
+13
 </td>
 <td style="text-align:right;">
 NA
@@ -633,46 +633,46 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-CTCAGAAGTCTTGCGG-1
+GGGACCTAGTCGATAA-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-CTCAGAAGTCTTGCGG-1
+GGGACCTAGTCGATAA-1
 </td>
 <td style="text-align:right;">
-0
+3
 </td>
 <td style="text-align:right;">
-0
+3
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-0
+1
 </td>
 <td style="text-align:right;">
-0
+1
 </td>
 <td style="text-align:right;">
-NaN
+33.33333
 </td>
 <td style="text-align:right;">
-0
+3
 </td>
 <td style="text-align:right;">
-0
+3
 </td>
 <td style="text-align:right;">
 NA
@@ -695,13 +695,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-CATCAAGCACACGCTG-1
+ACTTACTAGAATAGGG-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-CATCAAGCACACGCTG-1
+ACTTACTAGAATAGGG-1
 </td>
 <td style="text-align:right;">
 0
@@ -919,7 +919,7 @@ NA
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#After filtering:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 33694   300</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 33694   384</span></span></code></pre>
 <p>We can compare the average total UMI counts per cell before and after cell filtration:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span><span class="va">pbmc4k.droplet.prefilt</span>, coldata <span class="op">=</span> <span class="st">"sum"</span>, summary <span class="op">=</span> <span class="st">"mean"</span>, title <span class="op">=</span> <span class="st">"Pre-filter"</span>, ylab <span class="op">=</span> <span class="st">"Total counts"</span><span class="op">)</span></span>
@@ -934,9 +934,9 @@ NA
 <p><br></p>
  <details><summary><b>Session Information</b></summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.3.1 (2023-06-16)</span></span>
+<pre><code><span><span class="co">## R version 4.3.2 (2023-10-31)</span></span>
 <span><span class="co">## Platform: x86_64-apple-darwin20 (64-bit)</span></span>
-<span><span class="co">## Running under: macOS Ventura 13.3.1</span></span>
+<span><span class="co">## Running under: macOS Monterey 12.7.2</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRblas.0.dylib </span></span>
@@ -953,77 +953,77 @@ NA
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">##  [1] cowplot_1.1.1               BiocFileCache_2.8.0        </span></span>
-<span><span class="co">##  [3] dbplyr_2.3.3                dplyr_1.1.2                </span></span>
-<span><span class="co">##  [5] singleCellTK_2.10.1         DelayedArray_0.26.6        </span></span>
-<span><span class="co">##  [7] S4Arrays_1.0.5              abind_1.4-5                </span></span>
-<span><span class="co">##  [9] Matrix_1.6-0                SingleCellExperiment_1.22.0</span></span>
-<span><span class="co">## [11] SummarizedExperiment_1.30.2 Biobase_2.60.0             </span></span>
-<span><span class="co">## [13] GenomicRanges_1.52.0        GenomeInfoDb_1.36.1        </span></span>
-<span><span class="co">## [15] IRanges_2.34.1              S4Vectors_0.38.1           </span></span>
-<span><span class="co">## [17] BiocGenerics_0.46.0         MatrixGenerics_1.12.2      </span></span>
-<span><span class="co">## [19] matrixStats_1.0.0          </span></span>
+<span><span class="co">##  [1] cowplot_1.1.2               BiocFileCache_2.10.1       </span></span>
+<span><span class="co">##  [3] dbplyr_2.4.0                dplyr_1.1.4                </span></span>
+<span><span class="co">##  [5] singleCellTK_2.12.1         DelayedArray_0.28.0        </span></span>
+<span><span class="co">##  [7] SparseArray_1.2.3           S4Arrays_1.2.0             </span></span>
+<span><span class="co">##  [9] abind_1.4-5                 Matrix_1.6-4               </span></span>
+<span><span class="co">## [11] SingleCellExperiment_1.24.0 SummarizedExperiment_1.32.0</span></span>
+<span><span class="co">## [13] Biobase_2.62.0              GenomicRanges_1.54.1       </span></span>
+<span><span class="co">## [15] GenomeInfoDb_1.38.5         IRanges_2.36.0             </span></span>
+<span><span class="co">## [17] S4Vectors_0.40.2            BiocGenerics_0.48.1        </span></span>
+<span><span class="co">## [19] MatrixGenerics_1.14.0       matrixStats_1.2.0          </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] rstudioapi_0.15.0         jsonlite_1.8.7           </span></span>
+<span><span class="co">##   [1] rstudioapi_0.15.0         jsonlite_1.8.8           </span></span>
 <span><span class="co">##   [3] magrittr_2.0.3            ggbeeswarm_0.7.2         </span></span>
-<span><span class="co">##   [5] farver_2.1.1              rmarkdown_2.23           </span></span>
-<span><span class="co">##   [7] fs_1.6.3                  zlibbioc_1.46.0          </span></span>
-<span><span class="co">##   [9] ragg_1.2.5                vctrs_0.6.3              </span></span>
-<span><span class="co">##  [11] memoise_2.0.1             DelayedMatrixStats_1.22.1</span></span>
-<span><span class="co">##  [13] RCurl_1.98-1.12           webshot_0.5.5            </span></span>
-<span><span class="co">##  [15] htmltools_0.5.5           curl_5.0.1               </span></span>
-<span><span class="co">##  [17] BiocNeighbors_1.18.0      Rhdf5lib_1.22.0          </span></span>
-<span><span class="co">##  [19] rhdf5_2.44.0              sass_0.4.7               </span></span>
-<span><span class="co">##  [21] bslib_0.5.0               desc_1.4.2               </span></span>
-<span><span class="co">##  [23] plyr_1.8.8                cachem_1.0.8             </span></span>
-<span><span class="co">##  [25] lifecycle_1.0.3           pkgconfig_2.0.3          </span></span>
+<span><span class="co">##   [5] farver_2.1.1              rmarkdown_2.25           </span></span>
+<span><span class="co">##   [7] fs_1.6.3                  zlibbioc_1.48.0          </span></span>
+<span><span class="co">##   [9] ragg_1.2.7                vctrs_0.6.5              </span></span>
+<span><span class="co">##  [11] memoise_2.0.1             DelayedMatrixStats_1.24.0</span></span>
+<span><span class="co">##  [13] RCurl_1.98-1.13           webshot_0.5.5            </span></span>
+<span><span class="co">##  [15] htmltools_0.5.7           curl_5.2.0               </span></span>
+<span><span class="co">##  [17] BiocNeighbors_1.20.1      Rhdf5lib_1.24.1          </span></span>
+<span><span class="co">##  [19] rhdf5_2.46.1              sass_0.4.8               </span></span>
+<span><span class="co">##  [21] bslib_0.6.1               desc_1.4.3               </span></span>
+<span><span class="co">##  [23] plyr_1.8.9                cachem_1.0.8             </span></span>
+<span><span class="co">##  [25] lifecycle_1.0.4           pkgconfig_2.0.3          </span></span>
 <span><span class="co">##  [27] rsvd_1.0.5                R6_2.5.1                 </span></span>
-<span><span class="co">##  [29] fastmap_1.1.1             GenomeInfoDbData_1.2.10  </span></span>
+<span><span class="co">##  [29] fastmap_1.1.1             GenomeInfoDbData_1.2.11  </span></span>
 <span><span class="co">##  [31] digest_0.6.33             colorspace_2.1-0         </span></span>
-<span><span class="co">##  [33] AnnotationDbi_1.62.2      rprojroot_2.0.3          </span></span>
-<span><span class="co">##  [35] scater_1.28.0             dqrng_0.3.0              </span></span>
-<span><span class="co">##  [37] irlba_2.3.5.1             textshaping_0.3.6        </span></span>
-<span><span class="co">##  [39] RSQLite_2.3.1             beachmat_2.16.0          </span></span>
-<span><span class="co">##  [41] labeling_0.4.2            filelock_1.0.2           </span></span>
-<span><span class="co">##  [43] fansi_1.0.4               httr_1.4.6               </span></span>
-<span><span class="co">##  [45] compiler_4.3.1            bit64_4.0.5              </span></span>
-<span><span class="co">##  [47] withr_2.5.0               BiocParallel_1.34.2      </span></span>
-<span><span class="co">##  [49] viridis_0.6.4             DBI_1.1.3                </span></span>
-<span><span class="co">##  [51] highr_0.10                HDF5Array_1.28.1         </span></span>
-<span><span class="co">##  [53] R.utils_2.12.2            tools_4.3.1              </span></span>
-<span><span class="co">##  [55] vipor_0.4.5               beeswarm_0.4.0           </span></span>
-<span><span class="co">##  [57] R.oo_1.25.0               glue_1.6.2               </span></span>
-<span><span class="co">##  [59] rhdf5filters_1.12.1       grid_4.3.1               </span></span>
-<span><span class="co">##  [61] reshape2_1.4.4            generics_0.1.3           </span></span>
-<span><span class="co">##  [63] gtable_0.3.3              R.methodsS3_1.8.2        </span></span>
-<span><span class="co">##  [65] BiocSingular_1.16.0       ScaledMatrix_1.8.1       </span></span>
-<span><span class="co">##  [67] xml2_1.3.5                utf8_1.2.3               </span></span>
-<span><span class="co">##  [69] XVector_0.40.0            ggrepel_0.9.3            </span></span>
-<span><span class="co">##  [71] pillar_1.9.0              stringr_1.5.0            </span></span>
-<span><span class="co">##  [73] limma_3.56.2              GSVAdata_1.36.0          </span></span>
-<span><span class="co">##  [75] lattice_0.21-8            bit_4.0.5                </span></span>
-<span><span class="co">##  [77] annotate_1.78.0           tidyselect_1.2.0         </span></span>
-<span><span class="co">##  [79] locfit_1.5-9.8            Biostrings_2.68.1        </span></span>
-<span><span class="co">##  [81] scuttle_1.10.1            knitr_1.43               </span></span>
-<span><span class="co">##  [83] gridExtra_2.3             edgeR_3.42.4             </span></span>
-<span><span class="co">##  [85] svglite_2.1.1             xfun_0.39                </span></span>
-<span><span class="co">##  [87] DropletUtils_1.20.0       eds_1.2.0                </span></span>
-<span><span class="co">##  [89] stringi_1.7.12            yaml_2.3.7               </span></span>
-<span><span class="co">##  [91] kableExtra_1.3.4          evaluate_0.21            </span></span>
+<span><span class="co">##  [33] AnnotationDbi_1.64.1      scater_1.30.1            </span></span>
+<span><span class="co">##  [35] dqrng_0.3.2               irlba_2.3.5.1            </span></span>
+<span><span class="co">##  [37] textshaping_0.3.7         RSQLite_2.3.4            </span></span>
+<span><span class="co">##  [39] beachmat_2.18.0           labeling_0.4.3           </span></span>
+<span><span class="co">##  [41] filelock_1.0.3            fansi_1.0.6              </span></span>
+<span><span class="co">##  [43] httr_1.4.7                compiler_4.3.2           </span></span>
+<span><span class="co">##  [45] bit64_4.0.5               withr_2.5.2              </span></span>
+<span><span class="co">##  [47] BiocParallel_1.36.0       viridis_0.6.4            </span></span>
+<span><span class="co">##  [49] DBI_1.2.0                 highr_0.10               </span></span>
+<span><span class="co">##  [51] HDF5Array_1.30.0          R.utils_2.12.3           </span></span>
+<span><span class="co">##  [53] tools_4.3.2               vipor_0.4.7              </span></span>
+<span><span class="co">##  [55] beeswarm_0.4.0            R.oo_1.25.0              </span></span>
+<span><span class="co">##  [57] glue_1.6.2                rhdf5filters_1.14.1      </span></span>
+<span><span class="co">##  [59] grid_4.3.2                reshape2_1.4.4           </span></span>
+<span><span class="co">##  [61] generics_0.1.3            gtable_0.3.4             </span></span>
+<span><span class="co">##  [63] R.methodsS3_1.8.2         xml2_1.3.6               </span></span>
+<span><span class="co">##  [65] BiocSingular_1.18.0       ScaledMatrix_1.10.0      </span></span>
+<span><span class="co">##  [67] utf8_1.2.4                XVector_0.42.0           </span></span>
+<span><span class="co">##  [69] ggrepel_0.9.4             pillar_1.9.0             </span></span>
+<span><span class="co">##  [71] stringr_1.5.1             limma_3.58.1             </span></span>
+<span><span class="co">##  [73] GSVAdata_1.38.0           lattice_0.21-9           </span></span>
+<span><span class="co">##  [75] bit_4.0.5                 annotate_1.80.0          </span></span>
+<span><span class="co">##  [77] tidyselect_1.2.0          locfit_1.5-9.8           </span></span>
+<span><span class="co">##  [79] Biostrings_2.70.1         scuttle_1.12.0           </span></span>
+<span><span class="co">##  [81] knitr_1.45                gridExtra_2.3            </span></span>
+<span><span class="co">##  [83] edgeR_4.0.5               svglite_2.1.3            </span></span>
+<span><span class="co">##  [85] xfun_0.41                 statmod_1.5.0            </span></span>
+<span><span class="co">##  [87] DropletUtils_1.22.0       eds_1.4.0                </span></span>
+<span><span class="co">##  [89] stringi_1.8.3             yaml_2.3.8               </span></span>
+<span><span class="co">##  [91] kableExtra_1.3.4          evaluate_0.23            </span></span>
 <span><span class="co">##  [93] codetools_0.2-19          tibble_3.2.1             </span></span>
-<span><span class="co">##  [95] graph_1.78.0              cli_3.6.1                </span></span>
-<span><span class="co">##  [97] xtable_1.8-4              reticulate_1.30          </span></span>
-<span><span class="co">##  [99] systemfonts_1.0.4         munsell_0.5.0            </span></span>
+<span><span class="co">##  [95] graph_1.80.0              cli_3.6.2                </span></span>
+<span><span class="co">##  [97] xtable_1.8-4              reticulate_1.34.0        </span></span>
+<span><span class="co">##  [99] systemfonts_1.0.5         munsell_0.5.0            </span></span>
 <span><span class="co">## [101] jquerylib_0.1.4           Rcpp_1.0.11              </span></span>
-<span><span class="co">## [103] png_0.1-8                 XML_3.99-0.14            </span></span>
-<span><span class="co">## [105] parallel_4.3.1            pkgdown_2.0.7            </span></span>
-<span><span class="co">## [107] ggplot2_3.4.2             blob_1.2.4               </span></span>
-<span><span class="co">## [109] sparseMatrixStats_1.12.2  bitops_1.0-7             </span></span>
-<span><span class="co">## [111] viridisLite_0.4.2         GSEABase_1.62.0          </span></span>
-<span><span class="co">## [113] scales_1.2.1              purrr_1.0.1              </span></span>
-<span><span class="co">## [115] crayon_1.5.2              rlang_1.1.1              </span></span>
-<span><span class="co">## [117] KEGGREST_1.40.0           rvest_1.0.3</span></span></code></pre>
+<span><span class="co">## [103] png_0.1-8                 XML_3.99-0.16            </span></span>
+<span><span class="co">## [105] parallel_4.3.2            pkgdown_2.0.7            </span></span>
+<span><span class="co">## [107] ggplot2_3.4.4             blob_1.2.4               </span></span>
+<span><span class="co">## [109] sparseMatrixStats_1.14.0  bitops_1.0-7             </span></span>
+<span><span class="co">## [111] viridisLite_0.4.2         GSEABase_1.64.0          </span></span>
+<span><span class="co">## [113] scales_1.3.0              purrr_1.0.2              </span></span>
+<span><span class="co">## [115] crayon_1.5.2              rlang_1.1.2              </span></span>
+<span><span class="co">## [117] rvest_1.0.3               KEGGREST_1.42.0</span></span></code></pre>
 </details>
 </div>
 </div>

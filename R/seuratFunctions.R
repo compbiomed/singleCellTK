@@ -413,7 +413,7 @@ runSeuratPCA <-
            scale = TRUE,
            reducedDimName = "seuratPCA",
            nPCs = 20,
-           seed = NULL,
+           seed = 12345,
            verbose = TRUE) {
     params <- as.list(environment())
     params$inSCE <- NULL
@@ -504,7 +504,7 @@ runSeuratICA <-
            scale = TRUE,
            reducedDimName = "seuratICA",
            nics = 20,
-           seed = NULL,
+           seed = 12345,
            verbose = FALSE) {
     params <- as.list(environment())
     params$inSCE <- NULL
@@ -2011,6 +2011,7 @@ plotSeuratGenes <- function(inSCE,
                             plotType,
                             features,
                             groupVariable,
+                            reducedDimName = "seuratUMAP",
                             splitBy = NULL,
                             cols = c("lightgrey", "blue"),
                             ncol = 1,
@@ -2071,7 +2072,7 @@ plotSeuratGenes <- function(inSCE,
         ncol = ncol,
         split.by = splitBy,
         combine = combine,
-        reduction = useReduction
+        reduction = reducedDimName
       )
     )
   }

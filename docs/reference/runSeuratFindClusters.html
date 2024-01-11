@@ -23,7 +23,7 @@ object"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/math
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.1</span>
       </span>
     </div>
 
@@ -226,6 +226,7 @@ object</p>
 <span>  algorithm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"louvain"</span>, <span class="st">"multilevel"</span>, <span class="st">"SLM"</span><span class="op">)</span>,</span>
 <span>  groupSingletons <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">12345</span>,</span>
 <span>  externalReduction <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -267,6 +268,10 @@ not. Default <code>TRUE</code>.</p></dd>
 <dt>resolution</dt>
 <dd><p>Set the resolution parameter to find larger (value above 1)
 or smaller (value below 1) number of communities. Default <code>0.8</code>.</p></dd>
+
+
+<dt>seed</dt>
+<dd><p>Specify the seed value. Default <code>12345</code>.</p></dd>
 
 
 <dt>externalReduction</dt>

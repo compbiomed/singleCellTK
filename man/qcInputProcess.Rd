@@ -13,6 +13,7 @@ qcInputProcess(
   ref,
   rawFile,
   filFile,
+  flatFiles,
   dataType
 )
 }
@@ -32,6 +33,8 @@ qcInputProcess(
 \item{rawFile}{The full path of the RDS file or Matrix file of the raw gene count matrix. It's one of the path provided in --raw_data argument.}
 
 \item{filFile}{The full path of the RDS file or Matrix file of the cell count matrix. It's one of the path provided in --cell_data argument.}
+
+\item{flatFiles}{The full paths of the matrix, barcode, and features (in that order) files used to construct an SCE object.}
 
 \item{dataType}{Type of the input. It can be "Both", "Droplet" or "Cell". It's one of the path provided in --genome argument.}
 }

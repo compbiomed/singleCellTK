@@ -14,7 +14,8 @@ plotBubble(
   xlab = NULL,
   ylab = NULL,
   colorLow = "white",
-  colorHigh = "blue"
+  colorHigh = "blue",
+  scale = FALSE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ plotBubble(
 \item{colorLow}{The color to be used for lowest value of mean expression}
 
 \item{colorHigh}{The color to be used for highest value of mean expression}
+
+\item{scale}{Option to scale the data. Default: /code{FALSE}. Selected assay will not be scaled.}
 }
 \value{
 A ggplot of the bubble plot.
@@ -47,7 +50,7 @@ and the size of the dot being the percent of cells in the cluster expressing the
 }
 \examples{
 data("scExample")
-plotBubble(inSCE=sce, useAssay="counts", featureNames=c("B2M", "MALAT1"), displayName="feature_name", 
-groupNames="type", title="cell type test", xlab="gene", ylab="cluster", 
-colorLow="white", colorHigh="blue")
+plotBubble(inSCE=sce, useAssay="counts", featureNames=c("B2M", "MALAT1"),
+displayName="feature_name", groupNames="type", title="cell type test",
+xlab="gene", ylab="cluster", colorLow="white", colorHigh="blue")
 }

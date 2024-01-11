@@ -3799,6 +3799,7 @@ shinyServer(function(input, output, session) {
       })
     }
     session$sendCustomMessage("close_dropDownClust", "")
+
   })
   
   #-----------------------------------------------------------------------------
@@ -5714,22 +5715,17 @@ shinyServer(function(input, output, session) {
     req(vals$counts)
     selectInput(
       'bpCluster',
-      "Select Feature to Cluster on",
+      "",
       colnames(colData(vals$counts)), multiple = FALSE, width = '550px')
   })
   
-  output$bpRowUI <- renderUI({
-    req(vals$counts)
-    selectNonNARowData <- names(apply(rowData(vals$counts), 2, anyNA)[apply(rowData(vals$counts), 2, anyNA) == FALSE])
-    selectInput(
-      "bpRow",
-      "Select Row Data Name",
-      selectNonNARowData, selected = names(rowData(vals$counts))[1], multiple = FALSE, width = '550px')
-  })
-  
-  observeEvent(input$bpRow, {
-    req(vals$counts)
-    updateSelectizeInput(session, "bpFeatures", choices = rowData(vals$counts)[[input$bpRow]], server = TRUE)
+  observe({
+    req(vals$counts) 
+    
+    if (!is.null(metadata(vals$counts)$featureDisplay) && metadata(vals$counts)$featureDisplay %in% names(rowData(vals$counts))) {
+      featureDisplayValue <- metadata(vals$counts)$featureDisplay
+      updateSelectizeInput(session, "bpFeatures", choices = rowData(vals$counts)[[featureDisplayValue]], server = TRUE)
+    }
   })
   
   observeEvent(input$plotBubbleplot, {
@@ -5738,10 +5734,67 @@ shinyServer(function(input, output, session) {
       isolate({
         plotBubble(inSCE=vals$counts, useAssay=input$bpAssay, featureNames=input$bpFeatures, 
                    displayName=input$bpRow, groupNames=input$bpCluster, title=input$bpTitle, 
-                   xlab=input$bpX, ylab=input$bpY, colorLow=input$bpLow, colorHigh=input$bpHigh)
+                   xlab=input$bpX, ylab=input$bpY, colorLow=input$bpLow, colorHigh=input$bpHigh, scale=input$scaleBubble)
       })
     })
   })
+  
+  observeEvent(input$updateBubbleplot, {
+    req(vals$counts)
+    output$Bubbleplot <- renderPlot({
+      isolate({
+        plotBubble(inSCE=vals$counts, useAssay=input$bpAssay, featureNames=input$bpFeatures, 
+                   displayName=input$bpRow, groupNames=input$bpCluster, title=input$bpTitle, 
+                   xlab=input$bpX, ylab=input$bpY, colorLow=input$bpLow, colorHigh=input$bpHigh, scale=input$scaleBubble)
+      })
+    })
+  })
+  
+  # #COG For BubblePlot
+  # observeEvent(input$closeDropDownBubble, {
+  #   session$sendCustomMessage("close_dropDownBubble", "")
+  # }) 
+  # 
+  # observeEvent(input$bubblePlot, {
+  #   req(vals$counts)
+  #   choice <- NULL
+  #   if (input$bubbleVisChoicesType == 1) {
+  #     # Use result
+  #     if (is.null(input$bubbleVisRes) ||
+  #         input$bubbleVisRes == "") {
+  #       shinyalert::shinyalert("Error!", "Select the clusters to plot",
+  #                              type = "error")
+  #     }
+  #     choice <- input$bubbleVisRes
+  #   } else if (input$bubbleVisChoicesType == 2) {
+  #     # Use colData
+  #     if (is.null(input$bubbleVisCol) ||
+  #         input$bubbleVisCol == "") {
+  #       shinyalert::shinyalert("Error!", "Select the clusters to plot",
+  #                              type = "error")
+  #     }
+  #     choice <- input$bubbleVisCol
+  #   }
+  #   if (is.null(input$bubbleVisReddim) || input$bubbleVisReddim == "") {
+  #     shinyalert::shinyalert("Error!",
+  #                            "No reduction selected. Select one or run dimension reduction first",
+  #                            type = "error")
+  #   }
+  #   if (!is.null(choice) && choice != "" &&
+  #       !is.null(input$bubbleVisReddim) && input$bubbleVisReddim != "") {
+  #     output$bubbleVisPlot <- renderPlotly({
+  #       isolate({
+  #         plotSCEDimReduceColData(inSCE = vals$counts,
+  #                                 colorBy = choice,
+  #                                 conditionClass = "factor",
+  #                                 reducedDimName = input$bubbleVisReddim,
+  #                                 labelClusters = TRUE,
+  #                                 dim1 = 1, dim2 = 2,
+  #                                 legendTitle = choice)
+  #       })
+  #     })
+  #   }
+  #   session$sendCustomMessage("close_dropDownBubble", "")
   
   #-----------------------------------------------------------------------------
   # Page 4: Batch Correction ####

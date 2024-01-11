@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.1</span>
       </span>
     </div>
 
@@ -278,14 +278,23 @@
 
 <div class="tabcontent ia">
 <p>After starting the UI, the landing page will be for importing the scRNAseq data. To import the PBMC3K dataset previously mentioned, users should follow these steps:</p>
-<p><img src="ui_screenshots/ui_tutorial/import.png" alt="import"><br></p>
+<p><img src="ui_screenshots/ui_tutorial/import_1.png" alt="import"><br></p>
 <ol style="list-style-type: decimal">
-<li>In collapse box <strong>“1. Add sample to import”</strong>, check the radio button <strong>“Import example datasets”</strong>.</li>
-<li>After step 1, a selection will shown for choosing example datasets. Here we select the default option “PBMC 3K (10X)”.</li>
-<li>Click on button <strong>“Add To Sample List”</strong>. At this point, the second collapse box <strong>“2. Create dataset”</strong> will automatically pop up.</li>
-<li>In collapse box <strong>“2. Create dataset”</strong>, click on button <strong>“Import”</strong>, to start loading the dataset.</li>
+<li>If you are not already at the starting import page, you start by going to the <strong>Data</strong> tab and selecting the <strong>Import Single Cell Data</strong> option (2).</li>
 </ol>
-<p><img src="ui_screenshots/ui_tutorial/import2.png" alt="import"><br></p>
+<p><img src="ui_screenshots/ui_tutorial/import_2.png" alt="import"><br></p>
+<ol start="3" style="list-style-type: decimal">
+<li>Select the relevant way to import data. For the purpose of this example, we use pbmc3k filtered raw data using the <strong>CellRanger</strong> option. This data can be downloaded from <a href="https://cf.10xgenomics.com/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz" class="external-link">here</a>.</li>
+</ol>
+<p><img src="ui_screenshots/ui_tutorial/import_3.png" alt="import"><br></p>
+<ol start="4" style="list-style-type: decimal">
+<li>In the appropriate input boxes, we select the matrix, feature and barcode files and upload each sample individually by giving a unique sample name (5).</li>
+</ol>
+<p><img src="ui_screenshots/ui_tutorial/import_4.png" alt="import"><br></p>
+<ol start="6" style="list-style-type: decimal">
+<li>Now either <strong>import</strong> samples or <strong>Add one more sample</strong>. You can keep adding more samples until all samples have been added and then finally import all of them together.</li>
+</ol>
+<p><img src="ui_screenshots/ui_tutorial/import_5.png" alt="import"><br></p>
 <p>After successfully importing, the third collapse box will pop up and show users the basic summary stats of the imported dataset. Meanwhile, users can set feature display options here. Most of the time, the dataset has default feature ID (usually seen as row names of a matrix) together with other types of ID (e.g. symbol) in the feature metadata. The first option <strong>“Set feature ID”</strong> sets the type of default feature ID, which should be unique and has no <code>NA</code> value. The second option <strong>“Set feature names to be displayed in downstream visualization”</strong> does what it says. When we need to show features on a plot, such as a heatmap or a volcano plot, usually it is better to show gene symbols rather than ensembl IDs.</p>
 </div>
 <div class="tabcontent console">

@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.1</span>
       </span>
     </div>
 
@@ -200,13 +200,13 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Detect doublet cells using <a href="https://rdrr.io/pkg/scDblFinder/man/scDblFinder.html" class="external-link">scDblFinder</a>.</h1>
+    <h1>Detect doublet cells using <a href="https://plger.github.io/scDblFinder/reference/scDblFinder.html" class="external-link">scDblFinder</a>.</h1>
     <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/R/scDblFinder_doubletDetection.R" class="external-link"><code>R/scDblFinder_doubletDetection.R</code></a></small>
     <div class="hidden name"><code>runScDblFinder.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A wrapper function for <a href="https://rdrr.io/pkg/scDblFinder/man/scDblFinder.html" class="external-link">scDblFinder</a>. Identify
+    <p>A wrapper function for <a href="https://plger.github.io/scDblFinder/reference/scDblFinder.html" class="external-link">scDblFinder</a>. Identify
  potential doublet cells based on simulations of putative doublet expression
  profiles. Generate a doublet score for each cell.</p>
     </div>
@@ -270,8 +270,8 @@ scDblFinder QC outputs added to the colData slot.</p>
     <div id="details">
     <h2>Details</h2>
     <p>This function is a wrapper function for 
-<a href="https://rdrr.io/pkg/scDblFinder/man/scDblFinder.html" class="external-link">scDblFinder</a>. <code>runScDblFinder</code> runs 
-<a href="https://rdrr.io/pkg/scDblFinder/man/scDblFinder.html" class="external-link">scDblFinder</a> for each sample within <code>inSCE</code> 
+<a href="https://plger.github.io/scDblFinder/reference/scDblFinder.html" class="external-link">scDblFinder</a>. <code>runScDblFinder</code> runs 
+<a href="https://plger.github.io/scDblFinder/reference/scDblFinder.html" class="external-link">scDblFinder</a> for each sample within <code>inSCE</code> 
 iteratively. The resulting doublet scores for all cells will be appended to 
 the <code>colData</code> of <code>inSCE</code>.</p>
     </div>
@@ -282,7 +282,7 @@ the <code>colData</code> of <code>inSCE</code>.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/scDblFinder/man/scDblFinder.html" class="external-link">scDblFinder</a></code>, 
+    <div class="dont-index"><p><code><a href="https://plger.github.io/scDblFinder/reference/scDblFinder.html" class="external-link">scDblFinder</a></code>, 
 <code><a href="plotScDblFinderResults.html">plotScDblFinderResults</a></code>, <code><a href="runCellQC.html">runCellQC</a></code></p></div>
     </div>
 
@@ -291,7 +291,7 @@ the <code>colData</code> of <code>inSCE</code>.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runScDblFinder</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Jul 26 15:00:06 2023 ... Running 'scDblFinder'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Jan 10 17:48:20 2024 ... Running 'scDblFinder'</span>
 </code></pre></div>
     </div>
   </div>

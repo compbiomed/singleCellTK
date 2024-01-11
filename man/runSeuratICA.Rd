@@ -13,7 +13,7 @@ runSeuratICA(
   scale = TRUE,
   reducedDimName = "seuratICA",
   nics = 20,
-  seed = NULL,
+  seed = 12345,
   verbose = FALSE
 )
 }

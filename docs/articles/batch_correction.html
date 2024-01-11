@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.1</span>
       </span>
     </div>
 
@@ -368,10 +368,10 @@ Additionally, most of the batch correction methods provided <strong>require a lo
 <span><span class="co">## dim: 800 800 </span></span>
 <span><span class="co">## metadata(1): assayType</span></span>
 <span><span class="co">## assays(2): counts logcounts</span></span>
-<span><span class="co">## rownames(800): PPM1N KLHL12 ... CBL CEBPG</span></span>
+<span><span class="co">## rownames(800): FAM195B LINC01506 ... ARHGAP10 CAB39</span></span>
 <span><span class="co">## rowData names(5): rownames ENSEMBL_ID Symbol_TENx Symbol expPerc</span></span>
-<span><span class="co">## colnames(800): pbmc8k_ACACTGAAGCCGATTT-1 pbmc8k_GTTACAGGTAAACACA-1 ...</span></span>
-<span><span class="co">##   pbmc6k_CACTGCTGAGGTTC-1 pbmc6k_CCCAAAGACCATAG-1</span></span>
+<span><span class="co">## colnames(800): pbmc6k_AGTCGAACATCAGC-1 pbmc8k_GGACAAGCAATTGCTG-1 ...</span></span>
+<span><span class="co">##   pbmc8k_TCATTTGGTGAACCTT-1 pbmc8k_TTCTCCTCACATGGGA-1</span></span>
 <span><span class="co">## colData names(14): rownames Sample ... sample sizeFactor</span></span>
 <span><span class="co">## reducedDimNames(0):</span></span>
 <span><span class="co">## mainExpName: NULL</span></span>
@@ -386,10 +386,10 @@ Additionally, most of the batch correction methods provided <strong>require a lo
 <span><span class="co">## dim: 800 800 </span></span>
 <span><span class="co">## metadata(2): assayType batchCorr</span></span>
 <span><span class="co">## assays(3): counts logcounts LIMMA</span></span>
-<span><span class="co">## rownames(800): PPM1N KLHL12 ... CBL CEBPG</span></span>
+<span><span class="co">## rownames(800): FAM195B LINC01506 ... ARHGAP10 CAB39</span></span>
 <span><span class="co">## rowData names(5): rownames ENSEMBL_ID Symbol_TENx Symbol expPerc</span></span>
-<span><span class="co">## colnames(800): pbmc8k_ACACTGAAGCCGATTT-1 pbmc8k_GTTACAGGTAAACACA-1 ...</span></span>
-<span><span class="co">##   pbmc6k_CACTGCTGAGGTTC-1 pbmc6k_CCCAAAGACCATAG-1</span></span>
+<span><span class="co">## colnames(800): pbmc6k_AGTCGAACATCAGC-1 pbmc8k_GGACAAGCAATTGCTG-1 ...</span></span>
+<span><span class="co">##   pbmc8k_TCATTTGGTGAACCTT-1 pbmc8k_TTCTCCTCACATGGGA-1</span></span>
 <span><span class="co">## colData names(14): rownames Sample ... sample sizeFactor</span></span>
 <span><span class="co">## reducedDimNames(0):</span></span>
 <span><span class="co">## mainExpName: NULL</span></span>
@@ -464,7 +464,7 @@ This plot would be useful for examining whether the existing batch effect is dif
 <td align="center">Harmony <span class="citation">[4]</span>
 </td>
 <td align="center"><code><a href="../reference/runHarmony.html">runHarmony()</a></code></td>
-<td align="center">log-normalized</td>
+<td align="center">PCA</td>
 <td align="center"><code>reducedDim</code></td>
 </tr>
 <tr class="even">

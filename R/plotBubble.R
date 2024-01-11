@@ -12,23 +12,24 @@
 #' @param ylab The y-axis label
 #' @param colorLow The color to be used for lowest value of mean expression
 #' @param colorHigh The color to be used for highest value of mean expression
+#' @param scale Option to scale the data. Default: /code{FALSE}. Selected assay will not be scaled. 
 #' @return A ggplot of the bubble plot.
 #' @importFrom rlang .data
 #' @importFrom reshape2 melt
 #' @examples
 #' data("scExample")
-#' plotBubble(inSCE=sce, useAssay="counts", featureNames=c("B2M", "MALAT1"), displayName="feature_name", 
-#' groupNames="type", title="cell type test", xlab="gene", ylab="cluster", 
-#' colorLow="white", colorHigh="blue")
+#' plotBubble(inSCE=sce, useAssay="counts", featureNames=c("B2M", "MALAT1"),
+#' displayName="feature_name", groupNames="type", title="cell type test",
+#' xlab="gene", ylab="cluster", colorLow="white", colorHigh="blue")
 #' @export
-plotBubble <- function(inSCE, useAssay="logcounts", featureNames, displayName=NULL, groupNames="cluster", title="", xlab=NULL, ylab=NULL, colorLow="white", colorHigh="blue"){
+plotBubble <- function(inSCE, useAssay="logcounts", featureNames, displayName=NULL, groupNames="cluster", title="", xlab=NULL, ylab=NULL, colorLow="white", colorHigh="blue", scale = FALSE){
   metrics <- runClusterSummaryMetrics(inSCE, useAssay=useAssay, featureNames=featureNames, 
-                                      displayName=displayName, groupNames=groupNames)
+                                      displayName=displayName, groupNames=groupNames, scale = scale)
   .ggBubble(avgExpr = metrics$avgExpr, percExpr = metrics$percExpr, colorLow = colorLow, 
-            colorHigh = colorHigh, title = title)
+            colorHigh = colorHigh, title = title, xlab=xlab, ylab=ylab)
 }
 
-.ggBubble <- function(avgExpr, percExpr, groupNames=NULL, featureNames=NULL, colorLow="white", colorHigh="blue", title=""){
+.ggBubble <- function(avgExpr, percExpr, groupNames=NULL, featureNames=NULL, colorLow="white", colorHigh="blue", title="", xlab="Features", ylab="Clusters"){
   if(is.null(featureNames)) {
     if(is.null(rownames(avgExpr))) {
       stop("'featureNames' must be supplied or the 'rownames' of the average expression matrix must be set.")
@@ -65,7 +66,12 @@ plotBubble <- function(inSCE, useAssay="logcounts", featureNames, displayName=NU
   gg <- ggplot2::ggplot(df, ggplot2::aes(x = .data[['featureNames']], y = .data[['groupNames']])) +
     ggplot2::geom_point(ggplot2::aes(color=.data[['avgExpr']], size=.data[['percExpr']])) +
     ggplot2::ggtitle(title) +
+    ggplot2::xlab(xlab) + 
+    ggplot2::ylab(ylab) + 
     ggplot2::scale_color_gradient2(low=colorLow, high=colorHigh)
-  .ggSCTKTheme(gg)
+  g <- .ggSCTKTheme(gg)
+  
+  g <- g + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1))
+  g
 }
 
