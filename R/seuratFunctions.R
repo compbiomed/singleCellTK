@@ -1621,12 +1621,13 @@ convertSCEToSeurat <-
       colnames(decontM) <- colnames(seuratObject)
       rownames(decontM) <- gsub('_', '-', rownames(decontM))
       if(seurat.version >= 5.0){
+        # CreateAssayObject and similar were moved to SeuratObject now (added it to suggests)
         seuratObject[["decontXcounts"]] <-
-          Seurat::CreateAssay5Object(counts = .convertToMatrix(decontM)) #warning currently: Missing or unexported object: 'Seurat::CreateAssay5Object'
+          SeuratObject::CreateAssay5Object(counts = .convertToMatrix(decontM)) 
       }
       else{
         seuratObject[["decontXcounts"]] <-
-          Seurat::CreateAssayObject(counts = .convertToMatrix(decontM))
+          SeuratObject::CreateAssayObject(counts = .convertToMatrix(decontM))
       }
       
     }
