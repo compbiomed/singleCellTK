@@ -139,6 +139,7 @@ Suggests:
     RColorBrewer,
     fastmap (>= 1.1.0),
     harmony,
+    SeuratObject,
     optparse
 VignetteBuilder: knitr
 URL: https://www.camplab.net/sctk/
