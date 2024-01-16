@@ -77,12 +77,12 @@
 #' data("mouseBrainSubsetSCE")
 #' mouseBrainSubsetSCE <- runScranSNN(mouseBrainSubsetSCE,
 #'                                    useReducedDim = "PCA_logcounts")
-runScranSNN <- function(inSCE, useReducedDim = NULL, useAssay = NULL,
+runScranSNN <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
                         useAltExp = NULL, altExpAssay = "counts",
                         altExpRedDim = NULL,
-                        clusterName = "scranSNN_cluster",
-                        k = 8, nComp = 10,
-                        weightType = c("rank", "number", "jaccard"),
+                        clusterName = "cluster",
+                        k = 14, nComp = 10,
+                        weightType = "jaccard",
                         algorithm = c("louvain", "leiden", "walktrap",
                                       "infomap", "fastGreedy", "labelProp",
                                       "leadingEigen"),
