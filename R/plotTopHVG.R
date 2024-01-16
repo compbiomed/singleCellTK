@@ -37,11 +37,10 @@
 #' @importFrom SummarizedExperiment rowData
 #' @importFrom S4Vectors metadata
 plotTopHVG <- function(inSCE,
-                       method = c("vst", "mean.var.plot", "dispersion",
-                                  "modelGeneVar"),
-                       hvgNumber = NULL,
+                       method = "modelGeneVar",
+                       hvgNumber = 2000,
                        useFeatureSubset = NULL,
-                       labelsCount = 20,
+                       labelsCount = 10,
                        featureDisplay = metadata(inSCE)$featureDisplay,
                        labelSize = 2, dotSize = 2, textSize = 12
                        )
