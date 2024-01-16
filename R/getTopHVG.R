@@ -56,7 +56,7 @@ getTopHVG <- function(inSCE,
                                  "mean.var.plot", "modelGeneVar", "seurat", 
                                  "seurat_v3", "cell_ranger"),
                       hvgNumber = 2000,
-                      useFeatureSubset = NULL,
+                      useFeatureSubset = "hvg2000",
                       featureDisplay = metadata(inSCE)$featureDisplay) {
     method <- match.arg(method)
     topGenes <- character()
