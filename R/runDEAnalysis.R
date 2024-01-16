@@ -260,16 +260,18 @@
 #' \item{$result}{a \code{data.frame} of the DEGs table}
 #' \item{$method}{the method used}
 #' @export
-runDEAnalysis <- function(method = c('wilcox', 'MAST', 'DESeq2', 'Limma',
-                                     'ANOVA'), ...){
-    method <- match.arg(method)
-    funcList <- list(MAST = runMAST,
-                     DESeq2 = runDESeq2,
-                     Limma = runLimmaDE,
-                     ANOVA = runANOVA,
-                     wilcox = runWilcox)
-    funcList[[method]](...)
+runDEAnalysis <- function(inSCE, method = 'wilcox', ...){
+  validMethods <- c('wilcox', 'MAST', 'DESeq2', 'Limma', 'ANOVA')
+  method <- match.arg(method, choices = validMethods)
+  funcList <- list(wilcox = runWilcox, 
+                   MAST = runMAST,
+                   DESeq2 = runDESeq2,
+                   Limma = runLimmaDE,
+                   ANOVA = runANOVA)
+  do.call(funcList[[method]], c(list(inSCE = inSCE), list(...)))
 }
+
+
 
 #' @rdname runDEAnalysis
 #' @export
@@ -651,9 +653,9 @@ runMAST <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
 #' @rdname runDEAnalysis
 #' @export
 runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
-                      index1 = NULL, index2 = NULL, class = NULL,
-                      classGroup1 = NULL, classGroup2 = NULL, analysisName,
-                      groupName1, groupName2, covariates = NULL,
+                      index1 = NULL, index2 = NULL, class = "cluster",
+                      classGroup1 = c(1), classGroup2 = c(2), analysisName = "cluster1_VS_2",
+                      groupName1 = "cluster1", groupName2 = "cluster2", covariates = NULL,
                       onlyPos = FALSE, log2fcThreshold = NULL,
                       fdrThreshold = NULL, minGroup1MeanExp = NULL,
                       maxGroup2MeanExp = NULL, minGroup1ExprPerc = NULL,
