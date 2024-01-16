@@ -61,8 +61,7 @@
 #'                                      cluster = "level1class")
 runFindMarker <- function(inSCE, useAssay = 'logcounts',
                           useReducedDim = NULL,
-                          method = c('wilcox', 'MAST', "DESeq2", "Limma",
-                                     "ANOVA"),
+                          method = 'wilcox',
                           cluster = 'cluster', covariates = NULL,
                           log2fcThreshold = NULL, fdrThreshold = 0.05,
                           minClustExprPerc = NULL, maxCtrlExprPerc = NULL,
@@ -240,10 +239,10 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
 #'                                      useAssay = "logcounts",
 #'                                      cluster = "level1class")
 #' getFindMarkerTopTable(mouseBrainSubsetSCE)
-getFindMarkerTopTable <- function(inSCE, log2fcThreshold = 1,
-                                  fdrThreshold = 0.05, minClustExprPerc = 0.7,
-                                  maxCtrlExprPerc = 0.4, minMeanExpr = 1,
-                                  topN = 10) {
+getFindMarkerTopTable <- function(inSCE, log2fcThreshold = 0,
+                                  fdrThreshold = 0.05, minClustExprPerc = 0.5,
+                                  maxCtrlExprPerc = 0.5, minMeanExpr = 0,
+                                  topN = 1) {
   if (!inherits(inSCE, 'SingleCellExperiment')) {
     stop('"inSCE" should be a SingleCellExperiment inherited Object.')
   }
