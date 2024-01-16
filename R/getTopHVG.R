@@ -93,11 +93,9 @@ getTopHVG <- function(inSCE,
 #' @importFrom SingleCellExperiment rowSubset
 #' @importFrom S4Vectors metadata<-
 setTopHVG <- function(inSCE,
-                      method =  c("vst", "dispersion",
-                                  "mean.var.plot", "modelGeneVar", "seurat", 
-                                  "seurat_v3", "cell_ranger"),
+                      method =  "modelGeneVar",
                       hvgNumber = 2000,
-                      featureSubsetName = NULL,
+                      featureSubsetName = "hvg2000",
                       genes = NULL, genesBy = NULL,
                       altExp = FALSE) {
     method <- match.arg(method)
