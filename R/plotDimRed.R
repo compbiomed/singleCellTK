@@ -17,7 +17,7 @@
 #' @examples
 #' data("mouseBrainSubsetSCE", package = "singleCellTK")
 #' plotDimRed(mouseBrainSubsetSCE, "PCA_logcounts")
-plotDimRed <- function(inSCE, useReduction,
+plotDimRed <- function(inSCE, useReduction = "PCA",
                        showLegend = FALSE,
                        xDim = 1,
                        yDim = 2,
