@@ -81,7 +81,7 @@
 runUMAP <- function(inSCE, useReducedDim = "PCA", useAssay = NULL, 
                     useAltExp = NULL, sample = NULL, reducedDimName = "UMAP",
                     logNorm = TRUE, useFeatureSubset = NULL, nTop = 2000,
-                    scale = TRUE, pca = TRUE, initialDims = 25, nNeighbors = 30,
+                    scale = TRUE, pca = TRUE, initialDims = 10, nNeighbors = 30,
                     nIterations = 200, alpha = 1, minDist = 0.01, spread = 1,
                     seed = 12345, verbose = TRUE, BPPARAM = SerialParam()) {
   params <- as.list(environment())
