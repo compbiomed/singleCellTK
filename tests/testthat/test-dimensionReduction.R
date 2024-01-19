@@ -15,7 +15,7 @@ test_that(desc = "Testing scaterPCA", {
     testthat::expect_true("PCA1" %in% reducedDimNames(sce))
 
     sce <- scaterPCA(sce, useAssay = "hvgAltExplogcounts", useAltExp = "hvgAltExp",
-                     reducedDimName = "PCA2")
+                     useFeatureSubset = NULL, reducedDimName = "PCA2")
     testthat::expect_true("PCA2" %in% reducedDimNames(sce))
 
     expect_error({

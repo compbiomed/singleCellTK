@@ -357,7 +357,7 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
 #'                                 by = "feature_name")
 #' @export
 #' @importFrom SummarizedExperiment rowData
-importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
+importGeneSetsFromMSigDB <- function(inSCE, categoryIDs = "H",
                                      species = "Homo sapiens",
                                      mapping = c("gene_symbol",
                                             "human_gene_symbol",

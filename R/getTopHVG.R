@@ -111,7 +111,7 @@ setTopHVG <- function(inSCE,
         }
     } else {
         # Use pre-calculated variability metrics
-        features <- getTopHVG(inSCE, method = method, hvgNumber = hvgNumber,
+        features <- getTopHVG(inSCE, method = method, hvgNumber = hvgNumber,useFeatureSubset = NULL,
                               featureDisplay = NULL)
         useAssay <- metadata(inSCE)$sctk$runFeatureSelection[[method]]$useAssay
     }
