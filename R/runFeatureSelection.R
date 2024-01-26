@@ -29,7 +29,7 @@ runFeatureSelection <- function(inSCE,
                                 useAssay,
                                 method = "modelGeneVar")
   {
-  method <- match.arg(method)
+  method <- match.arg(method, choices = c("vst", "mean.var.plot", "dispersion", "modelGeneVar", "cell_ranger"))
   seuratMethods <- c("vst", "mean.var.plot", "dispersion")
   scranMethods <- c("modelGeneVar")
   scanpyMethods <- c("cell_ranger")
