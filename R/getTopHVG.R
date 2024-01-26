@@ -98,7 +98,7 @@ setTopHVG <- function(inSCE,
                       featureSubsetName = "hvg2000",
                       genes = NULL, genesBy = NULL,
                       altExp = FALSE) {
-    method <- match.arg(method)
+    method <- match.arg(method, choices = c("vst", "dispersion", "mean.var.plot", "modelGeneVar", "seurat", "seurat_v3", "cell_ranger"))
     features <- character()
     useAssay <- NULL
     if (!is.null(genes)) {
