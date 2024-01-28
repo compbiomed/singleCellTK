@@ -113,7 +113,7 @@ runScranSNN <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
             stop("Scran SNN clustering requires one and only one of ",
                  "'useAssay', 'useReducedDim', and 'useAltExp'.")
         }
-        weightType <- match.arg(weightType)
+        weightType <- match.arg(weightType, choices = c("rank", "number", "jaccard"))
         algorithm <- match.arg(algorithm)
 
         graphClustAlgoList = list(leiden = igraph::cluster_leiden,
