@@ -52,7 +52,7 @@ runSingleR <- function(inSCE,
 
     useBltinRef <- match.arg(useBltinRef)
     featureType <- match.arg(featureType)
-    level <- match.arg(level)
+    level <- match.arg(level, choices = c("main", "fine", "ont"))
 
     if (featureType == "symbol") {
         useEnsembl <- FALSE
