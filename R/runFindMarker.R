@@ -66,7 +66,8 @@ runFindMarker <- function(inSCE, useAssay = 'logcounts',
                           log2fcThreshold = NULL, fdrThreshold = 0.05,
                           minClustExprPerc = NULL, maxCtrlExprPerc = NULL,
                           minMeanExpr = NULL, detectThresh = 0){
-  method <- match.arg(method)
+  method <- match.arg(method, choices = c('wilcox', 'MAST', "DESeq2", "Limma",
+                                         "ANOVA"))
   # Input checks will be done in `runDEAnalysis()`
   clusterVar <- .manageCellVar(inSCE, var = cluster)
   if (is.character(cluster) && length(cluster) == 1) clusterName <- cluster
