@@ -18,7 +18,7 @@ runUMAP(
   nTop = 2000,
   scale = TRUE,
   pca = TRUE,
-  initialDims = 25,
+  initialDims = 10,
   nNeighbors = 30,
   nIterations = 200,
   alpha = 1,

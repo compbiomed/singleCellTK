@@ -45,33 +45,33 @@ test_that(desc = "Testing scaterPCA", {
 
 test_that(desc = "Testing scater UMAP", {
     sce <- scaterPCA(sce, useFeatureSubset = "hvg", seed = 12345, reducedDimName = "PCA1")
-    sce <- runUMAP(sce, useReducedDim = "PCA1", reducedDimName = "UMAP1")
+    sce <- runUMAP(sce, useReducedDim = "PCA1", reducedDimName = "UMAP1", initialDims = 25)
     testthat::expect_true("UMAP1" %in% reducedDimNames(sce))
     sce <- runUMAP(sce, useAssay = "hvgAltExplogcounts", useReducedDim = NULL,
                    useAltExp = "hvgAltExp",
-                   reducedDimName = "UMAP2")
+                   reducedDimName = "UMAP2", initialDims = 25)
     testthat::expect_true("UMAP2" %in% reducedDimNames(sce))
     # TODO: Still some runable conditions
     expect_error({
-        runUMAP(inSCE = 1)
+        runUMAP(inSCE = 1, initialDims = 25)
     }, "`inSCE` should be a SingleCellExperiment Object.")
     expect_error({
-        runUMAP(sce, useAssay = NULL, useReducedDim = NULL)
+        runUMAP(sce, useAssay = NULL, initialDims = 25, useReducedDim = NULL)
     }, "Either `useAssay` or `useReducedDim` has to be specified.")
     expect_error({
-        runUMAP(sce, useAltExp = "altexp")
+        runUMAP(sce, initialDims = 25, useAltExp = "altexp")
     }, "Specified `useAltExp` 'altexp' not found.")
     expect_error({
-        runUMAP(sce, useReducedDim = "TSNE")
+        runUMAP(sce, initialDims = 25, useReducedDim = "TSNE")
     }, "Specified `useReducedDim` 'TSNE' not found.")
     expect_error({
-        runUMAP(sce, useAssay = "TSNE", useReducedDim = NULL)
+        runUMAP(sce, initialDims = 25, useAssay = "TSNE", useReducedDim = NULL)
     }, regexp = "Specified `useAssay` 'TSNE' not found.")
     expect_error({
-        runUMAP(sce, useReducedDim = "PCA1", sample = "batch")
+        runUMAP(sce, initialDims = 25, useReducedDim = "PCA1", sample = "batch")
     }, regexp = "Specified variable 'batch'")
     expect_error({
-        runUMAP(sce, useReducedDim = "PCA1", sample = letters)
+        runUMAP(sce, initialDims = 25, useReducedDim = "PCA1", sample = letters)
     }, regexp = "Invalid variable length")
 
     p1 <- plotUMAP(sce, reducedDimName = "UMAP1", colorBy = "type", shape = "type")
