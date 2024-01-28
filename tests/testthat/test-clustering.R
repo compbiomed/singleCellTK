@@ -4,7 +4,7 @@ context("Testing DEG functions")
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = 'type != "EmptyDroplet"')
 sce <- scaterlogNormCounts(sce, "logcounts")
-sce <- scaterPCA(sce)
+sce <- scaterPCA(sce, useFeatureSubset = NULL)
 altExp(sce, "hvg") <- sce
 
 test_that(desc = "Testing Scran SNN with Assay", {
