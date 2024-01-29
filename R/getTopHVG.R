@@ -61,6 +61,7 @@ getTopHVG <- function(inSCE,
     method <- match.arg(method)
     topGenes <- character()
     if (!is.null(useFeatureSubset)) {
+      print(paste("SUBSET", useFeatureSubset))
         topGenes <- .parseUseFeatureSubset(inSCE, useFeatureSubset,
                                            altExpObj = NULL, returnType = "cha")
     } else {
@@ -110,6 +111,7 @@ setTopHVG <- function(inSCE,
             features <- rownames(inSCE)[geneIdx]
         }
     } else {
+        print("REACHED")
         # Use pre-calculated variability metrics
         features <- getTopHVG(inSCE, method = method, hvgNumber = hvgNumber,useFeatureSubset = NULL,
                               featureDisplay = NULL)

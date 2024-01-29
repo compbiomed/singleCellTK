@@ -45,7 +45,8 @@ plotTopHVG <- function(inSCE,
                        labelSize = 2, dotSize = 2, textSize = 12
                        )
 {
-  method <- match.arg(method)
+  method <- match.arg(method, choices = c("vst", "mean.var.plot", "dispersion",
+                                          "modelGeneVar"))
   metric <- .dfFromHVGMetric(inSCE, method)
   yLabelChoice <- list(vst = "Standardized Variance",
                        mean.var.plot = "Dispersion", dispersion = "Dispersion",
