@@ -205,16 +205,19 @@
 #' compared with all other cells. Default \code{NULL}.
 #' @param class A vector/factor with \code{ncol(inSCE)} elements, or a character
 #' scalar that specifies a column name of \code{colData(inSCE)}. Default
-#' \code{NULL}.
+#' \code{"cluster"}.
 #' @param classGroup1 a vector specifying which "levels" given in \code{class}
-#' are of interests. Default \code{NULL}.
+#' are of interests. Default \code{c(1)}.
 #' @param classGroup2 a vector specifying which "levels" given in \code{class}
 #' is the control group against those specified by \code{classGroup1}. If
 #' \code{NULL} when using annotation specification, \code{classGroup1} cells
-#' will be compared with all other cells.
-#' @param analysisName A character scalar naming the DEG analysis. Required
-#' @param groupName1 A character scalar naming the group of interests. Required.
-#' @param groupName2 A character scalar naming the control group. Required.
+#' will be compared with all other cells. Default \code{c(2)}.
+#' @param analysisName A character scalar naming the DEG analysis. 
+#' Default \code{"cluster1_VS_2"}.
+#' @param groupName1 A character scalar naming the group of interests. 
+#' Default \code{"cluster1"}.
+#' @param groupName2 A character scalar naming the control group. 
+#' Default \code{"cluster2"}.
 #' @param covariates A character vector of additional covariates to use when
 #' building the model. All covariates must exist in
 #' \code{names(colData(inSCE))}. Default \code{NULL}.

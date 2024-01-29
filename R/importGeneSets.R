@@ -315,7 +315,8 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param categoryIDs Character vector containing the MSigDB gene set ids.
 #' The column \code{ID} in the table returned by \code{getMSigDBTable()} shows
-#' the list of possible gene set IDs that can be obtained.
+#' the list of possible gene set IDs that can be obtained. 
+#' Default is \code{"H"}.
 #' @param species Character. Species available can be found using the function
 #' \code{\link[msigdbr]{msigdbr_show_species}}. Default \code{"Homo sapiens"}.
 #' @param mapping Character. One of "gene_symbol", "human_gene_symbol", or

@@ -10,16 +10,15 @@ getTopHVG(
   method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar", "seurat", "seurat_v3",
     "cell_ranger"),
   hvgNumber = 2000,
-  useFeatureSubset = NULL,
+  useFeatureSubset = "hvg2000",
   featureDisplay = metadata(inSCE)$featureDisplay
 )
 
 setTopHVG(
   inSCE,
-  method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar", "seurat", "seurat_v3",
-    "cell_ranger"),
+  method = "modelGeneVar",
   hvgNumber = 2000,
-  featureSubsetName = NULL,
+  featureSubsetName = "hvg2000",
   genes = NULL,
   genesBy = NULL,
   altExp = FALSE

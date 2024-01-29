@@ -2,7 +2,7 @@
 #' and UMAP
 #'
 #' @param inSCE Input SCE object
-#' @param useReduction Reduction to plot
+#' @param useReduction Reduction to plot. Default is \code{"PCA"}.
 #' @param showLegend If legends should be plotted or not
 #' @param xDim Numeric value indicating the dimension to use for X-axis.
 #'  Default is 1 (refers to PC1).

@@ -8,9 +8,9 @@
 #' name to store a logical index of selected features. Default \code{NULL}. See
 #' details.
 #' @param hvgNumber Specify the number of top genes to highlight in red. Default
-#' \code{NULL}. See details.
+#' \code{2000}. See details.
 #' @param labelsCount Specify the number of data points/genes to label. Should
-#' be less than \code{hvgNumber}. Default \code{20}. See details.
+#' be less than \code{hvgNumber}. Default \code{10}. See details.
 #' @param featureDisplay A character string for the \code{rowData} variable name
 #' to indicate what type of feature ID should be displayed. If set by
 #' \code{\link{setSCTKDisplayRow}}, will by default use it. If \code{NULL}, will

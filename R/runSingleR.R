@@ -17,7 +17,7 @@
 #' "mouse", "zeisel"}. See detail. Default \code{"hpca"}.
 #' @param level A string for cell type labeling level. Used only when using
 #' some of the SingleR built-in references. Choose from \code{"main", "fine",
-#' "ont"}. Default \code{"main"}.
+#' "ont"}. Default \code{"fine"}.
 #' @param featureType A string for whether to use gene symbols or Ensembl IDs
 #' when using a SingleR built-in reference. Should be set based on the type of
 #' \code{rownames} of \code{inSCE}. Choose from \code{"symbol", "ensembl"}.

@@ -10,7 +10,7 @@ runSingleR(
   useSCERef = NULL,
   labelColName = NULL,
   useBltinRef = c("hpca", "bpe", "mp", "dice", "immgen", "mouse", "zeisel"),
-  level = c("main", "fine", "ont"),
+  level = "fine",
   featureType = c("symbol", "ensembl"),
   labelByCluster = NULL
 )

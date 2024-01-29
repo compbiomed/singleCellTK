@@ -7,7 +7,7 @@ and UMAP}
 \usage{
 plotDimRed(
   inSCE,
-  useReduction,
+  useReduction = "PCA",
   showLegend = FALSE,
   xDim = 1,
   yDim = 2,

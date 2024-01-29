@@ -6,7 +6,7 @@
 \usage{
 importGeneSetsFromMSigDB(
   inSCE,
-  categoryIDs,
+  categoryIDs = "H",
   species = "Homo sapiens",
   mapping = c("gene_symbol", "human_gene_symbol", "entrez_gene"),
   by = "rownames",

@@ -9,7 +9,7 @@
 \alias{runWilcox}
 \title{Perform differential expression analysis on SCE object}
 \usage{
-runDEAnalysis(method = c("wilcox", "MAST", "DESeq2", "Limma", "ANOVA"), ...)
+runDEAnalysis(inSCE, method = "wilcox", ...)
 
 runDESeq2(
   inSCE,
@@ -115,12 +115,12 @@ runWilcox(
   useReducedDim = NULL,
   index1 = NULL,
   index2 = NULL,
-  class = NULL,
-  classGroup1 = NULL,
-  classGroup2 = NULL,
-  analysisName,
-  groupName1,
-  groupName2,
+  class = "cluster",
+  classGroup1 = c(1),
+  classGroup2 = c(2),
+  analysisName = "cluster1_VS_2",
+  groupName1 = "cluster1",
+  groupName2 = "cluster2",
   covariates = NULL,
   onlyPos = FALSE,
   log2fcThreshold = NULL,
@@ -134,14 +134,14 @@ runWilcox(
 )
 }
 \arguments{
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
+
 \item{method}{Character. Specify which method to use when using
 \code{runDEAnalysis()}. Choose from \code{"wilcox"}, \code{"MAST"},
 \code{"DESeq2"}, \code{"Limma"}, \code{"ANOVA"}. Default \code{"wilcox"}.}
 
 \item{...}{Arguments to pass to specific methods when using the generic
 \code{runDEAnalysis()}.}
-
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
 \item{useAssay}{character. A string specifying which assay to use for the
 DE regression. Ignored when \code{useReducedDim} is specified. Default

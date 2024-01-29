@@ -43,7 +43,7 @@
 #' @param pca Logical. Whether to perform dimension reduction with PCA before
 #' UMAP. Ignored when using \code{useReducedDim}. Default \code{TRUE}.
 #' @param initialDims Number of dimensions from PCA to use as input in UMAP.
-#' Default \code{25}.
+#' Default \code{10}.
 #' @param nNeighbors The size of local neighborhood used for manifold
 #' approximation. Larger values result in more global views of the manifold,
 #' while smaller values result in more local data being preserved. Default

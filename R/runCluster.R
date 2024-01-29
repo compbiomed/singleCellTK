@@ -6,7 +6,7 @@
 #' @param inSCE A \linkS4class{SingleCellExperiment} object.
 #' @param useReducedDim A single \code{character}, specifying which
 #' low-dimension representation (\code{\link{reducedDim}})
-#' to perform the clustering algorithm on. Default \code{NULL}.
+#' to perform the clustering algorithm on. Default \code{"PCA"}.
 #' @param useAssay A single \code{character}, specifying which
 #' \code{\link{assay}} to perform the clustering algorithm
 #' on. Default \code{NULL}.
@@ -23,15 +23,15 @@
 #' \code{NULL}.
 #' @param clusterName A single \code{character}, specifying the name to store
 #' the cluster label in \code{\link{colData}}. Default
-#' \code{"scranSNN_cluster"}.
+#' \code{"cluster"}.
 #' @param k An \code{integer}, the number of nearest neighbors used to construct
 #' the graph. Smaller value indicates higher resolution and larger number of
-#' clusters. Default \code{8}.
+#' clusters. Default \code{14}.
 #' @param nComp An \code{integer}. The number of components to use for graph
 #' construction. Default \code{10}. See Detail.
 #' @param weightType A single \code{character}, that specifies the edge weighing
 #' scheme when constructing the Shared Nearest-Neighbor (SNN) graph. Choose from
-#' \code{"rank"}, \code{"number"}, \code{"jaccard"}. Default \code{"rank"}.
+#' \code{"rank"}, \code{"number"}, \code{"jaccard"}. Default \code{"jaccard"}.
 #' @param algorithm A single \code{character}, that specifies the community
 #' detection algorithm to work on the SNN graph. Choose from \code{"leiden"},
 #' \code{"louvain"}, \code{"walktrap"}, \code{"infomap"}, \code{"fastGreedy"},

@@ -4,11 +4,7 @@
 \alias{runFeatureSelection}
 \title{Run Variable Feature Detection Methods}
 \usage{
-runFeatureSelection(
-  inSCE,
-  useAssay,
-  method = c("vst", "mean.var.plot", "dispersion", "modelGeneVar", "cell_ranger")
-)
+runFeatureSelection(inSCE, useAssay, method = "modelGeneVar")
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}

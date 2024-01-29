@@ -6,8 +6,8 @@
 \usage{
 runVAM(
   inSCE,
-  geneSetCollectionName,
-  useAssay,
+  geneSetCollectionName = "H",
+  useAssay = "logcounts",
   resultNamePrefix = NULL,
   center = FALSE,
   gamma = TRUE

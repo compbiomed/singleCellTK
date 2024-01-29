@@ -7,7 +7,7 @@
 scaterPCA(
   inSCE,
   useAssay = "logcounts",
-  useFeatureSubset = NULL,
+  useFeatureSubset = "hvg2000",
   scale = TRUE,
   reducedDimName = "PCA",
   nComponents = 50,
