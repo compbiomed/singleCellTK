@@ -19,7 +19,8 @@ importGeneSetsFromMSigDB(
 
 \item{categoryIDs}{Character vector containing the MSigDB gene set ids.
 The column \code{ID} in the table returned by \code{getMSigDBTable()} shows
-the list of possible gene set IDs that can be obtained.}
+the list of possible gene set IDs that can be obtained. 
+Default is \code{"H"}.}
 
 \item{species}{Character. Species available can be found using the function
 \code{\link[msigdbr]{msigdbr_show_species}}. Default \code{"Homo sapiens"}.}

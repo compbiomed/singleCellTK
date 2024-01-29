@@ -36,7 +36,7 @@ Scran \code{"modelGeneVar"} or Scanpy \code{"seurat"}, \code{"cell_ranger"},
 
 \item{useFeatureSubset}{Get the feature names in the HVG list set by
 \code{setTopHVG}. Will ignore \code{method} and \code{hvgNumber} if not
-\code{NULL}. Default \code{NULL}.}
+\code{NULL}. Default \code{"hvg2000"}.}
 
 \item{featureDisplay}{A character string for the \code{rowData} variable name
 to indicate what type of feature ID should be displayed. If set by
@@ -44,8 +44,7 @@ to indicate what type of feature ID should be displayed. If set by
 use \code{rownames(inSCE)}.}
 
 \item{featureSubsetName}{A character string for the \code{rowData} variable
-name to store a logical index of selected features. Default \code{NULL}, will
-be determined basing on other parameters.}
+name to store a logical index of selected features. Default \code{"hvg2000"}.}
 
 \item{genes}{A customized character vector of gene list to be set as a
 \code{rowData} variable. Will ignore \code{method} and \code{hvgNumber} if

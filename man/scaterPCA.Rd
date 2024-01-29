@@ -27,7 +27,7 @@ specified, \code{useAssay} has to exist in
 \item{useFeatureSubset}{Subset of feature to use for dimension reduction. A
 character string indicating a \code{rowData} variable that stores the logical
 vector of HVG selection, or a vector that can subset the rows of
-\code{inSCE}. Default \code{NULL}.}
+\code{inSCE}. Default \code{"hvg2000"}.}
 
 \item{scale}{Logical scalar, whether to standardize the expression values.
 Default \code{TRUE}.}

@@ -18,7 +18,7 @@ plotDimRed(
 \arguments{
 \item{inSCE}{Input SCE object}
 
-\item{useReduction}{Reduction to plot}
+\item{useReduction}{Reduction to plot. Default is \code{"PCA"}.}
 
 \item{showLegend}{If legends should be plotted or not}
 

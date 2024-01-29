@@ -95,7 +95,7 @@ Default \code{TRUE}.}
 UMAP. Ignored when using \code{useReducedDim}. Default \code{TRUE}.}
 
 \item{initialDims}{Number of dimensions from PCA to use as input in UMAP.
-Default \code{25}.}
+Default \code{10}.}
 
 \item{nNeighbors}{The size of local neighborhood used for manifold
 approximation. Larger values result in more global views of the manifold,

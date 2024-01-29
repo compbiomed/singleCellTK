@@ -16,7 +16,7 @@
 #' @param hvgNumber Specify the number of top variable genes to extract.
 #' @param useFeatureSubset Get the feature names in the HVG list set by
 #' \code{setTopHVG}. Will ignore \code{method} and \code{hvgNumber} if not
-#' \code{NULL}. Default \code{NULL}.
+#' \code{NULL}. Default \code{"hvg2000"}.
 #' @param featureDisplay A character string for the \code{rowData} variable name
 #' to indicate what type of feature ID should be displayed. If set by
 #' \code{\link{setSCTKDisplayRow}}, will by default use it. If \code{NULL}, will
@@ -31,8 +31,7 @@
 #' the selected HVGs and store this subset in the \code{altExps} slot, named by
 #' \code{hvgListName}. Default \code{FALSE}.
 #' @param featureSubsetName A character string for the \code{rowData} variable
-#' name to store a logical index of selected features. Default \code{NULL}, will
-#' be determined basing on other parameters.
+#' name to store a logical index of selected features. Default \code{"hvg2000"}.
 #' @return
 #' \item{getTopHVG}{A character vector of the top \code{hvgNumber} variable
 #' feature names}
