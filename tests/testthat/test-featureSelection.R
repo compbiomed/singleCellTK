@@ -23,7 +23,7 @@ test_that(desc = "Testing FindHVG", {
     testthat::expect_true(all(metricNames.mvp %in% names(rowData(sce))))
 
     # Test accessor functions
-    sce <- setTopHVG(sce, "modelGeneVar", hvgNumber = 2000, altExp = TRUE)
+    sce <- setTopHVG(sce, "modelGeneVar", hvgNumber = 2000, altExp = TRUE, featureSubsetName = NULL)
     nHVG <- length(getTopHVG(sce, useFeatureSubset = "HVG_modelGeneVar2000"))
     
     # testthat::expect_true(is.logical(rowData(sce)$HVG_modelGeneVar2000))

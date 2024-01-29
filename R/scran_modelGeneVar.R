@@ -25,7 +25,6 @@
 #' @importFrom S4Vectors metadata<-
 runModelGeneVar <- function(inSCE,
                             useAssay = "logcounts") {
-      print(paste("useAssay", useAssay))
     tempDataFrame <- data.frame(scran::modelGeneVar(assay(inSCE, useAssay)))
     rowData(inSCE)$scran_modelGeneVar_mean <- tempDataFrame$mean
     rowData(inSCE)$scran_modelGeneVar_totalVariance <- tempDataFrame$total
