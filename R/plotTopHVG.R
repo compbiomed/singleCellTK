@@ -62,7 +62,7 @@ plotTopHVG <- function(inSCE,
     hvgNumber <- length(hvgList)
   } else if (!is.null(hvgNumber)) {
     hvgList <- getTopHVG(inSCE = inSCE, method = method, hvgNumber = hvgNumber,
-                         featureDisplay = NULL)
+                         featureDisplay = NULL, useFeatureSubset = NULL)
   }
   if (is.null(hvgNumber) || hvgNumber == 0) {
     redIdx <- logical()

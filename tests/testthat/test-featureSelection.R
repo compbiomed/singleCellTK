@@ -26,21 +26,21 @@ test_that(desc = "Testing FindHVG", {
     sce <- setTopHVG(sce, "modelGeneVar", hvgNumber = 2000, altExp = TRUE, featureSubsetName = NULL)
     nHVG <- length(getTopHVG(sce, useFeatureSubset = "HVG_modelGeneVar2000"))
     
-    # testthat::expect_true(is.logical(rowData(sce)$HVG_modelGeneVar2000))
-    # testthat::expect_equal(nrow(altExp(sce, "HVG_modelGeneVar2000")), nHVG)
-    # testthat::expect_equal(metadata(sce)$sctk$featureSubsets$HVG_modelGeneVar2000$useAssay,
-    #                        "seuratNormData")
-    # 
-    # hvgs <- getTopHVG(sce, "mean.var.plot", hvgNumber = 2000,
-    #                   featureDisplay = "feature_name")
-    # testthat::expect_false(all(startsWith(hvgs, "ENSG00000")))
-    # hvgs <- getTopHVG(sce, "vst", hvgNumber = 2000)
-    # vm1 <- plotTopHVG(sce, "dispersion")
-    # vm2 <- plotTopHVG(sce, "modelGeneVar", hvgNumber = 30, labelsCount = 10,
-    #                  featureDisplay = "feature_name")
-    # vm3 <- plotTopHVG(sce, method = "mean.var.plot",
-    #                   useFeatureSubset = "HVG_modelGeneVar2000")
-    # testthat::expect_true(inherits(vm1, "ggplot"))
-    # testthat::expect_true(inherits(vm2, "ggplot"))
-    # testthat::expect_true(inherits(vm3, "ggplot"))
+    testthat::expect_true(is.logical(rowData(sce)$HVG_modelGeneVar2000))
+    testthat::expect_equal(nrow(altExp(sce, "HVG_modelGeneVar2000")), nHVG)
+    testthat::expect_equal(metadata(sce)$sctk$featureSubsets$HVG_modelGeneVar2000$useAssay,
+                           "seuratNormData")
+
+    hvgs <- getTopHVG(sce, "mean.var.plot", hvgNumber = 2000,
+                      featureDisplay = "feature_name", useFeatureSubset = NULL)
+    testthat::expect_false(all(startsWith(hvgs, "ENSG00000")))
+    hvgs <- getTopHVG(sce, "vst", hvgNumber = 2000, useFeatureSubset = NULL)
+    vm1 <- plotTopHVG(sce, "dispersion", hvgNumber = NULL)
+    vm2 <- plotTopHVG(sce, "modelGeneVar", hvgNumber = 30, labelsCount = 10,
+                     featureDisplay = "feature_name")
+    vm3 <- plotTopHVG(sce, method = "mean.var.plot",
+                      useFeatureSubset = "HVG_modelGeneVar2000", hvgNumber = NULL)
+    testthat::expect_true(inherits(vm1, "ggplot"))
+    testthat::expect_true(inherits(vm2, "ggplot"))
+    testthat::expect_true(inherits(vm3, "ggplot"))
 })
