@@ -9,7 +9,7 @@
 #' @param useFeatureSubset Subset of feature to use for dimension reduction. A
 #' character string indicating a \code{rowData} variable that stores the logical
 #' vector of HVG selection, or a vector that can subset the rows of
-#' \code{inSCE}. Default \code{NULL}.
+#' \code{inSCE}. Default \code{"hvg2000"}.
 #' @param scale Logical scalar, whether to standardize the expression values.
 #' Default \code{TRUE}.
 #' @param reducedDimName Name to use for the reduced output assay. Default
@@ -36,7 +36,7 @@
 #' @importFrom SingleCellExperiment reducedDim altExp rowSubset
 #' @importFrom SummarizedExperiment rowData
 #' @importFrom S4Vectors metadata<-
-scaterPCA <- function(inSCE, useAssay = "logcounts", useFeatureSubset = NULL,
+scaterPCA <- function(inSCE, useAssay = "logcounts", useFeatureSubset = "hvg2000",
                       scale = TRUE, reducedDimName = "PCA", nComponents = 50,
                       ntop = 2000, useAltExp = NULL, seed = 12345,
                       BPPARAM = BiocParallel::SerialParam()) {

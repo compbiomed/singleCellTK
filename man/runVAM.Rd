@@ -6,8 +6,8 @@
 \usage{
 runVAM(
   inSCE,
-  geneSetCollectionName,
-  useAssay,
+  geneSetCollectionName = "H",
+  useAssay = "logcounts",
   resultNamePrefix = NULL,
   center = FALSE,
   gamma = TRUE
@@ -17,10 +17,10 @@ runVAM(
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{geneSetCollectionName}{Character. The name of the gene set collection
-to use.}
+to use. Default \code{"H"}.}
 
 \item{useAssay}{Character. The name of the assay to use. This assay should
-contain log normalized counts.}
+contain log normalized counts. Default \code{"logcounts"}.}
 
 \item{resultNamePrefix}{Character. Prefix to the name the VAM results which
 will be stored in the reducedDim slot of \code{inSCE}. The names of the

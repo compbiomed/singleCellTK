@@ -18,7 +18,7 @@ runUMAP(
   nTop = 2000,
   scale = TRUE,
   pca = TRUE,
-  initialDims = 25,
+  initialDims = 10,
   nNeighbors = 30,
   nIterations = 200,
   alpha = 1,
@@ -95,7 +95,7 @@ Default \code{TRUE}.}
 UMAP. Ignored when using \code{useReducedDim}. Default \code{TRUE}.}
 
 \item{initialDims}{Number of dimensions from PCA to use as input in UMAP.
-Default \code{25}.}
+Default \code{10}.}
 
 \item{nNeighbors}{The size of local neighborhood used for manifold
 approximation. Larger values result in more global views of the manifold,

@@ -7,12 +7,12 @@
 \usage{
 getFindMarkerTopTable(
   inSCE,
-  log2fcThreshold = 1,
+  log2fcThreshold = 0,
   fdrThreshold = 0.05,
-  minClustExprPerc = 0.7,
-  maxCtrlExprPerc = 0.4,
-  minMeanExpr = 1,
-  topN = 10
+  minClustExprPerc = 0.5,
+  maxCtrlExprPerc = 0.5,
+  minMeanExpr = 0,
+  topN = 1
 )
 
 findMarkerTopTable(

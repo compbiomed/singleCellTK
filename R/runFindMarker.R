@@ -61,13 +61,13 @@
 #'                                      cluster = "level1class")
 runFindMarker <- function(inSCE, useAssay = 'logcounts',
                           useReducedDim = NULL,
-                          method = c('wilcox', 'MAST', "DESeq2", "Limma",
-                                     "ANOVA"),
+                          method = 'wilcox',
                           cluster = 'cluster', covariates = NULL,
                           log2fcThreshold = NULL, fdrThreshold = 0.05,
                           minClustExprPerc = NULL, maxCtrlExprPerc = NULL,
                           minMeanExpr = NULL, detectThresh = 0){
-  method <- match.arg(method)
+  method <- match.arg(method, choices = c('wilcox', 'MAST', "DESeq2", "Limma",
+                                         "ANOVA"))
   # Input checks will be done in `runDEAnalysis()`
   clusterVar <- .manageCellVar(inSCE, var = cluster)
   if (is.character(cluster) && length(cluster) == 1) clusterName <- cluster
@@ -240,10 +240,10 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
 #'                                      useAssay = "logcounts",
 #'                                      cluster = "level1class")
 #' getFindMarkerTopTable(mouseBrainSubsetSCE)
-getFindMarkerTopTable <- function(inSCE, log2fcThreshold = 1,
-                                  fdrThreshold = 0.05, minClustExprPerc = 0.7,
-                                  maxCtrlExprPerc = 0.4, minMeanExpr = 1,
-                                  topN = 10) {
+getFindMarkerTopTable <- function(inSCE, log2fcThreshold = 0,
+                                  fdrThreshold = 0.05, minClustExprPerc = 0.5,
+                                  maxCtrlExprPerc = 0.5, minMeanExpr = 0,
+                                  topN = 1) {
   if (!inherits(inSCE, 'SingleCellExperiment')) {
     stop('"inSCE" should be a SingleCellExperiment inherited Object.')
   }

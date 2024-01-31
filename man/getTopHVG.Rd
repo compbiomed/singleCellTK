@@ -10,16 +10,15 @@ getTopHVG(
   method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar", "seurat", "seurat_v3",
     "cell_ranger"),
   hvgNumber = 2000,
-  useFeatureSubset = NULL,
+  useFeatureSubset = "hvg2000",
   featureDisplay = metadata(inSCE)$featureDisplay
 )
 
 setTopHVG(
   inSCE,
-  method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar", "seurat", "seurat_v3",
-    "cell_ranger"),
+  method = "modelGeneVar",
   hvgNumber = 2000,
-  featureSubsetName = NULL,
+  featureSubsetName = "hvg2000",
   genes = NULL,
   genesBy = NULL,
   altExp = FALSE
@@ -37,7 +36,7 @@ Scran \code{"modelGeneVar"} or Scanpy \code{"seurat"}, \code{"cell_ranger"},
 
 \item{useFeatureSubset}{Get the feature names in the HVG list set by
 \code{setTopHVG}. Will ignore \code{method} and \code{hvgNumber} if not
-\code{NULL}. Default \code{NULL}.}
+\code{NULL}. Default \code{"hvg2000"}.}
 
 \item{featureDisplay}{A character string for the \code{rowData} variable name
 to indicate what type of feature ID should be displayed. If set by
@@ -45,8 +44,7 @@ to indicate what type of feature ID should be displayed. If set by
 use \code{rownames(inSCE)}.}
 
 \item{featureSubsetName}{A character string for the \code{rowData} variable
-name to store a logical index of selected features. Default \code{NULL}, will
-be determined basing on other parameters.}
+name to store a logical index of selected features. Default \code{"hvg2000"}.}
 
 \item{genes}{A customized character vector of gene list to be set as a
 \code{rowData} variable. Will ignore \code{method} and \code{hvgNumber} if

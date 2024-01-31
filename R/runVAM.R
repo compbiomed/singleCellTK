@@ -7,9 +7,9 @@
 #' as \link{importGeneSetsFromList} or \link{importGeneSetsFromMSigDB}
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param geneSetCollectionName Character. The name of the gene set collection
-#' to use.
+#' to use. Default \code{"H"}.
 #' @param useAssay Character. The name of the assay to use. This assay should
-#' contain log normalized counts.
+#' contain log normalized counts. Default \code{"logcounts"}.
 #' @param resultNamePrefix  Character. Prefix to the name the VAM results which
 #' will be stored in the reducedDim slot of \code{inSCE}. The names of the
 #' output matrices will be \code{resultNamePrefix_Distance} and
@@ -47,7 +47,7 @@
 #' sce <- runVAM(inSCE = sce,
 #'               geneSetCollectionName = "GeneSetCollection",
 #'               useAssay = "logcounts")
-runVAM <- function(inSCE, geneSetCollectionName, useAssay,
+runVAM <- function(inSCE, geneSetCollectionName = "H", useAssay = "logcounts",
                    resultNamePrefix = NULL, center = FALSE, gamma = TRUE) {
   ###################################################
   ###  create gene set collection

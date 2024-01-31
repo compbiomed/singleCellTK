@@ -13,7 +13,7 @@ test_that(desc = "Testing SingleR", {
     message("Error importing reference with `celldex` library. ",
             "Skipping runSingleR test.")
   }, finally = {
-    sce <- runSingleR(sce)
+    sce <- runSingleR(sce, level = "main")
     testthat::expect_true("SingleR_hpca_main_scores" %in% names(colData(sce)))
     testthat::expect_true("SingleR_hpca_main_labels" %in% names(colData(sce)))
     testthat::expect_true("SingleR_hpca_main_first.labels" %in% names(colData(sce)) | "SingleR_hpca_main_delta.next" %in% names(colData(sce)))

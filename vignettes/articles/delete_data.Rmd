@@ -61,7 +61,7 @@ library(singleCellTK)
 sce <- importExampleData("pbmc3k")
 sce <- scaterlogNormCounts(sce, "logcounts")
 sce <- subsetSCERows(sce, index = seq(100), returnAsAltExp = TRUE, altExpName = "subset")
-sce <- scaterPCA(sce, reducedDimName = "PCA")
+sce <- scaterPCA(sce, useFeatureSubset = NULL, reducedDimName = "PCA")
 
 ```
 

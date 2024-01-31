@@ -5856,7 +5856,7 @@ shinyServer(function(input, output, session) {
         oriAssayPCAName <- paste0(input$batchCheckOrigAssay, "_PCA")
         if(!oriAssayPCAName %in% names(reducedDims(vals$counts))){
           vals$counts <- scaterPCA(vals$counts,
-                                   useAssay = input$batchCheckOrigAssay,
+                                   useAssay = input$batchCheckOrigAssay, useFeatureSubset = NULL,
                                    reducedDimName = oriAssayPCAName)
           updateReddimInputs()
         }
@@ -5864,13 +5864,13 @@ shinyServer(function(input, output, session) {
         ## Corrected assay/altExp PCA
         if (vals$batchRes[[resName]] == 'assay'){
           corrAssayPCAName = paste0(resName, "_PCA")
-          vals$counts <- scaterPCA(vals$counts, useAssay = resName,
+          vals$counts <- scaterPCA(vals$counts, useAssay = resName, useFeatureSubset = NULL,
                                    reducedDimName = corrAssayPCAName)
           updateReddimInputs()
         } else if (vals$batchRes[[resName]] == 'altExp'){
           ae <- altExp(vals$counts, resName)
           corrAltExpPCAName <- paste0(resName, "_PCA")
-          ae <- scaterPCA(ae, useAssay = resName,
+          ae <- scaterPCA(ae, useAssay = resName, useFeatureSubset = NULL,
                           reducedDimName = corrAltExpPCAName)
           reducedDim(vals$counts, corrAltExpPCAName) <-
             reducedDim(ae, corrAltExpPCAName)

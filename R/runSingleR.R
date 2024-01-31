@@ -17,7 +17,7 @@
 #' "mouse", "zeisel"}. See detail. Default \code{"hpca"}.
 #' @param level A string for cell type labeling level. Used only when using
 #' some of the SingleR built-in references. Choose from \code{"main", "fine",
-#' "ont"}. Default \code{"main"}.
+#' "ont"}. Default \code{"fine"}.
 #' @param featureType A string for whether to use gene symbols or Ensembl IDs
 #' when using a SingleR built-in reference. Should be set based on the type of
 #' \code{rownames} of \code{inSCE}. Choose from \code{"symbol", "ensembl"}.
@@ -39,7 +39,7 @@ runSingleR <- function(inSCE,
                        labelColName = NULL,
                        useBltinRef = c("hpca", "bpe", "mp", "dice",
                                   "immgen", "mouse", "zeisel"),
-                       level = c("main", "fine", "ont"),
+                       level = "fine",
                        featureType = c("symbol", "ensembl"),
                        labelByCluster = NULL) {
     # Input checks
@@ -52,7 +52,7 @@ runSingleR <- function(inSCE,
 
     useBltinRef <- match.arg(useBltinRef)
     featureType <- match.arg(featureType)
-    level <- match.arg(level)
+    level <- match.arg(level, choices = c("main", "fine", "ont"))
 
     if (featureType == "symbol") {
         useEnsembl <- FALSE

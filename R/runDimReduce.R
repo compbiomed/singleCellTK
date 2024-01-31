@@ -76,7 +76,7 @@ runDimReduce <- function(inSCE,
                        seed = seed, ...)
   } else if (method == "scaterUMAP") {
     inSCE <- runUMAP(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
-                     useReducedDim = useReducedDim,
+                     useReducedDim = useReducedDim, initialDims = 25,
                      useFeatureSubset = useFeatureSubset, scale = scale,
                      reducedDimName = reducedDimName, seed = seed, ...)
   } else if (method == "scanpyPCA"){

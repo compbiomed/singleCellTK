@@ -9,7 +9,7 @@ runFindMarker(
   inSCE,
   useAssay = "logcounts",
   useReducedDim = NULL,
-  method = c("wilcox", "MAST", "DESeq2", "Limma", "ANOVA"),
+  method = "wilcox",
   cluster = "cluster",
   covariates = NULL,
   log2fcThreshold = NULL,

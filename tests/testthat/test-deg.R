@@ -80,7 +80,10 @@ test_that(desc = "Testing findMarker", {
                               cluster = "cell_type")
   testthat::expect_true("findMarker" %in% names(metadata(sceBatches)))
 
-  topTable <- getFindMarkerTopTable(sceBatches)
+  topTable <- getFindMarkerTopTable(sceBatches, log2fcThreshold = 1,
+                                    fdrThreshold = 0.05, minClustExprPerc = 0.7,
+                                    maxCtrlExprPerc = 0.4, minMeanExpr = 1,
+                                    topN = 10)
   testthat::expect_is(topTable, "data.frame")
   testthat::expect_named(topTable, c("Gene", "Log2_FC", "Pvalue", "FDR",
                                      "cell_type", "clusterExprPerc",

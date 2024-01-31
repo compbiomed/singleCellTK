@@ -24,7 +24,7 @@ plotPCA <- function(inSCE, colorBy=NULL, shape=NULL, pcX="PC1",
   if(!(reducedDimName %in% names(SingleCellExperiment::reducedDims(inSCE)))){
     if (runPCA){
       inSCE <- scaterPCA(inSCE, useAssay = useAssay,
-                      reducedDimName = reducedDimName)
+                      reducedDimName = reducedDimName, useFeatureSubset = NULL)
     } else {
       stop(reducedDimName,
            " dimension not found. Run scaterPCA() or set runPCA to TRUE.")
