@@ -34,7 +34,12 @@ seurat.version <- packageVersion(pkg = "SeuratObject")
     inSCE@metadata$seurat$obj$RNA$"var.features" <-
       Seurat::VariableFeatures(object = seuratObject)
     
-    inSCE@metadata$seurat$obj$RNA$meta.features  <- seuratObject@assays$RNA@meta.data 
+    # Determine if slot is called "meta.data" or "meta.features
+    if("meta.data" %in% methods::slotNames(inSCE@metadata$seurat$obj$RNA)) {
+        inSCE@metadata$seurat$obj$RNA$meta.features  <- seuratObject@assays$RNA@meta.data    
+    } else if ("meta.features" %in% methods::slotNames(inSCE@metadata$seurat$obj$RNA)) {
+        inSCE@metadata$seurat$obj$RNA$meta.features  <- seuratObject@assays$RNA@meta.features
+    }
     
     inSCE@metadata$seurat$obj$meta.data <- seuratObject@meta.data
     
