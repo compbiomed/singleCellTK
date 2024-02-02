@@ -1,6 +1,6 @@
 # Helper functions to get Seurat object or package version numbers
 .getSeuratObjectMajorVersion <- function(seuratObject){
-    if(!is(seuratObject, "Seurat")) {
+    if(!methods::is(seuratObject, "Seurat")) {
         stop("The object was not a 'Seurat' object but was of class: ", class(seuratObject))
     }
     v <- slot(seuratObject, "version")$major
@@ -1765,7 +1765,7 @@ runSeuratSCTransform <- function(inSCE,
       altExp(inSCE, "seuratScaledData") <- NULL
     }
     
-    if(is(inSCE@metadata$seurat$obj, "list")){
+    if(methods::is(inSCE@metadata$seurat$obj, "list")){
       if (varFeatures) {
         inSCE@metadata$seurat$obj$RNA$"var.features" <- NULL
         inSCE@metadata$seurat$obj$RNA$meta.features <-
@@ -1788,7 +1788,7 @@ runSeuratSCTransform <- function(inSCE,
         inSCE@metadata$seurat$obj$meta.data$seurat_clusters <- NULL
       }
     }
-    if(is(inSCE@metadata$seurat$obj, "Seurat")) {
+    if(methods::is(inSCE@metadata$seurat$obj, "Seurat")) {
       if (varFeatures) {
         methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@var.features <-
           logical()
@@ -2261,10 +2261,10 @@ getSeuratVariableFeatures <- function(inSCE) {
   obj <- S4Vectors::metadata(inSCE)$seurat$obj
   result <- NULL
   if (!is.null(obj)) {
-    if(is(obj, "list")) {
+    if(methods::is(obj, "list")) {
       result <- obj$RNA$var.features
     }
-    if (is(obj, "Seurat")) {
+    if (methods::is(obj, "Seurat")) {
       result <- Seurat::VariableFeatures(obj)
     }
   }
