@@ -66,11 +66,8 @@ test_that(desc = "Testing standard seurat workflow", {
   sce2 <- sce[, -zeroCols]
   metadata(sce2)$seurat <- NULL
   sce2 <- runSeuratSCTransform(sce2)
-  if(packageVersion(pkg = "SeuratObject") >= 5.0){
-    testthat::expect_true("SCTCounts" %in% altExpNames(sce2))
-  }else
-    testthat::expect_true("SCTCounts" %in% assayNames(sce2))
-  
+  testthat::expect_true("SCTCounts" %in% c(altExpNames(sce2), assayNames(sce2)))
+
   # Test Batch-Correction
   sce <- suppressWarnings(runSeuratIntegration(sce, batch = "type", kAnchor = 10, kFilter = 4, kWeight = 5, ndims = 10))
   testthat::expect_true("SeuratIntegratedAssay" %in% altExpNames(sce))
