@@ -20,7 +20,7 @@ in this cluster. MST has to be pre-calculated with runTSCAN."><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.2</span>
       </span>
     </div>
 
@@ -264,11 +264,11 @@ object, while <code>"none"</code> will output a list of plots. Default
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mouseBrainSubsetSCE</span> <span class="op">&lt;-</span> <span class="fu"><a href="runTSCAN.html">runTSCAN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">mouseBrainSubsetSCE</span>,</span></span>
 <span class="r-in"><span>                                useReducedDim <span class="op">=</span> <span class="st">"PCA_logcounts"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Jan 10 17:46:24 2024 ... Running 'scran SNN clustering' with 'louvain' algorithm</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Jan 10 17:46:25 2024 ...   Identified 2 clusters</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Jan 10 17:46:25 2024 ... Running TSCAN to estimate pseudotime</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Jan 10 17:46:26 2024 ...   Clusters involved in path index 2 are: 1, 2</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Jan 10 17:46:26 2024 ...   Number of estimated paths is 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Feb  2 14:20:27 2024 ... Running 'scran SNN clustering' with 'louvain' algorithm</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Feb  2 14:20:27 2024 ...   Identified 2 clusters</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Feb  2 14:20:27 2024 ... Running TSCAN to estimate pseudotime</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Feb  2 14:20:28 2024 ...   Clusters involved in path index 2 are: 1, 2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Feb  2 14:20:28 2024 ...   Number of estimated paths is 1</span>
 <span class="r-in"><span><span class="fu">plotTSCANClusterPseudo</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>, useCluster <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>                       useReducedDim <span class="op">=</span> <span class="st">"TSNE_logcounts"</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1 rows containing missing values (`geom_text_repel()`).</span>

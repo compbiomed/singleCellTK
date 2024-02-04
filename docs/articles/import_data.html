@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.2</span>
       </span>
     </div>
 
@@ -243,11 +243,12 @@
 
       
 
-      </header><script src="import_data_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Import Data</h1>
-                        <h4 data-toc-skip class="author">Yichen Wang</h4>
+                        <h4 data-toc-skip class="author">Yichen
+Wang</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/import_data.Rmd" class="external-link"><code>vignettes/articles/import_data.Rmd</code></a></small>
@@ -262,10 +263,12 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Single Cell ToolKit (singleCellTK, SCTK) enables importing data from the following pre-processing tools</p>
+<p>Single Cell ToolKit (singleCellTK, SCTK) enables importing data from
+the following pre-processing tools</p>
 <ul>
 <li>
-<a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger" class="external-link">CellRanger</a> <span class="citation">[1]</span>
+<a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger" class="external-link">CellRanger</a>
+<span class="citation">[1]</span>
 </li>
 <li><a href="https://data.humancellatlas.org/pipelines/optimus-workflow" class="external-link">Optimus</a></li>
 <li>
@@ -276,23 +279,34 @@
 </li>
 <li><a href="https://github.com/dpeerlab/seqc" class="external-link">Seqc</a></li>
 <li>
-<a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md" class="external-link">STARSolo</a> <span class="citation">[4]</span>
+<a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md" class="external-link">STARSolo</a>
+<span class="citation">[4]</span>
 </li>
 <li>
-<a href="https://salmon.readthedocs.io/en/latest/alevin.html" class="external-link">Alevin</a> <span class="citation">[5]</span>
+<a href="https://salmon.readthedocs.io/en/latest/alevin.html" class="external-link">Alevin</a>
+<span class="citation">[5]</span>
 </li>
 </ul>
-<p>In all cases, SCTK retains the standard output directory structure from the upstream tools.</p>
-<p>Meanwhile, SCTK also supports importing raw count matrix, with metadata, stored in the following format</p>
+<p>In all cases, SCTK retains the standard output directory structure
+from the upstream tools.</p>
+<p>Meanwhile, SCTK also supports importing raw count matrix, with
+metadata, stored in the following format</p>
 <ul>
 <li>Text files (.csv/.tsv)</li>
 <li>
-<a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object saved in RDS file</li>
+<a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a>
+object saved in RDS file</li>
 <li>
-<a href="https://anndata.readthedocs.io/en/latest/" class="external-link">AnnData</a> object saved in hdf5 file</li>
+<a href="https://anndata.readthedocs.io/en/latest/" class="external-link">AnnData</a>
+object saved in hdf5 file</li>
 </ul>
-<p>A chart at the bottom of this documentation summarizes the <a href="#expected-directory-structure-for-all-data-source">expected directory structure</a> of the input data, for each type of data source.</p>
-<p>To view detailed instructions on how to import data, please select, from the tabs below, “Interactive Analysis” for importing data into the Shiny application, or “Console Analysis” for importing into R environment via R console.</p>
+<p>A chart at the bottom of this documentation summarizes the <a href="#expected-directory-structure-for-all-data-source">expected
+directory structure</a> of the input data, for each type of data
+source.</p>
+<p>To view detailed instructions on how to import data, please select,
+from the tabs below, “Interactive Analysis” for importing data into the
+Shiny application, or “Console Analysis” for importing into R
+environment via R console.</p>
 </div>
 <div class="section level2">
 <h2 id="workflow-guide">Workflow Guide<a class="anchor" aria-label="anchor" href="#workflow-guide"></a>
@@ -304,56 +318,148 @@
 
 <div id="interactive" class="tabcontent">
 <p><strong>Introduction</strong></p>
-<p>This page is the landing page of the SCTK UI application. Here SCTK allows users to import multiple datasets at once, and the datasets can be in various forms, as listed above. SCTK also provides online example datasets.</p>
-<p>Generally, the UI contains mainly two sections for importing and another section for data summary. Through the first section, users can choose the type of a single data source and specify the location of the data from this single source. A table in the second section summarizes files and samples that are specified from all sources. To finally import all samples into one dataset, clicking on the “import” button right below this table. After successfully importing the dataset, a summary table together with some setting options will be shown in the third section.</p>
+<p>This page is the landing page of the SCTK UI application. Here SCTK
+allows users to import multiple datasets at once, and the datasets can
+be in various forms, as listed above. SCTK also provides online example
+datasets.</p>
+<p>Generally, the UI contains mainly two sections for importing and
+another section for data summary. Through the first section, users can
+choose the type of a single data source and specify the location of the
+data from this single source. A table in the second section summarizes
+files and samples that are specified from all sources. To finally import
+all samples into one dataset, clicking on the “import” button right
+below this table. After successfully importing the dataset, a summary
+table together with some setting options will be shown in the third
+section.</p>
 <p><img src="ui_screenshots/import/import_ui_workflow.png" alt="workflow"><br></p>
 <p><strong>1. Add sample to import</strong></p>
 <p><img src="ui_screenshots/import/import_ui_source.png"><br></p>
-<p>The first section introduced above is embedded in the the collapse box <strong>“1. Add sample to import”</strong>. For a single source of data, users need to choose one option from the radio buttons listed in the screenshot. The next step will depend on the option chosen.</p>
+<p>The first section introduced above is embedded in the the collapse
+box <strong>“1. Add sample to import”</strong>. For a single source of
+data, users need to choose one option from the radio buttons listed in
+the screenshot. The next step will depend on the option chosen.</p>
  <style>
 div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </style>
 <div class="offset">
-<details><summary><b>Import from a preprocessing tool</b></summary><p>The preprocessing tools that SCTK supports are circled in the screenshot above and the links for them are listed at the top of this documentation. To import the data processed by any one of these tools, select the corresponding radio botton, and click on button <strong>“Add a sample”</strong>. After this, a dialog modal will pop up with description that instructs you to select the directory that stores your data.</p>
-<details><summary><b>Cell Ranger</b></summary><p>The import procedure for Cell Ranger versions 2 and 3 are the same. Users must select the appropriate files (matrix, barcode and feature files) and upload them for each sample separately. Once all samples are uploaded, click on <strong>Import</strong> button to import them for downstream use.</p>
+<details><summary><b>Import from a preprocessing tool</b></summary><p>The preprocessing tools that SCTK supports are circled in the
+screenshot above and the links for them are listed at the top of this
+documentation. To import the data processed by any one of these tools,
+select the corresponding radio botton, and click on button <strong>“Add
+a sample”</strong>. After this, a dialog modal will pop up with
+description that instructs you to select the directory that stores your
+data.</p>
+<details><summary><b>Cell Ranger</b></summary><p>The import procedure for Cell Ranger versions 2 and 3 are the same.
+Users must select the appropriate files (matrix, barcode and feature
+files) and upload them for each sample separately. Once all samples are
+uploaded, click on <strong>Import</strong> button to import them for
+downstream use.</p>
 <p><img src="ui_screenshots/import/import_ui_cellRanger.png" alt="cell ranger"><br></p>
-</details><details><summary><b>STARsolo</b></summary><p>To import a STARsolo sample, the user must select the parent directory of the <strong><code>"Gene/"</code></strong> directory for the sample they want to import, name the sample, and click “OK.”</p>
+</details><details><summary><b>STARsolo</b></summary><p>To import a STARsolo sample, the user must select the parent
+directory of the <strong><code>"Gene/"</code></strong> directory for the
+sample they want to import, name the sample, and click “OK.”</p>
 <p><img src="ui_screenshots/import/import_ui_STARsolo.png" alt="STARsolo"><br></p>
-</details><details><summary><b>BUStools</b></summary><p>To import a BUStools sample, the user must point to the <strong><code>"genecount/"</code></strong> directory for the sample they want to import, name the sample, and click “OK.”</p>
+</details><details><summary><b>BUStools</b></summary><p>To import a BUStools sample, the user must point to the
+<strong><code>"genecount/"</code></strong> directory for the sample they
+want to import, name the sample, and click “OK.”</p>
 <p><img src="ui_screenshots/import/import_ui_BUStools.png" alt="BUStools"><br></p>
-</details><details><summary><b>SEQC</b></summary><p>To import a SEQC sample, the user must point to the directory that contains the <strong>barcodes, gene, and matrix files</strong> for the sample they want to import and name the sample. This tool additionally needs the user to specify a <strong>“Sample ID”</strong> which is what the name of the sample is as it appears in the names of its data files (e.g. for a file called <code>"pbmc_1k_sparse_counts_barcodes.csv"</code> the sample ID is <code>"pbmc_1k"</code>). Then the user must click “OK.”</p>
+</details><details><summary><b>SEQC</b></summary><p>To import a SEQC sample, the user must point to the directory that
+contains the <strong>barcodes, gene, and matrix files</strong> for the
+sample they want to import and name the sample. This tool additionally
+needs the user to specify a <strong>“Sample ID”</strong> which is what
+the name of the sample is as it appears in the names of its data files
+(e.g. for a file called
+<code>"pbmc_1k_sparse_counts_barcodes.csv"</code> the sample ID is
+<code>"pbmc_1k"</code>). Then the user must click “OK.”</p>
 <p><img src="ui_screenshots/import/import_ui_SEQC.png" alt="SEQC"><br></p>
-</details><details><summary><b>Optimus</b></summary><p>To import an Optimus sample, the user must select the directory that contains the following four directories for the sample they want to import: <strong><code>"call-MergeCountFiles"</code></strong>, <strong><code>"call-MergeCellMetrics"</code></strong>, <strong><code>"call-MergeGeneMetrics"</code></strong>, <strong><code>"call-RunEmptyDrops"</code></strong>. Then the user must prove a sample name and click “OK.”</p>
+</details><details><summary><b>Optimus</b></summary><p>To import an Optimus sample, the user must select the directory that
+contains the following four directories for the sample they want to
+import: <strong><code>"call-MergeCountFiles"</code></strong>,
+<strong><code>"call-MergeCellMetrics"</code></strong>,
+<strong><code>"call-MergeGeneMetrics"</code></strong>,
+<strong><code>"call-RunEmptyDrops"</code></strong>. Then the user must
+prove a sample name and click “OK.”</p>
 <p><img src="ui_screenshots/import/import_ui_Optimus.png" alt="Optimus"><br></p>
-</details></details><details><summary><b>Flat files (.cvs, .tsv)</b></summary><p>To import tab-separated data, the user must provide <strong>a counts file</strong> (.csv or .tsv) and specify what type of input assay it is. The user can optionally also provide <strong>cell annotation</strong> and <strong>feature</strong> files (also .csv or .tsv). The user must then click <strong>“Add to dataset list”</strong> to add it to the table of samples.<br>
-After choosing a single file for uploading, user must wait until the progress bar runs to the right end and says “Upload complete”. Sometimes the progress bar runs to the end but it takes some time for the system to finalize reading a large file.</p>
+</details></details><details><summary><b>Flat files (.cvs, .tsv)</b></summary><p>To import tab-separated data, the user must provide <strong>a counts
+file</strong> (.csv or .tsv) and specify what type of input assay it is.
+The user can optionally also provide <strong>cell annotation</strong>
+and <strong>feature</strong> files (also .csv or .tsv). The user must
+then click <strong>“Add to dataset list”</strong> to add it to the table
+of samples.<br>
+After choosing a single file for uploading, user must wait until the
+progress bar runs to the right end and says “Upload complete”. Sometimes
+the progress bar runs to the end but it takes some time for the system
+to finalize reading a large file.</p>
 <p><img src="ui_screenshots/import/import_ui_source2.png" alt="Flat files"><br></p>
-</details><details><summary><b><code>SingleCellExperiment</code> or <code>Seurat</code> Object in an RDS file</b></summary><p>RDS is a file format that stores a single object from R environment. To import a single-cell dataset stored in a <strong><code>SingleCellExperiment</code></strong> (SCE) object from an RDS file, the user can simply select which <strong>RDS</strong> file to import and click <strong>“Add to Sample List”</strong>.<br>
-After choosing a single file for uploading, user must wait until the progress bar runs to the right end and says “Upload complete”. Sometimes the progress bar runs to the end but it takes some time for the system to finalize reading a large file.</p>
+</details><details><summary><b><code>SingleCellExperiment</code> or <code>Seurat</code> Object in an RDS file</b></summary><p>RDS is a file format that stores a single object from R environment.
+To import a single-cell dataset stored in a
+<strong><code>SingleCellExperiment</code></strong> (SCE) object from an
+RDS file, the user can simply select which <strong>RDS</strong> file to
+import and click <strong>“Add to Sample List”</strong>.<br>
+After choosing a single file for uploading, user must wait until the
+progress bar runs to the right end and says “Upload complete”. Sometimes
+the progress bar runs to the end but it takes some time for the system
+to finalize reading a large file.</p>
 <p><img src="ui_screenshots/import/import_ui_source3.png"><br></p>
-</details><details><summary><b>Example Datasets</b></summary><p>Users can also opt to import and work with published example datasets. To do so, the user must select which dataset they would like to use from the dropdown menu and click <strong>“Add to Sample List”</strong>. For more information about the chosen dataset, users can click on the hyperlink of the title and open the reference website in a browser.</p>
+</details><details><summary><b>Example Datasets</b></summary><p>Users can also opt to import and work with published example
+datasets. To do so, the user must select which dataset they would like
+to use from the dropdown menu and click <strong>“Add to Sample
+List”</strong>. For more information about the chosen dataset, users can
+click on the hyperlink of the title and open the reference website in a
+browser.</p>
 <p><img src="ui_screenshots/import/import_ui_source4.png"><br></p>
 </details>
 </div>
 <br><p><strong>2. Create dataset</strong></p>
-<p>Each time users add a sample/dataset, the second collapse box <strong>“2. Create dataset”</strong> will automatically pop up and show the list of samples that are already added. Users can click on either the first collapse or the button <strong>“Add one more sample”</strong> to go back and add a new sample. At this point, the samples are just on a wait list but <strong>not imported yet</strong>.</p>
-<p>The <code>[X]</code> button on the right of each row works for removing the corresponding sample from the wait list, before finally importing them. The button <strong>“Clear Sample”</strong> clears all samples in the wait list, but do not interfere what has been imported.</p>
-<p>When ready, click on button <strong>“Import”</strong> to start importing.</p>
+<p>Each time users add a sample/dataset, the second collapse box
+<strong>“2. Create dataset”</strong> will automatically pop up and show
+the list of samples that are already added. Users can click on either
+the first collapse or the button <strong>“Add one more sample”</strong>
+to go back and add a new sample. At this point, the samples are just on
+a wait list but <strong>not imported yet</strong>.</p>
+<p>The <code>[X]</code> button on the right of each row works for
+removing the corresponding sample from the wait list, before finally
+importing them. The button <strong>“Clear Sample”</strong> clears all
+samples in the wait list, but do not interfere what has been
+imported.</p>
+<p>When ready, click on button <strong>“Import”</strong> to start
+importing.</p>
 <p><img src="ui_screenshots/import/import_ui_sampleList.png"><br></p>
 <p><strong>3. Data summary</strong></p>
-<p>Upon successfully importing all samples/datasets, the third collapse box <strong>“3. Data summary”</strong> will automatically pop up. There will be a summary table for the stats of each sample. and preset options for downstream analysis.</p>
+<p>Upon successfully importing all samples/datasets, the third collapse
+box <strong>“3. Data summary”</strong> will automatically pop up. There
+will be a summary table for the stats of each sample. and preset options
+for downstream analysis.</p>
 <ul>
 <li>
-<strong>Set feature ID</strong>: The feature ID here refers to the default feature identifiers. Usually this is what we see as the row names of an expression matrix. Most of the cases has ensembl ID as their default feature ID. Users can opt to change the ID type here, but are limited to using unique non-NA variables in the feature metadata.<br>
+<strong>Set feature ID</strong>: The feature ID here refers to the
+default feature identifiers. Usually this is what we see as the row
+names of an expression matrix. Most of the cases has ensembl ID as their
+default feature ID. Users can opt to change the ID type here, but are
+limited to using unique non-NA variables in the feature metadata.<br>
 </li>
 <li>
-<strong>Set feature names to be displayed in downstream visualization</strong>: While the feature ID in the previous setting is used for uniquely identify features during calculation, it might not be necessarily suitable for visualization. For example, ensembl ID is commonly seen as the unique identifier, but people hardly know what the gene/transcript is at a glance. Here SCTK provides an interface for setting feature name for visualization without modifying the unique identifier. Options still come from the feature metadata but are not limited. The setting here applies through out the whole UI.</li>
+<strong>Set feature names to be displayed in downstream
+visualization</strong>: While the feature ID in the previous setting is
+used for uniquely identify features during calculation, it might not be
+necessarily suitable for visualization. For example, ensembl ID is
+commonly seen as the unique identifier, but people hardly know what the
+gene/transcript is at a glance. Here SCTK provides an interface for
+setting feature name for visualization without modifying the unique
+identifier. Options still come from the feature metadata but are not
+limited. The setting here applies through out the whole UI.</li>
 </ul>
 <p><img src="ui_screenshots/import/import_ui_dataSummary.png"><br></p>
 </div>
 
 <div id="console" class="tabcontent">
-<p>SCTK provides wrapper functions that import data from the output of all pre-processing tools mentioned at the top. A list of these import functions will be followed. All the import functions return the imported counts matrix as a SingleCellExperiment object <code>assay</code>, with associated information in respective <code>colData</code>, <code>rowData</code>, <code>reducedDim</code>, and <code>metadata</code> fields.</p>
+<p>SCTK provides wrapper functions that import data from the output of
+all pre-processing tools mentioned at the top. A list of these import
+functions will be followed. All the import functions return the imported
+counts matrix as a SingleCellExperiment object <code>assay</code>, with
+associated information in respective <code>colData</code>,
+<code>rowData</code>, <code>reducedDim</code>, and <code>metadata</code>
+fields.</p>
 <details><summary><b>Function Reference for pre-processing tools</b></summary><table class="table">
 <colgroup>
 <col width="50%">
@@ -375,7 +481,10 @@ After choosing a single file for uploading, user must wait until the progress ba
 <tr class="odd">
 <td align="center">CellRanger</td>
 <td align="center">
-<code><a href="../reference/importCellRanger.html">importCellRanger()</a></code>, <code><a href="../reference/importCellRanger.html">importCellRangerV2()</a></code>, <code><a href="../reference/importCellRanger.html">importCellRangerV3()</a></code>, <code><a href="../reference/importCellRangerV2Sample.html">importCellRangerV2Sample()</a></code>, <code><a href="../reference/importCellRangerV3Sample.html">importCellRangerV3Sample()</a></code>
+<code><a href="../reference/importCellRanger.html">importCellRanger()</a></code>,
+<code><a href="../reference/importCellRanger.html">importCellRangerV2()</a></code>, <code><a href="../reference/importCellRanger.html">importCellRangerV3()</a></code>,
+<code><a href="../reference/importCellRangerV2Sample.html">importCellRangerV2Sample()</a></code>,
+<code><a href="../reference/importCellRangerV3Sample.html">importCellRangerV3Sample()</a></code>
 </td>
 </tr>
 <tr class="even">
@@ -396,7 +505,8 @@ After choosing a single file for uploading, user must wait until the progress ba
 </tr>
 </tbody>
 </table>
-<p>Click on the link of the function names to read the detailed manual of the them.</p>
+<p>Click on the link of the function names to read the detailed manual
+of the them.</p>
 </details><details><summary><b>Function reference for importing Flat files (.csv, .tsv)</b></summary><table class="table">
 <thead><tr class="header">
 <th align="center">File Format</th>
@@ -407,24 +517,35 @@ After choosing a single file for uploading, user must wait until the progress ba
 <td align="center"><code><a href="../reference/importFromFiles.html">importFromFiles()</a></code></td>
 </tr></tbody>
 </table>
-<p>Click on the link of the function names to read the detailed manual of the them.</p>
-</details><details><summary><b>Function reference for importing an example</b></summary><p>Run the following command to import the “PBMC-3K” dataset provided by TEN-X.</p>
+<p>Click on the link of the function names to read the detailed manual
+of the them.</p>
+</details><details><summary><b>Function reference for importing an example</b></summary><p>Run the following command to import the “PBMC-3K” dataset provided by
+TEN-X.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></span></code></pre></div>
-<p>Click on the link of the function names to read the detailed manual of the it.</p>
-</details><details><summary><b>Importing from saved objects (SingleCellExperiment, Seurat, AnnData)</b></summary><p>Run the following command to import a <strong>SingleCellExperiment</strong> object saved in RDS file</p>
+<p>Click on the link of the function names to read the detailed manual
+of the it.</p>
+</details><details><summary><b>Importing from saved objects (SingleCellExperiment, Seurat, AnnData)</b></summary><p>Run the following command to import a
+<strong>SingleCellExperiment</strong> object saved in RDS file</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"path/to/filename.rds"</span><span class="op">)</span></span></code></pre></div>
-<p>Run the following commands to import a <strong>Seurat</strong> object saved in RDS file, and convert it to SingleCellExperiment object to be compatible with SCTK’s workflow.</p>
+<p>Run the following commands to import a <strong>Seurat</strong> object
+saved in RDS file, and convert it to SingleCellExperiment object to be
+compatible with SCTK’s workflow.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">seuratObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"path/to/filename.rds"</span><span class="op">)</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/convertSeuratToSCE.html">convertSeuratToSCE</a></span><span class="op">(</span><span class="va">seuratObj</span><span class="op">)</span></span></code></pre></div>
-<p>Run the following commands to import an <strong>AnnData</strong> object saved in H5AD file, and convert it to SingleCellExperiment object to be compatible with SCTK’s workflow.</p>
+<p>Run the following commands to import an <strong>AnnData</strong>
+object saved in H5AD file, and convert it to SingleCellExperiment object
+to be compatible with SCTK’s workflow.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importAnnData.html">importAnnData</a></span><span class="op">(</span><span class="st">"path/to/filename.h5ad"</span><span class="op">)</span></span></code></pre></div>
-<p>Click on the link of the function names to read the detailed manual of the them.</p>
-</details><p>When multiple datasets are imported and users would like to perform analysis of all the samples at the same time, users can use the following utility function to combine them</p>
+<p>Click on the link of the function names to read the detailed manual
+of the them.</p>
+</details><p>When multiple datasets are imported and users would like to perform
+analysis of all the samples at the same time, users can use the
+following utility function to combine them</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce.list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sampleName1 <span class="op">=</span> <span class="va">sce1</span>, sampleName2 <span class="op">=</span> <span class="va">sce2</span><span class="op">)</span></span>
 <span><span class="va">sce.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/combineSCE.html">combineSCE</a></span><span class="op">(</span><span class="va">sce.list</span>, by.r <span class="op">=</span> <span class="cn">NULL</span>, by.c <span class="op">=</span> <span class="cn">NULL</span>, combined <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -441,21 +562,43 @@ document.getElementById("ia-button").click();
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references">
-<div id="ref-Zheng2017">
-<p>[1] G. X. Y. Zheng <em>et al.</em>, “Massively parallel digital transcriptional profiling of single cells,” <em>Nature Communications</em>, vol. 8, no. 14049, 2017, doi: <a href="https://doi.org/10.1038/ncomms14049" class="external-link">10.1038/ncomms14049</a>.</p>
+<div id="refs" class="references csl-bib-body" entry-spacing="0">
+<div id="ref-Zheng2017" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">G.
+X. Y. Zheng <em>et al.</em>, <span>“<span class="nocase">Massively
+parallel digital transcriptional profiling of single
+cells</span>,”</span> <em>Nature Communications</em>, vol. 8, no. 14049,
+2017, doi: <a href="https://doi.org/10.1038/ncomms14049" class="external-link">10.1038/ncomms14049</a>.</div>
 </div>
-<div id="ref-Petukhov2018">
-<p>[2] V. Petukhovm <em>et al.</em>, “dropEst: pipeline for accurate estimation of molecular counts in droplet-based single-cell RNA-seq experiments,” <em>Genome Biology</em>, vol. 19, no. 78, 2018, doi: <a href="https://doi.org/10.1186/s13059-018-1449-6" class="external-link">10.1186/s13059-018-1449-6</a>.</p>
+<div id="ref-Petukhov2018" class="csl-entry">
+<div class="csl-left-margin">[2] </div>
+<div class="csl-right-inline">V.
+Petukhovm <em>et al.</em>, <span>“<span class="nocase">dropEst: pipeline
+for accurate estimation of molecular counts in droplet-based single-cell
+RNA-seq experiments</span>,”</span> <em>Genome Biology</em>, vol. 19,
+no. 78, 2018, doi: <a href="https://doi.org/10.1186/s13059-018-1449-6" class="external-link">10.1186/s13059-018-1449-6</a>.</div>
 </div>
-<div id="ref-Melsted2019">
-<p>[3] P. Melsted, V. Ntranos, and L. Pachter, “The barcode, UMI, set format and BUStools,” <em>Bioinformatics</em>, vol. 35, no. 21, pp. 4472–4473, Nov. 2019, doi: <a href="https://doi.org/10.1093/bioinformatics/btz279" class="external-link">10.1093/bioinformatics/btz279</a>.</p>
+<div id="ref-Melsted2019" class="csl-entry">
+<div class="csl-left-margin">[3] </div>
+<div class="csl-right-inline">P.
+Melsted, V. Ntranos, and L. Pachter, <span>“<span class="nocase">The
+barcode, UMI, set format and BUStools</span>,”</span>
+<em>Bioinformatics</em>, vol. 35, pp. 4472--4473, Nov. 2019, doi: <a href="https://doi.org/10.1093/bioinformatics/btz279" class="external-link">10.1093/bioinformatics/btz279</a>.</div>
 </div>
-<div id="ref-Dobin2013">
-<p>[4] A. Dobin <em>et al.</em>, “STAR: ultrafast universal RNA-seq aligner,” <em>Bioinformatics</em>, vol. 29, no. 1, pp. 15–21, Jan. 2013, doi: <a href="https://doi.org/10.1093/bioinformatics/bts635" class="external-link">10.1093/bioinformatics/bts635</a>.</p>
+<div id="ref-Dobin2013" class="csl-entry">
+<div class="csl-left-margin">[4] </div>
+<div class="csl-right-inline">A.
+Dobin <em>et al.</em>, <span>“<span class="nocase">STAR: ultrafast
+universal RNA-seq aligner</span>,”</span> <em>Bioinformatics</em>, vol.
+29, pp. 15--21, Jan. 2013, doi: <a href="https://doi.org/10.1093/bioinformatics/bts635" class="external-link">10.1093/bioinformatics/bts635</a>.</div>
 </div>
-<div id="ref-Srivastava2019">
-<p>[5] A. Srivastava, L. Malik, T. Smith, I. Sudbery, and R. Patro, “Alevin efficiently estimates accurate gene abundances from dscRNA-seq data,” <em>Genome biology</em>, vol. 20, no. 65, 2019.</p>
+<div id="ref-Srivastava2019" class="csl-entry">
+<div class="csl-left-margin">[5] </div>
+<div class="csl-right-inline">A.
+Srivastava, L. Malik, T. Smith, I. Sudbery, and R. Patro, <span>“Alevin
+efficiently estimates accurate gene abundances from dscRNA-seq
+data,”</span> <em>Genome biology</em>, vol. 20, no. 65, 2019.</div>
 </div>
 </div>
 </div>
