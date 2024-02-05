@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.2</span>
       </span>
     </div>
 
@@ -243,11 +243,13 @@
 
       
 
-      </header><script src="01_import_and_qc_tutorial_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Importing and Quality Control Tutorial - PBMC3K</h1>
-                        <h4 data-toc-skip class="author">Yichen Wang</h4>
+      <h1 data-toc-skip>Importing and Quality Control Tutorial -
+PBMC3K</h1>
+                        <h4 data-toc-skip class="author">Yichen
+Wang</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/01_import_and_qc_tutorial.Rmd" class="external-link"><code>vignettes/articles/01_import_and_qc_tutorial.Rmd</code></a></small>
@@ -262,14 +264,36 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Single Cell Toolkit (singleCellTK, SCTK) is a package that works on single-cell RNA-seq (scRNAseq) dataset. SCTK allows users to import multiple datasets, perform quality control and a series of preprocessing, get clustering on cells and markers of clusters, and run various downstream analysis. Meanwhile, SCTK also wraps curated workflows for <a href="https://www.camplab.net/celda/" class="external-link">celda</a> and <a href="https://satijalab.org/seurat/" class="external-link">Seurat</a>.</p>
-<p>The SCTK tutorial series start from importing, QC and filtering. After this, users can go through either the <a href="02_a_la_carte_workflow.html">A La Carte Workflow</a> or the Curated Workflows (<a href="seurat_curated_workflow.html">Seurat</a> or <a href="celda_curated_workflow.html">Celda</a>). These tutorials will take the real-world scRNAseq dataset as an example, which consists of 2,700 Peripheral Blood Mononuclear Cells (PBMCs) collected from a healthy donor, namingly PBMC3K. This dataset is available from 10X Genomics and can be found on the 10X website.</p>
-<p>Before starting the analysis from either UI or console, users should have SCTK properly installed first. Please refer to the <a href="installation.html">Installation</a> documentation for detail of installing the <code>singleCellTK</code> package and relevant dependencies. Alternatively, users can also access the functionality by visiting our <a href="https://sctk.bu.edu/" target="_blank" class="external-link">online web server deployment https://sctk.bu.edu/</a>, or using a stand-alone <a href="https://hub.docker.com/r/campbio/sctk_shiny" class="external-link">docker image</a>.</p>
+<p>Single Cell Toolkit (singleCellTK, SCTK) is a package that works on
+single-cell RNA-seq (scRNAseq) dataset. SCTK allows users to import
+multiple datasets, perform quality control and a series of
+preprocessing, get clustering on cells and markers of clusters, and run
+various downstream analysis. Meanwhile, SCTK also wraps curated
+workflows for <a href="https://www.camplab.net/celda/" class="external-link">celda</a> and <a href="https://satijalab.org/seurat/" class="external-link">Seurat</a>.</p>
+<p>The SCTK tutorial series start from importing, QC and filtering.
+After this, users can go through either the <a href="02_a_la_carte_workflow.html">A La Carte Workflow</a> or the
+Curated Workflows (<a href="seurat_curated_workflow.html">Seurat</a> or
+<a href="celda_curated_workflow.html">Celda</a>). These tutorials will
+take the real-world scRNAseq dataset as an example, which consists of
+2,700 Peripheral Blood Mononuclear Cells (PBMCs) collected from a
+healthy donor, namingly PBMC3K. This dataset is available from 10X
+Genomics and can be found on the 10X website.</p>
+<p>Before starting the analysis from either UI or console, users should
+have SCTK properly installed first. Please refer to the <a href="installation.html">Installation</a> documentation for detail of
+installing the <code>singleCellTK</code> package and relevant
+dependencies. Alternatively, users can also access the functionality by
+visiting our <a href="https://sctk.bu.edu/" target="_blank" class="external-link">online web
+server deployment https://sctk.bu.edu/</a>, or using a stand-alone <a href="https://hub.docker.com/r/campbio/sctk_shiny" class="external-link">docker image</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="importing-data">Importing Data<a class="anchor" aria-label="anchor" href="#importing-data"></a>
 </h2>
-<p>SCTK allows importing dataset from various type of sources, such as preprocessing tools like cellranger or flat text files. SCTK also allows importing multiple batches (samples) of dataset at the same time. Please refer to the <a href="import_data.html">detailed documentation of Importing</a> for different ways of importing. This tutorial only shows how we can import the example PBMC3K data.</p>
+<p>SCTK allows importing dataset from various type of sources, such as
+preprocessing tools like cellranger or flat text files. SCTK also allows
+importing multiple batches (samples) of dataset at the same time. Please
+refer to the <a href="import_data.html">detailed documentation of
+Importing</a> for different ways of importing. This tutorial only shows
+how we can import the example PBMC3K data.</p>
 <div class="tabset" id="tabset1">
 <div class="tab">
   <button class="tablinks ia" onclick="openTab(event, 'ia', 'tabset1')">Interactive Analysis</button>
@@ -277,35 +301,82 @@
 </div>
 
 <div class="tabcontent ia">
-<p>After starting the UI, the landing page will be for importing the scRNAseq data. To import the PBMC3K dataset previously mentioned, users should follow these steps:</p>
+<p>After starting the UI, the landing page will be for importing the
+scRNAseq data. To import the PBMC3K dataset previously mentioned, users
+should follow these steps:</p>
 <p><img src="ui_screenshots/ui_tutorial/import_1.png" alt="import"><br></p>
 <ol style="list-style-type: decimal">
-<li>If you are not already at the starting import page, you start by going to the <strong>Data</strong> tab and selecting the <strong>Import Single Cell Data</strong> option (2).</li>
+<li>If you are not already at the starting import page, you start by
+going to the <strong>Data</strong> tab and selecting the <strong>Import
+Single Cell Data</strong> option (2).</li>
 </ol>
 <p><img src="ui_screenshots/ui_tutorial/import_2.png" alt="import"><br></p>
 <ol start="3" style="list-style-type: decimal">
-<li>Select the relevant way to import data. For the purpose of this example, we use pbmc3k filtered raw data using the <strong>CellRanger</strong> option. This data can be downloaded from <a href="https://cf.10xgenomics.com/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz" class="external-link">here</a>.</li>
+<li>Select the relevant way to import data. For the purpose of this
+example, we use pbmc3k filtered raw data using the
+<strong>CellRanger</strong> option. This data can be downloaded from <a href="https://cf.10xgenomics.com/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz" class="external-link">here</a>.</li>
 </ol>
 <p><img src="ui_screenshots/ui_tutorial/import_3.png" alt="import"><br></p>
 <ol start="4" style="list-style-type: decimal">
-<li>In the appropriate input boxes, we select the matrix, feature and barcode files and upload each sample individually by giving a unique sample name (5).</li>
+<li>In the appropriate input boxes, we select the matrix, feature and
+barcode files and upload each sample individually by giving a unique
+sample name (5).</li>
 </ol>
 <p><img src="ui_screenshots/ui_tutorial/import_4.png" alt="import"><br></p>
 <ol start="6" style="list-style-type: decimal">
-<li>Now either <strong>import</strong> samples or <strong>Add one more sample</strong>. You can keep adding more samples until all samples have been added and then finally import all of them together.</li>
+<li>Now either <strong>import</strong> samples or <strong>Add one more
+sample</strong>. You can keep adding more samples until all samples have
+been added and then finally import all of them together.</li>
 </ol>
 <p><img src="ui_screenshots/ui_tutorial/import_5.png" alt="import"><br></p>
-<p>After successfully importing, the third collapse box will pop up and show users the basic summary stats of the imported dataset. Meanwhile, users can set feature display options here. Most of the time, the dataset has default feature ID (usually seen as row names of a matrix) together with other types of ID (e.g. symbol) in the feature metadata. The first option <strong>“Set feature ID”</strong> sets the type of default feature ID, which should be unique and has no <code>NA</code> value. The second option <strong>“Set feature names to be displayed in downstream visualization”</strong> does what it says. When we need to show features on a plot, such as a heatmap or a volcano plot, usually it is better to show gene symbols rather than ensembl IDs.</p>
+<p>After successfully importing, the third collapse box will pop up and
+show users the basic summary stats of the imported dataset. Meanwhile,
+users can set feature display options here. Most of the time, the
+dataset has default feature ID (usually seen as row names of a matrix)
+together with other types of ID (e.g. symbol) in the feature metadata.
+The first option <strong>“Set feature ID”</strong> sets the type of
+default feature ID, which should be unique and has no <code>NA</code>
+value. The second option <strong>“Set feature names to be displayed in
+downstream visualization”</strong> does what it says. When we need to
+show features on a plot, such as a heatmap or a volcano plot, usually it
+is better to show gene symbols rather than ensembl IDs.</p>
 </div>
 <div class="tabcontent console">
-<p>Here we use <code><a href="../reference/importExampleData.html">importExampleData()</a></code> to load PBMC3k data from the Bioconductor package <a href="https://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html" class="external-link">TENxPBMCData</a>.</p>
+<p>Here we use <code><a href="../reference/importExampleData.html">importExampleData()</a></code> to load PBMC3k data from
+the Bioconductor package <a href="https://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html" class="external-link">TENxPBMCData</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></span></code></pre></div>
-<p>An <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link"><code>SingleCellExperiment</code></a> (SCE) object is returned as the data container. An SCE object is designed for storing and manipulating expression matrices, gene/cell metadata, low-dimension representation and unstructured information. All the methods wrapped by SCTK will be performed on the SCE object.</p>
+<p>An <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link"><code>SingleCellExperiment</code></a>
+(SCE) object is returned as the data container. An SCE object is
+designed for storing and manipulating expression matrices, gene/cell
+metadata, low-dimension representation and unstructured information. All
+the methods wrapped by SCTK will be performed on the SCE object.</p>
 <p><strong>Importing CellRanger Output Data</strong></p>
-<p>Here, we briefly introduce the approach to importing the output of the widely used preprocessing tool, <code>cellranger</code>. SCTK has a generic function <code><a href="../reference/importCellRanger.html">importCellRanger()</a></code> for this purpose, and, explicitly, <code><a href="../reference/importCellRanger.html">importCellRangerV2()</a></code> and <code><a href="../reference/importCellRanger.html">importCellRangerV3()</a></code> for different versions of <code>cellranger</code>. For the detail of these functions, please click on the function names to be redirected to the reference page.</p>
-<p>The input arguments basically asks users what the exact paths of the input data files are (i.e. <code>"matrix.mtx"</code>, <code>"features.tsv"</code>, and <code>"barcodes.tsv"</code>). They are <code>cellRangerDirs</code>, <code>sampleDirs</code>, <code>cellRangerOuts</code>, <code>matrixFileNames</code>, <code>featuresFileNames</code> and <code>barcodesFileNames</code>. And the function will identify the specified path, for example, of the barcode file, as a combination of: <code>{cellRangerDirs}/{sampleDirs}/{cellRangerOuts}/{barcodesFileNames}</code>. Theses functions automatically try to recognize a preset substucture of <code>cellRangerDirs</code>, so that in most of the cases, users only need to specify <code>cellRangerDirs</code> to tell where the top level directory of the output is. However, sometimes the three essential files may be placed or named in a different way and the default detection method won’t find them. In this case, users will need to check the exact paths and manually specify the correct input according to the combination rule above and the error messages.</p>
+<p>Here, we briefly introduce the approach to importing the output of
+the widely used preprocessing tool, <code>cellranger</code>. SCTK has a
+generic function <code><a href="../reference/importCellRanger.html">importCellRanger()</a></code> for this purpose, and,
+explicitly, <code><a href="../reference/importCellRanger.html">importCellRangerV2()</a></code> and
+<code><a href="../reference/importCellRanger.html">importCellRangerV3()</a></code> for different versions of
+<code>cellranger</code>. For the detail of these functions, please click
+on the function names to be redirected to the reference page.</p>
+<p>The input arguments basically asks users what the exact paths of the
+input data files are (i.e. <code>"matrix.mtx"</code>,
+<code>"features.tsv"</code>, and <code>"barcodes.tsv"</code>). They are
+<code>cellRangerDirs</code>, <code>sampleDirs</code>,
+<code>cellRangerOuts</code>, <code>matrixFileNames</code>,
+<code>featuresFileNames</code> and <code>barcodesFileNames</code>. And
+the function will identify the specified path, for example, of the
+barcode file, as a combination of:
+<code>{cellRangerDirs}/{sampleDirs}/{cellRangerOuts}/{barcodesFileNames}</code>.
+Theses functions automatically try to recognize a preset substucture of
+<code>cellRangerDirs</code>, so that in most of the cases, users only
+need to specify <code>cellRangerDirs</code> to tell where the top level
+directory of the output is. However, sometimes the three essential files
+may be placed or named in a different way and the default detection
+method won’t find them. In this case, users will need to check the exact
+paths and manually specify the correct input according to the
+combination rule above and the error messages.</p>
 <p>An example folder structure:</p>
 <pre><code><span><span class="va">.</span><span class="op">/</span><span class="va">datasets</span><span class="op">/</span></span>
 <span>    <span class="va">sample1</span><span class="op">/</span></span>
@@ -337,8 +408,20 @@
 <div class="section level2">
 <h2 id="quality-control">Quality Control<a class="anchor" aria-label="anchor" href="#quality-control"></a>
 </h2>
-<p>Quality control of cells is often needed before downstream analyses such as dimension reduction and clustering. Typical filtering procedures include exclusion of poor quality cells with low numbers of counts/UMIs, estimation and removal of ambient RNA, and identification of potential doublet/multiplets. Many tools and packages are available to perform these operations and users are free to apply their tool(s) of choice with SCTK.</p>
-<p>Below is a quick example of how to perform standard QC before heading to the downstream analyses. If your data is already QC’ed or you decide to skip this step, you can directly move to the workflows (<a href="02_a_la_carte_workflow.html">A La Carte</a>, <a href="seurat_curated_workflow.html">Seurat</a> or <a href="celda_curated_workflow.html">Celda</a>). For this tutorial, we will only run one doublet detection algorithm (<a href="https://bioconductor.org/packages/release/bioc/html/scDblFinder.html" class="external-link">scDblFinder</a>) and one decontamination algorithm (<a href="https://rdrr.io/bioc/celda/man/decontX.html" class="external-link">decontX</a>). We will also quantify the percentage of mitochondrial genes in each cell as this is often used as a measure of cell viability.</p>
+<p>Quality control of cells is often needed before downstream analyses
+such as dimension reduction and clustering. Typical filtering procedures
+include exclusion of poor quality cells with low numbers of counts/UMIs,
+estimation and removal of ambient RNA, and identification of potential
+doublet/multiplets. Many tools and packages are available to perform
+these operations and users are free to apply their tool(s) of choice
+with SCTK.</p>
+<p>Below is a quick example of how to perform standard QC before heading
+to the downstream analyses. If your data is already QC’ed or you decide
+to skip this step, you can directly move to the workflows (<a href="02_a_la_carte_workflow.html">A La Carte</a>, <a href="seurat_curated_workflow.html">Seurat</a> or <a href="celda_curated_workflow.html">Celda</a>). For this tutorial, we
+will only run one doublet detection algorithm (<a href="https://bioconductor.org/packages/release/bioc/html/scDblFinder.html" class="external-link">scDblFinder</a>)
+and one decontamination algorithm (<a href="https://rdrr.io/bioc/celda/man/decontX.html" class="external-link">decontX</a>). We will
+also quantify the percentage of mitochondrial genes in each cell as this
+is often used as a measure of cell viability.</p>
 <!--Remember to change tabset id-->
 <div class="tabset" id="tabset2">
 <div class="tab">
@@ -351,17 +434,30 @@
 <p><strong>Running QC methods</strong></p>
 <p><img src="ui_screenshots/ui_tutorial/qc_run.png" alt="import"><br></p>
 <ol style="list-style-type: decimal">
-<li>Users need to select <strong>“QC &amp; Filtering”</strong> at the top navigation panel to enter this section.</li>
-<li>In this tutorial, we perform General <strong>“QC Metrics”</strong>, decontamination algorithm <a href="https://rdrr.io/bioc/celda/man/decontX.html" class="external-link"><strong>“decontX”</strong></a> and doublet detection algorithm <a href="https://bioconductor.org/packages/release/bioc/html/scDblFinder.html" class="external-link"><strong>“scDblFinder”</strong></a>, by checking the corresponding method in the left panel of this page.</li>
-<li>After making the selection of methods, users can then click on <strong>“Run”</strong> button at the bottom of the left panel.</li>
+<li>Users need to select <strong>“QC &amp; Filtering”</strong> at the
+top navigation panel to enter this section.</li>
+<li>In this tutorial, we perform General <strong>“QC Metrics”</strong>,
+decontamination algorithm <a href="https://rdrr.io/bioc/celda/man/decontX.html" class="external-link"><strong>“decontX”</strong></a>
+and doublet detection algorithm <a href="https://bioconductor.org/packages/release/bioc/html/scDblFinder.html" class="external-link"><strong>“scDblFinder”</strong></a>,
+by checking the corresponding method in the left panel of this
+page.</li>
+<li>After making the selection of methods, users can then click on
+<strong>“Run”</strong> button at the bottom of the left panel.</li>
 </ol>
 <p><img src="ui_screenshots/ui_tutorial/qc_plot.png" alt="import"><br></p>
-<p>Right after running, the visualization of QC results will automatically show up in the right main panel, with tabs for different methods.</p>
-<p>Please find <a href="ui_qc.html">the detailed documentation of the QC UI</a> for more explanation of each parameter.</p>
+<p>Right after running, the visualization of QC results will
+automatically show up in the right main panel, with tabs for different
+methods.</p>
+<p>Please find <a href="ui_qc.html">the detailed documentation of the QC
+UI</a> for more explanation of each parameter.</p>
 </div>
 <div class="tabcontent console">
 <p><strong>Running QC methods</strong></p>
-<p>To perform QC, we suggest using the <code><a href="../reference/runCellQC.html">runCellQC()</a></code> function. This is a wrapper for several methods for calculation of QC metrics, doublet detection, and estimation of ambient RNA. For a full list of algorithms that this function runs by default, see <code><a href="../reference/runCellQC.html">?runCellQC</a></code>.</p>
+<p>To perform QC, we suggest using the <code><a href="../reference/runCellQC.html">runCellQC()</a></code>
+function. This is a wrapper for several methods for calculation of QC
+metrics, doublet detection, and estimation of ambient RNA. For a full
+list of algorithms that this function runs by default, see
+<code><a href="../reference/runCellQC.html">?runCellQC</a></code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run QC</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">sce</span>, sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -371,10 +467,19 @@
 <span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runQuickUMAP</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"QC_UMAP"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></code></pre></div>
 <blockquote>
-<p><strong>Note:</strong> If you have cells from multiple samples stored in the SCE object, make sure to supply the <code>sample</code> parameter as the QC tools need to be applied to cells from each sample individually.</p>
+<p><strong>Note:</strong> If you have cells from multiple samples stored
+in the SCE object, make sure to supply the <code>sample</code> parameter
+as the QC tools need to be applied to cells from each sample
+individually.</p>
 </blockquote>
 <p><strong>Visualization</strong></p>
-<p>Individual sets of QC metrics can be plotted with specific functions. For example to plot distributions of total numbers of UMIs derived from <code><a href="../reference/runPerCellQC.html">runPerCellQC()</a></code>, doublet scores from <code><a href="../reference/runScDblFinder.html">runScDblFinder()</a></code>, and contamination scores from <code><a href="../reference/runDecontX.html">runDecontX()</a></code> (all of which were run by the <code><a href="../reference/runCellQC.html">runCellQC()</a></code> function), the following plotting functions can be used:</p>
+<p>Individual sets of QC metrics can be plotted with specific functions.
+For example to plot distributions of total numbers of UMIs derived from
+<code><a href="../reference/runPerCellQC.html">runPerCellQC()</a></code>, doublet scores from
+<code><a href="../reference/runScDblFinder.html">runScDblFinder()</a></code>, and contamination scores from
+<code><a href="../reference/runDecontX.html">runDecontX()</a></code> (all of which were run by the
+<code><a href="../reference/runCellQC.html">runCellQC()</a></code> function), the following plotting functions can
+be used:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotRunPerCellQCResults.html">plotRunPerCellQCResults</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
 <p><img src="01_import_and_qc_tutorial_files/figure-html/plotPerCellQC-1.png" width="768"></p>
@@ -384,18 +489,29 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDecontXResults.html">plotDecontXResults</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"QC_UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="01_import_and_qc_tutorial_files/figure-html/plottDecontX-1.png" width="768"></p>
-<p>A comprehensive HTML report can be generated to visualize and explore the QC metrics in greater detail:</p>
+<p>A comprehensive HTML report can be generated to visualize and explore
+the QC metrics in greater detail:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/reportCellQC.html">reportCellQC</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
-<p>Please find <a href="cnsl_cellqc.html">the detailed documentation for running QC functions</a> for detail.</p>
+<p>Please find <a href="cnsl_cellqc.html">the detailed documentation for
+running QC functions</a> for detail.</p>
 </div>
 </div>
-<p>Besides the approaches described above, we have also published the SCTK-QC pipeline <span class="citation">[1]</span>. Please refer to the <a href="cmd_qc.html">SCTK-QC Documentation</a> for detail.</p>
+<p>Besides the approaches described above, we have also published the
+SCTK-QC pipeline <span class="citation">[1]</span>. Please refer to the
+<a href="cmd_qc.html">SCTK-QC Documentation</a> for detail.</p>
 </div>
 <div class="section level2">
 <h2 id="filtering">Filtering<a class="anchor" aria-label="anchor" href="#filtering"></a>
 </h2>
-<p>After examining the distributions of various QC metrics, poor quality cells will need to be removed. Typically, thresholds for QC metrics should exclude cells that are outliers of the distribution (i.e. long tails in the violin or density plots). Here is how we limit the data to cells with 1. at least 600 counts, 2. at least 300 genes detected, and 3. at most 5% of detected counts are mitochondrial. For more detail about filtering, please refer to the <a href="filtering.html">Filtering documentation</a></p>
+<p>After examining the distributions of various QC metrics, poor quality
+cells will need to be removed. Typically, thresholds for QC metrics
+should exclude cells that are outliers of the distribution (i.e. long
+tails in the violin or density plots). Here is how we limit the data to
+cells with 1. at least 600 counts, 2. at least 300 genes detected, and
+3. at most 5% of detected counts are mitochondrial. For more detail
+about filtering, please refer to the <a href="filtering.html">Filtering
+documentation</a></p>
 <!--Remember to change tabset id-->
 <div class="tabset" id="tabset3">
 <div class="tab">
@@ -407,25 +523,44 @@
 <div class="tabcontent ia">
 <p><img src="ui_screenshots/ui_tutorial/filter_enter.png" alt="import"><br></p>
 <ol style="list-style-type: decimal">
-<li>Enter the filtering section by clicking on sub-tab <strong>“Filtering”</strong>.</li>
+<li>Enter the filtering section by clicking on sub-tab
+<strong>“Filtering”</strong>.</li>
 </ol>
 <p><img src="ui_screenshots/ui_tutorial/filter_add.png" alt="import"><br></p>
 <ol start="2" style="list-style-type: decimal">
-<li>Click on button <strong>“Add a Filter”</strong> in the first grey panel <strong>“Select Cell Filtering Criteria”</strong>.</li>
-<li>In the pop up, select one of the cell metadata variables that stands for the QC metrics. It should be <code>total</code>, <code>detected</code> and <code>mito_percent</code> for each criteria.</li>
-<li>Set the cut-off for each criteria. If you want to keep cells with value <code>total</code> greater than 600, you would check <strong>“Greater than”</strong>, and enter the number <code>600</code>. Similarly, if you want to keep cells with value <code>mito_percent</code> less than 5, you would check <strong>“Less than”</strong> and enter the number <code>5</code>.</li>
-<li>For every criteria, after entering the cut-off, click on button <strong>OK</strong> to add the filter “to the cart”.</li>
-<li>Repeat step 2-5 to add the three filters. After each criteria is added, you can see a new row inserted to the table, as shown in the dashed box in the screenshot below.</li>
+<li>Click on button <strong>“Add a Filter”</strong> in the first grey
+panel <strong>“Select Cell Filtering Criteria”</strong>.</li>
+<li>In the pop up, select one of the cell metadata variables that stands
+for the QC metrics. It should be <code>total</code>,
+<code>detected</code> and <code>mito_percent</code> for each
+criteria.</li>
+<li>Set the cut-off for each criteria. If you want to keep cells with
+value <code>total</code> greater than 600, you would check
+<strong>“Greater than”</strong>, and enter the number <code>600</code>.
+Similarly, if you want to keep cells with value
+<code>mito_percent</code> less than 5, you would check <strong>“Less
+than”</strong> and enter the number <code>5</code>.</li>
+<li>For every criteria, after entering the cut-off, click on button
+<strong>OK</strong> to add the filter “to the cart”.</li>
+<li>Repeat step 2-5 to add the three filters. After each criteria is
+added, you can see a new row inserted to the table, as shown in the
+dashed box in the screenshot below.</li>
 </ol>
 <p><img src="ui_screenshots/ui_tutorial/filter_run.png" alt="import"><br></p>
 <ol start="7" style="list-style-type: decimal">
-<li>Finally, click on <strong>“Filter”</strong> button at the bottom of the current view to apply all filters at one time.</li>
+<li>Finally, click on <strong>“Filter”</strong> button at the bottom of
+the current view to apply all filters at one time.</li>
 </ol>
 <p><img src="ui_screenshots/ui_tutorial/filter_summary.png" alt="import"><br></p>
-<p>After successfully filtering the data, you can see a comparison table shows up at the bottom. You can apply new filters by repeating the steps above, but it will only be applied on the filtered data instead of the original data.</p>
+<p>After successfully filtering the data, you can see a comparison table
+shows up at the bottom. You can apply new filters by repeating the steps
+above, but it will only be applied on the filtered data instead of the
+original data.</p>
 </div>
 <div class="tabcontent console">
-<p>Cells can be removed using the <code><a href="../reference/subsetSCECols.html">subsetSCECols()</a></code> function. Metrics stored in the <code>colData</code> slot of the SCE object can be filtered using the <code>colData</code> parameter.</p>
+<p>Cells can be removed using the <code><a href="../reference/subsetSCECols.html">subsetSCECols()</a></code> function.
+Metrics stored in the <code>colData</code> slot of the SCE object can be
+filtered using the <code>colData</code> parameter.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># See number of cells before filtering</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
@@ -453,9 +588,14 @@ var ia_buttons = document.getElementsByClassName("tablinks ia")
 for (var i = 0; i < ia_buttons.length; i++){
     ia_buttons[i].classList.add("active");
 }
-</script><div id="refs" class="references">
-<div id="ref-Rui2022">
-<p>[1] R. Hong <em>et al.</em>, “Comprehensive generation, visualization, and reporting of quality control metrics for single-cell rna sequencing data,” <em>Nature Communications</em>, vol. 13, no. 1688, 2022, doi: <a href="https://doi.org/10.1038/s41467-022-29212-9" class="external-link">10.1038/s41467-022-29212-9</a>.</p>
+</script><div id="refs" class="references csl-bib-body" entry-spacing="0">
+<div id="ref-Rui2022" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">R.
+Hong <em>et al.</em>, <span>“Comprehensive generation, visualization,
+and reporting of quality control metrics for single-cell RNA sequencing
+data,”</span> <em>Nature Communications</em>, vol. 13, no. 1688, 2022,
+doi: <a href="https://doi.org/10.1038/s41467-022-29212-9" class="external-link">10.1038/s41467-022-29212-9</a>.</div>
 </div>
 </div>
 </div>

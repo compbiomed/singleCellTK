@@ -1,5 +1,16 @@
-#version number
-seurat.version <- packageVersion(pkg = "SeuratObject")
+# Helper functions to get Seurat object or package version numbers
+.getSeuratObjectMajorVersion <- function(seuratObject){
+    if(!methods::is(seuratObject, "Seurat")) {
+        stop("The object was not a 'Seurat' object but was of class: ", class(seuratObject))
+    }
+    v <- slot(seuratObject, "version")$major
+    return(v)
+}
+
+.getSeuratPackageVersion <- function(){
+    v <- packageVersion(pkg = "SeuratObject")$major
+    return(v)
+}
 
 # Helper/Wrapper Functions ---
 
@@ -30,11 +41,18 @@ seurat.version <- packageVersion(pkg = "SeuratObject")
 #' seurat object in its metadata slot (excluding data matrices)
 #' @noRd
 .addSeuratToMetaDataSCE <- function(inSCE, seuratObject) {
+  seurat.version <- .getSeuratObjectMajorVersion(seuratObject)
+  
   if(seurat.version >= 5.0){
     inSCE@metadata$seurat$obj$RNA$"var.features" <-
       Seurat::VariableFeatures(object = seuratObject)
     
-    inSCE@metadata$seurat$obj$RNA$meta.features  <- seuratObject@assays$RNA@meta.data 
+    # Determine if slot is called "meta.data" or "meta.features
+    if("meta.data" %in% methods::slotNames(inSCE@metadata$seurat$obj$RNA)) {
+        inSCE@metadata$seurat$obj$RNA$meta.features  <- seuratObject@assays$RNA@meta.data    
+    } else if ("meta.features" %in% methods::slotNames(inSCE@metadata$seurat$obj$RNA)) {
+        inSCE@metadata$seurat$obj$RNA$meta.features  <- seuratObject@assays$RNA@meta.features
+    }
     
     inSCE@metadata$seurat$obj$meta.data <- seuratObject@meta.data
     
@@ -223,7 +241,8 @@ runSeuratFindHVG <- function(inSCE,
                              altExp = FALSE,
                              verbose = TRUE) {
   method <- match.arg(method)
-  if(seurat.version >= 5.0){
+  seurat.pkg.version <- .getSeuratPackageVersion()
+  if(seurat.pkg.version >= 5.0){
     seuratObject <- convertSCEToSeurat(inSCE, countsAssay = useAssay)
   }
   else{
@@ -234,7 +253,9 @@ runSeuratFindHVG <- function(inSCE,
     }
   }
   
-
+  # Get version number of object
+  seurat.version <- .getSeuratObjectMajorVersion(seuratObject)
+  
   seuratObject <- Seurat::FindVariableFeatures(
     seuratObject,
     selection.method = method,
@@ -244,11 +265,13 @@ runSeuratFindHVG <- function(inSCE,
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   if (method == "vst") {
     if(seurat.version >= 5.0){
+      cn <- colnames(seuratObject@assays$RNA@meta.data)
       if (!altExp) {
         rowData(inSCE)$seurat_variableFeatures_vst_varianceStandardized <-
           unlist(seuratObject@assays$RNA@meta.data["vf_vst_counts_variance.standardized"])
         rowData(inSCE)$seurat_variableFeatures_vst_mean <-
           unlist(seuratObject@assays$RNA@meta.data["vf_vst_counts_mean"])
+        rowData(inSCE)[,cn] <- seuratObject@assays$RNA@meta.data
       }
       else{
         # remove this part of code when updating to ExperimentSubset and add the
@@ -263,14 +286,17 @@ runSeuratFindHVG <- function(inSCE,
         rowData(inSCE)$seurat_variableFeatures_vst_mean <-
           unlist(
             seuratObject@assays$RNA@meta.data["vst.mean"][[1]][altExpRows])
+        rowData(inSCE)[,cn] <- seuratObject@assays$RNA@meta.data[altExpRows,]
       }
     }
     else{
+      cn <- colnames(seuratObject@assays$RNA@meta.features)
       if (!altExp) {
         rowData(inSCE)$seurat_variableFeatures_vst_varianceStandardized <-
           methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.variance.standardized
         rowData(inSCE)$seurat_variableFeatures_vst_mean <-
           methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.mean
+        rowData(inSCE)[,cn] <- seuratObject@assays$RNA@meta.features
       }
       else{
         # remove this part of code when updating to ExperimentSubset and add the
@@ -284,6 +310,7 @@ runSeuratFindHVG <- function(inSCE,
           methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.variance.standardized[altExpRows]
         rowData(inSCE)$seurat_variableFeatures_vst_mean <-
           methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.mean[altExpRows]
+        rowData(inSCE)[,cn] <- seuratObject@assays$RNA@meta.features[altExpRows,]
       }
     }
 
@@ -297,21 +324,24 @@ runSeuratFindHVG <- function(inSCE,
       )
   } else if (method == "dispersion") {
     if(seurat.version >= 5.0){
+      cn <- colnames(seuratObject@assays$RNA@meta.data)
       rowData(inSCE)$seurat_variableFeatures_dispersion_dispersion <-
         unlist(seuratObject@assays$RNA@meta.data["vf_vst_counts_variance.standardized"])
       rowData(inSCE)$seurat_variableFeatures_dispersion_dispersionScaled <-
         unlist(seuratObject@assays$RNA@meta.data["vf_vst_counts_variance.standardized"])
       rowData(inSCE)$seurat_variableFeatures_dispersion_mean <-
         unlist(seuratObject@assays$RNA@meta.data["vf_vst_counts_variance.standardized"])
+      rowData(inSCE)[,cn] <- seuratObject@assays$RNA@meta.data
     }
     else{
+      cn <- colnames(seuratObject@assays$RNA@meta.features)
       rowData(inSCE)$seurat_variableFeatures_dispersion_dispersion <-
         methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.dispersion
       rowData(inSCE)$seurat_variableFeatures_dispersion_dispersionScaled <-
         methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.dispersion.scaled
       rowData(inSCE)$seurat_variableFeatures_dispersion_mean <-
         methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.mean
-      
+      rowData(inSCE)[,cn] <- seuratObject@assays$RNA@meta.features
     }
     metadata(inSCE)$sctk$runFeatureSelection$dispersion <-
       list(
@@ -325,21 +355,24 @@ runSeuratFindHVG <- function(inSCE,
   }
   else if (method == "mean.var.plot") {
     if(seurat.version >= 5.0){
+      cn <- colnames(seuratObject@assays$RNA@meta.data)    
       rowData(inSCE)$seurat_variableFeatures_mvp_dispersion <-
         unlist(seuratObject@assays$RNA@meta.data["vf_vst_counts_variance.standardized"])
       rowData(inSCE)$seurat_variableFeatures_mvp_dispersionScaled <-
         unlist(seuratObject@assays$RNA@meta.data["vf_vst_counts_variance.standardized"])
       rowData(inSCE)$seurat_variableFeatures_mvp_mean <-
         unlist(seuratObject@assays$RNA@meta.data["vf_vst_counts_variance.standardized"])
+      rowData(inSCE)[,cn] <- seuratObject@assays$RNA@meta.data 
     }
     else{
+      cn <- colnames(seuratObject@assays$RNA@meta.features)
       rowData(inSCE)$seurat_variableFeatures_mvp_dispersion <-
         methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.dispersion
       rowData(inSCE)$seurat_variableFeatures_mvp_dispersionScaled <-
         methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.dispersion.scaled
       rowData(inSCE)$seurat_variableFeatures_mvp_mean <-
         methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.mean
-      
+      rowData(inSCE)[,cn] <- seuratObject@assays$RNA@meta.features
     }
    metadata(inSCE)$sctk$runFeatureSelection$mean.var.plot <-
       list(
@@ -848,7 +881,10 @@ runSeuratFindClusters <- function(inSCE,
       seuratObject <- convertSCEToSeurat(inSCE)
     }
   }
-
+  
+  # Get version number of object
+  seurat.version <- .getSeuratObjectMajorVersion(seuratObject)
+  
   seuratObject <- withr::with_seed(seed, {
     Seurat::FindNeighbors(
       seuratObject,
@@ -1024,6 +1060,10 @@ runSeuratUMAP <- function(inSCE,
 #' @noRd
 .seuratGetVariableFeatures <- function(inSCE, numberOfFeatures) {
   seuratObject <- convertSCEToSeurat(inSCE)
+  
+  # Get version number of object
+  seurat.version <- .getSeuratObjectMajorVersion(seuratObject)
+  
   if(seurat.version >= 5.0){
     if (length(seuratObject@assays$RNA@misc$var.features) > 0) {
       return(seuratObject@assays$RNA@misc$var.features[seq(numberOfFeatures)])
@@ -1034,7 +1074,6 @@ runSeuratUMAP <- function(inSCE,
       return(seuratObject@assays$RNA@var.features[seq(numberOfFeatures)])
     }
   }
-  
 }
 
 #' plotSeuratElbow
@@ -1255,6 +1294,10 @@ plotSeuratHeatmap <- function(plotObject, dims, ncol, labels) {
                             seuratDataSlot = "counts",
                             seuratAssaySlot = "RNA") {
   assay(inSCE, assaySlotSCE) <- NULL
+  
+  # Get version number of object
+  seurat.version <- .getSeuratObjectMajorVersion(seuratObject)
+  
   if(seurat.version >= 5.0){
     temp.matrix <- seuratObject[[seuratAssaySlot]][seuratDataSlot]
   }
@@ -1294,6 +1337,9 @@ convertSeuratToSCE <-
            normAssayName = "seuratNormData",
            scaledAssayName = "seuratScaledData") {
     
+    # Get version number of object
+    seurat.version <- .getSeuratObjectMajorVersion(seuratObject)
+      
     if (seurat.version >= 5.0){
       inSCE <- SingleCellExperiment(
         assays = list(counts = seuratObject@assays[[1]]$counts),
@@ -1463,7 +1509,8 @@ convertSCEToSeurat <-
     rownames(temp) <- seuratRowNames
     colnames(temp) <- seuratColNames
     seuratObject <- Seurat::CreateSeuratObject(counts = temp)
-
+    seurat.version <- .getSeuratObjectMajorVersion(seuratObject)
+    
     # Set normalized assay
     if (!is.null(normAssay) && normAssay %in% names(assays(inSCE))) {
       tempMatrix <- .convertToMatrix(assay(inSCE, normAssay))
@@ -1614,6 +1661,13 @@ convertSCEToSeurat <-
       }
     }
 
+    # Set row data
+    if(seurat.version >= 5) {
+        seuratObject@assays$RNA@meta.data <- as.data.frame(rowData(inSCE))
+    } else {
+        seuratObject@assays$RNA@meta.features <- as.data.frame(rowData(inSCE))
+    }
+    
     # Set 'decontXCounts' assay to seurat object if required
     if ("decontXcounts" %in% SummarizedExperiment::assayNames(inSCE) &&
         copyDecontX) {
@@ -1711,7 +1765,7 @@ runSeuratSCTransform <- function(inSCE,
       altExp(inSCE, "seuratScaledData") <- NULL
     }
     
-    if(seurat.version >= 5.0){
+    if(methods::is(inSCE@metadata$seurat$obj, "list")){
       if (varFeatures) {
         inSCE@metadata$seurat$obj$RNA$"var.features" <- NULL
         inSCE@metadata$seurat$obj$RNA$meta.features <-
@@ -1734,7 +1788,7 @@ runSeuratSCTransform <- function(inSCE,
         inSCE@metadata$seurat$obj$meta.data$seurat_clusters <- NULL
       }
     }
-    else{
+    if(methods::is(inSCE@metadata$seurat$obj, "Seurat")) {
       if (varFeatures) {
         methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@var.features <-
           logical()
@@ -1888,6 +1942,7 @@ runSeuratFindMarkers <- function(inSCE,
                                  threshUse = 0.25,
                                  verbose = TRUE) {
   seuratObject <- convertSCEToSeurat(inSCE)
+  seurat.version <- .getSeuratObjectMajorVersion(seuratObject)
   markerGenes <- NULL
   if (is.null(allGroup)
       && (!is.null(group1) && !is.null(group2))) {
@@ -2022,6 +2077,8 @@ plotSeuratGenes <- function(inSCE,
   #setup seurat object and the corresponding groups
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay, copyReducedDim = TRUE)
+  seurat.version <- .getSeuratObjectMajorVersion(seuratObject)
+  
   seuratObject <-
     Seurat::ScaleData(seuratObject, features = features)
   indices <- list()
@@ -2201,15 +2258,15 @@ plotSeuratGenes <- function(inSCE,
 #' @return A list of variable feature names.
 #' @export
 getSeuratVariableFeatures <- function(inSCE) {
-  if (!is.null(S4Vectors::metadata(inSCE)$seurat$obj)) {
-    if(seurat.version >= 5.0){
-      return(inSCE@metadata$seurat$obj$RNA$var.features)
+  obj <- S4Vectors::metadata(inSCE)$seurat$obj
+  result <- NULL
+  if (!is.null(obj)) {
+    if(methods::is(obj, "list")) {
+      result <- obj$RNA$var.features
     }
-    else{
-      return(Seurat::VariableFeatures(S4Vectors::metadata(inSCE)$seurat$obj))
+    if (methods::is(obj, "Seurat")) {
+      result <- Seurat::VariableFeatures(obj)
     }
   }
-  else{
-    return(NULL)
-  }
+  return(result)
 }
