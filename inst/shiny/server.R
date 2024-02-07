@@ -17,7 +17,6 @@ source("qc_help_pages/ui_doubletFinder_help.R", local = TRUE) # creates several 
 source("qc_help_pages/ui_scrublet_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_dc_and_qcm_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_scDblFinder_help.R", local = TRUE) # creates several smaller UI components
-source(file.path("..","..", "R/miscFunctions.R"))
 # source("server_partials/server_01_data.R", local = TRUE) # functions for Data section
 
 # Define server logic required to draw a histogram
@@ -6418,45 +6417,66 @@ shinyServer(function(input, output, session) {
   observeEvent(input$closeDropDownFS, {
     session$sendCustomMessage("close_dropDownFS", "")
   })
+  observe({
+    shinyOption <- getShinyOption("inputSCEset")
+    
+    if (!is.null(shinyOption)) {
+      # Update choices dynamically based on shinyOption
+      updateSelectInput(session, "hvgPlotMethod1", choices = colnames(colData(shinyOption)))
+    } else {
+      # If shinyOption is NULL, set choices to NULL or an empty vector
+      updateSelectInput(session, "hvgPlotMethod1", choices = NULL)
+    }
+  })
   selectInputs1 <- reactiveVal(NULL)
   observeEvent(input$gatherLabels, {
-    output$textFieldsContainer <- renderUI({
-      selectInputs <- lapply(unique(colData(vals$counts)[[input$hvgPlotMethod1]]), function(factor) {
-        local({
-          print(factor)
-          div(
-            style = "display: flex; align-items: center;",
-            tags$label(
-              style = "margin-right: 10px;",
-              factor
-            ),
-            textInput(
-              inputId = paste0("textField", factor),
-              label = NULL,
-              value = "",  
-              width = "300px" 
+    if (is.null(vals$counts)) {
+      print("input an SCE object")
+    } else {
+      count <- 0
+      print(colnames(colData(vals$counts)))
+      output$textFieldsContainer <- renderUI({
+        selectInputs <- lapply(unique(colData(vals$counts)[[input$hvgPlotMethod1]]), function(factor) {
+          local({
+            print(factor)
+            div(
+              style = "display: flex; align-items: center;",
+              tags$label(
+                style = "margin-right: 10px;",
+                factor
+              ),
+              textInput(
+                inputId = paste0("textField", factor),
+                label = NULL,
+                value = "",  
+                width = "300px" 
+              )
             )
-          )
+          })
         })
       })
       selectInputs1 <- selectInputs
       tagList(selectInputs)
-    })
     print(unique(colData(vals$counts)[[input$hvgPlotMethod1]]))
+    }
   })
   
   
   observeEvent(input$updatePlotFS1, {
     factors <- integer()
     text_values <- character()
-    for (i in 0:length(unique(colData(vals$counts)[[input$hvgPlotMethod1]]))) {
+    for (i in unique(colData(vals$counts)[[input$hvgPlotMethod1]])) {
       input_id <- paste0("textField", i)
+      print(input_id)
       input_value <- input[[input_id]]
+      print(input_value)
       if (!is.null(input_value) && nchar(input_value) > 0) {
         factors <- c(factors, i)
         text_values <- c(text_values, input_value)
       }
     }
+    print(factors)
+    print(text_values)
     vals$counts <- renameClusters(vals$counts, input$hvgPlotMethod1, factors, text_values)
     print(unique(colData(vals$counts)[[input$hvgPlotMethod1]]))
     
