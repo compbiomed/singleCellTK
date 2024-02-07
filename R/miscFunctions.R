@@ -475,3 +475,23 @@ getGenesetNamesFromCollection <- function(inSCE, geneSetCollectionName) {
                      code)
   }
 }
+
+#' Add together two numbers
+#'
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param clusterName Input 
+#' @param From value to describe what to map
+#' @param To value to describe what to map to
+#' @param newCluster value to change name of cluster
+#' @return inSCE object with changed values
+renameClusters <- function(inSCE, clusterName, from, to, newClusterName = NULL) {
+  clusterLabels <- unique(colData(inSCE)[,clusterName])
+  
+  renamedLabels <- mapvalues(c(clusterLabels), from = c(from), to = c(to))
+  if (!is.null(newClusterName)) {
+    colData(inSCE)[,newClusterName]  <- renamedLabels
+  } else {
+    colData(inSCE)[,clusterName] <- mapvalues(colData(inSCE)[,clusterName], from = c(from), to = c(to))
+  }
+  return(inSCE)
+}

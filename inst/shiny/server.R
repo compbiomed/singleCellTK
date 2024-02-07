@@ -17,6 +17,7 @@ source("qc_help_pages/ui_doubletFinder_help.R", local = TRUE) # creates several 
 source("qc_help_pages/ui_scrublet_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_dc_and_qcm_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_scDblFinder_help.R", local = TRUE) # creates several smaller UI components
+source(file.path("..","..", "R/miscFunctions.R"))
 # source("server_partials/server_01_data.R", local = TRUE) # functions for Data section
 
 # Define server logic required to draw a histogram
@@ -6416,6 +6417,49 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$closeDropDownFS, {
     session$sendCustomMessage("close_dropDownFS", "")
+  })
+  selectInputs1 <- reactiveVal(NULL)
+  observeEvent(input$gatherLabels, {
+    output$textFieldsContainer <- renderUI({
+      selectInputs <- lapply(unique(colData(vals$counts)[[input$hvgPlotMethod1]]), function(factor) {
+        local({
+          print(factor)
+          div(
+            style = "display: flex; align-items: center;",
+            tags$label(
+              style = "margin-right: 10px;",
+              factor
+            ),
+            textInput(
+              inputId = paste0("textField", factor),
+              label = NULL,
+              value = "",  
+              width = "300px" 
+            )
+          )
+        })
+      })
+      selectInputs1 <- selectInputs
+      tagList(selectInputs)
+    })
+    print(unique(colData(vals$counts)[[input$hvgPlotMethod1]]))
+  })
+  
+  
+  observeEvent(input$updatePlotFS1, {
+    factors <- integer()
+    text_values <- character()
+    for (i in 0:length(unique(colData(vals$counts)[[input$hvgPlotMethod1]]))) {
+      input_id <- paste0("textField", i)
+      input_value <- input[[input_id]]
+      if (!is.null(input_value) && nchar(input_value) > 0) {
+        factors <- c(factors, i)
+        text_values <- c(text_values, input_value)
+      }
+    }
+    vals$counts <- renameClusters(vals$counts, input$hvgPlotMethod1, factors, text_values)
+    print(unique(colData(vals$counts)[[input$hvgPlotMethod1]]))
+    
   })
   
   #-----------------------------------------------------------------------------

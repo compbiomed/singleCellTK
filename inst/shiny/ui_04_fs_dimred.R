@@ -1,3 +1,4 @@
+seurat.version <- packageVersion(pkg = "SeuratObject")
 shinyPanelFS_DimRed <- fluidPage(
   tags$script("Shiny.addCustomMessageHandler('close_dropDownDimRedEmbedding', function(x){
                   $('html').click();
@@ -100,6 +101,47 @@ shinyPanelFS_DimRed <- fluidPage(
               ),
               inputId = "dropDownFS",
               icon = icon("cog"),
+              status = "primary",
+              circle = FALSE,
+              inline = TRUE
+            )),
+            column(4, dropdown(
+              fluidRow(
+                column(width = 12,
+                       fluidRow(actionBttn(inputId = "closeDropDownFS1", 
+                                           label = NULL, style = "simple", 
+                                           color = "danger", 
+                                           icon = icon("times"), size = "xs"), 
+                                align = "right"),
+                       selectInput(
+                         inputId = "hvgPlotMethod1",
+                         label = "Cluster Label",
+                         choices = "nothing"
+                       ),
+                       
+                       actionBttn(
+                         inputId = "gatherLabels",
+                         label = "Gather Labels",
+                         style = "bordered",
+                         color = "primary",
+                         size = "sm"
+                       ),
+                       uiOutput("textFieldsContainer"),
+                       textInput(
+                         inputId = "hvgPlotMethod4",
+                         label = "New Cluster Name (optional)",
+                       ),
+                       actionBttn(
+                         inputId = "updatePlotFS1",
+                         label = "Update",
+                         style = "bordered",
+                         color = "primary",
+                         size = "sm"
+                       )
+                )
+              ),
+              inputId = "dropDownFS1",
+              icon = icon("pencil"),
               status = "primary",
               circle = FALSE,
               inline = TRUE
