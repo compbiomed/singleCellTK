@@ -8559,12 +8559,6 @@ shinyServer(function(input, output, session) {
       
       shinyjs::enable(selector = "#SeuratUI > div[value='Marker Gene Plots']")
       
-      orderByLFCMarkers_reactive <- reactive({
-        orderByLFCMarkers <- metadata(vals$counts)$seuratMarkers
-        orderByLFCMarkers <- orderByLFCMarkers[order(-orderByLFCMarkers$avg_log2FC), ]
-        return(orderByLFCMarkers)
-      })
-      
       observe({
         gene_choices <- orderByLFCMarkers$gene.id
         
@@ -8580,6 +8574,20 @@ shinyServer(function(input, output, session) {
       #   dataframe = orderByLFCMarkers
       # )
     }))
+  
+  observeEvent(input$selectGenesFindMarker, {
+    orderByLFCMarkers <- metadata(vals$counts)$seuratMarkers
+    orderByLFCMarkers <- orderByLFCMarkers[order(-orderByLFCMarkers$avg_log2FC), ]
+    # Filter orderByLFCMarkers to find the row with the selected gene.id
+    selected_gene_info <- orderByLFCMarkers[orderByLFCMarkers$gene.id == input$selectGenesFindMarker, ]
+    
+    # Store the filtered dataframe in vals$selectedGenes
+    vals$selectedGenes <- selected_gene_info
+    
+    # Optionally, print the selected gene row to verify
+    print(selected_gene_info)
+    
+  })
   
   observeEvent(input$findMarkerHeatmapPlotFullNumericRun, withConsoleMsgRedirect(
     msg = "Please wait while heatmap is being plotted. See console log for progress.",
@@ -8629,9 +8637,7 @@ shinyServer(function(input, output, session) {
     }))
   
   observe({
-    req(vals$fts$data)
-    req(vals$fts$selectedRows)
-    df <- vals$fts$data[vals$fts$selectedRows, ]
+    df <- vals$selectedGenes
     output$findMarkerRidgePlot <- renderPlot({
       plotSeuratGenes(
         inSCE = vals$counts,
