@@ -8554,6 +8554,26 @@ shinyServer(function(input, output, session) {
         defaultFilterValues = c("0.05"),
         topText = "You can view the marker genes in the table below and apply custom filters to filter the table accordingly. A joint heatmap for all the marker genes available in the table is plotted underneath the table. Additional visualizations are plotted for select genes which can be selected by clicking on the rows of the table."
       )
+      
+      shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
+      
+      shinyjs::enable(selector = "#SeuratUI > div[value='Marker Gene Plots']")
+      
+      orderByLFCMarkers_reactive <- reactive({
+        orderByLFCMarkers <- metadata(vals$counts)$seuratMarkers
+        orderByLFCMarkers <- orderByLFCMarkers[order(-orderByLFCMarkers$avg_log2FC), ]
+        return(orderByLFCMarkers)
+      })
+      
+      observe({
+        gene_choices <- orderByLFCMarkers$gene.id
+        
+        updateSelectInput(session, "selectGenesFindMarker",
+                          choices = gene_choices,
+                          selected = gene_choices[1]) # Optionally, pre-select the first gene
+      })
+      
+      
       # vals$fts <- callModule(
       #   module = filterTableServer,
       #   id = "filterSeuratFindMarker",
@@ -8723,7 +8743,6 @@ shinyServer(function(input, output, session) {
           })
         })
         updateCollapse(session = session, "SeuratUI", style = list("2D-Embedding" = "success"))
-        shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
         S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
         shinyjs::hide(
           selector = "div[value='Downstream Analysis']")
@@ -9012,6 +9031,9 @@ shinyServer(function(input, output, session) {
         selector = "#SeuratUI > div[value='Clustering']")
       shinyjs::disable(
         selector = "#ScanpyUI > div[value='Clustering']")
+      
+      shinyjs::disable(
+        selector = "#SeuratUI > div[value='Marker Gene Plots']")
       
       shinyjs::disable(
         selector = "#SeuratUI > div[value='Scale Data']")
