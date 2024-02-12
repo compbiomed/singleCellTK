@@ -8560,11 +8560,11 @@ shinyServer(function(input, output, session) {
       shinyjs::enable(selector = "#SeuratUI > div[value='Marker Gene Plots']")
       
       observe({
-        gene_choices <- orderByLFCMarkers$gene.id
+        gene_choices <- setNames(nm = orderByLFCMarkers$gene.id, order(1:nrow(orderByLFCMarkers)))
         
         updateSelectInput(session, "selectGenesFindMarker",
                           choices = gene_choices,
-                          selected = gene_choices[1]) # Optionally, pre-select the first gene
+                          )
       })
       
       
@@ -8578,15 +8578,9 @@ shinyServer(function(input, output, session) {
   observeEvent(input$selectGenesFindMarker, {
     orderByLFCMarkers <- metadata(vals$counts)$seuratMarkers
     orderByLFCMarkers <- orderByLFCMarkers[order(-orderByLFCMarkers$avg_log2FC), ]
-    # Filter orderByLFCMarkers to find the row with the selected gene.id
-    selected_gene_info <- orderByLFCMarkers[orderByLFCMarkers$gene.id == input$selectGenesFindMarker, ]
-    
-    # Store the filtered dataframe in vals$selectedGenes
-    vals$selectedGenes <- selected_gene_info
-    
-    # Optionally, print the selected gene row to verify
-    print(selected_gene_info)
-    
+    selected_row_number <- as.numeric(input$selectGenesFindMarker)
+    # Retrieve the selected gene's information using the row number
+    vals$selectedGenes <- orderByLFCMarkers[selected_row_number, ]
   })
   
   observeEvent(input$findMarkerHeatmapPlotFullNumericRun, withConsoleMsgRedirect(
@@ -8642,7 +8636,7 @@ shinyServer(function(input, output, session) {
       plotSeuratGenes(
         inSCE = vals$counts,
         plotType = "ridge",
-        features = df$gene_id,
+        features = df$gene.id,
         groupVariable = input$seuratFindMarkerSelectPhenotype,
         ncol = 2,
         combine = TRUE
@@ -8652,7 +8646,7 @@ shinyServer(function(input, output, session) {
       plotSeuratGenes(
         inSCE = vals$counts,
         plotType = "violin",
-        features = df$gene_id,
+        features = df$gene.id,
         groupVariable = input$seuratFindMarkerSelectPhenotype,
         ncol = 2,
         combine = TRUE
@@ -8662,7 +8656,7 @@ shinyServer(function(input, output, session) {
       plotSeuratGenes(
         inSCE = vals$counts,
         plotType = "feature",
-        features = df$gene_id,
+        features = df$gene.id,
         groupVariable = input$seuratFindMarkerSelectPhenotype,
         ncol = 2,
         combine = TRUE,
@@ -8673,7 +8667,7 @@ shinyServer(function(input, output, session) {
       plotSeuratGenes(
         inSCE = vals$counts,
         plotType = "dot",
-        features = df$gene_id,
+        features = df$gene.id,
         groupVariable = input$seuratFindMarkerSelectPhenotype
       )
     })
@@ -8681,7 +8675,7 @@ shinyServer(function(input, output, session) {
       plotSeuratGenes(
         inSCE = vals$counts,
         plotType = "heatmap",
-        features = df$gene_id,
+        features = df$gene.id,
         groupVariable = input$seuratFindMarkerSelectPhenotype
       )
     })

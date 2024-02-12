@@ -387,7 +387,7 @@ shinyPanelSeurat <- fluidPage(
             
             bsCollapsePanel("Marker Gene Plots",
                             fluidRow(
-                              column(4,
+                              column(12,
                                      fluidRow(
                                        column(12,
                                               panel(heading = "Options",
@@ -396,7 +396,7 @@ shinyPanelSeurat <- fluidPage(
                                        )
                                      )
                               ),
-                              column(8,
+                              column(12,
                                      tags$div(class = "seurat_findmarker_plots",
                                               panel(heading = "",
                                                     HTML("<center><h5><span style='color:red; font-weight:bold; text-align:center;'>Click on the rows of the table above to plot the selected marker genes below!</span></h5></br></center>"),
