@@ -8631,6 +8631,7 @@ shinyServer(function(input, output, session) {
     }))
   
   observe({
+    req(vals$selectedGenes)
     df <- vals$selectedGenes
     output$findMarkerRidgePlot <- renderPlot({
       plotSeuratGenes(
