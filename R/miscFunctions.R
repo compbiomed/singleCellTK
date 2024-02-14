@@ -486,7 +486,6 @@ getGenesetNamesFromCollection <- function(inSCE, geneSetCollectionName) {
 #' @return inSCE object with changed values
 renameClusters <- function(inSCE, clusterName, from, to, newClusterName = NULL) {
   clusterLabels <- unique(colData(inSCE)[,clusterName])
-  print(clusterLabels)
   renamedLabels <- mapvalues(c(clusterLabels), from = c(from), to = c(to))
   if (!is.null(newClusterName)) {
     colData(inSCE)[,newClusterName]  <- renamedLabels

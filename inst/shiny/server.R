@@ -6417,18 +6417,17 @@ shinyServer(function(input, output, session) {
   observeEvent(input$closeDropDownFS, {
     session$sendCustomMessage("close_dropDownFS", "")
   })
-  observe({
-    shinyOption <- getShinyOption("inputSCEset")
-    
-    if (!is.null(shinyOption)) {
-      # Update choices dynamically based on shinyOption
-      updateSelectInput(session, "hvgPlotMethod1", choices = colnames(colData(shinyOption)))
+  
+  observeEvent(allImportEntries$samples, {
+    if (!is.null(vals$counts) && !is.null(colnames(colData(vals$counts)))) {
+      options <- colnames(colData(vals$counts))
     } else {
-      # If shinyOption is NULL, set choices to NULL or an empty vector
-      updateSelectInput(session, "hvgPlotMethod1", choices = NULL)
-    }
+      options <- NULL
+    }  
+    updateSelectInput(session, inputId = "hvgPlotMethod1", choices = options)
   })
-  selectInputs1 <- reactiveVal(NULL)
+
+  
   observeEvent(input$gatherLabels, {
     if (is.null(vals$counts)) {
       print("input an SCE object")
@@ -6455,7 +6454,6 @@ shinyServer(function(input, output, session) {
           })
         })
       })
-      selectInputs1 <- selectInputs
       tagList(selectInputs)
     print(unique(colData(vals$counts)[[input$hvgPlotMethod1]]))
     }

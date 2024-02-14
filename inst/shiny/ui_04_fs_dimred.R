@@ -113,11 +113,11 @@ shinyPanelFS_DimRed <- fluidPage(
                                            color = "danger", 
                                            icon = icon("times"), size = "xs"), 
                                 align = "right"),
-                       textInput(
-                         inputId = "hvgPlotMethod1",
+                      selectInput(
+                        inputId = "hvgPlotMethod1",
                          label = "Cluster Label",
-                         #choices = NULL
-                       ),
+                         choices = NULL
+                      ),
                        actionBttn(
                          inputId = "gatherLabels",
                          label = "Gather Labels",
