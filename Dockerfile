@@ -22,7 +22,7 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.c
 RUN mkdir -p /SCTK_docker/ && mkdir /SCTK_docker/script && mkdir /SCTK_docker/modes 
 
 #ADD ./install_packages.R /SCTK_docker/script
-ADD ./exec/SCTK_runQC.R /SCTK_docker/script
+ADD ./exec/SCTK_runQC.R ./SCTK_docker/script
 
 #Install necessary R packages
 RUN R -e "install.packages('BiocManager')"
@@ -42,7 +42,7 @@ RUN R -e "BiocManager::install('scRNAseq')"
 RUN R -e "BiocManager::install('celda')"
 #RUN R -e "devtools::install_github('wleepang/shiny-directory-input')"
 RUN R -e "options(timeout=360000)" \
-	&& R -e "devtools::install_github('compbiomed/singleCellTK', force = TRUE, dependencies = TRUE)"
+	&& R -e "devtools::install_github('compbiomed/singleCellTK@v2.12.2', force = TRUE, dependencies = TRUE)"
 
 RUN R -e "install.packages('reticulate')"
 RUN R -e "Sys.setenv(RETICULATE_PYTHON = '/usr/bin/python3')"
