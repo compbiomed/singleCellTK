@@ -8254,6 +8254,13 @@ shinyServer(function(input, output, session) {
         
         shinyjs::enable(selector = "#SeuratUI > div[value='Marker Gene Plots']")
         
+        #MARKER SETTINGS
+        geneChoices <- ifelse(is.na(rowData(vals$counts)$Symbol), rowData(vals$counts)$Symbol_TENx, rowData(vals$counts)$Symbol)
+        updateSelectInput(session, "selectGenesMarkerPlots",
+                          choices = geneChoices)
+        
+        shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
+        
         #update colData names
         updateColDataNames()
         
@@ -8559,14 +8566,6 @@ shinyServer(function(input, output, session) {
       
       shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
       
-      observe({
-        gene_choices <- setNames(nm = orderByLFCMarkers$gene.id, order(1:nrow(orderByLFCMarkers)))
-        
-        updateSelectInput(session, "selectGenesFindMarker",
-                          choices = gene_choices,
-                          )
-      })
-      
       
       # vals$fts <- callModule(
       #   module = filterTableServer,
@@ -8575,12 +8574,24 @@ shinyServer(function(input, output, session) {
       # )
     }))
   
-  observeEvent(input$selectGenesFindMarker, {
-    orderByLFCMarkers <- metadata(vals$counts)$seuratMarkers
-    orderByLFCMarkers <- orderByLFCMarkers[order(-orderByLFCMarkers$avg_log2FC), ]
-    selected_row_number <- as.numeric(input$selectGenesFindMarker)
-    # Retrieve the selected gene's information using the row number
-    vals$selectedGenes <- orderByLFCMarkers[selected_row_number, ]
+  observeEvent(input$selectGenesMarkerPlots, {
+    # Assuming rowData is stored in a variable for easier access
+    gene_info <- rowData(vals$counts)
+    
+    # Initialize an empty data frame to store selected genes information
+    selected_genes_info <- data.frame()
+    
+    # Check if any genes were selected
+    if (length(input$selectGenesMarkerPlots) > 0) {
+      # Find the rows where the Symbol or Symbol_TENx matches any of the selected gene symbols
+      selected_rows_indices <- which(gene_info$Symbol %in% input$selectGenesMarkerPlots | gene_info$Symbol_TENx %in% input$selectGenesMarkerPlots)
+      
+      # Subset the gene_info data frame to get only the selected rows
+      selected_genes_info <- gene_info[selected_rows_indices, ]
+    }
+    
+    # Store the selected genes information in vals$selectedGenes
+    vals$selectedGenesMarkerPlot <- selected_genes_info
   })
   
   observeEvent(input$findMarkerHeatmapPlotFullNumericRun, withConsoleMsgRedirect(
@@ -8631,13 +8642,14 @@ shinyServer(function(input, output, session) {
     }))
   
   observe({
-    req(vals$selectedGenes)
-    df <- vals$selectedGenes
+    req(vals$selectedGenesMarkerPlot)
+    df <- vals$selectedGenesMarkerPlot
+    print(df)
     output$findMarkerRidgePlot <- renderPlot({
       plotSeuratGenes(
         inSCE = vals$counts,
         plotType = "ridge",
-        features = df$gene.id,
+        features = df,
         groupVariable = input$seuratFindMarkerSelectPhenotype,
         ncol = 2,
         combine = TRUE

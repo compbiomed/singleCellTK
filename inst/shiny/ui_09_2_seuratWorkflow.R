@@ -391,7 +391,7 @@ shinyPanelSeurat <- fluidPage(
                                      fluidRow(
                                        column(12,
                                               panel(heading = "Options",
-                                                    selectInput("selectGenesFindMarker", "Select a gene:", choices = NULL, multiple = TRUE),
+                                                    selectInput("selectGenesMarkerPlots", "Select a gene:", choices = NULL, multiple = TRUE),
                                               )
                                        )
                                      )
