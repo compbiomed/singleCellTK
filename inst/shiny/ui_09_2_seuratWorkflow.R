@@ -287,6 +287,27 @@ shinyPanelSeurat <- fluidPage(
                     )
                     ),
                     style = "primary"),
+            bsCollapsePanel("Marker Gene Plots",
+                            fluidRow(
+                              column(12,
+                                     fluidRow(
+                                       column(12,
+                                              panel(heading = "Options",
+                                                    selectizeInput("selectGenesMarkerPlots", "Select a gene:", choices = NULL, multiple = TRUE, options = list('plugins' = list('remove_button'), server = TRUE)),
+                                              )
+                                       )
+                                     )
+                              ),
+                              column(12,
+                                     tags$div(class = "seurat_findmarker_plots",
+                                              panel(heading = "",
+                                                    HTML("<center><h5><span style='color:red; font-weight:bold; text-align:center;'>Select marker genes above to plot them below!</span></h5></br></center>"),
+                                                    tabsetPanel(id = "seuratFindMarkerPlotTabset", type = "tabs"))
+                                     )
+                              )
+                            ),
+                            style = "primary"
+            ),
             bsCollapsePanel("Find Markers",
                             fluidRow(
                                 column(4,
@@ -383,29 +404,7 @@ shinyPanelSeurat <- fluidPage(
                                        )
                                 )
                             ),
-                            style = "primary"),
-            
-            bsCollapsePanel("Marker Gene Plots",
-                            fluidRow(
-                              column(12,
-                                     fluidRow(
-                                       column(12,
-                                              panel(heading = "Options",
-                                                    selectInput("selectGenesMarkerPlots", "Select a gene:", choices = NULL, multiple = TRUE),
-                                              )
-                                       )
-                                     )
-                              ),
-                              column(12,
-                                     tags$div(class = "seurat_findmarker_plots",
-                                              panel(heading = "",
-                                                    HTML("<center><h5><span style='color:red; font-weight:bold; text-align:center;'>Select marker genes above to plot them below!</span></h5></br></center>"),
-                                                    tabsetPanel(id = "seuratFindMarkerPlotTabset", type = "tabs"))
-                                     )
-                                  )
-                            ),
-                            style = "primary"
-            )
+                            style = "primary")
        ),
     nonLinearWorkflowUI(id = "nlw-seurat")
     )
