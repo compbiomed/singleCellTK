@@ -1649,6 +1649,22 @@ shinyServer(function(input, output, session) {
       removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
       removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
       
+      appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "2D Embedding (Feature Plot)",
+                                                                 panel(heading = "Feature Plot",
+                                                                       shinyjqui::jqui_resizable(
+                                                                         plotOutput(outputId = "findMarkerFeaturePlot")
+                                                                       )
+                                                                 )
+      )
+      )
+      appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
+                                                                 panel(heading = "Dot Plot",
+                                                                       shinyjqui::jqui_resizable(
+                                                                         plotOutput(outputId = "findMarkerDotPlot")
+                                                                       )
+                                                                 )
+      )
+      )
       appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
                                                                  panel(heading = "Ridge Plot",
                                                                        shinyjqui::jqui_resizable(
@@ -1661,22 +1677,6 @@ shinyServer(function(input, output, session) {
                                                                  panel(heading = "Violin Plot",
                                                                        shinyjqui::jqui_resizable(
                                                                          plotOutput(outputId = "findMarkerViolinPlot")
-                                                                       )
-                                                                 )
-      )
-      )
-      appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
-                                                                 panel(heading = "Feature Plot",
-                                                                       shinyjqui::jqui_resizable(
-                                                                         plotOutput(outputId = "findMarkerFeaturePlot")
-                                                                       )
-                                                                 )
-      )
-      )
-      appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
-                                                                 panel(heading = "Dot Plot",
-                                                                       shinyjqui::jqui_resizable(
-                                                                         plotOutput(outputId = "findMarkerDotPlot")
                                                                        )
                                                                  )
       )
@@ -8252,6 +8252,8 @@ shinyServer(function(input, output, session) {
         shinyjs::enable(
           selector = "#SeuratUI > div[value='Find Markers']")
         
+        shinyjs::enable(selector = "#SeuratUI > div[value='Marker Gene Plots']")
+        
         #update colData names
         updateColDataNames()
         
@@ -8357,6 +8359,32 @@ shinyServer(function(input, output, session) {
       removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
       
       appendTab(inputId = "seuratFindMarkerPlotTabset",
+                tabPanel(title = "Feature Plot",
+                         panel(heading = "2D Embedding (Feature Plot)",
+                               fluidRow(
+                                 column(12, align = "center",
+                                        panel(
+                                          HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                        )
+                                 )
+                               )
+                         )
+                )
+      )
+      appendTab(inputId = "seuratFindMarkerPlotTabset",
+                tabPanel(title = "Dot Plot",
+                         panel(heading = "Dot Plot",
+                               fluidRow(
+                                 column(12, align = "center",
+                                        panel(
+                                          HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                        )
+                                 )
+                               )
+                         )
+                )
+      )
+      appendTab(inputId = "seuratFindMarkerPlotTabset",
                 tabPanel(title = "Ridge Plot",
                          panel(heading = "Ridge Plot",
                                fluidRow(
@@ -8372,32 +8400,6 @@ shinyServer(function(input, output, session) {
       appendTab(inputId = "seuratFindMarkerPlotTabset",
                 tabPanel(title = "Violin Plot",
                          panel(heading = "Violin Plot",
-                               fluidRow(
-                                 column(12, align = "center",
-                                        panel(
-                                          HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                        )
-                                 )
-                               )
-                         )
-                )
-      )
-      appendTab(inputId = "seuratFindMarkerPlotTabset",
-                tabPanel(title = "Feature Plot",
-                         panel(heading = "Feature Plot",
-                               fluidRow(
-                                 column(12, align = "center",
-                                        panel(
-                                          HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                        )
-                                 )
-                               )
-                         )
-                )
-      )
-      appendTab(inputId = "seuratFindMarkerPlotTabset",
-                tabPanel(title = "Dot Plot",
-                         panel(heading = "Dot Plot",
                                fluidRow(
                                  column(12, align = "center",
                                         panel(
@@ -8450,7 +8452,7 @@ shinyServer(function(input, output, session) {
       }
       
       showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
-      updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
+      updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "2D Embedding (Feature Plot)")
       shinyjs::show(selector = ".seurat_findmarker_plots")
       
       # Output the heatmap
@@ -8492,6 +8494,24 @@ shinyServer(function(input, output, session) {
       removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
       
       appendTab(inputId = "seuratFindMarkerPlotTabset",
+                tabPanel(title = "2D Embedding (Feature Plot)",
+                         panel(heading = "Feature Plot",
+                               shinyjqui::jqui_resizable(
+                                 plotOutput(outputId = "findMarkerFeaturePlot")
+                               )
+                         )
+                )
+      )
+      appendTab(inputId = "seuratFindMarkerPlotTabset",
+                tabPanel(title = "Dot Plot",
+                         panel(heading = "Dot Plot",
+                               shinyjqui::jqui_resizable(
+                                 plotOutput(outputId = "findMarkerDotPlot")
+                               )
+                         )
+                )
+      )
+      appendTab(inputId = "seuratFindMarkerPlotTabset",
                 tabPanel(title = "Ridge Plot",
                          panel(heading = "Ridge Plot",
                                shinyjqui::jqui_resizable(
@@ -8505,24 +8525,6 @@ shinyServer(function(input, output, session) {
                          panel(heading = "Violin Plot",
                                shinyjqui::jqui_resizable(
                                  plotOutput(outputId = "findMarkerViolinPlot")
-                               )
-                         )
-                )
-      )
-      appendTab(inputId = "seuratFindMarkerPlotTabset",
-                tabPanel(title = "Feature Plot",
-                         panel(heading = "Feature Plot",
-                               shinyjqui::jqui_resizable(
-                                 plotOutput(outputId = "findMarkerFeaturePlot")
-                               )
-                         )
-                )
-      )
-      appendTab(inputId = "seuratFindMarkerPlotTabset",
-                tabPanel(title = "Dot Plot",
-                         panel(heading = "Dot Plot",
-                               shinyjqui::jqui_resizable(
-                                 plotOutput(outputId = "findMarkerDotPlot")
                                )
                          )
                 )
@@ -8556,8 +8558,6 @@ shinyServer(function(input, output, session) {
       )
       
       shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
-      
-      shinyjs::enable(selector = "#SeuratUI > div[value='Marker Gene Plots']")
       
       observe({
         gene_choices <- setNames(nm = orderByLFCMarkers$gene.id, order(1:nrow(orderByLFCMarkers)))
