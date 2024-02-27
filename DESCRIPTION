@@ -68,7 +68,7 @@ Imports:
     KernSmooth,
     limma,
     MAST,
-    Matrix (>= 1.6-5),
+    Matrix (= 1.6-1),
     matrixStats,
     methods,
     msigdbr,
