@@ -487,10 +487,12 @@ getGenesetNamesFromCollection <- function(inSCE, geneSetCollectionName) {
 renameClusters <- function(inSCE, clusterName, from, to, newClusterName = NULL) {
   clusterLabels <- unique(colData(inSCE)[,clusterName])
   renamedLabels <- mapvalues(c(clusterLabels), from = c(from), to = c(to))
+  colData(inSCE)[,clusterName] <- mapvalues(colData(inSCE)[,clusterName], from = c(from), to = c(to))
+  
   if (!is.null(newClusterName)) {
-    colData(inSCE)[,newClusterName]  <- renamedLabels
-  } else {
-    colData(inSCE)[,clusterName] <- mapvalues(colData(inSCE)[,clusterName], from = c(from), to = c(to))
+    print("hel")
+    colData(inSCE)[, newClusterName] <- colData(inSCE)[, clusterName]
   }
+  
   return(inSCE)
 }

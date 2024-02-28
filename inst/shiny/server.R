@@ -6426,7 +6426,17 @@ shinyServer(function(input, output, session) {
     }  
     updateSelectInput(session, inputId = "hvgPlotMethod1", choices = options)
   })
-
+  
+  observeEvent(vals$counts, {
+    print("hello")
+    if (!is.null(vals$counts) && !is.null(colnames(colData(vals$counts)))) {
+      options <- colnames(colData(vals$counts))
+    } else {
+      options <- NULL
+    }  
+    updateSelectInput(session, inputId = "hvgPlotMethod1", choices = options)
+  })
+  
   
   observeEvent(input$gatherLabels, {
     if (is.null(vals$counts)) {
@@ -6455,7 +6465,7 @@ shinyServer(function(input, output, session) {
         })
       })
       tagList(selectInputs)
-    print(unique(colData(vals$counts)[[input$hvgPlotMethod1]]))
+    
     }
   })
   
@@ -6465,18 +6475,23 @@ shinyServer(function(input, output, session) {
     text_values <- character()
     for (i in unique(colData(vals$counts)[[input$hvgPlotMethod1]])) {
       input_id <- paste0("textField", i)
-      print(input_id)
       input_value <- input[[input_id]]
-      print(input_value)
       if (!is.null(input_value) && nchar(input_value) > 0) {
         factors <- c(factors, i)
         text_values <- c(text_values, input_value)
       }
     }
-    print(factors)
-    print(text_values)
-    vals$counts <- renameClusters(vals$counts, input$hvgPlotMethod1, factors, text_values)
-    print(unique(colData(vals$counts)[[input$hvgPlotMethod1]]))
+    observe({
+      newClusterName <- input$hvgPlotMethod4
+      
+      if (is.null(newClusterName)) {
+        vals$counts <- renameClusters(vals$counts, input$hvgPlotMethod1, factors, text_values)
+      } else {
+        vals$counts <- renameClusters(vals$counts, input$hvgPlotMethod1, factors, text_values, newClusterName)
+      }
+    })
+    
+    print(unique(colData(vals$counts)))
     
   })
   
