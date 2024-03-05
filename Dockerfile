@@ -43,7 +43,9 @@ RUN R -e "BiocManager::install('celda')"
 #RUN R -e "devtools::install_github('wleepang/shiny-directory-input')"
 RUN R -e "options(timeout=360000)" \
 	&& R -e "devtools::install_github('compbiomed/singleCellTK@v2.12.2', force = TRUE, dependencies = TRUE)"
-
+RUN R -e "install.packages('Matrix', version = '1.6-1')"
+RUN R -e "install.packages('irlba', type = 'source')"
+RUN R -e "install.packages('SeuratObject', type = 'source')"
 RUN R -e "install.packages('reticulate')"
 RUN R -e "Sys.setenv(RETICULATE_PYTHON = '/usr/bin/python3')"
 RUN R -e "reticulate::py_config()"
