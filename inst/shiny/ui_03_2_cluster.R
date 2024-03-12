@@ -1,3 +1,4 @@
+source("module_renameCluster.R")
 shinyPanelCluster <- fluidPage(
   tags$script("Shiny.addCustomMessageHandler('close_dropDownClust', function(x){
                   $('html').click();
@@ -134,6 +135,7 @@ shinyPanelCluster <- fluidPage(
                 inline = TRUE
               )
             ),
+            renameClusterUI(id = "instance2"),
             column(
               width = 9,
               fluidRow(

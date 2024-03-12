@@ -60,6 +60,7 @@ data("c2BroadSets")
 #source modules
 source("module_nonLinearWorkflow.R")
 source("module_filterTable.R")
+source("module_renameCluster.R")
 
 docs.base <- paste0("https://www.camplab.net/sctk/v",
                     package.version("singleCellTK"), "/")

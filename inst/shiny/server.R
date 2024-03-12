@@ -6414,86 +6414,13 @@ shinyServer(function(input, output, session) {
     session$sendCustomMessage("close_dropDownFS", "")
   })
   
+  callModule(module = renameClusterServer, id = "instance1", vals = vals)
+  callModule(module = renameClusterServer, id = "instance2", vals = vals)
   observeEvent(input$closeDropDownFS, {
     session$sendCustomMessage("close_dropDownFS", "")
   })
   
-  observeEvent(allImportEntries$samples, {
-    if (!is.null(vals$counts) && !is.null(colnames(colData(vals$counts)))) {
-      options <- colnames(colData(vals$counts))
-    } else {
-      options <- NULL
-    }  
-    updateSelectInput(session, inputId = "hvgPlotMethod1", choices = options)
-  })
   
-  observeEvent(vals$counts, {
-    print("hello")
-    if (!is.null(vals$counts) && !is.null(colnames(colData(vals$counts)))) {
-      options <- colnames(colData(vals$counts))
-    } else {
-      options <- NULL
-    }  
-    updateSelectInput(session, inputId = "hvgPlotMethod1", choices = options)
-  })
-  
-  
-  observeEvent(input$gatherLabels, {
-    if (is.null(vals$counts)) {
-      print("input an SCE object")
-    } else {
-      count <- 0
-      print(colnames(colData(vals$counts)))
-      output$textFieldsContainer <- renderUI({
-        selectInputs <- lapply(unique(colData(vals$counts)[[input$hvgPlotMethod1]]), function(factor) {
-          local({
-            print(factor)
-            div(
-              style = "display: flex; align-items: center;",
-              tags$label(
-                style = "margin-right: 10px;",
-                factor
-              ),
-              textInput(
-                inputId = paste0("textField", factor),
-                label = NULL,
-                value = "",  
-                width = "300px" 
-              )
-            )
-          })
-        })
-      })
-      tagList(selectInputs)
-    
-    }
-  })
-  
-  
-  observeEvent(input$updatePlotFS1, {
-    factors <- integer()
-    text_values <- character()
-    for (i in unique(colData(vals$counts)[[input$hvgPlotMethod1]])) {
-      input_id <- paste0("textField", i)
-      input_value <- input[[input_id]]
-      if (!is.null(input_value) && nchar(input_value) > 0) {
-        factors <- c(factors, i)
-        text_values <- c(text_values, input_value)
-      }
-    }
-    observe({
-      newClusterName <- input$hvgPlotMethod4
-      
-      if (is.null(newClusterName)) {
-        vals$counts <- renameClusters(vals$counts, input$hvgPlotMethod1, factors, text_values)
-      } else {
-        vals$counts <- renameClusters(vals$counts, input$hvgPlotMethod1, factors, text_values, newClusterName)
-      }
-    })
-    
-    print(unique(colData(vals$counts)))
-    
-  })
   
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression ####

@@ -490,7 +490,6 @@ renameClusters <- function(inSCE, clusterName, from, to, newClusterName = NULL) 
   colData(inSCE)[,clusterName] <- mapvalues(colData(inSCE)[,clusterName], from = c(from), to = c(to))
   
   if (!is.null(newClusterName)) {
-    print("hel")
     colData(inSCE)[, newClusterName] <- colData(inSCE)[, clusterName]
   }
   
