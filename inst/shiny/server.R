@@ -6414,9 +6414,13 @@ shinyServer(function(input, output, session) {
     session$sendCustomMessage("close_dropDownFS", "")
   })
   
+  callModule(module = renameClusterServer, id = "instance1", vals = vals)
+  callModule(module = renameClusterServer, id = "instance2", vals = vals)
   observeEvent(input$closeDropDownFS, {
     session$sendCustomMessage("close_dropDownFS", "")
   })
+  
+  
   
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression ####
