@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.2</span>
       </span>
     </div>
 
@@ -243,11 +243,12 @@
 
       
 
-      </header><script src="scanpy_curated_workflow_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Scanpy Curated Workflow</h1>
-                        <h4 data-toc-skip class="author">Nida Pervaiz, Irzam Sarfraz</h4>
+                        <h4 data-toc-skip class="author">Nida Pervaiz,
+Irzam Sarfraz</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/scanpy_curated_workflow.Rmd" class="external-link"><code>vignettes/articles/scanpy_curated_workflow.Rmd</code></a></small>
@@ -260,12 +261,35 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The <em>singleCellTK</em> package integrates functions from <a href="https://scanpy.readthedocs.io" class="external-link"><em>Scanpy</em></a> which is a scalable Python-based toolkit for analyzing single-cell gene expression data built on top of the <em><a href="https://anndata.readthedocs.io/" class="external-link">AnnData</a></em> framework to store data and results. It includes functions for finding variable genes, dimensionality reduction, clustering, and differential expression. The Python-based implementation efficiently deals with datasets of more than one million cells.</p>
-<p>Users can assess the Scanpy workflow via the singleCellTK package using either the R console or interactive graphical user interface (GUI) built with R/Shiny. The <em>singleCellTK</em> package uses the <em><a href="https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></em> object to store data and results. The Scanpy wrapper functions in <em>singleCellTK</em> automatically convert the data and results back and forth between SCE and AnnData objects so users do not have to do this manually.</p>
-<p>The Shiny app allows users to access Scanpy functions and workflows without having to know the underlying code. Users can access all functions in the <em>a la carte</em> workflow in combination with functions from other packages. The Shiny app also contains a curated workflow that lets the users run the steps of the complete Scanpy workflow in a sequential manner and display the results with interactive plots.</p>
-<p>In this tutorial, you can select the ‘Interactive Analysis’ tabs below for detailed instructions on how to run the Scanpy workflow with the Shiny or the ‘Console Analysis’ tabs for instructions on running the workflow using the R console.</p>
+<p>The <em>singleCellTK</em> package integrates functions from <a href="https://scanpy.readthedocs.io" class="external-link"><em>Scanpy</em></a> which is a
+scalable Python-based toolkit for analyzing single-cell gene expression
+data built on top of the <em><a href="https://anndata.readthedocs.io/" class="external-link">AnnData</a></em> framework to
+store data and results. It includes functions for finding variable
+genes, dimensionality reduction, clustering, and differential
+expression. The Python-based implementation efficiently deals with
+datasets of more than one million cells.</p>
+<p>Users can assess the Scanpy workflow via the singleCellTK package
+using either the R console or interactive graphical user interface (GUI)
+built with R/Shiny. The <em>singleCellTK</em> package uses the <em><a href="https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></em>
+object to store data and results. The Scanpy wrapper functions in
+<em>singleCellTK</em> automatically convert the data and results back
+and forth between SCE and AnnData objects so users do not have to do
+this manually.</p>
+<p>The Shiny app allows users to access Scanpy functions and workflows
+without having to know the underlying code. Users can access all
+functions in the <em>a la carte</em> workflow in combination with
+functions from other packages. The Shiny app also contains a curated
+workflow that lets the users run the steps of the complete Scanpy
+workflow in a sequential manner and display the results with interactive
+plots.</p>
+<p>In this tutorial, you can select the ‘Interactive Analysis’ tabs
+below for detailed instructions on how to run the Scanpy workflow with
+the Shiny or the ‘Console Analysis’ tabs for instructions on running the
+workflow using the R console.</p>
 <blockquote>
-<p><strong>Note:</strong> This tutorial assumes that the data has already been imported, QC’ed, and filtered. Please see the <a href="%60qc.link%60">Import and QC</a> tutorial for more information.</p>
+<p><strong>Note:</strong> This tutorial assumes that the data has
+already been imported, QC’ed, and filtered. Please see the <a href="%60qc.link%60">Import and QC</a> tutorial for more
+information.</p>
 </blockquote>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -279,38 +303,82 @@
 </div>
 
 <div id="interactive" class="tabcontent">
-<p>In this tutorial example, we illustrate all the steps of the <strong>Scanpy</strong> curated workflow and focus on the options available to customize the individual steps per the <a href="https://scanpy.readthedocs.io/" class="external-link">Scanpy instructions</a>. To start the <code>Scanpy</code> curated workflow in the Shiny app, click on the ‘Curated Workflows’ tab in the top nagivation menu and select <code>Scanpy</code>:</p>
-<p><strong>1. Normalize Data</strong> <br> The first major step in the analysis is to normalize the raw counts for differences in overall library size (i.e. total number of counts) and apply a log transformation. For this purpose, any assay containing raw counts in the uploaded data can be used. 1. Click on the ‘Normalize’ vertical tab. 2. Select the <code>assay</code> to normalize from the dropdown menu. 3. Modify optional parameters if necessary 4. Press the ‘Normalize’ button to start the normalization process.</p>
+<p>In this tutorial example, we illustrate all the steps of the
+<strong>Scanpy</strong> curated workflow and focus on the options
+available to customize the individual steps per the <a href="https://scanpy.readthedocs.io/" class="external-link">Scanpy instructions</a>. To start
+the <code>Scanpy</code> curated workflow in the Shiny app, click on the
+‘Curated Workflows’ tab in the top nagivation menu and select
+<code>Scanpy</code>:</p>
+<p><strong>1. Normalize Data</strong> <br> The first major step in the
+analysis is to normalize the raw counts for differences in overall
+library size (i.e. total number of counts) and apply a log
+transformation. For this purpose, any assay containing raw counts in the
+uploaded data can be used. 1. Click on the ‘Normalize’ vertical tab. 2.
+Select the <code>assay</code> to normalize from the dropdown menu. 3.
+Modify optional parameters if necessary 4. Press the ‘Normalize’ button
+to start the normalization process.</p>
 <blockquote>
-<p><strong>Note:</strong> The input raw counts matrix should only contained filtered cells and empty droplets should already have been removed. If you applied ambient RNA removal algorithms and want to use the decontominated counts, make sure to specify the appropriate matrix as input.</p>
+<p><strong>Note:</strong> The input raw counts matrix should only
+contained filtered cells and empty droplets should already have been
+removed. If you applied ambient RNA removal algorithms and want to use
+the decontominated counts, make sure to specify the appropriate matrix
+as input.</p>
 </blockquote>
 <p><img src="ui_screenshots/scanpy/scanpy_normalize.png"><br></p>
-<p><strong>2. Highly Variable Genes</strong> <br> Identification and selection of highly variable features/genes is important in the <code>Scanpy</code> workflow to produce high quality clustering results. Currently, <code>Scanpy</code> provides three methods for variable genes identification (<code>seurat</code>, <code>cell_ranger</code> and <code>seurat_v3</code>).</p>
+<p><strong>2. Highly Variable Genes</strong> <br> Identification and
+selection of highly variable features/genes is important in the
+<code>Scanpy</code> workflow to produce high quality clustering results.
+Currently, <code>Scanpy</code> provides three methods for variable genes
+identification (<code>seurat</code>, <code>cell_ranger</code> and
+<code>seurat_v3</code>).</p>
 <ol style="list-style-type: decimal">
 <li>Click on the ‘Highly Variable Genes’ vertical tab.</li>
 <li>Select method for computation of highly variable genes.</li>
-<li>Input the number of genes that should be identified as variable.</li>
+<li>Input the number of genes that should be identified as
+variable.</li>
 <li>Modify optional parameters if necessary.</li>
 <li>Press ‘Find HVG’ button to find the top highly variable genes.</li>
-<li>A plot is produced that displays the relationship between the mean and variability or disperson of each gene. Highly variable features will have higher levels of variability or dispersion regardless of the mean.</li>
+<li>A plot is produced that displays the relationship between the mean
+and variability or disperson of each gene. Highly variable features will
+have higher levels of variability or dispersion regardless of the
+mean.</li>
 </ol>
 <p><img src="ui_screenshots/scanpy/scanpy_hvg.png"><br></p>
-<p><strong>3. Dimensionality Reduction</strong> <br><code>Scanpy</code> workflow offers <code>PCA</code> for dimensionality reduction. The principal components (PCs) from PCA will be used in the downstream clustering and 2-D embedding analyses. In the downstream analysis, you will have to select the number of PCs to use. Several plots are available for the user to inspect the output of the dimensionality reduction and identify the appropriate number of PCs to use in the downstream analyses.</p>
+<p><strong>3. Dimensionality Reduction</strong> <br><code>Scanpy</code>
+workflow offers <code>PCA</code> for dimensionality reduction. The
+principal components (PCs) from PCA will be used in the downstream
+clustering and 2-D embedding analyses. In the downstream analysis, you
+will have to select the number of PCs to use. Several plots are
+available for the user to inspect the output of the dimensionality
+reduction and identify the appropriate number of PCs to use in the
+downstream analyses.</p>
 <ul>
-<li>The ‘PCA Variance’ show the percentage of variability explained by each PC. This plot can be useful for selecting the number of PCs. In general, the “elbow” of the curve is a good selection criteria. The elbow is where there is a sharp drop in the amount the percentage of variance decreases after including additional PCs.</li>
-<li>The ‘PCA Plot’ can be used to view cells in the reduced dimensional space of PC1 versus PC2.</li>
-<li>The ‘PCA Gene Ranking’ plot shows the highest ranked genes for each PC.</li>
+<li>The ‘PCA Variance’ show the percentage of variability explained by
+each PC. This plot can be useful for selecting the number of PCs. In
+general, the “elbow” of the curve is a good selection criteria. The
+elbow is where there is a sharp drop in the amount the percentage of
+variance decreases after including additional PCs.</li>
+<li>The ‘PCA Plot’ can be used to view cells in the reduced dimensional
+space of PC1 versus PC2.</li>
+<li>The ‘PCA Gene Ranking’ plot shows the highest ranked genes for each
+PC.</li>
 </ul>
 <ol style="list-style-type: decimal">
 <li>Click on the ‘Dimensionality Reduction’ vertical tab.</li>
 <li>Change the method for computation of PCA if desired.</li>
 <li>Input the total number of components to compute.</li>
 <li>Press the ‘Run PCA’ button to start processing.</li>
-<li>Select the number of PCs that should be used in the downstream clustering and 2D-Embedding analyses.</li>
-<li>The plot area from where all computed plots can be viewed by the user.</li>
+<li>Select the number of PCs that should be used in the downstream
+clustering and 2D-Embedding analyses.</li>
+<li>The plot area from where all computed plots can be viewed by the
+user.</li>
 </ol>
 <p><img src="ui_screenshots/scanpy/scanpy_pca.png"><br></p>
-<p><strong>4. 2D-Embedding</strong> <br> The relationships between cells can be viewed on 2-D scatter plots using embedding algorithms such as ‘UMAP’ and ‘tSNE’. In these plots, each point is a cell and cells with more similar expression profiles will be closer together in the plot.</p>
+<p><strong>4. 2D-Embedding</strong> <br> The relationships between cells
+can be viewed on 2-D scatter plots using embedding algorithms such as
+‘UMAP’ and ‘tSNE’. In these plots, each point is a cell and cells with
+more similar expression profiles will be closer together in the
+plot.</p>
 <ol style="list-style-type: decimal">
 <li>Click on the ‘2-D Embedding’ vertical tab.</li>
 <li>Select the ‘tSNE’ or ‘UMAP’ sub-tab.</li>
@@ -319,52 +387,101 @@
 <li>A 2D embedding scatter plot will be generated on the right.</li>
 </ol>
 <p><img src="ui_screenshots/scanpy/scanpy_umap.png"><br></p>
-<p><strong>5. Clustering</strong> <br> Cells can be clustered using a previously computed reduced dimensional object. Cluster labels will be displaye on previously computed 2-D embedding or reduction plots.</p>
+<p><strong>5. Clustering</strong> <br> Cells can be clustered using a
+previously computed reduced dimensional object. Cluster labels will be
+displaye on previously computed 2-D embedding or reduction plots.</p>
 <ol style="list-style-type: decimal">
 <li>Click on the ‘Clustering’ vertical tab.</li>
 <li>Select clustering method.</li>
 <li>Set parameters.</li>
 <li>Press ‘Find Clusters’ button to start processing.</li>
-<li>Re-computed plots with cluster labels. Only those plots are available that have previously been computed.</li>
+<li>Re-computed plots with cluster labels. Only those plots are
+available that have previously been computed.</li>
 </ol>
 <p><img src="ui_screenshots/scanpy/scanpy_clustering.png"><br></p>
-<p><strong>6. Find Markers</strong> <br> ‘Find Markers’ tab can be used to identify the marker genes that are enriched in each cluster or group. Markers genes can be identified that are differentially expressed between each cluster and all other cluster or between two selected clusters/groups. Expression of individual marker genes can be visualized in Dot plots, Violin plots, Matrix plots and via a Heatmap.</p>
+<p><strong>6. Find Markers</strong> <br> ‘Find Markers’ tab can be used
+to identify the marker genes that are enriched in each cluster or group.
+Markers genes can be identified that are differentially expressed
+between each cluster and all other cluster or between two selected
+clusters/groups. Expression of individual marker genes can be visualized
+in Dot plots, Violin plots, Matrix plots and via a Heatmap.</p>
 <ol style="list-style-type: decimal">
 <li>Click on “Find Markers” vertical tab.</li>
 <li>Change parameters if desired and press “Find Markers”.</li>
-<li>Differentially expressed features will be displayed in the table on the right. Additional filters can be applied to further refine the list of differentially expressed genes. For example, specifying a log fold change cutoff in addition to an adjusted p-value cutoff can sometimes help identify better marker genes.</li>
+<li>Differentially expressed features will be displayed in the table on
+the right. Additional filters can be applied to further refine the list
+of differentially expressed genes. For example, specifying a log fold
+change cutoff in addition to an adjusted p-value cutoff can sometimes
+help identify better marker genes.</li>
 </ol>
 <p><img src="ui_screenshots/scanpy/scanpy_fm_1.png"><br></p>
 <ol start="4" style="list-style-type: decimal">
-<li>A Heatmap plot of the top differentially expressed genes for each cluster/group can be used to visualize the patterns of expression within and across clusters/groups.</li>
+<li>A Heatmap plot of the top differentially expressed genes for each
+cluster/group can be used to visualize the patterns of expression within
+and across clusters/groups.</li>
 </ol>
 <p><img src="ui_screenshots/scanpy/scanpy_fm_2.png"><br></p>
 <ol start="5" style="list-style-type: decimal">
-<li>Desired marker genes can be selected from the table (3) and clicking on these genes will generate feature plots at the bottom of the screen. Selecting marker genes this way can highlight particular clusters on a UMAP (feature plot) or other plots and can identify cell-types based on their respective marker genes.</li>
+<li>Desired marker genes can be selected from the table (3) and clicking
+on these genes will generate feature plots at the bottom of the screen.
+Selecting marker genes this way can highlight particular clusters on a
+UMAP (feature plot) or other plots and can identify cell-types based on
+their respective marker genes.</li>
 </ol>
 <p><img src="ui_screenshots/scanpy/scanpy_fm_3.png"><br></p>
 </div>
 <div id="console" class="tabcontent">
-<p>All methods Scanpy wrapper functions in <em>singleCellTK</em> take a <code>SingleCellExperiment</code> (SCE) object as an input and will return an SCE with additional information. For this tutorial, we will use a small PBMC dataset that has been previously run through quality control and has been filtered:</p>
+<p>All methods Scanpy wrapper functions in <em>singleCellTK</em> take a
+<code>SingleCellExperiment</code> (SCE) object as an input and will
+return an SCE with additional information. For this tutorial, we will
+use a small PBMC dataset that has been previously run through quality
+control and has been filtered:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"tutorial_pbmc3k_qc.rds"</span><span class="op">)</span></span></code></pre></div>
-<p><strong>1. Normalize Data</strong> <br> Once raw data is uploaded and stored in a <code>SingleCellExperiment</code> object, <code><a href="../reference/runScanpyNormalizeData.html">runScanpyNormalizeData()</a></code> function can be used to normalize the data. The method returns a <code>SingleCellExperiment</code> object with normalized data stored as a new assay in the input object.</p>
-<p>The main parameters to this function include <code>useAssay</code> which is used to specify the assay with raw counts that should be normalized and <code>normAssayName</code> which will be the name of the new normalized assay to be created.</p>
+<p><strong>1. Normalize Data</strong> <br> Once raw data is uploaded and
+stored in a <code>SingleCellExperiment</code> object,
+<code><a href="../reference/runScanpyNormalizeData.html">runScanpyNormalizeData()</a></code> function can be used to normalize
+the data. The method returns a <code>SingleCellExperiment</code> object
+with normalized data stored as a new assay in the input object.</p>
+<p>The main parameters to this function include <code>useAssay</code>
+which is used to specify the assay with raw counts that should be
+normalized and <code>normAssayName</code> which will be the name of the
+new normalized assay to be created.</p>
 <blockquote>
-<p><strong>Note:</strong> The input raw counts matrix should only contained filtered cells and empty droplets should already have been removed. If you applied ambient RNA removal algorithms and want to use the decontominated counts, make sure to specify the appropriate matrix as input.</p>
+<p><strong>Note:</strong> The input raw counts matrix should only
+contained filtered cells and empty droplets should already have been
+removed. If you applied ambient RNA removal algorithms and want to use
+the decontominated counts, make sure to specify the appropriate matrix
+as input.</p>
 </blockquote>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyNormalizeData.html">runScanpyNormalizeData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, normAssayName <span class="op">=</span> <span class="st">"scanpyNormData"</span><span class="op">)</span></span></code></pre></div>
-<p><strong>2. Scale Data</strong> <br> Normalized data can be scaled by z-scoring with the <code><a href="../reference/runScanpyScaleData.html">runScanpyScaleData()</a></code> function that takes input a <code>SingleCellExperiment</code> object that has been normalized previously by the <code><a href="../reference/runScanpyNormalizeData.html">runScanpyNormalizeData()</a></code> function. The scaled assay is stored back in the input object.</p>
-<p>The main parameters to this function include <code>useAssay</code> which is used to specify the normalized assay from previous steps and <code>scaledAssayName</code> which will be the name of the new scaled assay to be created.</p>
+<p><strong>2. Scale Data</strong> <br> Normalized data can be scaled by
+z-scoring with the <code><a href="../reference/runScanpyScaleData.html">runScanpyScaleData()</a></code> function that takes
+input a <code>SingleCellExperiment</code> object that has been
+normalized previously by the <code><a href="../reference/runScanpyNormalizeData.html">runScanpyNormalizeData()</a></code>
+function. The scaled assay is stored back in the input object.</p>
+<p>The main parameters to this function include <code>useAssay</code>
+which is used to specify the normalized assay from previous steps and
+<code>scaledAssayName</code> which will be the name of the new scaled
+assay to be created.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyScaleData.html">runScanpyScaleData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyNormData"</span>, scaledAssayName <span class="op">=</span> <span class="st">"scanpyScaledData"</span><span class="op">)</span></span></code></pre></div>
-<p><strong>3. Highly Variable Genes</strong> <br> Highly variable genes can be identified by first using the <code><a href="../reference/runScanpyFindHVG.html">runScanpyFindHVG()</a></code> function that computes that statistics against a selected HVG method in the rowData of input object. The variable genes can be visualized using the <code><a href="../reference/plotScanpyHVG.html">plotScanpyHVG()</a></code> method. <br></p>
-<p>The main parameters to this function include <code>useAssay</code> which is used to specify the name of the input log normalized assay and <code>method</code> which is used to specify the method to use for computing the variability of each gene.</p>
+<p><strong>3. Highly Variable Genes</strong> <br> Highly variable genes
+can be identified by first using the <code><a href="../reference/runScanpyFindHVG.html">runScanpyFindHVG()</a></code>
+function that computes that statistics against a selected HVG method in
+the rowData of input object. The variable genes can be visualized using
+the <code><a href="../reference/plotScanpyHVG.html">plotScanpyHVG()</a></code> method. <br></p>
+<p>The main parameters to this function include <code>useAssay</code>
+which is used to specify the name of the input log normalized assay and
+<code>method</code> which is used to specify the method to use for
+computing the variability of each gene.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyFindHVG.html">runScanpyFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyNormData"</span>, method <span class="op">=</span> <span class="st">"seurat"</span>, minMean <span class="op">=</span> <span class="fl">0.0125</span>, maxMean <span class="op">=</span> <span class="fl">3</span>, maxDisp <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
-<p>The <code>getTopHVG</code> function can be used to select the top most variable genes and store it back in <code>rowData</code> of the SCE object as a Boolean vector.</p>
+<p>The <code>getTopHVG</code> function can be used to select the top
+most variable genes and store it back in <code>rowData</code> of the SCE
+object as a Boolean vector.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"seurat"</span>, hvgNumber <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] "PPBP"         "NFE2L2"       "DOK3"         "YPEL2"        "ARVCF"       </span></span>
@@ -372,42 +489,87 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScanpyHVG.html">plotScanpyHVG</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
 <p><img src="scanpy_cnsl_screenshots/scanpy_hvg.png"><br></p>
-<p><strong>4. Dimensionality Reduction</strong> <br> PCA can be computed using the <code><a href="../reference/runScanpyPCA.html">runScanpyPCA()</a></code> function.</p>
-<p>The main parameters to this function include <code>useAssay</code> which is used to specify the name of the input log normalized assay and <code>method</code> which is used to specify the method to use for computing the variability of each gene.</p>
+<p><strong>4. Dimensionality Reduction</strong> <br> PCA can be computed
+using the <code><a href="../reference/runScanpyPCA.html">runScanpyPCA()</a></code> function.</p>
+<p>The main parameters to this function include <code>useAssay</code>
+which is used to specify the name of the input log normalized assay and
+<code>method</code> which is used to specify the method to use for
+computing the variability of each gene.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyPCA.html">runScanpyPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyScaledData"</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyPCA"</span>, nPCs <span class="op">=</span> <span class="fl">50</span>, method <span class="op">=</span> <span class="st">"auto"</span>, use_highly_variable <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>The results of the PCA can be visualized in several ways. The <code><a href="../reference/plotScanpyPCAVariance.html">plotScanpyPCAVariance()</a></code> function shows the percentage of variability explained by each PC. This plot can be useful for selecting the number of PCs. In general, the “elbow” of the curve is a good selection criteria. The elbow is where there is a sharp drop in the amount the percentage of variance decreases after including additional PCs.</p>
+<p>The results of the PCA can be visualized in several ways. The
+<code><a href="../reference/plotScanpyPCAVariance.html">plotScanpyPCAVariance()</a></code> function shows the percentage of
+variability explained by each PC. This plot can be useful for selecting
+the number of PCs. In general, the “elbow” of the curve is a good
+selection criteria. The elbow is where there is a sharp drop in the
+amount the percentage of variance decreases after including additional
+PCs.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScanpyPCAVariance.html">plotScanpyPCAVariance</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, nPCs <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
 <p><img src="scanpy_cnsl_screenshots/scanpy_pca_variance.png"><br></p>
-<p>The <code><a href="../reference/plotScanpyPCA.html">plotScanpyPCA()</a></code> function can be used to view cells in the reduced dimensional space of PC1 versus PC2.</p>
+<p>The <code><a href="../reference/plotScanpyPCA.html">plotScanpyPCA()</a></code> function can be used to view cells
+in the reduced dimensional space of PC1 versus PC2.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScanpyPCA.html">plotScanpyPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyPCA"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="scanpy_cnsl_screenshots/scanpy_pca.png"><br></p>
-<p>The <code><a href="../reference/plotScanpyPCAGeneRanking.html">plotScanpyPCAGeneRanking()</a></code> function shows the highest ranked genes for each PC.</p>
+<p>The <code><a href="../reference/plotScanpyPCAGeneRanking.html">plotScanpyPCAGeneRanking()</a></code> function shows the
+highest ranked genes for each PC.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScanpyPCAGeneRanking.html">plotScanpyPCAGeneRanking</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span><span class="op">)</span></span></code></pre></div>
 <p><img src="scanpy_cnsl_screenshots/scanpy_pca_gene_ranking.png"><br></p>
 <p><strong>5. 2-D Embedding</strong> <br></p>
-<p>The relationships between cells can be viewed on 2-D scatter plots using embedding algorithms such as ‘UMAP’ and ‘tSNE’. In these plots, each point is a cell and cells with more similar expression profiles will be closer together in the plot. <code><a href="../reference/runScanpyTSNE.html">runScanpyTSNE()</a></code> and <code><a href="../reference/runScanpyUMAP.html">runScanpyUMAP()</a></code> can be used to compute 2-D embeddings which are stored in the <code>reducedDim</code> slot of the SCE object.</p>
-<p>Parameters to both functions include <code>useReducedDim</code> which specifies the reduced dimensional object to use as input, <code>reducedDimName</code> which will be the name of this new reduction, and <code>dims</code> which specifies the number of dimensions to use from the reduced dimensional object. The <code><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding()</a></code> function can be used to visualize the results. Below is an example of calculating and displaying a UMAP:</p>
+<p>The relationships between cells can be viewed on 2-D scatter plots
+using embedding algorithms such as ‘UMAP’ and ‘tSNE’. In these plots,
+each point is a cell and cells with more similar expression profiles
+will be closer together in the plot. <code><a href="../reference/runScanpyTSNE.html">runScanpyTSNE()</a></code> and
+<code><a href="../reference/runScanpyUMAP.html">runScanpyUMAP()</a></code> can be used to compute 2-D embeddings which
+are stored in the <code>reducedDim</code> slot of the SCE object.</p>
+<p>Parameters to both functions include <code>useReducedDim</code> which
+specifies the reduced dimensional object to use as input,
+<code>reducedDimName</code> which will be the name of this new
+reduction, and <code>dims</code> which specifies the number of
+dimensions to use from the reduced dimensional object. The
+<code><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding()</a></code> function can be used to visualize the
+results. Below is an example of calculating and displaying a UMAP:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyUMAP.html">runScanpyUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"scanpyPCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyUMAP"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyUMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="scanpy_cnsl_screenshots/scanpy_umap.png"><br></p>
 <p><strong>6. Clustering</strong> <br></p>
-<p>The <code><a href="../reference/runScanpyFindClusters.html">runScanpyFindClusters()</a></code> function can be used to cluster cells. The main parameters to this function include <code>useAssay</code> which should be the name of the scaled assay, <code>useReducedDim</code> <code>useReducedDim</code> which specifies the reduced dimensional object to use as input, <code>dims</code> which specifies the number of dimensions to use from the reduced dimensional object, and <code>method</code> which specifies the clustering method.</p>
+<p>The <code><a href="../reference/runScanpyFindClusters.html">runScanpyFindClusters()</a></code> function can be used to
+cluster cells. The main parameters to this function include
+<code>useAssay</code> which should be the name of the scaled assay,
+<code>useReducedDim</code> <code>useReducedDim</code> which specifies
+the reduced dimensional object to use as input, <code>dims</code> which
+specifies the number of dimensions to use from the reduced dimensional
+object, and <code>method</code> which specifies the clustering
+method.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyFindClusters.html">runScanpyFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyScaledData"</span>, useReducedDim <span class="op">=</span> <span class="st">"scanpyPCA"</span>, method <span class="op">=</span> <span class="st">"leiden"</span>, resolution <span class="op">=</span> <span class="fl">1</span>, nNeighbors <span class="op">=</span> <span class="fl">10</span>, dims <span class="op">=</span> <span class="fl">10</span>, cor_method <span class="op">=</span> <span class="st">"pearson"</span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding()</a></code> can then be used to plot the cluster labels on the previously computed 2-D embeddings or reduced dimensional objects. For example, we can plot the cluster labels on the UMAP:</p>
+<p><code><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding()</a></code> can then be used to plot the
+cluster labels on the previously computed 2-D embeddings or reduced
+dimensional objects. For example, we can plot the cluster labels on the
+UMAP:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyUMAP"</span>, color <span class="op">=</span> <span class="st">'Scanpy_leiden_1'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="scanpy_cnsl_screenshots/scanpy_clustering.png"><br></p>
-<p><strong>7. Find Markers</strong> <br> Marker genes can be identified using the <code><a href="../reference/runScanpyFindMarkers.html">runScanpyFindMarkers()</a></code> function. The main parameter for this function is a vector of cluster/group labels that are stored in the <code>colData</code> of the input SCE object. By default. each cluster of cells will be compared to the rest of the cells in all other clusters. Users can can find also find differentially expressed genes between two clusters using the <code>group1</code> and <code>group2</code> parameters. Generally, group labels defined by clustering functions will be used as input. Here we will find markers for the clusters we identified previously:</p>
+<p><strong>7. Find Markers</strong> <br> Marker genes can be identified
+using the <code><a href="../reference/runScanpyFindMarkers.html">runScanpyFindMarkers()</a></code> function. The main
+parameter for this function is a vector of cluster/group labels that are
+stored in the <code>colData</code> of the input SCE object. By default.
+each cluster of cells will be compared to the rest of the cells in all
+other clusters. Users can can find also find differentially expressed
+genes between two clusters using the <code>group1</code> and
+<code>group2</code> parameters. Generally, group labels defined by
+clustering functions will be used as input. Here we will find markers
+for the clusters we identified previously:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyFindMarkers.html">runScanpyFindMarkers</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colDataName <span class="op">=</span> <span class="st">"Scanpy_leiden_1"</span>, nGenes <span class="op">=</span> <span class="fl">10</span>, test <span class="op">=</span> <span class="st">"t-test"</span>, corr_method <span class="op">=</span> <span class="st">"benjamini-hochberg"</span><span class="op">)</span></span></code></pre></div>
-<p>The full table of differentially expressed marker genes can be accessed in the metadata with the command <code>metadata(sce)[["scanpyMarkersTable"]]</code>. Here are the first few genes in the table:</p>
+<p>The full table of differentially expressed marker genes can be
+accessed in the metadata with the command
+<code>metadata(sce)[["scanpyMarkersTable"]]</code>. Here are the first
+few genes in the table:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">metadata</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[[</span><span class="st">"scanpyMarkersTable"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##        Gene findMarker_cluster  Log2_FC        Pvalue   zscore</span></span>
@@ -417,7 +579,8 @@
 <span><span class="co">## 04 HLA-DPB1                  0 4.021307 4.142218e-253 51.94960</span></span>
 <span><span class="co">## 05 HLA-DRB1                  0 3.864657 3.225850e-229 47.71487</span></span>
 <span><span class="co">## 06    CD79B                  0 5.529685 1.860679e-150 44.38144</span></span></code></pre>
-<p>Expression of individual marker genes can be visualized in Feature plots, Dot plots, Violin plots, Matrix plots and via a Heatmap:</p>
+<p>Expression of individual marker genes can be visualized in Feature
+plots, Dot plots, Violin plots, Matrix plots and via a Heatmap:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScanpyEmbedding.html">plotScanpyEmbedding</a></span><span class="op">(</span><span class="va">sce</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD79A"</span>, <span class="st">"CST3"</span><span class="op">)</span>, reducedDimName <span class="op">=</span> <span class="st">"scanpyUMAP"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotScanpyDotPlot.html">plotScanpyDotPlot</a></span><span class="op">(</span><span class="va">sce</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD79A"</span>, <span class="st">"CST3"</span><span class="op">)</span>, groupBy <span class="op">=</span> <span class="st">"Scanpy_leiden_1"</span><span class="op">)</span></span>
