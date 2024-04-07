@@ -6,15 +6,15 @@
 \usage{
 runScranSNN(
   inSCE,
-  useReducedDim = NULL,
+  useReducedDim = "PCA",
   useAssay = NULL,
   useAltExp = NULL,
   altExpAssay = "counts",
   altExpRedDim = NULL,
-  clusterName = "scranSNN_cluster",
-  k = 8,
+  clusterName = "cluster",
+  k = 14,
   nComp = 10,
-  weightType = c("rank", "number", "jaccard"),
+  weightType = "jaccard",
   algorithm = c("louvain", "leiden", "walktrap", "infomap", "fastGreedy", "labelProp",
     "leadingEigen"),
   BPPARAM = BiocParallel::SerialParam(),
@@ -27,7 +27,7 @@ runScranSNN(
 
 \item{useReducedDim}{A single \code{character}, specifying which
 low-dimension representation (\code{\link{reducedDim}})
-to perform the clustering algorithm on. Default \code{NULL}.}
+to perform the clustering algorithm on. Default \code{"PCA"}.}
 
 \item{useAssay}{A single \code{character}, specifying which
 \code{\link{assay}} to perform the clustering algorithm
@@ -49,18 +49,18 @@ algorithm on. Default \code{NULL}.}
 
 \item{clusterName}{A single \code{character}, specifying the name to store
 the cluster label in \code{\link{colData}}. Default
-\code{"scranSNN_cluster"}.}
+\code{"cluster"}.}
 
 \item{k}{An \code{integer}, the number of nearest neighbors used to construct
 the graph. Smaller value indicates higher resolution and larger number of
-clusters. Default \code{8}.}
+clusters. Default \code{14}.}
 
 \item{nComp}{An \code{integer}. The number of components to use for graph
 construction. Default \code{10}. See Detail.}
 
 \item{weightType}{A single \code{character}, that specifies the edge weighing
 scheme when constructing the Shared Nearest-Neighbor (SNN) graph. Choose from
-\code{"rank"}, \code{"number"}, \code{"jaccard"}. Default \code{"rank"}.}
+\code{"rank"}, \code{"number"}, \code{"jaccard"}. Default \code{"jaccard"}.}
 
 \item{algorithm}{A single \code{character}, that specifies the community
 detection algorithm to work on the SNN graph. Choose from \code{"leiden"},

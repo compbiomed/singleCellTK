@@ -32,9 +32,6 @@ to "ridge", "violin", "feature", "dot" and "heatmap".}
 \item{groupVariable}{Specify the column name from the colData slot that
 should be used as grouping variable.}
 
-\item{reducedDimName}{saved dimension reduction name in the
-SingleCellExperiment object. Default \code{seuratUMAP}.}
-
 \item{splitBy}{Specify the column name from the colData slot that should be
 used to split samples.
  Default is \code{NULL}.}

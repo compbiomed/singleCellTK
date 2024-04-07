@@ -153,7 +153,7 @@ runTSCAN <- function(inSCE,
     if (is.null(cluster)) {
         # DON'T RETURN TO `inSCE`
         # It really overwrites existing cluster labels
-        sce <- runScranSNN(inSCE, useReducedDim = useReducedDim, seed = seed)
+        sce <- runScranSNN(inSCE, useReducedDim = useReducedDim, clusterName = "scranSNN_cluster", k = 8, weightType = "jaccard", seed = seed)
         cluster <- colData(sce)$scranSNN_cluster
         rm(sce)
     } else {
