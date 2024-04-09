@@ -10,7 +10,7 @@ runSingleR(
   useSCERef = NULL,
   labelColName = NULL,
   useBltinRef = c("hpca", "bpe", "mp", "dice", "immgen", "mouse", "zeisel"),
-  level = c("main", "fine", "ont"),
+  level = "fine",
   featureType = c("symbol", "ensembl"),
   labelByCluster = NULL
 )
@@ -34,7 +34,7 @@ provided by SingleR. Choose from \code{"hpca", "bpe", "mp", "dice", "immgen",
 
 \item{level}{A string for cell type labeling level. Used only when using
 some of the SingleR built-in references. Choose from \code{"main", "fine",
-"ont"}. Default \code{"main"}.}
+"ont"}. Default \code{"fine"}.}
 
 \item{featureType}{A string for whether to use gene symbols or Ensembl IDs
 when using a SingleR built-in reference. Should be set based on the type of
