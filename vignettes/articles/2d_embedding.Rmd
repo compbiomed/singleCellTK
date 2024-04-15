@@ -142,7 +142,7 @@ sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratNormData", scale = TRUE, redu
 Running UMAP from *scater* package:
 
 ```{r "runUMAP", eval = FALSE}
-sce <- runUMAP(inSCE = sce, useReducedDim = "PCA", reducedDimName = "UMAP")
+sce <- runUMAP(inSCE = sce, useReducedDim = "PCA", initialDims = 25, reducedDimName = "UMAP")
 ```
 
 Using the *Seurat* UMAP wrapper is recommended only in the [Seurat Curated Workflow](seurat_curated_workflow.html).

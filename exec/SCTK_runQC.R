@@ -244,6 +244,13 @@ if (is.null(subTitles)) {
     subTitles <- unlist(strsplit(opt[["subTitles"]], ","))
 }
 
+if ("HTAN" %in% formats) {
+    if (!("FlatFile" %in% formats)) {
+        message("Notice: HTAN specified as output without FlatFile. Automatically including FlatFile export.")
+        formats <- append(formats, "FlatFile")
+    }
+}
+
 ## Parse parameters for QC algorithms
 if (!is.null(yamlFile)) {
     arguments <- c('Params')
@@ -328,7 +335,7 @@ level3Meta <- list()
 level4Meta <- list()
 
 if (!is.null(flatFiles)) {
-    flatFiles <- split(flatFiles, ceiling(seq_along(flatFiles)/3))
+    flatFiles <- split(flatFiles, ceiling(seq_along(flatFiles)/6))
 }
 
 for(i in seq_along(process)) {
@@ -358,7 +365,7 @@ for(i in seq_along(process)) {
     mitoInfo <- .importMito(MitoImport = MitoImport, MitoType = MitoType)
 
     cellQCAlgos <- c("QCMetrics", "scDblFinder", "cxds", "bcds", "scrublet", "doubletFinder",
-    "cxds_bcds_hybrid", "decontX", "decontX_bg", "soupX", "soupX_bg")
+    "cxds_bcds_hybrid", "decontX", "decontX_bg", "soupX", "soupX_bg") #scrublet
 
     # Checking to see if the input is a file instead of a directory, for RDS and H5AD reading
     # also check to see if the sample name is specified, and if so, set it
@@ -633,6 +640,7 @@ if (!isTRUE(split)) {
         getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
 
         ## generate meta data
+        # generate HTAN level3/level4 output
         if ("FlatFile" %in% formats) {
             if ("HTAN" %in% formats) {
                 meta <- generateHTANMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename,
@@ -680,6 +688,7 @@ if (!isTRUE(split)) {
         }
 
         exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
+        # generate HTAN level3/level4 output
         if ("FlatFile" %in% formats) {
             if ("HTAN" %in% formats) {
                 meta <- generateHTANMeta(dropletSCE = NULL, cellSCE = cellSCE, samplename = samplename,
@@ -714,6 +723,7 @@ if (!isTRUE(split)) {
         names(metadata(dropletSCE)$sctk$runBarcodeRankDrops) <- sample
 
         exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
+        # generate HTAN level3/level4 output
         if ("FlatFile" %in% formats) {
             if ("HTAN" %in% formats) {
                 meta <- generateHTANMeta(dropletSCE = dropletSCE, cellSCE = NULL, samplename = samplename,

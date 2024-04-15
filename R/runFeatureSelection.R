@@ -14,7 +14,7 @@
 #' raw counts for \code{"vst"} method, or a normalized assay for other methods.
 #' @param method Specify the method to use for variable gene selection.
 #' Options include \code{"vst"}, \code{"mean.var.plot"} or \code{"dispersion"}
-#' from Seurat and \code{"modelGeneVar"} from Scran.
+#' from Seurat and \code{"modelGeneVar"} from Scran. Default \code{"modelGeneVar"}
 #' @return The input \linkS4class{SingleCellExperiment} object that contains 
 #' the computed statistics in the \code{rowData} slot
 #' @seealso \code{\link{runModelGeneVar}}, \code{\link{runSeuratFindHVG}},
@@ -27,9 +27,9 @@
 #'                                            "modelGeneVar")
 runFeatureSelection <- function(inSCE,
                                 useAssay,
-                                method = c("vst", "mean.var.plot",
-                                           "dispersion", "modelGeneVar", "cell_ranger")){
-  method <- match.arg(method)
+                                method = "modelGeneVar")
+  {
+  method <- match.arg(method, choices = c("vst", "mean.var.plot", "dispersion", "modelGeneVar", "cell_ranger"))
   seuratMethods <- c("vst", "mean.var.plot", "dispersion")
   scranMethods <- c("modelGeneVar")
   scanpyMethods <- c("cell_ranger")
