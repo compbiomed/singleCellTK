@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.13.2</span>
       </span>
     </div>
 
@@ -562,7 +562,6 @@ where <code>"3"</code> corresponds to <code>useCluster</code> in the
 calculation above.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANClusterDEG.html">plotTSCANClusterDEG</a></span><span class="op">(</span><span class="va">sce</span>, useCluster <span class="op">=</span> <span class="fl">3</span>, pathIndex <span class="op">=</span> <span class="fl">6</span>, useReducedDim <span class="op">=</span> <span class="st">"UMAP"</span>, topN <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
-<p><img src="trajectoryAnalysis_files/figure-html/plotTSCANClusterDE-1.png" width="700" style="display: block; margin: auto;"></p>
 <details><summary><b>Show DEG tables of each path</b></summary><p>There will be a table (<code>DFrame</code> class) for each of the
 branch paths and all of them can be retrieved within a list object:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -572,20 +571,7 @@ branch paths and all of them can be retrieved within a list object:</p>
 feature expression, looks like:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tableList</span><span class="op">$</span><span class="va">`6`</span></span></code></pre></div>
-<pre><code><span><span class="co">## DataFrame with 12 rows and 3 columns</span></span>
-<span><span class="co">##              logFC     p.value         FDR</span></span>
-<span><span class="co">##          &lt;numeric&gt;   &lt;numeric&gt;   &lt;numeric&gt;</span></span>
-<span><span class="co">## GPX1     -0.161598 7.72253e-08 4.82474e-05</span></span>
-<span><span class="co">## RBP7     -0.131954 3.57329e-07 1.84926e-04</span></span>
-<span><span class="co">## CD14     -0.143327 2.95415e-06 1.33774e-03</span></span>
-<span><span class="co">## S100A12  -0.121480 5.04022e-06 1.90967e-03</span></span>
-<span><span class="co">## FOLR3    -0.106884 1.15951e-05 3.93798e-03</span></span>
-<span><span class="co">## ...            ...         ...         ...</span></span>
-<span><span class="co">## LYZ     -0.1007743 5.10931e-05   0.0132210</span></span>
-<span><span class="co">## QPCT    -0.0691165 1.00350e-04   0.0227209</span></span>
-<span><span class="co">## TSPO    -0.1225684 1.17562e-04   0.0260747</span></span>
-<span><span class="co">## IL8     -0.1241204 1.38549e-04   0.0289568</span></span>
-<span><span class="co">## BST1    -0.0769784 1.84220e-04   0.0357519</span></span></code></pre>
+<pre><code><span><span class="co">## DataFrame with 0 rows and 3 columns</span></span></code></pre>
 </details><details><summary><b>Show recomputed pseudotime rooting from the cluster</b></summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANClusterPseudo.html">plotTSCANClusterPseudo</a></span><span class="op">(</span><span class="va">sce</span>, useCluster <span class="op">=</span> <span class="va">useCluster</span>, useReducedDim <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="trajectoryAnalysis_files/figure-html/tscanClusterPseudo-1.png" width="700" style="display: block; margin: auto;"></p>

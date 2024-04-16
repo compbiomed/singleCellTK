@@ -14,7 +14,6 @@ plotSeuratGenes(
   splitBy = NULL,
   cols = c("lightgrey", "blue"),
   ncol = 1,
-  useReduction = c("umap", "pca", "ica", "tsne"),
   combine = FALSE
 )
 }
@@ -32,6 +31,9 @@ to "ridge", "violin", "feature", "dot" and "heatmap".}
 \item{groupVariable}{Specify the column name from the colData slot that
 should be used as grouping variable.}
 
+\item{reducedDimName}{saved dimension reduction name in the
+SingleCellExperiment object. Default \code{seuratUMAP}.}
+
 \item{splitBy}{Specify the column name from the colData slot that should be
 used to split samples.
  Default is \code{NULL}.}
@@ -41,9 +43,6 @@ used to split samples.
 
 \item{ncol}{Visualizations will be adjusted in "ncol" number of columns.
 Default is \code{1}.}
-
-\item{useReduction}{Dimentionality reduction to plot. One of "pca", "ica",
-"tsne", or "umap". Default \code{"umap"}.}
 
 \item{combine}{A logical value that indicates if the plots should be combined
 together into a single plot if \code{TRUE}, else if \code{FALSE} returns

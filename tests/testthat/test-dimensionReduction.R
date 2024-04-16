@@ -5,27 +5,27 @@ context("Testing dimension reduction")
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- scaterlogNormCounts(sce, "logcounts")
-sce <- runFeatureSelection(sce, useAssay = "counts")
-sce <- setTopHVG(sce, featureSubsetName = "hvg")
-sce <- setTopHVG(sce, featureSubsetName = "hvgAltExp", altExp = TRUE)
+sce <- runFeatureSelection(sce, useAssay = "counts", method="vst")
+sce <- setTopHVG(sce, featureSubsetName = "hvf")
+sce <- setTopHVG(sce, featureSubsetName = "hvfAltExp", altExp = TRUE)
 
 test_that(desc = "Testing scaterPCA", {
-    sce <- scaterPCA(sce, useAssay = "logcounts", useFeatureSubset = "hvg",
+    sce <- scaterPCA(sce, useAssay = "logcounts", useFeatureSubset = "hvf",
                      reducedDimName = "PCA1")
     testthat::expect_true("PCA1" %in% reducedDimNames(sce))
 
-    sce <- scaterPCA(sce, useAssay = "hvgAltExplogcounts", useAltExp = "hvgAltExp",
+    sce <- scaterPCA(sce, useAssay = "hvfAltExplogcounts", useAltExp = "hvfAltExp",
                      useFeatureSubset = NULL, reducedDimName = "PCA2")
     testthat::expect_true("PCA2" %in% reducedDimNames(sce))
 
     expect_error({
-        scaterPCA(sce, useAssay = "null", useFeatureSubset = "hvg")
+        scaterPCA(sce, useAssay = "null", useFeatureSubset = "hvf")
     }, "Specified `useAssay` 'null' not found.")
     expect_error({
-        scaterPCA(sce, useAssay = "null", useAltExp = "null", useFeatureSubset = "hvg")
+        scaterPCA(sce, useAssay = "null", useAltExp = "null", useFeatureSubset = "hvf")
     }, "Specified `useAltExp` 'null' not found.")
     expect_error({
-        scaterPCA(sce, useAssay = "null", useAltExp = "hvgAltExp", useFeatureSubset = "hvg")
+        scaterPCA(sce, useAssay = "null", useAltExp = "hvfAltExp", useFeatureSubset = "hvf")
     }, "Specified `useAssay` 'null' not found in the altExp.")
 
     p1 <- plotPCA(sce, reducedDimName = "PCA1", colorBy = "type", shape = "type")
@@ -44,11 +44,11 @@ test_that(desc = "Testing scaterPCA", {
 })
 
 test_that(desc = "Testing scater UMAP", {
-    sce <- scaterPCA(sce, useFeatureSubset = "hvg", seed = 12345, reducedDimName = "PCA1")
+    sce <- scaterPCA(sce, useFeatureSubset = "hvf", seed = 12345, reducedDimName = "PCA1")
     sce <- runUMAP(sce, useReducedDim = "PCA1", reducedDimName = "UMAP1", initialDims = 25)
     testthat::expect_true("UMAP1" %in% reducedDimNames(sce))
-    sce <- runUMAP(sce, useAssay = "hvgAltExplogcounts", useReducedDim = NULL,
-                   useAltExp = "hvgAltExp",
+    sce <- runUMAP(sce, useAssay = "hvfAltExplogcounts", useReducedDim = NULL,
+                   useAltExp = "hvfAltExp",
                    reducedDimName = "UMAP2", initialDims = 25)
     testthat::expect_true("UMAP2" %in% reducedDimNames(sce))
     # TODO: Still some runable conditions
@@ -88,10 +88,10 @@ test_that(desc = "Testing scater UMAP", {
 })
 
 test_that(desc = "Testing Rtsne TSNE", {
-    sce <- scaterPCA(sce, useFeatureSubset = "hvg", seed = 12345, reducedDimName = "PCA1")
+    sce <- scaterPCA(sce, useFeatureSubset = "hvf", seed = 12345, reducedDimName = "PCA1")
     sce <- runTSNE(sce, useReducedDim = "PCA1", reducedDimName = "TSNE1")
     testthat::expect_true("TSNE1" %in% reducedDimNames(sce))
-    sce <- runQuickTSNE(sce, useAssay = "hvgAltExpcounts", useAltExp = "hvgAltExp",
+    sce <- runQuickTSNE(sce, useAssay = "hvfAltExpcounts", useAltExp = "hvfAltExp",
                         reducedDimName = "TSNE2", logNorm = TRUE, nTop = 50)
     testthat::expect_true("TSNE2" %in% reducedDimNames(sce))
     # TODO: Still some runable conditions

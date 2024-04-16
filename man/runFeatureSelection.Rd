@@ -4,7 +4,7 @@
 \alias{runFeatureSelection}
 \title{Run Variable Feature Detection Methods}
 \usage{
-runFeatureSelection(inSCE, useAssay, method = "modelGeneVar")
+runFeatureSelection(inSCE, useAssay, method = "vst")
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
@@ -14,7 +14,7 @@ raw counts for \code{"vst"} method, or a normalized assay for other methods.}
 
 \item{method}{Specify the method to use for variable gene selection.
 Options include \code{"vst"}, \code{"mean.var.plot"} or \code{"dispersion"}
-from Seurat and \code{"modelGeneVar"} from Scran. Default \code{"modelGeneVar"}}
+from Seurat and \code{"modelGeneVar"} from Scran. Default \code{"vst"}}
 }
 \value{
 The input \linkS4class{SingleCellExperiment} object that contains 

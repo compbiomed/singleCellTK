@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.13.2</span>
       </span>
     </div>
 
@@ -451,26 +451,26 @@ can be fetched by <code><a href="../reference/getFindMarkerTopTable.html">getFin
 include for each clsuter.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getFindMarkerTopTable.html">getFindMarkerTopTable</a></span><span class="op">(</span><span class="va">sce</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, topN <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##          Gene   Log2_FC        Pvalue           FDR cluster clusterExprPerc</span></span>
-<span><span class="co">## 8764     IL7R 0.8117772  9.627633e-63  5.253157e-59       1       0.7500000</span></span>
-<span><span class="co">## 309761  NOSIP 0.5887454  1.941718e-38  6.553399e-36       2       0.6821561</span></span>
-<span><span class="co">## 1956   S100A9 4.3853548 2.397248e-207 3.924055e-203       3       0.9977064</span></span>
-<span><span class="co">## 30657   CD79A 2.2532545 1.452148e-151 1.188511e-147       4       0.9257143</span></span>
-<span><span class="co">## 26825    CCL5 3.0924934 1.691729e-148 5.538382e-144       5       0.9712644</span></span>
-<span><span class="co">## 106091   LST1 2.8683989  1.038405e-98  1.133177e-94       6       1.0000000</span></span>
-<span><span class="co">## 310761   NKG7 4.2398710  3.256027e-82  1.065958e-77       7       1.0000000</span></span>
-<span><span class="co">## 288182   CST3 3.2975861  2.221917e-16  1.039159e-12       8       1.0000000</span></span>
-<span><span class="co">## 7697     PPBP 5.9620589  9.423341e-07  2.504757e-03       9       1.0000000</span></span>
+<pre><code><span><span class="co">##           Gene   Log2_FC        Pvalue           FDR cluster clusterExprPerc</span></span>
+<span><span class="co">## 8764      IL7R 0.7697338  9.053691e-69  2.279998e-65       1       0.7212885</span></span>
+<span><span class="co">## 1956    S100A9 4.3853548 2.397248e-207 3.924055e-203       2       0.9977064</span></span>
+<span><span class="co">## 269581    CCR7 0.6150976  1.881449e-41  9.332559e-39       3       0.5688312</span></span>
+<span><span class="co">## 106781 HLA-DRA 3.2752984 1.682895e-182 2.754731e-178       4       1.0000000</span></span>
+<span><span class="co">## 26825     CCL5 3.0878935 2.507059e-148 8.207610e-144       5       0.9712644</span></span>
+<span><span class="co">## 106091    LST1 2.8683989  1.038405e-98  1.133177e-94       6       1.0000000</span></span>
+<span><span class="co">## 310761    NKG7 4.2435780  8.853054e-82  2.898313e-77       7       1.0000000</span></span>
+<span><span class="co">## 288182    CST3 3.2975861  2.221917e-16  1.039159e-12       8       1.0000000</span></span>
+<span><span class="co">## 7697      PPBP 5.9620589  9.423341e-07  2.504757e-03       9       1.0000000</span></span>
 <span><span class="co">##        ControlExprPerc clusterAveExpr</span></span>
-<span><span class="co">## 8764        0.31156265       1.266208</span></span>
-<span><span class="co">## 309761      0.36716132       1.069871</span></span>
-<span><span class="co">## 1956        0.23094477       4.733569</span></span>
-<span><span class="co">## 30657       0.04172156       2.296094</span></span>
-<span><span class="co">## 26825       0.21676174       3.470436</span></span>
-<span><span class="co">## 106091      0.30477759       3.454109</span></span>
-<span><span class="co">## 310761      0.25687702       4.781861</span></span>
-<span><span class="co">## 288182      0.39113680       4.371755</span></span>
-<span><span class="co">## 7697        0.02406417       5.989445</span></span></code></pre>
+<span><span class="co">## 8764        0.28698380      1.1880037</span></span>
+<span><span class="co">## 1956        0.23094477      4.7335694</span></span>
+<span><span class="co">## 269581      0.13380910      0.7705352</span></span>
+<span><span class="co">## 106781      0.49538867      4.4065968</span></span>
+<span><span class="co">## 26825       0.21676174      3.4664459</span></span>
+<span><span class="co">## 106091      0.30477759      3.4541085</span></span>
+<span><span class="co">## 310761      0.25717752      4.7869642</span></span>
+<span><span class="co">## 288182      0.39113680      4.3717555</span></span>
+<span><span class="co">## 7697        0.02406417      5.9894455</span></span></code></pre>
 <p>Similarly to the Differential Expression section, we also provide a
 automated and organized <strong>heatmap plotting</strong> for the
 markers:</p>
