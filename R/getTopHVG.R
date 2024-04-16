@@ -98,7 +98,8 @@ getTopHVG <- function(inSCE,
         geneIdx <- featureIndex(topGenes, inSCE)
         topGenes <- rowData(inSCE)[[featureDisplay]][geneIdx]
     }
-
+    
+    topGenes <- topGenes[!is.na(topGenes)]
     topGenes <- topGenes[1:hvgNumber]
 
     return(topGenes)
