@@ -15,8 +15,8 @@
 #' \code{"seurat_v3"}. Default \code{"vst"}
 #' @param hvgNumber Specify the number of top variable genes to extract.
 #' @param useFeatureSubset Get the feature names in the HVG list set by
-#' \code{setTopHVG}. Will ignore \code{method} and \code{hvgNumber} if not
-#' \code{NULL}. Default \code{NULL}.
+#' \code{setTopHVG}. \code{method} and \code{hvgNumber} will not be used if not
+#' this is not \code{NULL}. Default \code{"hvf"}.
 #' @param featureDisplay A character string for the \code{rowData} variable name
 #' to indicate what type of feature ID should be displayed. If set by
 #' \code{\link{setSCTKDisplayRow}}, will by default use it. If \code{NULL}, will
@@ -31,8 +31,7 @@
 #' the selected HVGs and store this subset in the \code{altExps} slot, named by
 #' \code{hvgListName}. Default \code{FALSE}.
 #' @param featureSubsetName A character string for the \code{rowData} variable
-#' name to store a logical index of selected features. Default \code{NULL}, will
-#' be determined basing on other parameters.
+#' name to store a logical index of selected features. Default \code{"hvg2000"}.
 #' @return
 #' \item{getTopHVG}{A character vector of the top \code{hvgNumber} variable
 #' feature names}
@@ -44,9 +43,23 @@
 #' @author Irzam Sarfraz, Yichen Wang
 #' @examples
 #' data("scExample", package = "singleCellTK")
-#' sce <- runSeuratFindHVG(sce)
-#' hvgs <- getTopHVG(sce, hvgNumber = 10)
-#' sce <- setTopHVG(sce, method = "vst", hvgNumber = 5)
+#' 
+#' # Create a "highy variable feature" subset using Seurat's vst method:
+#' sce <- runSeuratFindHVG(sce,  method = "vst", hvgNumber = 2000,
+#'        createFeatureSubset = "hvf")
+#'        
+#' # Get the list of genes for a feature subset:
+#' hvgs <- getTopHVG(sce, useFeatureSubset = "hvf")
+#' 
+#' # Create a new feature subset on the fly without rerunning the algorithm:
+#' sce <- setTopHVG(sce, method = "vst", hvgNumber = 100,
+#'                 featureSubsetName = "hvf100")
+#' hvgs <- getTopHVG(sce, useFeatureSubset = "hvf100")
+#' 
+#' # Get a list of variable features without creating a new feature subset:
+#' hvgs <- getTopHVG(sce, useFeatureSubset = NULL,
+#'                   method = "vst", hvgNumber = 10)
+#' 
 #' @seealso \code{\link{runFeatureSelection}}, \code{\link{runSeuratFindHVG}},
 #' \code{\link{runModelGeneVar}}, \code{\link{plotTopHVG}}
 #' @importFrom SummarizedExperiment rowData
@@ -56,7 +69,7 @@ getTopHVG <- function(inSCE,
                                  "mean.var.plot", "modelGeneVar", "seurat", 
                                  "seurat_v3", "cell_ranger"),
                       hvgNumber = 2000,
-                      useFeatureSubset = NULL,
+                      useFeatureSubset = "hvf",
                       featureDisplay = metadata(inSCE)$featureDisplay) {
     method <- match.arg(method)
     topGenes <- character()
@@ -93,14 +106,14 @@ getTopHVG <- function(inSCE,
 #' @importFrom SingleCellExperiment rowSubset
 #' @importFrom S4Vectors metadata<-
 setTopHVG <- function(inSCE,
-                      method =  c("vst", "dispersion",
-                                  "mean.var.plot", "modelGeneVar", "seurat", 
-                                  "seurat_v3", "cell_ranger"),
+                      method = c("vst", "dispersion",
+                                 "mean.var.plot", "modelGeneVar", "seurat", 
+                                 "seurat_v3", "cell_ranger"),
                       hvgNumber = 2000,
-                      featureSubsetName = NULL,
+                      featureSubsetName = "hvg2000",
                       genes = NULL, genesBy = NULL,
                       altExp = FALSE) {
-    method <- match.arg(method)
+    method <- match.arg(method, choices = c("vst", "dispersion", "mean.var.plot", "modelGeneVar", "seurat", "seurat_v3", "cell_ranger"))
     features <- character()
     useAssay <- NULL
     if (!is.null(genes)) {
@@ -113,7 +126,7 @@ setTopHVG <- function(inSCE,
         }
     } else {
         # Use pre-calculated variability metrics
-        features <- getTopHVG(inSCE, method = method, hvgNumber = hvgNumber,
+        features <- getTopHVG(inSCE, method = method, hvgNumber = hvgNumber,useFeatureSubset = NULL,
                               featureDisplay = NULL)
         useAssay <- metadata(inSCE)$sctk$runFeatureSelection[[method]]$useAssay
     }

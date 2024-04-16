@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.13.2</span>
       </span>
     </div>
 
@@ -208,7 +208,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runDEAnalysis</span><span class="op">(</span>method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wilcox"</span>, <span class="st">"MAST"</span>, <span class="st">"DESeq2"</span>, <span class="st">"Limma"</span>, <span class="st">"ANOVA"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runDEAnalysis</span><span class="op">(</span><span class="va">inSCE</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">runDESeq2</span><span class="op">(</span></span>
 <span>  <span class="va">inSCE</span>,</span>
@@ -314,12 +314,12 @@
 <span>  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  index1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  index2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  class <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  classGroup1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  classGroup2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">analysisName</span>,</span>
-<span>  <span class="va">groupName1</span>,</span>
-<span>  <span class="va">groupName2</span>,</span>
+<span>  class <span class="op">=</span> <span class="st">"cluster"</span>,</span>
+<span>  classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>  classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>,</span>
+<span>  analysisName <span class="op">=</span> <span class="st">"cluster1_VS_2"</span>,</span>
+<span>  groupName1 <span class="op">=</span> <span class="st">"cluster1"</span>,</span>
+<span>  groupName2 <span class="op">=</span> <span class="st">"cluster2"</span>,</span>
 <span>  covariates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  onlyPos <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  log2fcThreshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -335,7 +335,11 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>method</dt>
+    <dl><dt>inSCE</dt>
+<dd><p>SingleCellExperiment inherited object.</p></dd>
+
+
+<dt>method</dt>
 <dd><p>Character. Specify which method to use when using
 <code>runDEAnalysis()</code>. Choose from <code>"wilcox"</code>, <code>"MAST"</code>,
 <code>"DESeq2"</code>, <code>"Limma"</code>, <code>"ANOVA"</code>. Default <code>"wilcox"</code>.</p></dd>
@@ -344,10 +348,6 @@
 <dt>...</dt>
 <dd><p>Arguments to pass to specific methods when using the generic
 <code>runDEAnalysis()</code>.</p></dd>
-
-
-<dt>inSCE</dt>
-<dd><p>SingleCellExperiment inherited object.</p></dd>
 
 
 <dt>useAssay</dt>
@@ -378,31 +378,34 @@ compared with all other cells. Default <code>NULL</code>.</p></dd>
 <dt>class</dt>
 <dd><p>A vector/factor with <code>ncol(inSCE)</code> elements, or a character
 scalar that specifies a column name of <code>colData(inSCE)</code>. Default
-<code>NULL</code>.</p></dd>
+<code>"cluster"</code>.</p></dd>
 
 
 <dt>classGroup1</dt>
 <dd><p>a vector specifying which "levels" given in <code>class</code>
-are of interests. Default <code>NULL</code>.</p></dd>
+are of interests. Default <code>c(1)</code>.</p></dd>
 
 
 <dt>classGroup2</dt>
 <dd><p>a vector specifying which "levels" given in <code>class</code>
 is the control group against those specified by <code>classGroup1</code>. If
 <code>NULL</code> when using annotation specification, <code>classGroup1</code> cells
-will be compared with all other cells.</p></dd>
+will be compared with all other cells. Default <code>c(2)</code>.</p></dd>
 
 
 <dt>analysisName</dt>
-<dd><p>A character scalar naming the DEG analysis. Required</p></dd>
+<dd><p>A character scalar naming the DEG analysis. 
+Default <code>"cluster1_VS_2"</code>.</p></dd>
 
 
 <dt>groupName1</dt>
-<dd><p>A character scalar naming the group of interests. Required.</p></dd>
+<dd><p>A character scalar naming the group of interests. 
+Default <code>"cluster1"</code>.</p></dd>
 
 
 <dt>groupName2</dt>
-<dd><p>A character scalar naming the control group. Required.</p></dd>
+<dd><p>A character scalar naming the control group. 
+Default <code>"cluster2"</code>.</p></dd>
 
 
 <dt>covariates</dt>
@@ -515,7 +518,7 @@ visualization method after running DE analysis.</p></div>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runDEAnalysis</span><span class="op">(</span>method <span class="op">=</span> <span class="st">"Limma"</span>, inSCE <span class="op">=</span> <span class="va">sce</span>, groupName1 <span class="op">=</span> <span class="st">"group1"</span>,</span></span>
 <span class="r-in"><span> groupName2 <span class="op">=</span> <span class="st">"group2"</span>, index1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, index2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">21</span>,<span class="fl">40</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span> analysisName <span class="op">=</span> <span class="st">"Limma"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Feb  2 14:21:03 2024 ... Running DE with limma, Analysis name: Limma</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Mon Apr 15 21:12:39 2024 ... Running DE with limma, Analysis name: Limma</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

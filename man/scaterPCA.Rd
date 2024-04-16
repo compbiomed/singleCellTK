@@ -7,7 +7,7 @@
 scaterPCA(
   inSCE,
   useAssay = "logcounts",
-  useFeatureSubset = NULL,
+  useFeatureSubset = "hvg2000",
   scale = TRUE,
   reducedDimName = "PCA",
   nComponents = 50,
@@ -27,7 +27,7 @@ specified, \code{useAssay} has to exist in
 \item{useFeatureSubset}{Subset of feature to use for dimension reduction. A
 character string indicating a \code{rowData} variable that stores the logical
 vector of HVG selection, or a vector that can subset the rows of
-\code{inSCE}. Default \code{NULL}.}
+\code{inSCE}. Default \code{"hvg2000"}.}
 
 \item{scale}{Logical scalar, whether to standardize the expression values.
 Default \code{TRUE}.}
@@ -64,5 +64,18 @@ object.
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- scaterlogNormCounts(sce, "logcounts")
-sce <- scaterPCA(sce, "logcounts", scale = TRUE)
+
+# Example of ranking variable genes, selecting the top variable features,
+# and running PCA. Make sure to increase the number of highly variable
+# features (hvgNumber) and the number of principal components (nComponents)
+# for real datasets
+sce <- runModelGeneVar(sce, useAssay = "logcounts")
+sce <- setTopHVG(sce, method = "modelGeneVar", hvgNumber = 100,
+                 featureSubsetName = "hvf")
+sce <- scaterPCA(sce, useAssay = "logcounts", scale = TRUE,
+                 useFeatureSubset = "hvf", nComponents = 5)
+                 
+# Alternatively, let the scater PCA function select the top variable genes
+sce <- scaterPCA(sce, useAssay = "logcounts", scale = TRUE,
+                 useFeatureSubset = NULL, ntop = 100, nComponents = 5)
 }

@@ -28,7 +28,8 @@ data("scExample", package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- scaterlogNormCounts(sce, "logcounts")
 sce <- runModelGeneVar(sce)
-getTopHVG(sce, method = "modelGeneVar", hvgNumber = 10)
+hvf <- getTopHVG(sce, method = "modelGeneVar", hvgNumber = 10,
+          useFeatureSubset = NULL)
 }
 \seealso{
 \code{\link{runFeatureSelection}}, \code{\link{runSeuratFindHVG}},

@@ -184,8 +184,8 @@ sce <- importExampleData("pbmc3k")
 sce <- runNormalization(sce, outAssayName = "logcounts", normalizationMethod = "logNormCounts")
 # Default HVG method is "vst" from Seurat
 sce <- runFeatureSelection(sce, useAssay = "counts")
-sce <- setTopHVG(sce)
-sce <- runDimReduce(sce, useAssay = "logcounts", useFeatureSubset = "HVG_vst2000", scale = TRUE, reducedDimName = "PCA")
+sce <- setTopHVG(sce, featureSubsetName = "hvf")
+sce <- runDimReduce(sce, useAssay = "logcounts", useFeatureSubset = "hvf", scale = TRUE, reducedDimName = "PCA")
 # Optional visualization
 sce <- runDimReduce(sce, method = "scaterUMAP", useReducedDim = "PCA", reducedDimName = "UMAP", nComponents = 10)
 plotDimRed(sce, "UMAP")
@@ -210,12 +210,15 @@ plotDimRed(sce, "UMAP")
 ````
 
 ```{R clst_ScranSNN, eval=TRUE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
-# Directly use an assay
-sce <- runScranSNN(sce, useAssay = "logcounts", clusterName = "scranSNN_logcounts")
-plotSCEDimReduceColData(sce, colorBy = "scranSNN_logcounts", reducedDimName = "UMAP")
-# Directly use a dimension reduction
+
+# Most of the time, you will want to use a dimensionality reduction for clustering:
 sce <- runScranSNN(inSCE = sce, useReducedDim = "PCA", nComp = 10, clusterName = "scranSNN_PCA")
 plotSCEDimReduceColData(inSCE = sce, colorBy = "scranSNN_PCA", reducedDimName = "UMAP")
+
+# Alternatively, clustering can be run directly from an assay by setting "useAssay" and "useReducedDim" to 'NULL':
+sce <- runScranSNN(sce, useAssay = "logcounts", useReducedDim = NULL, clusterName = "scranSNN_logcounts")
+plotSCEDimReduceColData(sce, colorBy = "scranSNN_logcounts", reducedDimName = "UMAP")
+
 ```
 
 ````{=html}
