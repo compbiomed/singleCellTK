@@ -246,7 +246,7 @@ if (is.null(subTitles)) {
 
 if ("HTAN" %in% formats) {
     if (!("FlatFile" %in% formats)) {
-        message("Notice: HTAN specified as output without FlatFile. Automatically including FlatFile export.")
+        message("Note: HTAN specified as output without FlatFile. Automatically including FlatFile export.")
         formats <- append(formats, "FlatFile")
     }
 }
@@ -334,20 +334,18 @@ if (!is.null(gmt)) {
 level3Meta <- list()
 level4Meta <- list()
 
-#if (!is.null(flatFiles)) {
-#    flatFiles <- split(flatFiles, ceiling(seq_along(flatFiles)/6))
-#}
-
 for(i in seq_along(process)) {
 
     # pop elements from FlatFile input list
-    if (dataType %in% c("Droplet", "Cell")) {
-        flatFileInput <- flatFiles[c(1, 2, 3)]
-        flatFiles <- flatFiles[-c(1, 2, 3)]
-    }
-    else {
-        flatFileInput <- flatFiles[c(1, 2, 3, 4, 5, 6)]
-        flatFiles <- flatFiles[-c(1, 2, 3, 4, 5, 6)]
+    if ("FlatFile" %in% process[i]) {
+        if (dataType %in% c("Droplet", "Cell")) {
+            flatFileInput <- flatFiles[c(1, 2, 3)]
+            flatFiles <- flatFiles[-c(1, 2, 3)]
+        }
+        else {
+            flatFileInput <- flatFiles[c(1, 2, 3, 4, 5, 6)]
+            flatFiles <- flatFiles[-c(1, 2, 3, 4, 5, 6)]
+        }
     }
 
     preproc <- process[i]
@@ -356,7 +354,6 @@ for(i in seq_along(process)) {
     raw <- RawDir[i]
     fil <- FilterDir[i]
     ref <- Reference[i]
-    #flatFiles <- flatFiles[[i]]
     rawFile <- RawFile[i]
     filFile <- FilterFile[i]
     subTitle <- subTitles[i]
