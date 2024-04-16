@@ -109,7 +109,7 @@ Users can choose to visualize the labeling result on a scatter plot. Here, we pr
 ```{R visualization, message=FALSE, warning=FALSE, fig.align="center", results='hide'}
 sce <- runSeuratFindHVG(inSCE = sce, useAssay = "counts", method = "vst")
 sce <- setTopHVG(inSCE = sce, method = "vst", hvgNumber = 2000)
-sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", useFeatureSubset = "HVG_vst2000", reducedDimName = "PCA")
+sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
 sce <- runDimReduce(inSCE = sce, method = "scaterUMAP", useReducedDim = "PCA", reducedDimName = "UMAP")
 plotSCEDimReduceColData(inSCE = sce, colorBy = "SingleR_hpca_main_pruned.labels", reducedDimName = "UMAP")
 ```
