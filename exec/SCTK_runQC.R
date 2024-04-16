@@ -334,18 +334,29 @@ if (!is.null(gmt)) {
 level3Meta <- list()
 level4Meta <- list()
 
-if (!is.null(flatFiles)) {
-    flatFiles <- split(flatFiles, ceiling(seq_along(flatFiles)/6))
-}
+#if (!is.null(flatFiles)) {
+#    flatFiles <- split(flatFiles, ceiling(seq_along(flatFiles)/6))
+#}
 
 for(i in seq_along(process)) {
+
+    # pop elements from FlatFile input list
+    if (dataType %in% c("Droplet", "Cell")) {
+        flatFileInput <- flatFiles[c(1, 2, 3)]
+        flatFiles <- flatFiles[-c(1, 2, 3)]
+    }
+    else {
+        flatFileInput <- flatFiles[c(1, 2, 3, 4, 5, 6)]
+        flatFiles <- flatFiles[-c(1, 2, 3, 4, 5, 6)]
+    }
+
     preproc <- process[i]
     samplename <- sample[i]
     path <- basepath[i]
     raw <- RawDir[i]
     fil <- FilterDir[i]
     ref <- Reference[i]
-    flatFiles <- flatFiles[[i]]
+    #flatFiles <- flatFiles[[i]]
     rawFile <- RawFile[i]
     filFile <- FilterFile[i]
     subTitle <- subTitles[i]
@@ -357,7 +368,7 @@ for(i in seq_along(process)) {
                             ref,
                             rawFile,
                             filFile,
-                            flatFiles,
+                            flatFileInput,
                             dataType)
     dropletSCE <- INPUT[[1]]
     cellSCE <- INPUT[[2]]
@@ -366,6 +377,7 @@ for(i in seq_along(process)) {
 
     cellQCAlgos <- c("QCMetrics", "scDblFinder", "cxds", "bcds", "scrublet", "doubletFinder",
     "cxds_bcds_hybrid", "decontX", "decontX_bg", "soupX", "soupX_bg") #scrublet
+    
 
     # Checking to see if the input is a file instead of a directory, for RDS and H5AD reading
     # also check to see if the sample name is specified, and if so, set it

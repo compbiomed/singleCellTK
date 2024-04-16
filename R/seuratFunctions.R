@@ -2045,6 +2045,8 @@ runSeuratFindMarkers <- function(inSCE,
 #' @param features Specify the features to compute the plot against.
 #' @param groupVariable Specify the column name from the colData slot that
 #' should be used as grouping variable.
+#' @param reducedDimName Specify the name of the dimensional reduction to be used. 
+#' Default is "seuratNormData".
 #' @param splitBy Specify the column name from the colData slot that should be
 #' used to split samples.
 #'  Default is \code{NULL}.
