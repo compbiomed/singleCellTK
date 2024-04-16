@@ -266,7 +266,7 @@
 runDEAnalysis <- function(inSCE, method = 'wilcox', ...){
   validMethods <- c('wilcox', 'MAST', 'DESeq2', 'Limma', 'ANOVA')
   method <- match.arg(method, choices = validMethods)
-  funcList <- list(wilcox = function(inSCE, ...) runWilcox(inSCE, classGroup1 = NULL, classGroup2 =NULL, class = NULL, ...), 
+  funcList <- list(wilcox = runWilcox, 
                    MAST = runMAST,
                    DESeq2 = runDESeq2,
                    Limma = runLimmaDE,
