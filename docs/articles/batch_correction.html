@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.13.2</span>
       </span>
     </div>
 
@@ -462,10 +462,10 @@ it requires log-normalized assay; else if by default
 <span><span class="co">## dim: 800 800 </span></span>
 <span><span class="co">## metadata(1): assayType</span></span>
 <span><span class="co">## assays(2): counts logcounts</span></span>
-<span><span class="co">## rownames(800): OSCAR STAMBP ... TMOD2 CAPG</span></span>
+<span><span class="co">## rownames(800): ACSF3 KLF10 ... CNN3 SPTY2D1</span></span>
 <span><span class="co">## rowData names(5): rownames ENSEMBL_ID Symbol_TENx Symbol expPerc</span></span>
-<span><span class="co">## colnames(800): pbmc6k_TTGTACACCCCGTT-1 pbmc8k_GTTCATTTCTTAACCT-1 ...</span></span>
-<span><span class="co">##   pbmc8k_GACGTTAGTTGCCTCT-1 pbmc8k_TCTATTGCACAGGTTT-1</span></span>
+<span><span class="co">## colnames(800): pbmc6k_AATGGAGATTCTAC-1 pbmc8k_ACGCAGCGTCTACCTC-1 ...</span></span>
+<span><span class="co">##   pbmc8k_TGAGGGAGTTCAGACT-1 pbmc6k_TAAGATTGTCGATG-1</span></span>
 <span><span class="co">## colData names(14): rownames Sample ... sample sizeFactor</span></span>
 <span><span class="co">## reducedDimNames(0):</span></span>
 <span><span class="co">## mainExpName: NULL</span></span>
@@ -487,10 +487,10 @@ which fits a linear model to the data.</p>
 <span><span class="co">## dim: 800 800 </span></span>
 <span><span class="co">## metadata(2): assayType batchCorr</span></span>
 <span><span class="co">## assays(3): counts logcounts LIMMA</span></span>
-<span><span class="co">## rownames(800): OSCAR STAMBP ... TMOD2 CAPG</span></span>
+<span><span class="co">## rownames(800): ACSF3 KLF10 ... CNN3 SPTY2D1</span></span>
 <span><span class="co">## rowData names(5): rownames ENSEMBL_ID Symbol_TENx Symbol expPerc</span></span>
-<span><span class="co">## colnames(800): pbmc6k_TTGTACACCCCGTT-1 pbmc8k_GTTCATTTCTTAACCT-1 ...</span></span>
-<span><span class="co">##   pbmc8k_GACGTTAGTTGCCTCT-1 pbmc8k_TCTATTGCACAGGTTT-1</span></span>
+<span><span class="co">## colnames(800): pbmc6k_AATGGAGATTCTAC-1 pbmc8k_ACGCAGCGTCTACCTC-1 ...</span></span>
+<span><span class="co">##   pbmc8k_TGAGGGAGTTCAGACT-1 pbmc6k_TAAGATTGTCGATG-1</span></span>
 <span><span class="co">## colData names(14): rownames Sample ... sample sizeFactor</span></span>
 <span><span class="co">## reducedDimNames(0):</span></span>
 <span><span class="co">## mainExpName: NULL</span></span>
@@ -536,11 +536,11 @@ achieved simply by using the <a href="dimensionality_reduction.html">dimension r
 (e.g. <code><a href="../reference/scaterPCA.html">scaterPCA()</a></code>, <code><a href="../reference/runUMAP.html">runUMAP()</a></code> and
 <code>run</code>TSNE()<code>) and</code>plotSCEDimReduceColData()`.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sce.small</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce.small</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useReducedDim <span class="op">=</span> <span class="cn">NULL</span>, logNorm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sce.small</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce.small</span>, initialDims <span class="op">=</span> <span class="fl">25</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useReducedDim <span class="op">=</span> <span class="cn">NULL</span>, logNorm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce.small</span>, colorBy <span class="op">=</span> <span class="st">'sample'</span>, reducedDimName <span class="op">=</span> <span class="st">'UMAP'</span>, title <span class="op">=</span> <span class="st">'UMAP Before Correction'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="batch_correction_files/figure-html/umapBefore-1.png" width="700"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sce.small</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce.small</span>, useAssay <span class="op">=</span> <span class="st">'LIMMA'</span>, useReducedDim <span class="op">=</span> <span class="cn">NULL</span>, logNorm <span class="op">=</span> <span class="cn">FALSE</span>, reducedDimName <span class="op">=</span> <span class="st">'UMAP_LIMMA'</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sce.small</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce.small</span>, useAssay <span class="op">=</span> <span class="st">'LIMMA'</span>, useReducedDim <span class="op">=</span> <span class="cn">NULL</span>, initialDims <span class="op">=</span> <span class="fl">25</span>, logNorm <span class="op">=</span> <span class="cn">FALSE</span>, reducedDimName <span class="op">=</span> <span class="st">'UMAP_LIMMA'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce.small</span>, colorBy <span class="op">=</span> <span class="st">'sample'</span>, reducedDimName <span class="op">=</span> <span class="st">'UMAP_LIMMA'</span>, title <span class="op">=</span> <span class="st">'UMAP After Correction'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="batch_correction_files/figure-html/umapAfter-1.png" width="700"></p>
 <p>If the cell typing is already given, it is strongly recommended to

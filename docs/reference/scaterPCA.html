@@ -19,7 +19,7 @@ object."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mat
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.13.2</span>
       </span>
     </div>
 
@@ -215,7 +215,7 @@ object.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">scaterPCA</span><span class="op">(</span></span>
 <span>  <span class="va">inSCE</span>,</span>
 <span>  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
-<span>  useFeatureSubset <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  useFeatureSubset <span class="op">=</span> <span class="st">"hvg2000"</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  reducedDimName <span class="op">=</span> <span class="st">"PCA"</span>,</span>
 <span>  nComponents <span class="op">=</span> <span class="fl">50</span>,</span>
@@ -242,7 +242,7 @@ specified, <code>useAssay</code> has to exist in
 <dd><p>Subset of feature to use for dimension reduction. A
 character string indicating a <code>rowData</code> variable that stores the logical
 vector of HVG selection, or a vector that can subset the rows of
-<code>inSCE</code>. Default <code>NULL</code>.</p></dd>
+<code>inSCE</code>. Default <code>"hvg2000"</code>.</p></dd>
 
 
 <dt>scale</dt>
@@ -294,8 +294,23 @@ updated in <code>reducedDim(inSCE, reducedDimName)</code>.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"logcounts"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">scaterPCA</span><span class="op">(</span><span class="va">sce</span>, <span class="st">"logcounts"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Feb  2 14:23:22 2024 ... Computing Scater PCA.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example of ranking variable genes, selecting the top variable features,</span></span></span>
+<span class="r-in"><span><span class="co"># and running PCA. Make sure to increase the number of highly variable</span></span></span>
+<span class="r-in"><span><span class="co"># features (hvgNumber) and the number of principal components (nComponents)</span></span></span>
+<span class="r-in"><span><span class="co"># for real datasets</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runModelGeneVar.html">runModelGeneVar</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"modelGeneVar"</span>, hvgNumber <span class="op">=</span> <span class="fl">100</span>,</span></span>
+<span class="r-in"><span>                 featureSubsetName <span class="op">=</span> <span class="st">"hvf"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Mon Apr 15 21:14:31 2024 ... Feature subset variable 'hvf' created.</span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">scaterPCA</span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                 useFeatureSubset <span class="op">=</span> <span class="st">"hvf"</span>, nComponents <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Mon Apr 15 21:14:31 2024 ... Computing Scater PCA.</span>
+<span class="r-in"><span>                 </span></span>
+<span class="r-in"><span><span class="co"># Alternatively, let the scater PCA function select the top variable genes</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">scaterPCA</span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                 useFeatureSubset <span class="op">=</span> <span class="cn">NULL</span>, ntop <span class="op">=</span> <span class="fl">100</span>, nComponents <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Mon Apr 15 21:14:31 2024 ... Computing Scater PCA.</span>
 </code></pre></div>
     </div>
   </div>

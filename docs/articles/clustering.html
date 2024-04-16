@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.13.2</span>
       </span>
     </div>
 
@@ -496,8 +496,8 @@ labels (i.e. QC and filtering are excluded).</p>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span><span class="va">sce</span>, outAssayName <span class="op">=</span> <span class="st">"logcounts"</span>, normalizationMethod <span class="op">=</span> <span class="st">"logNormCounts"</span><span class="op">)</span></span>
 <span><span class="co"># Default HVG method is "vst" from Seurat</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runFeatureSelection.html">runFeatureSelection</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span>
-<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
-<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useFeatureSubset <span class="op">=</span> <span class="st">"HVG_vst2000"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>, reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, featureSubsetName <span class="op">=</span> <span class="st">"hvf"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useFeatureSubset <span class="op">=</span> <span class="st">"hvf"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>, reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span>
 <span><span class="co"># Optional visualization</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"scaterUMAP"</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, nComponents <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
@@ -520,14 +520,14 @@ parameters, such as <code>objective_function</code> and
 <code>resolution_parameter</code> for Leiden <span class="citation">[6]</span>, <code>steps</code> for Walktrap <span class="citation">[7]</span>. Please also refer to function reference for
 detail.</li>
 </ul></details><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Directly use an assay</span></span>
-<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="clustering_files/figure-html/clst_ScranSNN-1.png" width="700" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Directly use a dimension reduction</span></span>
+<code class="sourceCode R"><span><span class="co"># Most of the time, you will want to use a dimensionality reduction for clustering:</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, nComp <span class="op">=</span> <span class="fl">10</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN_PCA"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"scranSNN_PCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="clustering_files/figure-html/clst_ScranSNN-1.png" width="700" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Alternatively, clustering can be run directly from an assay by setting "useAssay" and "useReducedDim" to 'NULL':</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useReducedDim <span class="op">=</span> <span class="cn">NULL</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="clustering_files/figure-html/clst_ScranSNN-2.png" width="700" style="display: block; margin: auto;"></p>
 </details><details><summary><b>Example with K-Means</b></summary><details><summary><b>Method specific parameters</b></summary><ul>
 <li>
