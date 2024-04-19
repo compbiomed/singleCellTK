@@ -169,10 +169,11 @@ The main parameters to this function include `useAssay` which is used to specify
 sce <- runScanpyFindHVG(inSCE = sce, useAssay = "scanpyNormData", method = "seurat", minMean = 0.0125, maxMean = 3, maxDisp = 0.5)
 ```
 
-The `getTopHVG` function can be used to select the top most variable genes and store it back in `rowData` of the SCE object as a Boolean vector. 
+By default, the `runScanpyFindHVG` function stores the most highly variable genes in the rowData of the SCE object in a variable called `highly_variable`. These genes can be retrieved using the `getTopHVG` function: 
 
 ```{r HVGlist}
-print(getTopHVG(sce, method = "seurat", hvgNumber = 10))
+hvg <- getTopHVG(sce, useFeatureSubset = "highly_variable")
+print(head(hvg))
 ```
 
 ```{r HVGPlot, eval = FALSE}

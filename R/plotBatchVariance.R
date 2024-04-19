@@ -124,7 +124,7 @@ plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
                                  title = "Batch Variance before correction") +
     ggplot2::theme(text=ggplot2::element_text(size=10))
 
-  inSCE <- runUMAP(inSCE, useAssay = origAssay, useReducedDim = NULL, 
+  inSCE <- runUMAP(inSCE, useAssay = origAssay, useReducedDim = NULL, initialDims = 25,
                    reducedDimName = "umap.before")
   umap.before <- plotSCEDimReduceColData(inSCE, batch, "umap.before",
                                          shape = condition, axisLabelSize = 9,
@@ -146,10 +146,10 @@ plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
       ggplot2::theme(text=ggplot2::element_text(size=10))
 
     if (method == "ComBatSeq") {
-      inSCE <- runUMAP(inSCE, useAssay = corrMat, useReducedDim = NULL, 
+      inSCE <- runUMAP(inSCE, useAssay = corrMat, useReducedDim = NULL, initialDims = 25,
                        logNorm = TRUE, reducedDimName = "umap.after")
     } else {
-      inSCE <- runUMAP(inSCE, useAssay = corrMat, useReducedDim = NULL,
+      inSCE <- runUMAP(inSCE, useAssay = corrMat, useReducedDim = NULL, initialDims = 25,
                        logNorm = FALSE, reducedDimName = "umap.after")
     }
   } else if (matType == "altExp") {
@@ -175,7 +175,7 @@ plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
       SingleCellExperiment::reducedDim(inSCE, "umap.after") <-
         SingleCellExperiment::reducedDim(inSCE, corrMat)
     } else {
-      inSCE <- runUMAP(inSCE, useReducedDim = corrMat,
+      inSCE <- runUMAP(inSCE, useReducedDim = corrMat, initialDims = 25,
                        reducedDimName = "umap.after")
     }
   } else {

@@ -10,7 +10,7 @@ getTopHVG(
   method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar", "seurat", "seurat_v3",
     "cell_ranger"),
   hvgNumber = 2000,
-  useFeatureSubset = NULL,
+  useFeatureSubset = "hvf",
   featureDisplay = metadata(inSCE)$featureDisplay
 )
 
@@ -19,7 +19,7 @@ setTopHVG(
   method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar", "seurat", "seurat_v3",
     "cell_ranger"),
   hvgNumber = 2000,
-  featureSubsetName = NULL,
+  featureSubsetName = "hvg2000",
   genes = NULL,
   genesBy = NULL,
   altExp = FALSE
@@ -36,8 +36,8 @@ Scran \code{"modelGeneVar"} or Scanpy \code{"seurat"}, \code{"cell_ranger"},
 \item{hvgNumber}{Specify the number of top variable genes to extract.}
 
 \item{useFeatureSubset}{Get the feature names in the HVG list set by
-\code{setTopHVG}. Will ignore \code{method} and \code{hvgNumber} if not
-\code{NULL}. Default \code{NULL}.}
+\code{setTopHVG}. \code{method} and \code{hvgNumber} will not be used if not
+this is not \code{NULL}. Default \code{"hvf"}.}
 
 \item{featureDisplay}{A character string for the \code{rowData} variable name
 to indicate what type of feature ID should be displayed. If set by
@@ -45,8 +45,7 @@ to indicate what type of feature ID should be displayed. If set by
 use \code{rownames(inSCE)}.}
 
 \item{featureSubsetName}{A character string for the \code{rowData} variable
-name to store a logical index of selected features. Default \code{NULL}, will
-be determined basing on other parameters.}
+name to store a logical index of selected features. Default \code{"hvg2000"}.}
 
 \item{genes}{A customized character vector of gene list to be set as a
 \code{rowData} variable. Will ignore \code{method} and \code{hvgNumber} if
@@ -80,9 +79,23 @@ in the \code{altExps} slot at the same time.
 }
 \examples{
 data("scExample", package = "singleCellTK")
-sce <- runSeuratFindHVG(sce)
-hvgs <- getTopHVG(sce, hvgNumber = 10)
-sce <- setTopHVG(sce, method = "vst", hvgNumber = 5)
+
+# Create a "highy variable feature" subset using Seurat's vst method:
+sce <- runSeuratFindHVG(sce,  method = "vst", hvgNumber = 2000,
+       createFeatureSubset = "hvf")
+       
+# Get the list of genes for a feature subset:
+hvgs <- getTopHVG(sce, useFeatureSubset = "hvf")
+
+# Create a new feature subset on the fly without rerunning the algorithm:
+sce <- setTopHVG(sce, method = "vst", hvgNumber = 100,
+                featureSubsetName = "hvf100")
+hvgs <- getTopHVG(sce, useFeatureSubset = "hvf100")
+
+# Get a list of variable features without creating a new feature subset:
+hvgs <- getTopHVG(sce, useFeatureSubset = NULL,
+                  method = "vst", hvgNumber = 10)
+
 }
 \seealso{
 \code{\link{runFeatureSelection}}, \code{\link{runSeuratFindHVG}},

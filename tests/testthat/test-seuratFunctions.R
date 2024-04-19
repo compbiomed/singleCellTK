@@ -79,7 +79,7 @@ test_that(desc = "Testing standard seurat workflow", {
   testthat::expect_true("seuratMarkers" %in% names(metadata(sce)))
   
   # Test Marker Selection - Standard Between All Groups
-  metadata(sce)$seurat
+  testthat::expect_true(!is.null(metadata(sce)$seurat))
   sce <- runSeuratFindMarkers(sce, allGroup = "type")
   testthat::expect_true("seuratMarkers" %in% names(metadata(sce)))
   
