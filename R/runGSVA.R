@@ -34,9 +34,10 @@ runGSVA <- function(inSCE, useAssay = "logcounts",
   gene.Set <- .getGeneSetCollection(inSCE, geneSetCollectionName)
   
   message(date(), " ... Running GSVA")
-  gsvaRes <- t(GSVA::gsva(as.matrix(expData(inSCE, useAssay)),
-                          gene.Set))
-  
+
+  gsvaData <- as.matrix(expData(sce, useAssay))
+  gsvaPar <- GSVA::gsvaParam(gsvaData, gene.Set)
+  gsvaRes <- t(GSVA::gsva(gsvaPar))
   
   if(is.null(resultNamePrefix)) {
     resultNamePrefix <- paste0("GSVA_", geneSetCollectionName, "_")
