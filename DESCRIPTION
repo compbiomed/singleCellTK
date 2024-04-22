@@ -62,7 +62,7 @@ Imports:
     ggrepel,
     ggtree,
     gridExtra,
-    GSVA (>= 1.51.0),
+    GSVA (>= 1.50.0),
     GSVAdata,
     igraph,
     KernSmooth,
