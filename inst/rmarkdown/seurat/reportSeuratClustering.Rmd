@@ -91,7 +91,7 @@ if(!showClusterDesc){
 }
 ```
 
-```{r, results='asis', warning=FALSE, message=FALSE, eval = !(plotTSNE && !is.null(metadata(data)$seurat$obj@reductions$tsne))}
+```{r, results='asis', warning=FALSE, message=FALSE, eval = !(plotTSNE && !is.null(metadata(data)$seurat$obj$reductions$tsne))}
 data <- runSeuratTSNE(data, useReduction = "pca", dims = significant_PC)
 ```
 
@@ -127,7 +127,7 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
 }
 ```
 
-```{r, results='asis', warning=FALSE, message=FALSE, eval = !(plotUMAP && !is.null(metadata(data)$seurat$obj@reductions$umap))}
+```{r, results='asis', warning=FALSE, message=FALSE, eval = !(plotUMAP && !is.null(metadata(data)$seurat$obj$reductions$umap))}
 data <- runSeuratUMAP(data, useReduction = "pca", dims = significant_PC)
 ```
 
