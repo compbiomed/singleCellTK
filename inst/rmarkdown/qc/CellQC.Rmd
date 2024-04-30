@@ -119,7 +119,7 @@ if (is.null(reducedDimName)) {
 }
 
 
-### when 'sample' doesnn't exists in colData
+### when 'sample' doesn't exists in colData
 if (is.null(samples)) { samples <- "sample" }
 
 ```
@@ -1242,7 +1242,7 @@ if (skipSoupX_bg) {
   cat(paste0('## ', i, ' \n'))
   plotSoupX_bg <- tryCatch(
     {plotSoupXResults(inSCE = sce.qc, 
-                     soupXSample, 
+                     sceSample, 
                      combinePlot = "none",
                      background = TRUE)},
     error = function(e) {
@@ -1278,7 +1278,7 @@ for (sample in samples){
   
   cat("#### Soup Fractions {.tabset .tabset-fade} \n\n")
   
-  for (marker in names(plotSoupX$Sample[[sample]])[-1]) {
+  for (marker in names(plotSoupX_bg$Sample[[sample]])[-1]) {
     cat(paste0("##### ", marker, " {.tabset .tabset-fade} \n\n"))
     plot(plotSoupX_bg$Sample[[sample]][[marker]])
     cat("\n\n")
