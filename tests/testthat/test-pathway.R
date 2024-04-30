@@ -33,7 +33,7 @@ test_that(desc = "Testing VAM", {
 })
 
 test_that(desc = "Testing GSVA", {
-    sce <- runGSVA(sce, geneSetCollectionName = "GeneSetCollection")
+    sce <- runGSVA(sce, geneSetCollectionName = "GeneSetCollection", useAssay = "logcounts")
     testthat::expect_true("GSVA_GeneSetCollection_Scores" %in% reducedDimNames(sce))
     
     gsvaPlot <- plotPathway(sce, resultName = "GSVA_GeneSetCollection_Scores", 
