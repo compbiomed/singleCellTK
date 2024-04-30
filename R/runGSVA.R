@@ -35,7 +35,7 @@ runGSVA <- function(inSCE, useAssay = "logcounts",
   
   message(date(), " ... Running GSVA")
 
-  gsvaData <- as.matrix(expData(sce, useAssay))
+  gsvaData <- as.matrix(expData(inSCE, useAssay))
   gsvaPar <- GSVA::gsvaParam(gsvaData, gene.Set)
   gsvaRes <- t(GSVA::gsva(gsvaPar))
   
