@@ -783,7 +783,7 @@ plotSeuratReduction <-
       if (!is.null(seuratObject@meta.data$seurat_clusters)) {
         Seurat::Idents(seuratObject) <-
           seuratObject@meta.data$seurat_clusters
-        seuratObject@meta.data <- data.frame()
+        #seuratObject@meta.data <- data.frame()
       }
     }
 
@@ -1576,7 +1576,10 @@ convertSCEToSeurat <-
             inSCE@metadata$seurat$obj$reductions$umap
         }
         if (!is.null(inSCE@metadata$seurat$obj$meta.data)) {
-          seuratObject@meta.data <- inSCE@metadata$seurat$obj$meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj$meta.data)),]
+          #seuratObject@meta.data <- 
+            #inSCE@metadata$seurat$obj$meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj$meta.data)),]
+          seuratObject <- 
+            SeuratObject::AddMetaData(seuratObject, inSCE@metadata$seurat$obj$meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj$meta.data)),])
         }
         if (!is.null(inSCE@metadata$seurat$obj$commands)) {
           seuratObject@commands <- inSCE@metadata$seurat$obj$commands
@@ -2045,6 +2048,8 @@ runSeuratFindMarkers <- function(inSCE,
 #' @param features Specify the features to compute the plot against.
 #' @param groupVariable Specify the column name from the colData slot that
 #' should be used as grouping variable.
+#' @param reducedDimName Specify the name of the dimensional reduction to be used. 
+#' Default is "seuratNormData".
 #' @param splitBy Specify the column name from the colData slot that should be
 #' used to split samples.
 #'  Default is \code{NULL}.

@@ -58,7 +58,7 @@ cat(headingDR, " PCA {.tabset .tabset-fade}\n\n")
 
 To reduce the adverse effects of the inherent technical noise in single-cell data on downstream clustering, reduced dimensions are computed where each dimension represents a set of correlated features. However, an important task is to select the number of components that should be utilized by the downstream methods. To select the number of principal components that should be used in the downstream analysis, JackStraw and Elbow plot provide convenience in the selection of the significant components that contain most of the variability.  
 
-```{r, results='asis', warning=FALSE, eval = !(runDimRed && !is.null(metadata(data)$seurat$obj@reductions$pca)) || forceRun}
+```{r, results='asis', warning=FALSE, eval = !(runDimRed && !is.null(metadata(data)$seurat$obj$reductions$pca)) || forceRun}
 pcaParams <- list(
   inSCE = data,
   nPCs = pc.count,
@@ -94,8 +94,8 @@ ElbowPlot
 ```
 
 ```{r, echo=FALSE, warning=FALSE, eval= plotJackStraw}
-if(!is.null(metadata(data)$seurat$obj@reductions$pca@jackstraw)){
-  PC_Matrix <- metadata(data)$seurat$obj@reductions$pca@jackstraw@overall.p.values
+if(!is.null(metadata(data)$seurat$obj$reductions$pca@jackstraw)){
+  PC_Matrix <- metadata(data)$seurat$obj$reductions$pca@jackstraw$overall.p.values
   
   significant_PC <- which.min(PC_Matrix[,2] < 0.01) - 1
 if (!exists("significant_PC") || significant_PC == 0){
@@ -129,7 +129,7 @@ JackStrawPlot
 PC.separated.height <- 3.5 * ceiling(pc.count/3)
 ```
 
-```{r, echo=FALSE, include=TRUE, eval = !(runDimRed && !is.null(metadata(data)$seurat$obj@reductions$pca))}
+```{r, echo=FALSE, include=TRUE, eval = !(runDimRed && !is.null(metadata(data)$seurat$obj$reductions$pca))}
 pcaParams$inSCE <- NULL
 pcaParams$significant_PC <- significant_PC
 metadata(data)$seurat$sctk$report$pcaParams <- pcaParams
