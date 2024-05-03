@@ -1576,7 +1576,10 @@ convertSCEToSeurat <-
             inSCE@metadata$seurat$obj$reductions$umap
         }
         if (!is.null(inSCE@metadata$seurat$obj$meta.data)) {
-          seuratObject@meta.data <- inSCE@metadata$seurat$obj$meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj$meta.data)),]
+          #seuratObject@meta.data <- 
+            #inSCE@metadata$seurat$obj$meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj$meta.data)),]
+          seuratObject <- 
+            SeuratObject::AddMetaData(seuratObject, inSCE@metadata$seurat$obj$meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj$meta.data)),])
         }
         if (!is.null(inSCE@metadata$seurat$obj$commands)) {
           seuratObject@commands <- inSCE@metadata$seurat$obj$commands
@@ -2045,15 +2048,17 @@ runSeuratFindMarkers <- function(inSCE,
 #' @param features Specify the features to compute the plot against.
 #' @param groupVariable Specify the column name from the colData slot that
 #' should be used as grouping variable.
+#' @param reducedDimName Specify the name of the dimensional reduction to be used. 
+#' Default is "seuratNormData".
 #' @param splitBy Specify the column name from the colData slot that should be
 #' used to split samples.
 #'  Default is \code{NULL}.
+#' @param reducedDimName saved dimension reduction name in the
+#' SingleCellExperiment object. Default \code{seuratUMAP}.
 #' @param cols Specify two colors to form a gradient between. Default is
 #' \code{c("lightgrey", "blue")}.
 #' @param ncol Visualizations will be adjusted in "ncol" number of columns.
 #'  Default is \code{1}.
-#' @param useReduction Dimentionality reduction to plot. One of "pca", "ica",
-#' "tsne", or "umap". Default \code{"umap"}.
 #' @param combine A logical value that indicates if the plots should be combined
 #'  together into a single plot if \code{TRUE}, else if \code{FALSE} returns
 #'  separate ggplot objects for each feature. Only works when \code{plotType}
@@ -2071,80 +2076,78 @@ plotSeuratGenes <- function(inSCE,
                             splitBy = NULL,
                             cols = c("lightgrey", "blue"),
                             ncol = 1,
-                            useReduction = c("umap", "pca",
-                                             "ica", "tsne"),
                             combine = FALSE) {
-  #setup seurat object and the corresponding groups
-  useReduction <- match.arg(useReduction)
-  seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay, copyReducedDim = TRUE)
-  seurat.version <- .getSeuratObjectMajorVersion(seuratObject)
-  
-  seuratObject <-
-    Seurat::ScaleData(seuratObject, features = features)
-  indices <- list()
-  cells <- list()
-  groups <- unique(colData(inSCE)[[groupVariable]])
-  for (i in seq(length(groups))) {
-    indices[[i]] <- which(colData(inSCE)[[groupVariable]] == groups[i],
-                          arr.ind = TRUE)
-    cells[[i]] <- colnames(inSCE)[indices[[i]]]
-    cells[[i]] <- .convertToHyphen(cells[[i]])
-    if(seurat.version >= 5.0){
-      cells[[i]] <- unlist(cells[[i]])
+    #setup seurat object and the corresponding groups
+    seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay, copyReducedDim = TRUE)
+    seurat.version <- .getSeuratObjectMajorVersion(seuratObject)
+    
+    seuratObject <-
+        Seurat::ScaleData(seuratObject, features = features)
+    indices <- list()
+    cells <- list()
+    groups <- unique(colData(inSCE)[[groupVariable]])
+    for (i in seq(length(groups))) {
+        indices[[i]] <- which(colData(inSCE)[[groupVariable]] == groups[i],
+                              arr.ind = TRUE)
+        cells[[i]] <- colnames(inSCE)[indices[[i]]]
+        cells[[i]] <- .convertToHyphen(cells[[i]])
+        if(seurat.version >= 5.0){
+            cells[[i]] <- unlist(cells[[i]])
+        }
+        Seurat::Idents(seuratObject, cells = cells[[i]]) <- groups[i]
     }
-    Seurat::Idents(seuratObject, cells = cells[[i]]) <- groups[i]
-  }
-
-  if (!is.null(splitBy)) {
-    seuratObject[[splitBy]] <- colData(inSCE)[[splitBy]]
-  }
-
-  #plot required visualization
-  if (plotType == "ridge") {
-    return(
-      Seurat::RidgePlot(
-        seuratObject,
-        features = features,
-        ncol = ncol,
-        combine = combine
-      )
-    )
-  }
-  else if (plotType == "violin") {
-    return(
-      Seurat::VlnPlot(
-        seuratObject,
-        features = features,
-        ncol = ncol,
-        split.by = splitBy,
-        combine = combine
-      )
-    )
-  }
-  else if (plotType == "feature") {
-    return(
-      Seurat::FeaturePlot(
-        seuratObject,
-        features = features,
-        cols = cols,
-        ncol = ncol,
-        split.by = splitBy,
-        combine = combine,
-        reduction = reducedDimName
-      )
-    )
-  }
-  else if (plotType == "dot") {
-    return(Seurat::DotPlot(
-      seuratObject,
-      features = unique(features),
-      split.by = splitBy
-    ))
-  }
-  else if (plotType == "heatmap") {
-    return(Seurat::DoHeatmap(seuratObject, features = features))
-  }
+    
+    if (!is.null(splitBy)) {
+        seuratObject[[splitBy]] <- colData(inSCE)[[splitBy]]
+    }
+    
+    #plot required visualization
+    if (plotType == "ridge") {
+        return(
+            Seurat::RidgePlot(
+                seuratObject,
+                features = features,
+                ncol = ncol,
+                combine = combine
+            )
+        )
+    }
+    else if (plotType == "violin") {
+        return(
+            Seurat::VlnPlot(
+                seuratObject,
+                features = features,
+                ncol = ncol,
+                split.by = splitBy,
+                combine = combine
+            )
+        )
+    }
+    else if (plotType == "feature") {
+        return(
+            Seurat::FeaturePlot(
+                seuratObject,
+                features = features,
+                cols = cols,
+                ncol = ncol,
+                split.by = splitBy,
+                combine = combine,
+                reduction = reducedDimName
+            )
+        )
+    }
+    else if (plotType == "dot") {
+        return(Seurat::DotPlot(
+            seuratObject,
+            features = unique(features),
+            split.by = splitBy
+        ))
+    }
+    else if (plotType == "heatmap") {
+        return(Seurat::DoHeatmap(seuratObject, features = features))
+    }
 }
+
 
 .findConservedMarkers <- function(object,
                                   ident.1,

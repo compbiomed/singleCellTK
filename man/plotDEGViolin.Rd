@@ -57,7 +57,8 @@ be performed prior to using this function
 data("sceBatches")
 logcounts(sceBatches) <- log1p(counts(sceBatches))
 sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
-sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+sce.w <- runWilcox(sce.w, class = "cell_type",
+                   classGroup1 = "alpha", classGroup2 = "beta",
                    groupName1 = "w.alpha", groupName2 = "w.beta",
                    analysisName = "w.aVSb")
 plotDEGViolin(sce.w, "w.aVSb")

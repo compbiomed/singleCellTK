@@ -59,7 +59,8 @@
 #' data("sceBatches")
 #' logcounts(sceBatches) <- log1p(counts(sceBatches))
 #' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
-#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#' sce.w <- runWilcox(sce.w, class = "cell_type",
+#'                    classGroup1 = "alpha", classGroup2 = "beta",
 #'                    groupName1 = "w.alpha", groupName2 = "w.beta",
 #'                    analysisName = "w.aVSb")
 #' plotDEGViolin(sce.w, "w.aVSb")
@@ -169,7 +170,8 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' data("sceBatches")
 #' logcounts(sceBatches) <- log1p(counts(sceBatches))
 #' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
-#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#' sce.w <- runWilcox(sce.w, class = "cell_type",
+#'                    classGroup1 = "alpha", classGroup2 = "beta",
 #'                    groupName1 = "w.alpha", groupName2 = "w.beta",
 #'                    analysisName = "w.aVSb")
 #' plotDEGRegression(sce.w, "w.aVSb")
@@ -309,7 +311,8 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' data("sceBatches")
 #' sceBatches <- scaterlogNormCounts(sceBatches, "logcounts")
 #' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
-#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#' sce.w <- runWilcox(sce.w, class = "cell_type",
+#'                    classGroup1 = "alpha", classGroup2 = "beta",
 #'                    groupName1 = "w.alpha", groupName2 = "w.beta",
 #'                    analysisName = "w.aVSb")
 #' getDEGTopTable(sce.w, "w.aVSb")
@@ -404,7 +407,8 @@ getDEGTopTable <- function(inSCE, useResult,
 #' data("sceBatches")
 #' logcounts(sceBatches) <- log1p(counts(sceBatches))
 #' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
-#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#' sce.w <- runWilcox(sce.w, class = "cell_type",
+#'                    classGroup1 = "alpha", classGroup2 = "beta",
 #'                    groupName1 = "w.alpha", groupName2 = "w.beta",
 #'                    analysisName = "w.aVSb")
 #' plotDEGHeatmap(sce.w, "w.aVSb")
@@ -583,7 +587,8 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 #' data("sceBatches")
 #' sceBatches <- scaterlogNormCounts(sceBatches, "logcounts")
 #' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
-#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#' sce.w <- runWilcox(sce.w, class = "cell_type",
+#'                    classGroup1 = "alpha", classGroup2 = "beta",
 #'                    groupName1 = "w.alpha", groupName2 = "w.beta",
 #'                    analysisName = "w.aVSb")
 #' plotDEGVolcano(sce.w, "w.aVSb")

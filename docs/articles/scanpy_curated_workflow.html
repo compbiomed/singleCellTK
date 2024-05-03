@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.14.0</span>
       </span>
     </div>
 
@@ -479,13 +479,15 @@ which is used to specify the name of the input log normalized assay and
 computing the variability of each gene.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScanpyFindHVG.html">runScanpyFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scanpyNormData"</span>, method <span class="op">=</span> <span class="st">"seurat"</span>, minMean <span class="op">=</span> <span class="fl">0.0125</span>, maxMean <span class="op">=</span> <span class="fl">3</span>, maxDisp <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
-<p>The <code>getTopHVG</code> function can be used to select the top
-most variable genes and store it back in <code>rowData</code> of the SCE
-object as a Boolean vector.</p>
+<p>By default, the <code>runScanpyFindHVG</code> function stores the
+most highly variable genes in the rowData of the SCE object in a
+variable called <code>highly_variable</code>. These genes can be
+retrieved using the <code>getTopHVG</code> function:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"seurat"</span>, hvgNumber <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] "PPBP"         "NFE2L2"       "DOK3"         "YPEL2"        "ARVCF"       </span></span>
-<span><span class="co">##  [6] "UBE2D4"       "FAM210B"      "CTB-113I20.2" "GBGT1"        "GMPPA"</span></span></code></pre>
+<code class="sourceCode R"><span><span class="va">hvg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, useFeatureSubset <span class="op">=</span> <span class="st">"highly_variable"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hvg</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "TNFRSF4"       "CPSF3L"        "ATAD3C"        "RP11-345P4.10"</span></span>
+<span><span class="co">## [5] "RER1"          "TNFRSF25"</span></span></code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScanpyHVG.html">plotScanpyHVG</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
 <p><img src="scanpy_cnsl_screenshots/scanpy_hvg.png"><br></p>

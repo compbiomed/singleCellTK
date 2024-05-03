@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.14.0</span>
       </span>
     </div>
 
@@ -210,12 +210,12 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getFindMarkerTopTable</span><span class="op">(</span></span>
 <span>  <span class="va">inSCE</span>,</span>
-<span>  log2fcThreshold <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  log2fcThreshold <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>  minClustExprPerc <span class="op">=</span> <span class="fl">0.7</span>,</span>
-<span>  maxCtrlExprPerc <span class="op">=</span> <span class="fl">0.4</span>,</span>
-<span>  minMeanExpr <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  topN <span class="op">=</span> <span class="fl">10</span></span>
+<span>  minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  maxCtrlExprPerc <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  minMeanExpr <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  topN <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">findMarkerTopTable</span><span class="op">(</span></span>
@@ -291,52 +291,16 @@ function to extract a top marker table.</p>
 <span class="r-in"><span><span class="va">mouseBrainSubsetSCE</span> <span class="op">&lt;-</span> <span class="fu"><a href="runFindMarker.html">runFindMarker</a></span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>,</span></span>
 <span class="r-in"><span>                                     useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,</span></span>
 <span class="r-in"><span>                                     cluster <span class="op">=</span> <span class="st">"level1class"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Feb  2 14:17:02 2024 ... Identifying markers for cluster 'microglia', using DE method 'wilcox'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Feb  2 14:17:03 2024 ... Identifying markers for cluster 'oligodendrocytes', using DE method 'wilcox'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri Feb  2 14:17:04 2024 ... Organizing findMarker result</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:14:25 2024 ... Identifying markers for cluster 'microglia', using DE method 'wilcox'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:14:26 2024 ... Identifying markers for cluster 'oligodendrocytes', using DE method 'wilcox'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:14:27 2024 ... Organizing findMarker result</span>
 <span class="r-in"><span><span class="fu">getFindMarkerTopTable</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        Gene  Log2_FC       Pvalue          FDR      level1class clusterExprPerc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1228   Apoe 4.439115 3.642815e-06 0.0001796628        microglia       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1114   Lyz2 3.873899 2.771660e-05 0.0004581158        microglia       0.8000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1130   C1qa 3.862682 6.733332e-07 0.0001720692        microglia       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1100    Pf4 3.466775 2.771660e-05 0.0004581158        microglia       0.8000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1112 Tyrobp 3.282906 6.733332e-07 0.0001720692        microglia       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1126   C1qb 3.281828 2.516695e-06 0.0001720692        microglia       0.9333333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1182  Ccl12 3.151363 8.600798e-06 0.0002501837        microglia       0.8666667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1127  Fcgr3 3.130255 2.516695e-06 0.0001720692        microglia       0.9333333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1131  Fcrls 2.955799 6.755317e-07 0.0001720692        microglia       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1150   Mrc1 2.954606 2.757165e-05 0.0004581158        microglia       0.8000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1002    Mal 5.361403 7.495067e-06 0.0002501837 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1048   Apod 5.311107 2.203822e-06 0.0001720692 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 897     Mog 5.161946 1.256717e-06 0.0001720692 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 906   Enpp2 4.327247 6.757710e-06 0.0002501837 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 936   Ugt8a 4.319125 2.403213e-06 0.0001720692 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1014   Ermn 4.318830 1.865414e-06 0.0001720692 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 843    Mobp 4.075208 2.084154e-06 0.0001720692 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1001   Qdpr 4.061774 1.641748e-06 0.0001720692 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1017  Cryab 4.001140 1.743790e-06 0.0001720692 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 831  Tspan2 3.743799 3.649158e-06 0.0001796628 oligodendrocytes       1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Gene  Log2_FC       Pvalue          FDR      level1class clusterExprPerc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1228 Apoe 4.439115 3.642815e-06 0.0001796628        microglia               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1002  Mal 5.361403 7.495067e-06 0.0002501837 oligodendrocytes               1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      ControlExprPerc clusterAveExpr</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1228      0.33333333       5.076598</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1114      0.00000000       3.873899</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1130      0.00000000       3.862682</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1100      0.00000000       3.466775</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1112      0.00000000       3.282906</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1126      0.00000000       3.281828</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1182      0.00000000       3.151363</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1127      0.00000000       3.130255</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1131      0.00000000       2.955799</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1150      0.00000000       2.954606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1002      0.40000000       6.370450</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1048      0.33333333       5.838233</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 897       0.13333333       5.475308</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 906       0.40000000       5.093370</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 936       0.20000000       4.771216</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1014      0.26666667       4.663492</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 843       0.26666667       4.430003</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1001      0.06666667       4.261774</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1017      0.20000000       4.306804</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 831       0.20000000       4.155127</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1228       0.3333333       5.076598</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1002       0.4000000       6.370450</span>
 </code></pre></div>
     </div>
   </div>

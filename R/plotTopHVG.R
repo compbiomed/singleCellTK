@@ -8,9 +8,9 @@
 #' name to store a logical index of selected features. Default \code{NULL}. See
 #' details.
 #' @param hvgNumber Specify the number of top genes to highlight in red. Default
-#' \code{NULL}. See details.
+#' \code{2000}. See details.
 #' @param labelsCount Specify the number of data points/genes to label. Should
-#' be less than \code{hvgNumber}. Default \code{20}. See details.
+#' be less than \code{hvgNumber}. Default \code{10}. See details.
 #' @param featureDisplay A character string for the \code{rowData} variable name
 #' to indicate what type of feature ID should be displayed. If set by
 #' \code{\link{setSCTKDisplayRow}}, will by default use it. If \code{NULL}, will
@@ -37,16 +37,16 @@
 #' @importFrom SummarizedExperiment rowData
 #' @importFrom S4Vectors metadata
 plotTopHVG <- function(inSCE,
-                       method = c("vst", "mean.var.plot", "dispersion",
-                                  "modelGeneVar"),
-                       hvgNumber = NULL,
+                       method = "modelGeneVar",
+                       hvgNumber = 2000,
                        useFeatureSubset = NULL,
-                       labelsCount = 20,
+                       labelsCount = 10,
                        featureDisplay = metadata(inSCE)$featureDisplay,
                        labelSize = 2, dotSize = 2, textSize = 12
                        )
 {
-  method <- match.arg(method)
+  method <- match.arg(method, choices = c("vst", "mean.var.plot", "dispersion",
+                                          "modelGeneVar"))
   metric <- .dfFromHVGMetric(inSCE, method)
   yLabelChoice <- list(vst = "Standardized Variance",
                        mean.var.plot = "Dispersion", dispersion = "Dispersion",
@@ -62,7 +62,7 @@ plotTopHVG <- function(inSCE,
     hvgNumber <- length(hvgList)
   } else if (!is.null(hvgNumber)) {
     hvgList <- getTopHVG(inSCE = inSCE, method = method, hvgNumber = hvgNumber,
-                         featureDisplay = NULL)
+                         featureDisplay = NULL, useFeatureSubset = NULL)
   }
   if (is.null(hvgNumber) || hvgNumber == 0) {
     redIdx <- logical()

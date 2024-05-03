@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.12.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.14.0</span>
       </span>
     </div>
 
@@ -210,10 +210,10 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotTopHVG</span><span class="op">(</span></span>
 <span>  <span class="va">inSCE</span>,</span>
-<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"vst"</span>, <span class="st">"mean.var.plot"</span>, <span class="st">"dispersion"</span>, <span class="st">"modelGeneVar"</span><span class="op">)</span>,</span>
-<span>  hvgNumber <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"modelGeneVar"</span>,</span>
+<span>  hvgNumber <span class="op">=</span> <span class="fl">2000</span>,</span>
 <span>  useFeatureSubset <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  labelsCount <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  labelsCount <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  featureDisplay <span class="op">=</span> <span class="fu">metadata</span><span class="op">(</span><span class="va">inSCE</span><span class="op">)</span><span class="op">$</span><span class="va">featureDisplay</span>,</span>
 <span>  labelSize <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  dotSize <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -235,7 +235,7 @@ computations.</p></dd>
 
 <dt>hvgNumber</dt>
 <dd><p>Specify the number of top genes to highlight in red. Default
-<code>NULL</code>. See details.</p></dd>
+<code>2000</code>. See details.</p></dd>
 
 
 <dt>useFeatureSubset</dt>
@@ -246,7 +246,7 @@ details.</p></dd>
 
 <dt>labelsCount</dt>
 <dd><p>Specify the number of data points/genes to label. Should
-be less than <code>hvgNumber</code>. Default <code>20</code>. See details.</p></dd>
+be less than <code>hvgNumber</code>. Default <code>10</code>. See details.</p></dd>
 
 
 <dt>featureDisplay</dt>
