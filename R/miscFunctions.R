@@ -485,13 +485,18 @@ getGenesetNamesFromCollection <- function(inSCE, geneSetCollectionName) {
 #' @param newCluster value to change name of cluster
 #' @return inSCE object with changed values
 renameClusters <- function(inSCE, clusterName, from, to, newClusterName = NULL) {
-  clusterLabels <- unique(colData(inSCE)[,clusterName])
-  renamedLabels <- mapvalues(c(clusterLabels), from = c(from), to = c(to))
-  colData(inSCE)[,clusterName] <- mapvalues(colData(inSCE)[,clusterName], from = c(from), to = c(to))
   
+  # Retrieve cluster label and rename values
+  clusterLabels <- as.factor(colData(inSCE)[,clusterName])
+  renamedLabels <- plyr::mapvalues(clusterLabels, from = from, to = to)
+  
+  # Set clusters in the same or new variable
   if (!is.null(newClusterName)) {
-    colData(inSCE)[, newClusterName] <- colData(inSCE)[, clusterName]
+    colData(inSCE)[, newClusterName] <- renamedLabels
+  } else {
+    colData(inSCE)[, clusterName] <- renamedLabels
   }
   
   return(inSCE)
+  
 }

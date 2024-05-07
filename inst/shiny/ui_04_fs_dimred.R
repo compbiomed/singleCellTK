@@ -106,7 +106,7 @@ shinyPanelFS_DimRed <- fluidPage(
               circle = FALSE,
               inline = TRUE
             )),
-            renameClusterUI(id = "instance1"),
+            renameClusterUI(id = "renameCluster_featureDim"),
             column(7, fluidRow(h6("Scatterplot showing the variability of each feature versus its average expression across all cells"), align="center"))
           ),
           hr(),
