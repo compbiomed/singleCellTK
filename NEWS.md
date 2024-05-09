@@ -1,3 +1,8 @@
+Changes in Version 2.14.0 (2024-05-03)
+================================================================================
+* Updated version to match Bioconductor 3.19
+* Update runGSVA fucntion to work with newer GSVA package
+
 Changes in Version 2.12.2 (2024-01-28)
 ================================================================================
 * Added support for Seurat V5

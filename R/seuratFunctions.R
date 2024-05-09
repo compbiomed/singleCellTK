@@ -783,7 +783,7 @@ plotSeuratReduction <-
       if (!is.null(seuratObject@meta.data$seurat_clusters)) {
         Seurat::Idents(seuratObject) <-
           seuratObject@meta.data$seurat_clusters
-        seuratObject@meta.data <- data.frame()
+        #seuratObject@meta.data <- data.frame()
       }
     }
 

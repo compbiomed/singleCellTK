@@ -91,7 +91,7 @@ if(!showClusterDesc){
 }
 ```
 
-```{r, results='asis', warning=FALSE, message=FALSE, eval = !(plotTSNE && !is.null(metadata(data)$seurat$obj@reductions$tsne))}
+```{r, results='asis', warning=FALSE, message=FALSE, eval = !(plotTSNE && !is.null(metadata(data)$seurat$obj$reductions$tsne))}
 data <- runSeuratTSNE(data, useReduction = "pca", dims = significant_PC)
 ```
 
@@ -104,7 +104,6 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
   cat(headingRES, " RES ", j, " {.tabset -} \n\n")
   cat(headingClust," Clusters {-} \n\n")
   p <- plotSeuratReduction(data, useReduction = "tsne", groupBy = paste0("Seurat_louvain_Resolution", j), showLegend = TRUE)
-  j <- j + 0.1
   print(p)
   cat("\n\n")
   
@@ -114,9 +113,10 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
   cat("\n\n")
   
     cat(headingClust," Samples separated {-} \n\n")
-      p <- plotSeuratReduction(data, useReduction = "tsne", splitBy = biological.group, showLegend = TRUE)
+      p <- plotSeuratReduction(data, useReduction = "tsne", groupBy = paste0("Seurat_louvain_Resolution", j), splitBy = biological.group, showLegend = TRUE)
   print(p)
   cat("\n\n")
+  j <- j + 0.1
   
   if(!is.null(phenotype.groups)){
     cat(headingClust," Phenotype variable:", phenotype.groups," {-} \n\n")
@@ -127,7 +127,7 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
 }
 ```
 
-```{r, results='asis', warning=FALSE, message=FALSE, eval = !(plotUMAP && !is.null(metadata(data)$seurat$obj@reductions$umap))}
+```{r, results='asis', warning=FALSE, message=FALSE, eval = !(plotUMAP && !is.null(metadata(data)$seurat$obj$reductions$umap))}
 data <- runSeuratUMAP(data, useReduction = "pca", dims = significant_PC)
 ```
 
@@ -140,7 +140,6 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
   cat(headingRES, " RES ", j, " {.tabset -} \n\n")
   cat(headingClust," Clusters {-} \n\n")
   p <- plotSeuratReduction(data, useReduction = "umap", groupBy = paste0("Seurat_louvain_Resolution", j), showLegend = TRUE)
-  j <- j + 0.1
   
   print(p)
   
@@ -151,9 +150,10 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
   cat("\n\n")
   
     cat(headingClust," Samples separated {-} \n\n")
-  p <- plotSeuratReduction(data, useReduction = "umap", splitBy = biological.group, showLegend = TRUE)
+  p <- plotSeuratReduction(data, useReduction = "umap", groupBy = paste0("Seurat_louvain_Resolution", j), splitBy = biological.group, showLegend = TRUE)
   print(p)
   cat("\n\n")
+  j <- j + 0.1
   
     if(!is.null(phenotype.groups)){
       cat(headingClust," Phenotype variable:", phenotype.groups," {-} \n\n")
