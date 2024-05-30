@@ -1560,8 +1560,10 @@ convertSCEToSeurat <-
             inSCE@metadata$seurat$obj$reductions$pca
         }
         if (!is.null(inSCE@metadata$seurat$obj$RNA$meta.features)) {
-          seuratObject@assays$RNA@meta.data <-
-            inSCE@metadata$seurat$obj$RNA$meta.features
+          #seuratObject@assays$RNA@meta.data <-
+            #inSCE@metadata$seurat$obj$RNA$meta.features
+          seuratObject <-
+            SeuratObject::AddMetaData(seuratObject, inSCE@metadata$seurat$obj$RNA$meta.features)
         }
         if (!is.null(inSCE@metadata$seurat$obj$reductions$ica)) {
           seuratObject@reductions$ica <-
@@ -1613,7 +1615,9 @@ convertSCEToSeurat <-
             inSCE@metadata$seurat$obj@reductions$umap
         }
         if (!is.null(inSCE@metadata$seurat$obj@meta.data)) {
-          seuratObject@meta.data <- inSCE@metadata$seurat$obj@meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj@meta.data)),]
+          #seuratObject@meta.data <- inSCE@metadata$seurat$obj@meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj@meta.data)),]
+          seuratObject <- 
+            SeuratObject::AddMetaData(seuratObject, inSCE@metadata$seurat$obj$meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj$meta.data)),])
         }
         if (!is.null(inSCE@metadata$seurat$obj@commands)) {
           seuratObject@commands <- inSCE@metadata$seurat$obj@commands
