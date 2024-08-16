@@ -26,7 +26,7 @@
 
 #' @title Identify empty droplets using \link[DropletUtils]{emptyDrops}.
 #' @description Run \link[DropletUtils]{emptyDrops} on the count matrix in the
-#' provided \\linkS4class{SingleCellExperiment} object.
+#' provided \linkS4class{SingleCellExperiment} object.
 #' Distinguish between droplets containing cells and ambient RNA in a
 #' droplet-based single-cell RNA sequencing experiment.
 #' @param inSCE A \linkS4class{SingleCellExperiment} object. Must contain a raw 

@@ -39,7 +39,7 @@ plotBubble(
 
 \item{colorHigh}{The color to be used for highest value of mean expression}
 
-\item{scale}{Option to scale the data. Default: /code{FALSE}. Selected assay will not be scaled.}
+\item{scale}{Option to scale the data. Default: \code{FALSE}. Selected assay will not be scaled.}
 }
 \value{
 A ggplot of the bubble plot.

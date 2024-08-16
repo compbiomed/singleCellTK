@@ -670,7 +670,7 @@ integrated = integrated[:, orderIdx]
 #' variable genes identification. Default \code{"counts"}.
 #' @param kmeansK An integer vector. Indicating the kmeans' K-value for each
 #' batch (i.e. how many subclusters in each batch should exist), in order to
-#' construct pseudo-replicates. The length of code{kmeansK} needs to be the same
+#' construct pseudo-replicates. The length of \code{kmeansK} needs to be the same
 #' as the number of batches. Default \code{NULL}, and this value will be
 #' auto-detected by default, depending on \code{cellType}.
 #' @param cellType A single character. A string indicating a field in

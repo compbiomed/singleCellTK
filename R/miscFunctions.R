@@ -191,18 +191,18 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
 #' Adds '-1', '-2', ... '-i' to multiple duplicated rownames, and in place
 #' replace the unique rownames, store unique rownames in \code{rowData}, or
 #' return the unique rownames as character vecetor.
-#' @param x A matrix like or /linkS4class{SingleCellExperiment} object, on which
+#' @param x A matrix like or \linkS4class{SingleCellExperiment} object, on which
 #' we can apply \code{rownames()} to and has duplicated rownames.
 #' @param as.rowData Only applicable when \code{x} is a
-#' /linkS4class{SingleCellExperiment} object. When set to \code{TRUE}, will
+#' \linkS4class{SingleCellExperiment} object. When set to \code{TRUE}, will
 #' insert a new column called \code{"rownames.uniq"} to \code{rowData(x)}, with
 #' the deduplicated rownames.
 #' @param return.list When set to \code{TRUE}, will return a character vector
 #' of the deduplicated rownames.
 #' @export
-#' @return By default, a matrix or /linkS4class{SingleCellExperiment} object
+#' @return By default, a matrix or \linkS4class{SingleCellExperiment} object
 #' with rownames deduplicated.
-#' When \code{x} is a /linkS4class{SingleCellExperiment} and \code{as.rowData}
+#' When \code{x} is a \linkS4class{SingleCellExperiment} and \code{as.rowData}
 #' is set to \code{TRUE}, will return \code{x} with \code{rowData} updated.
 #' When \code{return.list} is set to \code{TRUE}, will return a character vector
 #' with the deduplicated rownames.
