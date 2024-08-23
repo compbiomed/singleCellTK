@@ -17,3 +17,4 @@ exec/png
 ^\.github$
 ^vignettes/articles/*
 ^images
+.dockerignore
