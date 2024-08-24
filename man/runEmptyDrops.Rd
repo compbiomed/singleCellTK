@@ -63,7 +63,7 @@ details.
 }
 \description{
 Run \link[DropletUtils]{emptyDrops} on the count matrix in the
-provided \\linkS4class{SingleCellExperiment} object.
+provided \linkS4class{SingleCellExperiment} object.
 Distinguish between droplets containing cells and ambient RNA in a
 droplet-based single-cell RNA sequencing experiment.
 }

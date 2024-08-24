@@ -852,10 +852,18 @@ plotSCEScatter <- function(inSCE,
                       vcolor = "red",
                       vsize = 1,
                       vlinetype = 1) {
-  if (is.null(groupBy)) {
-    groupBy <- rep("Sample", length(y))
-  }
   
+  mult_modules <- FALSE
+  
+  if (is.null(groupBy)) {
+    if (length(colnames(y)) > 1){
+      mult_modules <- TRUE
+      groupBy <- rep(colnames(y), each = dim(y)[1])
+      y <- tidyr::pivot_longer(as.data.frame(y), cols = 1:dim(y)[2], cols_vary = "slowest")$value#
+    }else{
+      groupBy <- rep("Sample", length(y))
+    }
+  }
   
   if(!is.factor(groupBy)){
     if(is.null(plotOrder)){
@@ -918,6 +926,10 @@ plotSCEScatter <- function(inSCE,
     p <- p + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
                             axis.ticks.x = ggplot2::element_blank(),
                             axis.title.x = ggplot2::element_blank())
+  }
+  
+  if (mult_modules){
+    p <- p + xlab("Modules")
   }
   
   if (gridLine == TRUE){
@@ -1417,9 +1429,9 @@ plotSCEViolinAssayData <- function(inSCE,
 #' @param feature Desired name of feature stored in assay of SingleCellExperiment
 #'  object. Only used when "assays" slotName is selected. Default NULL.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
-#' @param dimension Desired dimension stored in the specified reducedDims.
-#'  Either an integer which indicates the column or a character vector specifies
-#'  column name. By default, the 1st dimension/column will be used.
+#' @param dimension Desired dimension(s) stored in the specified reducedDims.
+#'  Either an integer which indicates the column(s) or a character vector specifies
+#'  column name(s). By default, the 1st dimension/column will be used.
 #'  Only used when "reducedDims" slotName is selected. Default NULL.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #' equal length to the number of the samples in the SingleCellExperiment
@@ -1568,7 +1580,11 @@ plotSCEViolin <- function(inSCE,
   samples <- unique(sample)
   plotlist <- lapply(samples, function(x) {
     sampleInd <- which(sample == x)
-    countSub <- counts[sampleInd]
+    if (length(colnames(counts)) > 1){
+      countSub <- counts[sampleInd,]
+    }else{
+      countSub <- counts[sampleInd]
+    }
     if(!is.null(groupBy)){
       groupbySub <- groupBy[sampleInd]
     }else{

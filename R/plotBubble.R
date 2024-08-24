@@ -12,7 +12,7 @@
 #' @param ylab The y-axis label
 #' @param colorLow The color to be used for lowest value of mean expression
 #' @param colorHigh The color to be used for highest value of mean expression
-#' @param scale Option to scale the data. Default: /code{FALSE}. Selected assay will not be scaled. 
+#' @param scale Option to scale the data. Default: \code{FALSE}. Selected assay will not be scaled. 
 #' @return A ggplot of the bubble plot.
 #' @importFrom rlang .data
 #' @importFrom reshape2 melt
