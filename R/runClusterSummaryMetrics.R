@@ -7,7 +7,7 @@
 #' @param featureNames A string or vector of strings with each gene to aggregate.
 #' @param displayName A string that is the name of the column used for genes.
 #' @param groupNames The name of a colData entry that can be used as groupNames.
-#' @param scale Option to scale the data. Default: /code{FALSE}. Selected assay will not be scaled. 
+#' @param scale Option to scale the data. Default: \code{FALSE}. Selected assay will not be scaled. 
 #' @return A dataframe with mean expression and percent of cells in cluster that 
 #' express for each cluster.
 #' @examples

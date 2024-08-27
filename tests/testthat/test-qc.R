@@ -8,6 +8,9 @@ sampleVector <- c(rep("Sample1", 100), rep("Sample2", 95))
 sceres <- runQuickUMAP(inSCE = sce, sample = sampleVector, nNeighbors = 10,
                 nIterations = 20, alpha = 1, minDist = 0.01, initialDims = 20)
 
+# allow some additional memory over default
+options(future.globals.maxSize = 786432000)
+
 test_that(desc = "Testing plotSCEScatter functions", {
     p1 <- plotSCEScatter(inSCE = sceres, legendTitle = NULL,
         slot = "assays", annotation = "counts", feature = "ENSG00000251562",
