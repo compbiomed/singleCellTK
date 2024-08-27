@@ -194,7 +194,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
 #' @param x A matrix like or \linkS4class{SingleCellExperiment} object, on which
 #' we can apply \code{rownames()} to and has duplicated rownames.
 #' @param as.rowData Only applicable when \code{x} is a
-#' /linkS4class{SingleCellExperiment} object. When set to \code{TRUE}, will
+#' \linkS4class{SingleCellExperiment} object. When set to \code{TRUE}, will
 #' insert a new column called \code{"rownames.uniq"} to \code{rowData(x)}, with
 #' the deduplicated rownames.
 #' @param return.list When set to \code{TRUE}, will return a character vector
