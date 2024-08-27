@@ -52,6 +52,10 @@
 #' named with categories. Default \code{NULL}.
 #' @param palette Choose from \code{"ggplot"}, \code{"celda"} or \code{"random"}
 #' to generate unique category colors.
+#' @param heatmapPalette Choose from \code{"sequential"}, \code{"diverging"} or supply custom palette with colorScheme
+#' to generate unique category colors. Default is \code{"sequential"}
+#' @param addCellSummary Add summary barplots to column annotation. Supply the name of the column in colData as a character. This option will add summary for categorical variables 
+#' as stacked barplots.
 #' @param rowSplitBy character. Do semi-heatmap based on the grouping of
 #' this(these) annotation(s). Should exist in either \code{rowDataName} or
 #' \code{names(featureAnnotations)}. Default \code{NULL}.
@@ -96,9 +100,14 @@
 #' @importFrom scuttle aggregateAcrossCells aggregateAcrossFeatures
 #' @importFrom SingleCellExperiment SingleCellExperiment
 #' @importFrom SummarizedExperiment colData assayNames<-
+#' @importFrom stringr str_replace_all str_c
+#' @importFrom stats prcomp quantile
+#' @importFrom dplyr select arrange group_by count ungroup mutate one_of desc
+#' @importFrom tidyr spread
+#' @importFrom grid gpar
 plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                            doLog = FALSE, featureIndex = NULL, cellIndex = NULL,
-                           scale = TRUE, trim = c(-2, 2),
+                           scale = TRUE, trim = c(-2,2),
                            featureIndexBy = 'rownames',
                            cellIndexBy = 'rownames',
                            rowDataName = NULL, colDataName = NULL,
@@ -107,6 +116,8 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                            featureAnnotationColor = NULL,
                            cellAnnotationColor = NULL,
                            palette = c("ggplot", "celda", "random"),
+                           heatmapPalette = c("sequential","diverging"),
+                           addCellSummary = NULL,
                            rowSplitBy = NULL, colSplitBy = NULL,
                            rowLabel = FALSE, colLabel = FALSE,
                            rowLabelSize = 6, colLabelSize = 6,
@@ -116,239 +127,332 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                            rowGap = grid::unit(0, 'mm'),
                            colGap = grid::unit(0, 'mm'),
                            border = FALSE, colorScheme = NULL, ...){
-    palette <- match.arg(palette)
-    # STAGE 1: Create clean SCE object with only needed information ####
-    ## .selectSCEMatrix, .manageCellVar and .manageFeatureVar perform checks
-    useMat <- .selectSCEMatrix(inSCE, useAssay = useAssay,
-                               useReducedDim = useReducedDim,
-                               returnMatrix = TRUE, cellAsCol = TRUE)
-    useAssay <- useMat$names$useAssay
-    useReducedDim <- useMat$names$useReducedDim
-    useData <- ifelse(!is.null(useAssay), useAssay, useReducedDim)
-    ### cell annotation
-    colDataName <- unique(c(colDataName, aggregateCol))
-    colDataAnns <- lapply(colDataName, function(x) .manageCellVar(inSCE, x))
-    if (length(colDataName) > 0)
-        colDataAnns <- data.frame(colDataAnns, row.names = colnames(inSCE))
+  palette<-match.arg(palette)
+  heatmapPalette<-match.arg(heatmapPalette)
+  # STAGE 1: Create clean SCE object with only needed information ####
+  ## .selectSCEMatrix, .manageCellVar and .manageFeatureVar perform checks
+  useMat <- .selectSCEMatrix(inSCE, useAssay = useAssay,
+                             useReducedDim = useReducedDim,
+                             returnMatrix = TRUE, cellAsCol = TRUE)
+  useAssay <- useMat$names$useAssay
+  useReducedDim <- useMat$names$useReducedDim
+  useData <- ifelse(!is.null(useAssay), useAssay, useReducedDim)
+  ### cell annotation
+  oldColData <- colData(inSCE)
+  colDataName <- unique(c(colDataName, aggregateCol))
+  colDataAnns <- lapply(colDataName, function(x) .manageCellVar(inSCE, x))
+  if (length(colDataName) > 0)
+    colDataAnns <- data.frame(colDataAnns, row.names = colnames(inSCE))
+  else
+    colDataAnns <- data.frame(row.names = colnames(inSCE))
+  colnames(colDataAnns) <- colDataName
+  cellAnnotations <- .mergeAnnotationDF(colDataAnns, cellAnnotations)
+  if (!is.null(colSplitBy) &&
+      any(!colSplitBy %in% colnames(cellAnnotations)))
+    stop('Specified `colSplitBy` variables not found.')
+  if (isTRUE(colLabel)) {
+    colLabelName <- colnames(inSCE)
+  } else if (isFALSE(colLabel)) {
+    colLabelName <- NULL
+  } else {
+    colLabelName <- .manageCellVar(inSCE, colLabel)
+    colLabel <- TRUE
+  }
+  ### feature annotation
+  rowDataAnns <- data.frame(row.names = rownames(useMat$mat))
+  if (!is.null(useAssay)) {
+    # When using reducedDim, no rowData can be applied
+    rowDataName <- unique(c(rowDataName, aggregateRow))
+    rowDataAnns <- lapply(rowDataName, function(x) .manageFeatureVar(inSCE, x))
+    if (length(rowDataName) > 0)
+      rowDataAnns <- data.frame(rowDataAnns, row.names = rownames(inSCE))
     else
-        colDataAnns <- data.frame(row.names = colnames(inSCE))
-    colnames(colDataAnns) <- colDataName
-    cellAnnotations <- .mergeAnnotationDF(colDataAnns, cellAnnotations)
-    if (!is.null(colSplitBy) &&
-        any(!colSplitBy %in% colnames(cellAnnotations)))
-        stop('Specified `colSplitBy` variables not found.')
-    if (isTRUE(colLabel)) {
-        colLabelName <- colnames(inSCE)
-    } else if (isFALSE(colLabel)) {
-        colLabelName <- NULL
-    } else {
-        colLabelName <- .manageCellVar(inSCE, colLabel)
-        colLabel <- TRUE
-    }
-    ### feature annotation
-    rowDataAnns <- data.frame(row.names = rownames(useMat$mat))
+      rowDataAnns <- data.frame(row.names = rownames(inSCE))
+    colnames(rowDataAnns) <- rowDataName
+  }
+  # But customized featureAnnotations should work
+  featureAnnotations <- .mergeAnnotationDF(rowDataAnns, featureAnnotations)
+  if (!is.null(rowSplitBy) &&
+      any(!rowSplitBy %in% colnames(featureAnnotations)))
+    stop('Specified `rowSplitBy` variables not found.')
+  if (isTRUE(rowLabel)) {
+    rowLabelName <- rownames(useMat$mat)
+  } else if (isFALSE(rowLabel)) {
+    rowLabelName <- NULL
+  } else {
     if (!is.null(useAssay)) {
-        # When using reducedDim, no rowData can be applied
-        rowDataName <- unique(c(rowDataName, aggregateRow))
-        rowDataAnns <- lapply(rowDataName, function(x) .manageFeatureVar(inSCE, x))
-        if (length(rowDataName) > 0)
-            rowDataAnns <- data.frame(rowDataAnns, row.names = rownames(inSCE))
-        else
-            rowDataAnns <- data.frame(row.names = rownames(inSCE))
-        colnames(rowDataAnns) <- rowDataName
-    }
-    # But customized featureAnnotations should work
-    featureAnnotations <- .mergeAnnotationDF(rowDataAnns, featureAnnotations)
-    if (!is.null(rowSplitBy) &&
-        any(!rowSplitBy %in% colnames(featureAnnotations)))
-        stop('Specified `rowSplitBy` variables not found.')
-    if (isTRUE(rowLabel)) {
-        rowLabelName <- rownames(useMat$mat)
-    } else if (isFALSE(rowLabel)) {
-        rowLabelName <- NULL
+      rowLabelName <- .manageFeatureVar(inSCE, rowLabel)
+      rowLabel <- TRUE
     } else {
-        if (!is.null(useAssay)) {
-            rowLabelName <- .manageFeatureVar(inSCE, rowLabel)
-            rowLabel <- TRUE
-        } else {
-            # Using customized rowLabel for reducedDim
-            if (length(rowLabel) != nrow(useMat$mat))
-                stop("Length of `rowLabel` does not match nrow of specified ",
-                     "`useReducedDim`")
-            rowLabelName <- rowLabel
-            rowLabel <- TRUE
-        }
+      # Using customized rowLabel for reducedDim
+      if (length(rowLabel) != nrow(useMat$mat))
+        stop("Length of `rowLabel` does not match nrow of specified ",
+             "`useReducedDim`")
+      rowLabelName <- rowLabel
+      rowLabel <- TRUE
     }
-    ### create SCE object
-    SCE <- SingleCellExperiment(assay = list(useMat$mat),
-                                colData = cellAnnotations,
-                                rowData = featureAnnotations)
-    assayNames(SCE) <- useData
-    # STAGE 2: Subset SCE object as needed ####
-    # Manage cell subsetting
-    if(is.null(cellIndex)){
-        cellIndex <- seq(ncol(SCE))
-    } else if (is.character(cellIndex)) {
-        # cellIndexBy not necessarily included in new "SCE"
-        cellIndex <- retrieveSCEIndex(inSCE, cellIndex, axis = "col",
-                                      by = cellIndexBy)
-    } else if (is.logical(cellIndex)) {
-        if (length(cellIndex) != ncol(inSCE)) {
-            stop("Logical index length does not match ncol(inSCE)")
-        }
-        cellIndex <- which(cellIndex)
+  }
+  ### create SCE object
+  SCE <- SingleCellExperiment(assay = list(useMat$mat),
+                              colData = cellAnnotations,
+                              rowData = featureAnnotations)
+  assayNames(SCE) <- useData
+  
+  .minmax<-function(mat){
+    min_max<- function(x) {
+      new_x =  (x - min(x))/ (max(x) - min(x))
+      return(new_x)}
+    new_mat<-as.matrix(apply(mat,FUN = min_max,MARGIN = 2))
+    return(new_mat)
     }
-    # Manage feature subsetting
-    if(is.null(featureIndex)){
-        featureIndex <- seq(nrow(SCE))
-    } else if (is.character(featureIndex)) {
-        if (!is.null(useAssay))
-            featureIndex <- retrieveSCEIndex(inSCE, featureIndex, axis = "row",
-                                             by = featureIndexBy)
-        else
-            # When using reducedDim, can only go with "PC" names
-            # or customized "by"
-            featureIndex <- retrieveSCEIndex(SCE, featureIndex, axis = "row",
-                                             by = featureIndexBy)
-    } else if (is.logical(featureIndex)) {
-        if (length(featureIndex) != nrow(SCE)) {
-            stop("Logical index length does not match nrow(inSCE)")
-        }
-        featureIndex <- which(featureIndex)
+  
+  # STAGE 2: Subset SCE object as needed ####
+  # Manage cell subsetting
+  if(is.null(cellIndex)){
+    cellIndex <- seq(ncol(SCE))
+  } else if (is.character(cellIndex)) {
+    # cellIndexBy not necessarily included in new "SCE"
+    cellIndex <- retrieveSCEIndex(inSCE, cellIndex, axis = "col",
+                                  by = cellIndexBy)
+  } else if (is.logical(cellIndex)) {
+    if (length(cellIndex) != ncol(inSCE)) {
+      stop("Logical index length does not match ncol(inSCE)")
     }
-    colnames(SCE) <- colLabelName
-    rownames(SCE) <- rowLabelName
-    SCE <- SCE[featureIndex, cellIndex]
-    ### Scaling should be done before aggregating
-    if (isTRUE(doLog)) assay(SCE) <- log1p(assay(SCE))
-    if (isTRUE(scale)) assay(SCE) <- as.matrix(computeZScore(assay(SCE)))
-    if (!is.null(trim)) assay(SCE) <- trimCounts(assay(SCE), trim)
-    # STAGE 3: Aggregate As needed ####
-    if (!is.null(aggregateCol)) {
-        # TODO: whether to also aggregate numeric variable that users want
-        # Might need to use "coldata.merge" in aggregate function
-        colIDS <- colData(SCE)[, aggregateCol]
-        origRowData <- rowData(SCE)
-        SCE <- aggregateAcrossCells(SCE, ids = colIDS,
-                                    use.assay.type = useData,
-                                    store.number = NULL, statistics = "mean")
-        # TODO: `aggregateAcrossCells` produce duplicated variables in colData
-        # and unwanted "ncell" variable even if I set `store.number = NULL`.
-        colData(SCE) <- colData(SCE)[,aggregateCol,drop=FALSE]
-        newColnames <- do.call(paste, c(colData(SCE), list(sep = "_")))
-        colnames(SCE) <- newColnames
-        rowData(SCE) <- origRowData
+    cellIndex <- which(cellIndex)
+  }
+  # Manage feature subsetting
+  if(is.null(featureIndex)){
+    featureIndex <- seq(nrow(SCE))
+  } else if (is.character(featureIndex)) {
+    if (!is.null(useAssay))
+      featureIndex <- retrieveSCEIndex(inSCE, featureIndex, axis = "row",
+                                       by = featureIndexBy)
+    else
+      # When using reducedDim, can only go with "PC" names
+      # or customized "by"
+      featureIndex <- retrieveSCEIndex(SCE, featureIndex, axis = "row",
+                                       by = featureIndexBy)
+  } else if (is.logical(featureIndex)) {
+    if (length(featureIndex) != nrow(SCE)) {
+      stop("Logical index length does not match nrow(inSCE)")
     }
-    if (!is.null(aggregateRow)) {
-        # `aggregateAcrossFeatures` doesn't work by with multi-var
-        # Remake one single variable vector
-        rowIDS <- rowData(SCE)[, aggregateRow, drop = FALSE]
-        rowIDS <- do.call(paste, c(rowIDS, list(sep = "_")))
-        origColData <- colData(SCE)
-        SCE <- aggregateAcrossFeatures(SCE, ids = rowIDS, average = TRUE,
-                                       use.assay.type = useData)
-        colData(SCE) <- origColData
-    }
-    # STAGE 4: Other minor preparation for plotting ####
-    mat <- assay(SCE)
-    if (is.null(colorScheme)) {
-        if (!is.null(trim))
-            colorScheme <- circlize::colorRamp2(c(trim[1], 0, trim[2]),
-                                                c('blue', 'white', 'red'))
-        else
-            colorScheme <- circlize::colorRamp2(c(min(mat),
-                                                  (max(mat) + min(mat))/2,
-                                                  max(mat)),
-                                                c('blue', 'white', 'red'))
-    } else {
-        if (!is.function(colorScheme))
-            stop('`colorScheme` must be a function generated by ',
-                 'circlize::colorRamp2')
-        breaks <- attr(colorScheme, 'breaks')
-        if (breaks[1] != min(trim) || breaks[length(breaks)] != max(trim))
-            stop('Breaks of `colorScheme` do not match with `trim`.')
-    }
-    ### Generate HeatmapAnnotation object
-    ca <- NULL
-    cellAnnotationColor <- .heatmapAnnColor(SCE, slot = "colData",
-                                            custom = cellAnnotationColor,
-                                            palette = palette)
-    if(dim(cellAnnotations)[2] > 0)
-        ca <- ComplexHeatmap::HeatmapAnnotation(df = colData(SCE),
-                                                col = cellAnnotationColor)
-    ra <- NULL
-    featureAnnotationColor <- .heatmapAnnColor(SCE, slot = "rowData",
-                                               custom = featureAnnotationColor,
-                                               palette = palette)
-    if(ncol(rowData(SCE)) > 0)
-        ra <- ComplexHeatmap::rowAnnotation(df = rowData(SCE),
-                                            col = featureAnnotationColor)
-    ### Set split variable
-    cs <- NULL
-    if (!is.null(colSplitBy)) cs <- colData(SCE)[colSplitBy]
-    rs <- NULL
-    if (!is.null(rowSplitBy)) rs <- rowData(SCE)[rowSplitBy]
-    ###
-    if (!is.null(colGap)) {
-        if (!inherits(colGap, "unit"))
-            stop("`colGap` has to be 'unit' object. Try `grid::unit(", colGap,
-                 ", 'mm')`.")
-    }
-    else colGap <- grid::unit(0, 'mm')
-    if (!is.null(rowGap)) {
-        if (!inherits(rowGap, "unit"))
-            stop("`rowGap` has to be 'unit' object. Try `grid::unit(", rowGap,
-                 ", 'mm')`.")
-    }
-    else rowGap <- grid::unit(0, 'mm')
+    featureIndex <- which(featureIndex)
+  }
+  colnames(SCE) <- colLabelName
+  rownames(SCE) <- rowLabelName
+  SCE <- SCE[featureIndex, cellIndex]
+  ### Scaling should be done before aggregating
+  if (isTRUE(doLog)) assay(SCE) <- log1p(assay(SCE))
+  if(isTRUE(scale)) scale <- "zscore"
+  if ((scale == "zscore")) {
+    assay(SCE) <- as.matrix(scale(assay(SCE)))
+  } else if (scale ==  "min_max") {
+    assay(SCE) <- as.matrix(.minmax(assay(SCE)))
+  }    
+  
+  
+  # STAGE 3: Aggregate As needed ####
+  if (!is.null(aggregateCol)) {
+    # TODO: whether to also aggregate numeric variable that users want
+    # Might need to use "coldata.merge" in aggregate function
+    colIDS <- colData(SCE)[, aggregateCol]
+    origRowData <- rowData(SCE)
+    SCE <- aggregateAcrossCells(SCE, ids = colIDS,
+                                use.assay.type = useData,
+                                store.number = NULL, statistics = "mean")
+    # TODO: `aggregateAcrossCells` produce duplicated variables in colData
+    # and unwanted "ncell" variable even if I set `store.number = NULL`.
+    colData(SCE) <- colData(SCE)[,c(aggregateCol),drop=FALSE] ##change
+    newColnames <- do.call(paste, c(colData(SCE), list(sep = "_")))
+    colnames(SCE) <- newColnames
+    rowData(SCE) <- origRowData
+  }
+  if (!is.null(aggregateRow)) {
+    # `aggregateAcrossFeatures` doesn't work by with multi-var
+    # Remake one single variable vector
+    rowIDS <- rowData(SCE)[, aggregateRow, drop = FALSE]
+    rowIDS <- do.call(paste, c(rowIDS, list(sep = "_")))
+    origColData <- colData(SCE)
+    SCE <- aggregateAcrossFeatures(SCE, ids = rowIDS, average = TRUE,
+                                   use.assay.type = useData)
+    colData(SCE) <- origColData
+  }
+  # STAGE 4: Other minor preparation for plotting ####
 
-    if (!is.null(useAssay)) name <- useAssay
-    else name <- useReducedDim
-    hm <- ComplexHeatmap::Heatmap(mat, name = name, left_annotation = ra,
-                                  top_annotation = ca, col = colorScheme,
-                                  row_split = rs, column_split = cs,
-                                  row_title = rowTitle, column_title = colTitle,
-                                  show_row_names = rowLabel,
-                                  row_names_gp = grid::gpar(fontsize = rowLabelSize),
-                                  show_row_dend = rowDend,
-                                  show_column_names = colLabel,
-                                  column_names_gp = grid::gpar(fontsize = colLabelSize),
-                                  show_column_dend = colDend,
-                                  row_gap = rowGap, column_gap = colGap,
-                                  border = border,
-                                  ...)
-    return(hm)
+  # Create a function that sorts the matrix by PC1
+  .orderMatrix<-function(mat){
+    # Adding extra character to rownames because presence of some char gets a "." if I don't
+    mat2<-data.frame(t(mat))
+    rownames(mat2)<-stringr::str_c("K_",rownames(mat2))
+    pca_mat<-stats::prcomp(mat2,center = TRUE, scale. = FALSE)
+    kl<-dplyr::arrange(data.frame(pca_mat$x)["PC1"],desc(PC1))
+    mat<-data.frame(t(mat2)) %>% dplyr::select(rownames(kl))
+    colnames(mat)<-stringr::str_replace_all(colnames(mat),"K_","")
+    return(as.matrix(mat))
+  }
+  
+  # Prepare
+  if(useAssay == "reducedDim"){
+    mat <- assay(SCE)
+    mat <- .orderMatrix(mat)
+    
+  } else{
+    mat<- assay(SCE)
+  }
+   
+ 
+  
+  if (!is.null(trim) & scale == "zscore") {
+    assay(SCE) <- trimCounts(assay(SCE), trim)  
+  }    
+  
+  
+  if (is.null(colorScheme)) {
+    if (isFALSE(scale)){
+      if (heatmapPalette == "sequential"){
+        colorScheme <- circlize::colorRamp2(quantile(mat,na.rm=TRUE),
+                                            c('white', "#fecc5c",'#fdae61',"#f03b20","#bd0026"))
+      }
+      else if (heatmapPalette == "diverging"){
+      colorScheme <- circlize::colorRamp2(c(min(mat),
+                                            (max(mat) + min(mat))/2,
+                                            max(mat)),
+                                          c('blue', 'white', 'red'))
+      }
+    }
+    else if (scale == "zscore"){
+      colorScheme <- circlize::colorRamp2(quantile(assay(SCE), na.rm = TRUE),
+                                          c('#2c7bb6','#abd9e9','#ffffbf','#fdae61','#d7191c'))
+    }
+    else if (scale == "min_max"){
+      if(heatmapPalette == "sequential"){
+        colorScheme <- circlize::colorRamp2(c(0,0.3,0.6,0.8,1),
+                                            c('white', "#fecc5c",'#fdae61',"#f03b20","#bd0026")) 
+        
+      }
+      else if (heatmapPalette == "diverging") {
+      colorScheme <- circlize::colorRamp2(c(0,0.3,0.6,0.8,1),
+                                          c('#2c7bb6','#abd9e9','#ffffbf','#fdae61','#d7191c'))     
+      }
+    }
+  } else {
+    if (!is.function(colorScheme))
+      stop('`colorScheme` must be a function generated by ',
+           'circlize::colorRamp2')
+    breaks <- attr(colorScheme, 'breaks')
+    if (breaks[1] != min(trim) || breaks[length(breaks)] != max(trim))
+      stop('Breaks of `colorScheme` do not match with `trim`.')
+  }
+  ### Generate HeatmapAnnotation object
+  ca <- NULL
+  cellAnnotationColor <- .heatmapAnnColor(SCE, slot = "colData",
+                                          custom = cellAnnotationColor,
+                                          palette = palette)
+  if(dim(cellAnnotations)[2] > 0)
+    if(is.null(addCellSummary)){
+      ca <- ComplexHeatmap::HeatmapAnnotation(df = colData(SCE),
+                                              col = cellAnnotationColor)
+    }
+  else if (!addCellSummary %in% colnames(oldColData)){
+    stop(addCellSummary,
+         "' not found in colData")
+  }
+  else if (addCellSummary %in% colnames(oldColData)){
+    oldColData %>%
+      as.data.frame() %>%
+      group_by(!!!rlang::syms(aggregateCol),!!!rlang::syms(addCellSummary)) %>%
+      count() %>%
+      ungroup() %>%
+      group_by(!!! rlang::syms(aggregateCol)) %>%
+      mutate(sum = sum(n)) %>%
+      mutate(value = n/sum) %>%
+      dplyr::select(-n,sum) %>%
+      spread(one_of(addCellSummary),value) %>%
+      ungroup() %>%
+      dplyr::select(-one_of(aggregateCol),-sum) -> boxdata
+    
+    
+    boxdata[is.na(boxdata)]  <- 0
+    boxdata<-as.matrix(boxdata)
+    ca <- ComplexHeatmap::HeatmapAnnotation(addCellSummary = anno_barplot(boxdata,
+                                                                         gp = gpar(fill = 2:5)),
+                                            annotation_label = addCellSummary,
+                                            col = cellAnnotationColor)
+  }
+  ra <- NULL
+  featureAnnotationColor <- .heatmapAnnColor(SCE, slot = "rowData",
+                                             custom = featureAnnotationColor,
+                                             palette = palette)
+  if(ncol(rowData(SCE)) > 0)
+    ra <- ComplexHeatmap::rowAnnotation(df = rowData(SCE),
+                                        col = featureAnnotationColor)
+  ### Set split variable
+  cs <- NULL
+  if (!is.null(colSplitBy)) cs <- colData(SCE)[colSplitBy]
+  rs <- NULL
+  if (!is.null(rowSplitBy)) rs <- rowData(SCE)[rowSplitBy]
+  ###
+  if (!is.null(colGap)) {
+    if (!inherits(colGap, "unit"))
+      stop("`colGap` has to be 'unit' object. Try `grid::unit(", colGap,
+           ", 'mm')`.")
+  }
+  else colGap <- grid::unit(0, 'mm')
+  if (!is.null(rowGap)) {
+    if (!inherits(rowGap, "unit"))
+      stop("`rowGap` has to be 'unit' object. Try `grid::unit(", rowGap,
+           ", 'mm')`.")
+  }
+  else rowGap <- grid::unit(0, 'mm')
+  
+  if (!is.null(useAssay)) name <- useAssay
+  else name <- useReducedDim
+  hm <- ComplexHeatmap::Heatmap(mat, name = name, left_annotation = ra,
+                                top_annotation = ca, col = colorScheme,
+                                row_split = rs, column_split = cs,
+                                row_title = rowTitle, column_title = colTitle,
+                                show_row_names = rowLabel,
+                                row_names_gp = grid::gpar(fontsize = rowLabelSize),
+                                show_row_dend = rowDend,
+                                row_dend_reorder = TRUE,
+                                cluster_columns = FALSE,
+                                show_column_names = colLabel,
+                                column_names_gp = grid::gpar(fontsize = colLabelSize),
+                                row_gap = rowGap, column_gap = colGap,
+                                border = border,
+                                ...)
+  return(hm)
 }
 
 .mergeAnnotationDF <- function(origin, external) {
-    if (!is.null(external)) {
-        external <- external[match(rownames(origin), rownames(external)), ,drop = FALSE]
-        origin <- cbind(origin, external)
-    }
-    return(origin)
+  if (!is.null(external)) {
+    external <- external[match(rownames(origin), rownames(external)), ,drop = FALSE]
+    origin <- cbind(origin, external)
+  }
+  return(origin)
 }
 
 .heatmapAnnColor <- function(inSCE, slot = c("colData", "rowData"),
-                          custom = NULL, palette = palette) {
-    slot <- match.arg(slot)
-    if (!is.null(custom) && !is.list(custom))
-        stop("'cellAnnotationColor' or 'featureAnnotationColor' must be a list.")
-    if (is.null(custom)) custom <- list()
-    if (slot == "colData") data <- SummarizedExperiment::colData(inSCE)
-    if (slot == "rowData") data <- SummarizedExperiment::rowData(inSCE)
-    todoNames <- colnames(data)
-    todoNames <- todoNames[!todoNames %in% names(custom)]
-    newColor <- lapply(todoNames, function(n) {
-        var <- data[[n]]
-        if (is.factor(var)) categories <- levels(var)
-        else categories <- unique(var)
-        colors <- discreteColorPalette(length(categories), palette = palette)
-        names(colors) <- categories
-        return(colors)
-    })
-    names(newColor) <- todoNames
-    custom <- c(custom, newColor)
-    return(custom)
+                             custom = NULL, palette = palette) {
+  slot <- match.arg(slot)
+  if (!is.null(custom) && !is.list(custom))
+    stop("'cellAnnotationColor' or 'featureAnnotationColor' must be a list.")
+  if (is.null(custom)) custom <- list()
+  if (slot == "colData") data <- SummarizedExperiment::colData(inSCE)
+  if (slot == "rowData") data <- SummarizedExperiment::rowData(inSCE)
+  todoNames <- colnames(data)
+  todoNames <- todoNames[!todoNames %in% names(custom)]
+  newColor <- lapply(todoNames, function(n) {
+    var <- data[[n]]
+    if (is.factor(var)) categories <- levels(var)
+    else categories <- unique(var)
+    colors <- discreteColorPalette(length(categories), palette = palette)
+    names(colors) <- categories
+    return(colors)
+  })
+  names(newColor) <- todoNames
+  custom <- c(custom, newColor)
+  return(custom)
 }
 # Test
 #logcounts(sceBatches) <- log1p(counts(sceBatches))
@@ -370,13 +474,14 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
 #                      aggregateRow = "marker")
 #plotSCEDimReduceColData(sce, "cluster", "UMAP")
 CellVarColor <- function(inSCE, var,
-                            palette = c("ggplot", "random", "celda"),
-                            seed = 12345, ...) {
-    var <- .manageCellVar(inSCE, var = var)
-    palette <- match.arg(palette)
-    if (is.factor(var)) uniqVar <- levels(var)
-    else uniqVar <- unique(var)
-    colors <- discreteColorPalette(length(uniqVar), palette = palette, seed = seed, ...)
-    names(colors) <- uniqVar
-    return(colors)
+                         palette = c("ggplot", "random", "celda"),
+                         seed = 12345, ...) {
+  var <- .manageCellVar(inSCE, var = var)
+  palette <- match.arg(palette)
+  if (is.factor(var)) uniqVar <- levels(var)
+  else uniqVar <- unique(var)
+  colors <- discreteColorPalette(length(uniqVar), palette = palette, seed = seed, ...)
+  names(colors) <- uniqVar
+  return(colors)
 }
+

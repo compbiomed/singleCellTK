@@ -24,6 +24,8 @@ plotSCEHeatmap(
   featureAnnotationColor = NULL,
   cellAnnotationColor = NULL,
   palette = c("ggplot", "celda", "random"),
+  heatmapPalette = c("sequential", "diverging"),
+  addCellSummary = NULL,
   rowSplitBy = NULL,
   colSplitBy = NULL,
   rowLabel = FALSE,
@@ -113,6 +115,12 @@ named with categories. Default \code{NULL}.}
 
 \item{palette}{Choose from \code{"ggplot"}, \code{"celda"} or \code{"random"}
 to generate unique category colors.}
+
+\item{heatmapPalette}{Choose from \code{"sequential"}, \code{"diverging"} or supply custom palette with colorScheme
+to generate unique category colors. Default is \code{"sequential"}}
+
+\item{addCellSummary}{Add summary barplots to column annotation. Supply the name of the column in colData as a character. This option will add summary for categorical variables 
+as stacked barplots.}
 
 \item{rowSplitBy}{character. Do semi-heatmap based on the grouping of
 this(these) annotation(s). Should exist in either \code{rowDataName} or
