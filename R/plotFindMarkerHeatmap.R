@@ -234,9 +234,7 @@ plotFindMarkerHeatmap <- function(inSCE, orderBy = 'size',
                        featureAnnotations = featureAnnotations,
                        cellAnnotations = cellAnnotations,
                        featureAnnotationColor = featureAnnotationColor,
-                       cellAnnotationColor = cellAnnotationColor,
-                       cluster_row_slices = FALSE, rowLabel = rowLabel,
-                       cluster_column_slices = FALSE,
+                       cellAnnotationColor = cellAnnotationColor, rowLabel = rowLabel,
                        rowDend = rowDend, colDend = colDend, title = title, ...)
   return(hm)
 }

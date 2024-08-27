@@ -50,9 +50,9 @@
 #' cell labeling. Should match the entries in the \code{cellAnnotations} or
 #' \code{colDataName}. For each entry, there should be a list/vector of colors
 #' named with categories. Default \code{NULL}.
-#' @param annotationPalette Choose from \code{"ggplot"}, \code{"celda"} or \code{"random"}
+#' @param palette Choose from \code{"ggplot"}, \code{"celda"} or \code{"random"}
 #' to generate unique category colors.
-#' @param palette Choose from \code{"sequential"}, \code{"diverging"} or supply custom palette with colorScheme
+#' @param heatmapPalette Choose from \code{"sequential"}, \code{"diverging"} or supply custom palette with colorScheme
 #' to generate unique category colors. Default is \code{"sequential"}
 #' @param addCellSummary Add summary barplots to column annotation. Supply the name of the column in colData as a character. This option will add summary for categorical variables 
 #' as stacked barplots.
@@ -100,6 +100,11 @@
 #' @importFrom scuttle aggregateAcrossCells aggregateAcrossFeatures
 #' @importFrom SingleCellExperiment SingleCellExperiment
 #' @importFrom SummarizedExperiment colData assayNames<-
+#' @importFrom stringr str_replace_all str_c
+#' @importFrom stats prcomp quantile
+#' @importFrom dplyr select arrange group_by count ungroup mutate one_of desc
+#' @importFrom tidyr spread
+#' @importFrom grid gpar
 plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                            doLog = FALSE, featureIndex = NULL, cellIndex = NULL,
                            scale = TRUE, trim = c(-2,2),
@@ -110,8 +115,8 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                            featureAnnotations = NULL, cellAnnotations = NULL,
                            featureAnnotationColor = NULL,
                            cellAnnotationColor = NULL,
-                           annotationPalette = c("ggplot", "celda", "random"),
-                           palette = c("sequential","diverging"),
+                           palette = c("ggplot", "celda", "random"),
+                           heatmapPalette = c("sequential","diverging"),
                            addCellSummary = NULL,
                            rowSplitBy = NULL, colSplitBy = NULL,
                            rowLabel = FALSE, colLabel = FALSE,
@@ -122,8 +127,8 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                            rowGap = grid::unit(0, 'mm'),
                            colGap = grid::unit(0, 'mm'),
                            border = FALSE, colorScheme = NULL, ...){
-  annotationPalette<-match.arg(annotationPalette)
   palette<-match.arg(palette)
+  heatmapPalette<-match.arg(heatmapPalette)
   # STAGE 1: Create clean SCE object with only needed information ####
   ## .selectSCEMatrix, .manageCellVar and .manageFeatureVar perform checks
   useMat <- .selectSCEMatrix(inSCE, useAssay = useAssay,
@@ -278,17 +283,23 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
   .orderMatrix<-function(mat){
     # Adding extra character to rownames because presence of some char gets a "." if I don't
     mat2<-data.frame(t(mat))
-    rownames(mat2)<-str_c("K_",rownames(mat2))
-    pca_mat<-prcomp(mat2,center = TRUE, scale. = FALSE)
-    kl<-arrange(data.frame(pca_mat$x)["PC1"],desc(PC1))
+    rownames(mat2)<-stringr::str_c("K_",rownames(mat2))
+    pca_mat<-stats::prcomp(mat2,center = TRUE, scale. = FALSE)
+    kl<-dplyr::arrange(data.frame(pca_mat$x)["PC1"],desc(PC1))
     mat<-data.frame(t(mat2)) %>% dplyr::select(rownames(kl))
-    colnames(mat)<-str_replace_all(colnames(mat),"K_","")
+    colnames(mat)<-stringr::str_replace_all(colnames(mat),"K_","")
     return(as.matrix(mat))
   }
   
   # Prepare
+  if(useAssay == "reducedDim"){
     mat <- assay(SCE)
     mat <- .orderMatrix(mat)
+    
+  } else{
+    mat<- assay(SCE)
+  }
+   
  
   
   if (!is.null(trim) & scale == "zscore") {
@@ -298,11 +309,11 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
   
   if (is.null(colorScheme)) {
     if (isFALSE(scale)){
-      if (palette == "sequential"){
-        colorScheme <- circlize::colorRamp2(quantile(mat),
+      if (heatmapPalette == "sequential"){
+        colorScheme <- circlize::colorRamp2(quantile(mat,na.rm=TRUE),
                                             c('white', "#fecc5c",'#fdae61',"#f03b20","#bd0026"))
       }
-      else if (palette == "diverging"){
+      else if (heatmapPalette == "diverging"){
       colorScheme <- circlize::colorRamp2(c(min(mat),
                                             (max(mat) + min(mat))/2,
                                             max(mat)),
@@ -310,16 +321,16 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
       }
     }
     else if (scale == "zscore"){
-      colorScheme <- circlize::colorRamp2(quantile(assay(SCE)),
+      colorScheme <- circlize::colorRamp2(quantile(assay(SCE), na.rm = TRUE),
                                           c('#2c7bb6','#abd9e9','#ffffbf','#fdae61','#d7191c'))
     }
     else if (scale == "min_max"){
-      if(palette == "sequential"){
+      if(heatmapPalette == "sequential"){
         colorScheme <- circlize::colorRamp2(c(0,0.3,0.6,0.8,1),
                                             c('white', "#fecc5c",'#fdae61',"#f03b20","#bd0026")) 
         
       }
-      else if (palette == "diverging") {
+      else if (heatmapPalette == "diverging") {
       colorScheme <- circlize::colorRamp2(c(0,0.3,0.6,0.8,1),
                                           c('#2c7bb6','#abd9e9','#ffffbf','#fdae61','#d7191c'))     
       }
@@ -336,7 +347,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
   ca <- NULL
   cellAnnotationColor <- .heatmapAnnColor(SCE, slot = "colData",
                                           custom = cellAnnotationColor,
-                                          palette = annotationPalette)
+                                          palette = palette)
   if(dim(cellAnnotations)[2] > 0)
     if(is.null(addCellSummary)){
       ca <- ComplexHeatmap::HeatmapAnnotation(df = colData(SCE),
@@ -355,10 +366,10 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
       group_by(!!! rlang::syms(aggregateCol)) %>%
       mutate(sum = sum(n)) %>%
       mutate(value = n/sum) %>%
-      select(-n,sum) %>%
+      dplyr::select(-n,sum) %>%
       spread(one_of(addCellSummary),value) %>%
       ungroup() %>%
-      select(-one_of(aggregateCol),-sum) -> boxdata
+      dplyr::select(-one_of(aggregateCol),-sum) -> boxdata
     
     
     boxdata[is.na(boxdata)]  <- 0
@@ -371,7 +382,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
   ra <- NULL
   featureAnnotationColor <- .heatmapAnnColor(SCE, slot = "rowData",
                                              custom = featureAnnotationColor,
-                                             palette = annotationPalette)
+                                             palette = palette)
   if(ncol(rowData(SCE)) > 0)
     ra <- ComplexHeatmap::rowAnnotation(df = rowData(SCE),
                                         col = featureAnnotationColor)
@@ -422,7 +433,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
 }
 
 .heatmapAnnColor <- function(inSCE, slot = c("colData", "rowData"),
-                             custom = NULL, palette = annotationPalette) {
+                             custom = NULL, palette = palette) {
   slot <- match.arg(slot)
   if (!is.null(custom) && !is.list(custom))
     stop("'cellAnnotationColor' or 'featureAnnotationColor' must be a list.")
@@ -463,13 +474,14 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
 #                      aggregateRow = "marker")
 #plotSCEDimReduceColData(sce, "cluster", "UMAP")
 CellVarColor <- function(inSCE, var,
-                         annotationPalette = c("ggplot", "random", "celda"),
+                         palette = c("ggplot", "random", "celda"),
                          seed = 12345, ...) {
   var <- .manageCellVar(inSCE, var = var)
-  palette <- match.arg(annotationPalette)
+  palette <- match.arg(palette)
   if (is.factor(var)) uniqVar <- levels(var)
   else uniqVar <- unique(var)
   colors <- discreteColorPalette(length(uniqVar), palette = palette, seed = seed, ...)
   names(colors) <- uniqVar
   return(colors)
 }
+
