@@ -118,6 +118,8 @@ Imports:
     scuttle,
     utils,
     stats,
+    zellkonverter,
+    tidyr
     zellkonverter
 RoxygenNote: 7.3.2
 Suggests:
