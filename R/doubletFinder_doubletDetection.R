@@ -342,6 +342,7 @@
 #' @seealso \code{\link{runCellQC}}, \code{\link{plotDoubletFinderResults}}
 #' @examples
 #' data(scExample, package = "singleCellTK")
+#' options(future.globals.maxSize = 786432000)
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runDoubletFinder(sce)
 #' @export

@@ -4,6 +4,9 @@ library(ggplot2)
 context("Testing seurat functions")
 data(scExample, package = "singleCellTK")
 
+# allow some additional memory over default
+options(future.globals.maxSize = 786432000)
+
 test_that(desc = "Testing standard seurat workflow", {
   # Test Normalization Method
   sce <- runSeuratNormalizeData(sce)

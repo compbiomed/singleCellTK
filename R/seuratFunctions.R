@@ -30,6 +30,16 @@
     return(componentNames)
   }
 
+#' .getSeuratObject
+#' Retrieves the Seurat object stored in the input SCE, if exists
+#' @param inSCE (sce) object containing the Seurat data, located
+#' in inSCE\@\metadata$seurat$obj
+#' @return the Seurat object if it exists
+#' @noRd
+.getSeuratObject <- function(inSCE) { 
+  return(metadata(inSCE)$seurat$obj)
+}
+
 #' .addSeuratToMetaDataSCE
 #' Adds the input seurat object to the metadata slot of the input sce object
 #' (after removing the data matrices)
@@ -44,25 +54,38 @@
   seurat.version <- .getSeuratObjectMajorVersion(seuratObject)
   
   if(seurat.version >= 5.0){
-    inSCE@metadata$seurat$obj$RNA$"var.features" <-
-      Seurat::VariableFeatures(object = seuratObject)
     
-    # Determine if slot is called "meta.data" or "meta.features
-    if("meta.data" %in% methods::slotNames(inSCE@metadata$seurat$obj$RNA)) {
-        inSCE@metadata$seurat$obj$RNA$meta.features  <- seuratObject@assays$RNA@meta.data    
-    } else if ("meta.features" %in% methods::slotNames(inSCE@metadata$seurat$obj$RNA)) {
-        inSCE@metadata$seurat$obj$RNA$meta.features  <- seuratObject@assays$RNA@meta.features
-    }
+    seuratObject@assays$RNA@layers$counts <- methods::new("dgCMatrix")
+    seuratObject@assays$RNA@layers$data <- methods::new("dgCMatrix")
+    seuratObject@assays$RNA@layers$scale.data <- methods::new("dgCMatrix")
+    inSCE@metadata$seurat$obj <- seuratObject
     
-    inSCE@metadata$seurat$obj$meta.data <- seuratObject@meta.data
+    # add var features if exists
+    #if (!is.null(Seurat::VariableFeatures(seuratObject)) && length(Seurat::VariableFeatures(seuratObject)) > 0) {
+    #  inSCE@metadata$seurat$obj@assays$RNA$"var.features" <-
+    #    Seurat::VariableFeatures(object = seuratObject)
+    #}
     
-    inSCE@metadata$seurat$obj$commands <- seuratObject@commands
+    #inSCE@metadata$seurat$obj@assays$RNA@layers$counts <- methods::new("dgCMatrix")
+    #inSCE@metadata$seurat$obj@assays$RNA@layers$data <- methods::new("dgCMatrix")
+    #inSCE@metadata$seurat$obj@assays$RNA@layers$scale.data <- matrix()
     
-    inSCE@metadata$seurat$obj$reductions$pca <- seuratObject@reductions$pca
-    inSCE@metadata$seurat$obj$reductions$ica <- seuratObject@reductions$ica
-    inSCE@metadata$seurat$obj$reductions$tsne <- seuratObject@reductions$tsne
-    inSCE@metadata$seurat$obj$reductions$umap <- seuratObject@reductions$umap
+    # Determine if slot is called "meta.data" or "meta.features"
+      if("meta.data" %in% methods::slotNames(seuratObject@assays$RNA)) {
+         inSCE@metadata$seurat$obj@assays$RNA@meta.data  <- seuratObject@assays$RNA@meta.data    
+      } else if ("meta.features" %in% methods::slotNames(seuratObject@assays$RNA)) {
+         inSCE@metadata$seurat$obj@assays$RNA@meta.features  <- seuratObject@assays$RNA@meta.features
+      }
     
+    inSCE@metadata$seurat$obj@meta.data <- seuratObject@meta.data
+    
+    inSCE@metadata$seurat$obj@commands <- seuratObject@commands
+    
+    inSCE@metadata$seurat$obj@reductions$pca <- seuratObject@reductions$pca
+    inSCE@metadata$seurat$obj@reductions$ica <- seuratObject@reductions$ica
+    inSCE@metadata$seurat$obj@reductions$tsne <- seuratObject@reductions$tsne
+    inSCE@metadata$seurat$obj@reductions$umap <- seuratObject@reductions$umap
+
   }
   else{
     seuratObject@assays$RNA@counts <- methods::new("dgCMatrix")
@@ -541,6 +564,7 @@ runSeuratICA <-
            verbose = FALSE) {
     params <- as.list(environment())
     params$inSCE <- NULL
+    
     if (!isTRUE(scale)) {
       # If not doing a scaling, put useAssay as scaled as RunPCA need it
       seuratObject <-
@@ -618,7 +642,6 @@ runSeuratJackStraw <- function(inSCE,
                                externalReduction = NULL) {
   seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
   seuratObject <- Seurat::ScaleData(seuratObject)
-
   if (!is.null(externalReduction)) {
     #convert (_) to (-) as required by Seurat
 
@@ -1065,13 +1088,16 @@ runSeuratUMAP <- function(inSCE,
   seurat.version <- .getSeuratObjectMajorVersion(seuratObject)
   
   if(seurat.version >= 5.0){
-    if (length(seuratObject@assays$RNA@misc$var.features) > 0) {
-      return(seuratObject@assays$RNA@misc$var.features[seq(numberOfFeatures)])
+    if (length(SeuratObject::Features(seuratObject)) > 0) {
+      return(SeuratObject::Features(seuratObject)[seq(numberOfFeatures)])
     }
+    #if (length(seuratObject@assays$RNA@misc$var.features) > 0) {
+    #  return(seuratObject@assays$RNA@misc$var.features[seq(numberOfFeatures)])
+    #}
   }
   else{
-    if (length(seuratObject@assays$RNA@var.features) > 0) {
-      return(seuratObject@assays$RNA@var.features[seq(numberOfFeatures)])
+    if (length(seuratObject@assays$RNA@meta.data$var.features) > 0) {
+      return(seuratObject@assays$RNA@meta.data$var.features[seq(numberOfFeatures)])
     }
   }
 }
@@ -1551,46 +1577,57 @@ convertSCEToSeurat <-
     
     if(seurat.version >= 5.0){
       if (!is.null(inSCE@metadata$seurat$obj)) {
-        if (length(inSCE@metadata$seurat$obj$RNA$"var.features") > 0) {
-          seuratObject@assays$RNA@misc$"var.features" <- 
-            inSCE@metadata$seurat$obj$RNA$"var.features"
+        # what is it looking for here? sequence? idk
+
+        if ((nrow(inSCE@metadata$seurat$obj@assays$RNA) > 0 && ncol(inSCE@metadata$seurat$obj@assays$RNA) > 0) && !is.null(inSCE@metadata$seurat$obj@assays$RNA@meta.data$var.features)) {
+          seuratObject@assays$RNA@meta.data$var.features <- 
+            inSCE@metadata$seurat$obj@assays$RNA@meta.data$var.features
         }
-        if (!is.null(inSCE@metadata$seurat$obj$reductions$pca)) {
+        
+        # if no, then set a new matrix to empty
+        # if (is.null(inSCE@metadata$seurat$obj@assays$RNA@meta.data$var.features)) {
+        #   seuratObject@assays$RNA@meta.data$var.features <- 
+        #     data.frame(matrix(NA, nrow = nrow(inSCE@metadata$seurat$obj@assays$RNA), ncol = ncol(inSCE@metadata$seurat$obj@assays$RNA)))
+        # }
+        
+        if (!is.null(inSCE@metadata$seurat$obj@reductions) && !is.null(inSCE@metadata$seurat$obj@reductions$pca)) {
           seuratObject@reductions$pca <-
-            inSCE@metadata$seurat$obj$reductions$pca
+            inSCE@metadata$seurat$obj@reductions$pca
         }
-        if (!is.null(inSCE@metadata$seurat$obj$RNA$meta.features)) {
+        if ((nrow(inSCE@metadata$seurat$obj@assays$RNA) > 0 && ncol(inSCE@metadata$seurat$obj@assays$RNA) > 0) && !is.null(inSCE@metadata$seurat$obj@assays$RNA@meta.data)) {
           seuratObject@assays$RNA@meta.data <-
-            inSCE@metadata$seurat$obj$RNA$meta.features
+            inSCE@metadata$seurat$obj@assays$RNA@meta.data
+          #seuratObject <-
+          #  SeuratObject::AddMetaData(seuratObject, inSCE@metadata$seurat$obj@assays$RNA@meta.data)
         }
-        if (!is.null(inSCE@metadata$seurat$obj$reductions$ica)) {
+        if (!is.null(inSCE@metadata$seurat$obj@reductions$ica)) {
           seuratObject@reductions$ica <-
-            inSCE@metadata$seurat$obj$reductions$ica
+            inSCE@metadata$seurat$obj@reductions$ica
         }
-        if (!is.null(inSCE@metadata$seurat$obj$reductions$tsne)) {
+        if (!is.null(inSCE@metadata$seurat$obj@reductions$tsne)) {
           seuratObject@reductions$tsne <-
-            inSCE@metadata$seurat$obj$reductions$tsne
+            inSCE@metadata$seurat$obj@reductions$tsne
         }
-        if (!is.null(inSCE@metadata$seurat$obj$reductions$umap)) {
+        if (!is.null(inSCE@metadata$seurat$obj@reductions$umap)) {
           seuratObject@reductions$umap <-
-            inSCE@metadata$seurat$obj$reductions$umap
+            inSCE@metadata$seurat$obj@reductions$umap
         }
-        if (!is.null(inSCE@metadata$seurat$obj$meta.data)) {
+        if (!is.null(inSCE@metadata$seurat$obj@meta.data)) {
           #seuratObject@meta.data <- 
             #inSCE@metadata$seurat$obj$meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj$meta.data)),]
           seuratObject <- 
-            SeuratObject::AddMetaData(seuratObject, inSCE@metadata$seurat$obj$meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj$meta.data)),])
+            SeuratObject::AddMetaData(seuratObject, inSCE@metadata$seurat$obj@meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj@meta.data)),])
         }
-        if (!is.null(inSCE@metadata$seurat$obj$commands)) {
-          seuratObject@commands <- inSCE@metadata$seurat$obj$commands
+        if (!is.null(inSCE@metadata$seurat$obj@commands)) {
+          seuratObject@commands <- inSCE@metadata$seurat$obj@commands
         }
       }
     }
     else{
       if (!is.null(inSCE@metadata$seurat$obj)) {
-        if (length(inSCE@metadata$seurat$obj@assays$RNA@var.features) > 0) {
-          seuratObject@assays$RNA@var.features <-
-            inSCE@metadata$seurat$obj@assays$RNA@var.features
+        if (length(inSCE@metadata$seurat$obj@assays$RNA@meta.data$var.features) > 0) {
+          seuratObject@assays$RNA@meta.data$var.features <-
+            inSCE@metadata$seurat$obj@assays$RNA@meta.data$var.features
         }
         if (!is.null(inSCE@metadata$seurat$obj@reductions$pca)) {
           seuratObject@reductions$pca <-
@@ -1613,7 +1650,9 @@ convertSCEToSeurat <-
             inSCE@metadata$seurat$obj@reductions$umap
         }
         if (!is.null(inSCE@metadata$seurat$obj@meta.data)) {
-          seuratObject@meta.data <- inSCE@metadata$seurat$obj@meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj@meta.data)),]
+          #seuratObject@meta.data <- inSCE@metadata$seurat$obj@meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj@meta.data)),]
+          seuratObject <- 
+            SeuratObject::AddMetaData(seuratObject, inSCE@metadata$seurat$obj$meta.data[match(colnames(seuratObject), rownames(inSCE@metadata$seurat$obj$meta.data)),])
         }
         if (!is.null(inSCE@metadata$seurat$obj@commands)) {
           seuratObject@commands <- inSCE@metadata$seurat$obj@commands
@@ -1624,6 +1663,7 @@ convertSCEToSeurat <-
     if (!is.null(colData(inSCE)) && copyColData) {
       seuratObject@meta.data <-
         cbind(seuratObject@meta.data, colData(inSCE))
+      #seuratObject <- SeuratObject::AddMetaData(seuratObject, colData(inSCE))
     }
 
     # Set additional reducedDims from inSCE object if required
@@ -1776,16 +1816,16 @@ runSeuratSCTransform <- function(inSCE,
         #inSCE@metadata$seurat$heatmap_pca <- NULL
       }
       if (PCA) {
-        inSCE@metadata$seurat$obj$reductions$pca <- NULL
+        inSCE@metadata$seurat$obj@reductions$pca <- NULL
       }
       if (ICA) {
-        inSCE@metadata$seurat$obj$reductions$ica <- NULL
+        inSCE@metadata$seurat$obj@reductions$ica <- NULL
       }
       if (tSNE) {
-        inSCE@metadata$seurat$obj$reductions$tsne <- NULL
+        inSCE@metadata$seurat$obj@reductions$tsne <- NULL
       }
       if (UMAP) {
-        inSCE@metadata$seurat$obj$reductions$umap <- NULL
+        inSCE@metadata$seurat$obj@reductions$umap <- NULL
       }
       if (clusters) {
         inSCE@metadata$seurat$obj$meta.data$seurat_clusters <- NULL
@@ -1793,10 +1833,19 @@ runSeuratSCTransform <- function(inSCE,
     }
     if(methods::is(inSCE@metadata$seurat$obj, "Seurat")) {
       if (varFeatures) {
-        methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@var.features <-
-          logical()
-        methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features <-
+        seurat.version <- .getSeuratObjectMajorVersion(inSCE@metadata$seurat$obj)
+        if (seurat.version >= 5.0) {
+          #methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.data$var.features <-
+          #  logical()
+          methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.data <-
           data.frame(row.names = make.unique(gsub("_", "-", rownames(inSCE))))
+        } 
+        else {
+          methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@var.features <-
+            logical()
+          methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features <-
+            data.frame(row.names = make.unique(gsub("_", "-", rownames(inSCE))))
+        }       
         inSCE@metadata$seurat$heatmap_pca <- NULL
       }
       if (PCA) {
