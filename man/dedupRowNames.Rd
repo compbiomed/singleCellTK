@@ -11,7 +11,7 @@ dedupRowNames(x, as.rowData = FALSE, return.list = FALSE)
 we can apply \code{rownames()} to and has duplicated rownames.}
 
 \item{as.rowData}{Only applicable when \code{x} is a
-/linkS4class{SingleCellExperiment} object. When set to \code{TRUE}, will
+\linkS4class{SingleCellExperiment} object. When set to \code{TRUE}, will
 insert a new column called \code{"rownames.uniq"} to \code{rowData(x)}, with
 the deduplicated rownames.}
 
