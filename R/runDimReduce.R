@@ -9,8 +9,8 @@
 #' representation by specifying \code{useReducedDim}.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param method One from \code{"scaterPCA"}, \code{"seuratPCA"},
-#' \code{"seuratICA"}, \code{"rTSNE"}, \code{"seuratTSNE"}, \code{"scaterUMAP"}
-#' and \code{"seuratUMAP"}.
+#' \code{"seuratICA"}, \code{"rTSNE"}, \code{"seuratTSNE"}, \code{"scaterUMAP"},
+#' \code{"seuratUMAP"}, \code{"scanpyPCA"}, \code{"scanpyUMAP"} and \code{"scanpyTSNE"}.
 #' @param useAssay Assay to use for computation. If \code{useAltExp} is
 #' specified, \code{useAssay} has to exist in
 #' \code{assays(altExp(inSCE, useAltExp))}. Default \code{"counts"}.
@@ -48,14 +48,17 @@ runDimReduce <- function(inSCE,
                          method = c("scaterPCA",
                                     "seuratPCA",
                                     "seuratICA",
+                                    "scanpyPCA",
                                     "rTSNE",
                                     "seuratTSNE",
                                     "scaterUMAP",
-                                    "seuratUMAP"),
+                                    "seuratUMAP",
+                                    "scanpyUMAP",
+                                    "scanpyTSNE"),
                          useAssay = NULL, useReducedDim = NULL,
                          useAltExp = NULL, reducedDimName = method,
                          nComponents = 20, useFeatureSubset = NULL,
-                         scale = FALSE, seed = NULL, ...)
+                         scale = FALSE, seed = 12345, ...)
 {
 
   method <- match.arg(method)
@@ -73,9 +76,23 @@ runDimReduce <- function(inSCE,
                        seed = seed, ...)
   } else if (method == "scaterUMAP") {
     inSCE <- runUMAP(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
-                     useReducedDim = useReducedDim,
+                     useReducedDim = useReducedDim, initialDims = 25,
                      useFeatureSubset = useFeatureSubset, scale = scale,
                      reducedDimName = reducedDimName, seed = seed, ...)
+  } else if (method == "scanpyPCA"){
+    inSCE <- runScanpyPCA(inSCE = inSCE,
+                          useAssay = useAssay, 
+                          reducedDimName = reducedDimName, 
+                          nPCs = nComponents, 
+                          method = "auto", 
+                          use_highly_variable = FALSE
+                          )
+  } else if (method == "scanpyTSNE"){
+    inSCE <- runScanpyTSNE(inSCE = inSCE, useAssay = useAssay,
+                           useReducedDim = useReducedDim, reducedDimName = reducedDimName, ...)
+  } else if (method == "scanpyUMAP"){
+    inSCE <- runScanpyUMAP(inSCE = inSCE, useAssay = useAssay, 
+                           useReducedDim = useReducedDim, reducedDimName = reducedDimName, ...)
   } else if (method == "rTSNE") {
     inSCE <- runTSNE(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
                      useReducedDim = useReducedDim,
@@ -98,14 +115,16 @@ runDimReduce <- function(inSCE,
     if (method %in% c("seuratPCA", "seuratICA")) {
       ## SeuratPCA/ICA
       if (method == "seuratPCA") {
-        message(paste0(date(), " ... Computing Seurat PCA."))
+        p <- paste0(date(), " ... Computing Seurat PCA.")
+        message(p)
         tempSCE <- runSeuratPCA(tempSCE, useAssay = useAssay,
                                 reducedDimName = reducedDimName,
                                 nPCs = nComponents,
                                 useFeatureSubset = useFeatureSubset,
                                 scale = scale, seed = seed, ...)
       } else if (method == "seuratICA") {
-        message(paste0(date(), " ... Computing Seurat ICA."))
+        p <- paste0(date(), " ... Computing Seurat ICA.")
+        message(p)
         tempSCE <- runSeuratICA(tempSCE, useAssay = useAssay,
                                 reducedDimName = reducedDimName,
                                 nics = nComponents,
@@ -126,25 +145,29 @@ runDimReduce <- function(inSCE,
           stop("Must specify `useReduction` when using `useAssay` in seuratUMAP/TSNE")
         }
         if (args$useReduction == "pca") {
-          message(paste0(date(), " ... Computing Seurat PCA."))
+          p <- paste0(date(), " ... Computing Seurat PCA.")
+          message(p)
           tempSCE <- runSeuratPCA(inSCE = tempSCE,
                                useAssay = useAssay,
                                reducedDimName = paste0(useAssay, "_seuratPCA"),
                                useFeatureSubset = useFeatureSubset, seed = seed)
         } else if (args$useReduction == "ica") {
-          message(paste0(date(), " ... Computing Seurat ICA."))
+          p <- paste0(date(), " ... Computing Seurat ICA.")
+          message(p)
           tempSCE <- runSeuratICA(inSCE = tempSCE,
                                useAssay = useAssay,
                                reducedDimName = paste0(useAssay, "_seuratICA"),
                                useFeatureSubset = useFeatureSubset, seed = seed)
         }
         if (method == "seuratUMAP") {
-          message(paste0(date(), " ... Computing Seurat UMAP."))
+          p <- paste0(date(), " ... Computing Seurat UMAP.")
+          message(p)
           tempSCE <- runSeuratUMAP(inSCE = tempSCE,
                                    reducedDimName = reducedDimName,
                                    seed = seed, ...)
         } else {
-          message(paste0(date(), " ... Computing Seurat tSNE."))
+          p <- paste0(date(), " ... Computing Seurat tSNE.")
+          message(p)
           tempSCE <- runSeuratTSNE(inSCE = tempSCE,
                                    reducedDimName = reducedDimName,
                                    seed = seed, ...)
@@ -167,13 +190,15 @@ runDimReduce <- function(inSCE,
                                        key = paste0(key, "_"), assay = "RNA")
         if (method == "seuratUMAP") {
           # hard-code useReduction="pca"
-          message(paste0(date(), " ... Computing Seurat UMAP."))
+          p <- paste0(date(), " ... Computing Seurat UMAP.")
+          message(p)
           tempSCE <- runSeuratUMAP(inSCE = tempSCE, useReduction = "pca",
                                    reducedDimName = reducedDimName,
                                    seed = seed, ...)
         } else {
           # hard-code useReduction="pca"
-          message(paste0(date(), " ... Computing Seurat tSNE."))
+          p <- paste0(date(), " ... Computing Seurat tSNE.")
+          message(p)
           tempSCE <- runSeuratTSNE(inSCE = tempSCE, useReduction = "pca",
                                    reducedDimName = reducedDimName,
                                    seed = seed, ...)

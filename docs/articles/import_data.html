@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.14.0</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -197,6 +200,14 @@
         </li>
         <li>
           <a href="../articles/heatmap.html">Generic Heatmap</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Web Application</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/webApp.html">FAQs</a>
         </li>
       </ul>
 </li>
@@ -339,12 +350,10 @@ a sample”</strong>. After this, a dialog modal will pop up with
 description that instructs you to select the directory that stores your
 data.</p>
 <details><summary><b>Cell Ranger</b></summary><p>The import procedure for Cell Ranger versions 2 and 3 are the same.
-To import a Cell Ranger sample, the user must select how they would like
-to import the sample: select a base directory that holds multiple sample
-directories, select a single sample directory, or select a directory
-holding the data files for a sample. Depending on this selection, the
-user must then provide the apprpriate directory paths and sample names
-and then click “OK.”</p>
+Users must select the appropriate files (matrix, barcode and feature
+files) and upload them for each sample separately. Once all samples are
+uploaded, click on <strong>Import</strong> button to import them for
+downstream use.</p>
 <p><img src="ui_screenshots/import/import_ui_cellRanger.png" alt="cell ranger"><br></p>
 </details><details><summary><b>STARsolo</b></summary><p>To import a STARsolo sample, the user must select the parent
 directory of the <strong><code>"Gene/"</code></strong> directory for the
@@ -553,7 +562,7 @@ document.getElementById("ia-button").click();
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body">
+<div id="refs" class="references csl-bib-body" entry-spacing="0">
 <div id="ref-Zheng2017" class="csl-entry">
 <div class="csl-left-margin">[1] </div>
 <div class="csl-right-inline">G.
@@ -607,12 +616,12 @@ data,”</span> <em>Genome biology</em>, vol. 20, no. 65, 2019.</div>
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Ming Liu, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

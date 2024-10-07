@@ -68,7 +68,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
   <summary><b>Scran SNNs</b></summary>
 ````  
 
-For the choices in the algorithm list, please refer to `igraph::cluster_louvain()`, `igraph::cluster_leiden()`, `igraph::cluster_walktrap()`, `igraph::cluster_infomap()`, `igraph::cluster_fast_greedy()`, `igraph::cluster_label_prop()`, and `igraph::cluster_leading_eigen()`.  
+For the choices in the algorithm list, please refer to `cluster_louvain()`, `cluster_leiden()`, `cluster_walktrap()`, `cluster_infomap()`, `cluster_fast_greedy()`, `cluster_label_prop()`, and `cluster_leading_eigen()` in the `igraph` package documentation.  
 
 - Data matrix selection - selection input **"Select Input Matrix"**. Scran SNN method allows various types of data matrices. Either a full-sized or a subsetted expression matrix, technically called `assay` or `altExp`, respectively, or a reduced dimension, technically `reducedDim`, is allowed. 
 - Resolution related parameters:
@@ -184,8 +184,8 @@ sce <- importExampleData("pbmc3k")
 sce <- runNormalization(sce, outAssayName = "logcounts", normalizationMethod = "logNormCounts")
 # Default HVG method is "vst" from Seurat
 sce <- runFeatureSelection(sce, useAssay = "counts")
-sce <- setTopHVG(sce)
-sce <- runDimReduce(sce, useAssay = "logcounts", useFeatureSubset = "HVG_vst2000", scale = TRUE, reducedDimName = "PCA")
+sce <- setTopHVG(sce, featureSubsetName = "hvf")
+sce <- runDimReduce(sce, useAssay = "logcounts", useFeatureSubset = "hvf", scale = TRUE, reducedDimName = "PCA")
 # Optional visualization
 sce <- runDimReduce(sce, method = "scaterUMAP", useReducedDim = "PCA", reducedDimName = "UMAP", nComponents = 10)
 plotDimRed(sce, "UMAP")
@@ -210,12 +210,15 @@ plotDimRed(sce, "UMAP")
 ````
 
 ```{R clst_ScranSNN, eval=TRUE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
-# Directly use an assay
-sce <- runScranSNN(sce, useAssay = "logcounts", clusterName = "scranSNN_logcounts")
-plotSCEDimReduceColData(sce, colorBy = "scranSNN_logcounts", reducedDimName = "UMAP")
-# Directly use a dimension reduction
+
+# Most of the time, you will want to use a dimensionality reduction for clustering:
 sce <- runScranSNN(inSCE = sce, useReducedDim = "PCA", nComp = 10, clusterName = "scranSNN_PCA")
 plotSCEDimReduceColData(inSCE = sce, colorBy = "scranSNN_PCA", reducedDimName = "UMAP")
+
+# Alternatively, clustering can be run directly from an assay by setting "useAssay" and "useReducedDim" to 'NULL':
+sce <- runScranSNN(sce, useAssay = "logcounts", useReducedDim = NULL, clusterName = "scranSNN_logcounts")
+plotSCEDimReduceColData(sce, colorBy = "scranSNN_logcounts", reducedDimName = "UMAP")
+
 ```
 
 ````{=html}
@@ -254,10 +257,11 @@ Seurat clustering method is recommended to be used in the [Seurat Curated Workfl
 
 ```{R clst_seurat2, eval=TRUE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
 # Prepare what seurat function needs
+library(Seurat)
 pca <- reducedDim(sce, "PCA")[,1:10]
 rownames(pca) <- gsub("_", "-", rownames(pca))
 stdev <- as.numeric(attr(pca, "percentVar"))
-new_pca <- Seurat::CreateDimReducObject(embeddings = pca, assay = "RNA", stdev = stdev, key = "PC_")
+new_pca <- CreateDimReducObject(embeddings = pca, assay = "RNA", stdev = stdev, key = "PC_")
 # Then we can take the Seurat Curated Workflow independent dimension 
 # reduction as an input. 
 sce <- runSeuratFindClusters(sce, externalReduction = new_pca)

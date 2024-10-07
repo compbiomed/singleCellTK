@@ -34,7 +34,8 @@ exportSCEToSeurat <- function(inSCE, prefix="sample", outputDir="./", overwrite=
   }
 
   if (file.exists(filePath) && !isTRUE(overwrite)) {
-    stop(paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE."))
+    p <- paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE.")
+    stop(p)
   }
 
 
@@ -66,8 +67,9 @@ exportSCE <- function(inSCE,
                       format = c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")) {
 
     if (any(!format %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat"))) {
+        p <- paste(format[!format %in% c("SCE", "AnnData", "FlatFile", "HTAN")], sep = ",")
         warning("Output format must be 'SCE', 'AnnData', 'HTAN', 'Seurat' or 'FlatFile'. Format ",
-             paste(format[!format %in% c("SCE", "AnnData", "FlatFile", "HTAN")], sep = ","),
+             p,
              " is not supported now. ") #             "Only output the supported formats in the provided options. "
     }
 
@@ -587,7 +589,7 @@ generateHTANMeta <- function(dropletSCE = NULL,
 #' @return If \code{writeYAML} TRUE, a yaml object will be generated. If FALSE, character object.
 #' @export
 getSceParams <- function(inSCE,
-                         skip = c("scrublet", "runDecontX","runBarcodeRanksMetaOutput"),
+                         skip = c("runScrublet","runDecontX","runBarcodeRanksMetaOutput","genesets","runSoupX"),
                          ignore = c("algorithms", "estimates","contamination",
                                     "z","sample","rank","BPPARAM","batch","geneSetCollection",
                                     "barcodeArgs"),
@@ -596,19 +598,27 @@ getSceParams <- function(inSCE,
                          writeYAML = TRUE) {
 
   meta <- S4Vectors::metadata(inSCE)
-  algos <- names(meta)[!names(meta) %in% skip]
-  outputs <- '---'
+  algos <- names(meta$sctk)[! names(meta$sctk) %in% skip]
+  # spit duct tape and hope
+  # removed runSoupX until output can be trimmed and reworked
+  outputs <- '---\n'
   parList <- list()
   dir <- file.path(directory, samplename)
 
+  # TODO: proper accessor implementation instead of spit and duct tape
   for (algo in algos) {
-    params <- meta[[algo]][[1]]
+    if (algo %in% skip) {
+      next
+    }
+    params <- meta$sctk[[algo]]
     if (length(params) == 1) {params <- params[[1]]} ### extract params from sublist
     params <- params[which(!names(params) %in% ignore)]
     parList[[algo]] <- params
   }
 
-  outputs <- paste(outputs, yaml::as.yaml(parList), sep='\n')
+  parList[['scDblfinder.threshold']] <- meta$scDblFinder.threshold[[1]]
+
+  outputs <- paste(outputs, yaml::as.yaml(parList), line.sep='\n')
   if (isTRUE(writeYAML)) {
     filename <- paste0(samplename, '_QCParameters.yaml')
     cat(outputs, file=file.path(dir, filename))
@@ -652,6 +662,7 @@ constructSCE <- function(data, samplename) {
 #' @param ref The name of reference used by cellranger. Only need for CellrangerV2 data.
 #' @param rawFile The full path of the RDS file or Matrix file of the raw gene count matrix. It's one of the path provided in --raw_data argument.
 #' @param filFile The full path of the RDS file or Matrix file of the cell count matrix. It's one of the path provided in --cell_data argument.
+#' @param flatFiles The full paths of the matrix, barcode, and features (in that order) files used to construct an SCE object.
 #' @param dataType Type of the input. It can be "Both", "Droplet" or "Cell". It's one of the path provided in --genome argument.
 #' @return A list of \link[SingleCellExperiment]{SingleCellExperiment} object containing
 #' the droplet or cell data or both,depending on the dataType that users provided.
@@ -664,6 +675,7 @@ qcInputProcess <- function(preproc,
     ref,
     rawFile,
     filFile,
+    flatFiles,
     dataType) {
 
     dropletSCE <- NULL
@@ -683,10 +695,14 @@ qcInputProcess <- function(preproc,
         if (dataType == "Both") {
             dropletSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
             cellSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix", delayedArray=FALSE)
-        } else if (dataType == "Cell") {
+        } else if (dataType == "Cell" && !is.null(path)) {
             cellSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix", delayedArray=FALSE)
-        } else if (dataType == "Droplet") {
+        } else if (dataType == "Cell" && !is.null(fil)) {
+            cellSCE <- importSTARsolo(STARsoloDirs = fil, samples = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix", delayedArray=FALSE)
+        } else if (dataType == "Droplet" && !is.null(path)) {
             dropletSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
+        } else if (dataType == "Droplet" && !is.null(raw)) {
+            dropletSCE <- importSTARsolo(STARsoloDirs = raw, samples = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
         }
         return(list(dropletSCE, cellSCE))
     }
@@ -774,6 +790,34 @@ qcInputProcess <- function(preproc,
         return(list(dropletSCE, cellSCE))
     }
 
+    if (preproc == "AnnData") {
+        if (dataType == "Both") {
+            dropletSCE <- importAnnData(dirname(rawFile), tools::file_path_sans_ext(basename(rawFile)))
+            cellSCE <- importAnnData(dirname(filFile), tools::file_path_sans_ext(basename(filFile)))
+        } else if (dataType == "Cell") {
+            cellSCE <- importAnnData(dirname(filFile), tools::file_path_sans_ext(basename(filFile)))
+        } else if (dataType == "Droplet") {
+            dropletSCE <- importAnnData(dirname(rawFile), tools::file_path_sans_ext(basename(rawFile)))
+        }
+        return(list(dropletSCE, cellSCE))
+    }
+
+    if (preproc == "Seurat") {
+        if (dataType == "Both") {
+            dropletSCE <- readRDS(rawFile)
+            cellSCE <- readRDS(filFile)
+            dropletSCE <- Seurat::as.SingleCellExperiment(dropletSCE)
+            cellSCE <- Seurat::as.SingleCellExperiment(cellSCE)
+        } else if (dataType == "Cell") {
+            cellSCE <- readRDS(filFile)
+            cellSCE <- Seurat::as.SingleCellExperiment(cellSCE)
+        } else if (dataType == "Droplet") {
+            dropletSCE <- readRDS(rawFile)
+            dropletSCE <- Seurat::as.SingleCellExperiment(dropletSCE)
+        }
+        return(list(dropletSCE, cellSCE))
+    }
+
     if (preproc == "CountMatrix") {
         if (dataType == "Both") {
             dropletMM <- data.table::fread(rawFile)
@@ -789,12 +833,48 @@ qcInputProcess <- function(preproc,
         }
         return(list(dropletSCE, cellSCE))
     }
+    
+    ## todo: AnnData support
+    if (preproc == "AnnData") {
+        if (dataType == "Both") {
+            dropletSCE <- anndata::read_h5ad(rawFile)
+            cellSCE <- anndata::read_h5ad(filFile)
+        } else if (dataType == "Cell") {
+            cellSCE <- anndata::read_h5ad(filFile)
+        } else if (dataType == "Droplet") {
+            dropletSCE <- anndata::read_h5ad(rawFile) 
+        }
+        return(list(dropletSCE, cellSCE))
+    }
 
     if (preproc == "Alevin") {
         cellSCE <- importAlevin(alevinDir = path, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
         return(list(dropletSCE, cellSCE))
     }
+
+    # construct cell SCE from FlatFile
+    if (preproc == "FlatFile") {
+        if (dataType == "Both") {
+            dropletSCE <- importFromFiles(assayFile = flatFiles[[1]],
+                                          annotFile = flatFiles[[2]],
+                                          featureFile = flatFiles[[3]])
+            cellSCE <- importFromFiles(assayFile = flatFiles[[4]],
+                                       annotFile = flatFiles[[5]],
+                                       featureFile = flatFiles[[6]])
+        } else if (dataType == "Cell") {
+            cellSCE <- importFromFiles(assayFile = flatFiles[[1]],
+                                       annotFile = flatFiles[[2]],
+                                       featureFile = flatFiles[[3]])
+        } else if (dataType == "Droplet") {
+            dropletSCE <- importFromFiles(assayFile = flatFiles[[1]],
+                                          annotFile = flatFiles[[2]],
+                                          featureFile = flatFiles[[3]])
+        }
+        return(list(dropletSCE, cellSCE))
+    }
+
     ## preproc is not one of the method above. Stop the pipeline.
-    stop(paste0("'", preproc, "' not supported."))
+    p <- paste0("'", preproc, "' not supported.")
+    stop(p)
 }
 

@@ -11,6 +11,10 @@ An object of class \code{SingleCellExperiment} with 100 rows and 250 columns.
 \usage{
 data('sceBatches')
 }
+\value{
+Example Single Cell RNA-Seq data in SingleCellExperiment object, with
+different batches annotated
+}
 \description{
 Two batches of pancreas scRNAseq dataset are combined with their original
 counts. Cell types and batches are annotated in `colData(sceBatches)`.

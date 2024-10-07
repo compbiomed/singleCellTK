@@ -1,3 +1,52 @@
+Changes in Version 2.14.0 (2024-05-03)
+================================================================================
+* Updated version to match Bioconductor 3.19
+* Update runGSVA fucntion to work with newer GSVA package
+
+Changes in Version 2.12.2 (2024-01-28)
+================================================================================
+* Added support for Seurat V5
+
+Changes in Version 2.12.1 (2024-01-10)
+================================================================================
+* Updates to documentation
+* Fixes to runTSCAN and plotSeurat Genes
+* Added support for flat file import into SCTK-QC
+* Fixed directory issue in importCellRanger
+* Added Bubble plot to Shiny GUI
+* Updated Dockerfile
+
+Changes in Version 2.12.0 (2023-10-24)
+================================================================================
+* Updated version to match Bioconductor 3.18
+
+Changes in Version 2.10.1 (2023-07-26)
+================================================================================
+* Added function for bubble plot
+* In SCTK-QC pipeline, added support for batch processing multiple inputs
+* In SCTK-QC pipeline, added support for importing and exporting AnnData objects
+* In SCTK-QC pipeline, fixed a bug causing YAML output files to be empty
+* Update the SCTK-QC tutorial 
+* Fixed bug in combineSCE causing it to create multiple copies of row or column data
+
+Changes in Version 2.10.0 (2023-04-25)
+================================================================================
+* Updated version to match Bioconductor 3.17
+
+Changes in Version 2.8.1 (2023-03-10)
+================================================================================
+* Added scanpy wrapper functions for use from console
+* Added scanpy UI curated workflow
+* Integrated scanpy to a la carte workflow
+* Fixed a bug in importing fluidigm dataset
+* Updated downloading features in the Shiny app
+* Added error checking around Enrichr functions
+* Minor tweaks to plot defaults
+
+Changes in Version 2.8.0 (2022-12-19)
+================================================================================
+* Updated version to match Bioconductor version
+
 Changes in Version 2.7.3 (2022-10-25)
 ================================================================================
 * Fixed bugs related to dependency updates

@@ -129,7 +129,8 @@ runComBatSeq <- function(inSCE, useAssay = "counts", batch = 'batch',
     stop("\"inSCE\" should be a SingleCellExperiment Object.")
   }
   if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-    stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
+    p <- paste("\"useAssay\" (assay) name: ", useAssay, " not found.")
+    stop(p)
   }
   if(any(!c(batch, covariates, bioCond) %in%
          names(SummarizedExperiment::colData(inSCE)))){
@@ -273,9 +274,12 @@ runFastMNN <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
 #' conditions.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object
 #' @param useAssay A single character indicating the name of the assay requiring
-#' batch correction. Default \code{"logcounts"}.
+#' batch correction. Default \code{NULL}. It is recommended to use a reducedDim
+#' such as PCA through the `useReducedDim` parameter of this function.
 #' @param useReducedDim A single character indicating the name of the reducedDim
-#' used to be corrected. Specifying this will ignore \code{useAssay}. Default
+#' to be used. It is recommended to use a reducedDim instead of a full assay as 
+#' using an assay might cause the algorithm to not converge and throw error.
+#' Specifying this will ignore \code{useAssay}. Default
 #' \code{NULL}.
 #' @param batch A single character indicating a field in \code{colData} that
 #' annotates the batches of each cell; or a vector/factor with the same length
@@ -296,6 +300,7 @@ runFastMNN <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
 #' make soft kmeans cluster approach hard clustering. Default \code{0.1}.
 #' @param nIter An integer. The max number of iterations to perform. Default
 #' \code{10L}.
+#' @param seed Set seed for reproducibility. Default is \code{12345}.
 #' @param verbose Whether to print progress messages. Default \code{TRUE}.
 #' @param ... Other arguments passed to \code{\link[harmony]{HarmonyMatrix}}.
 #' See details.
@@ -315,16 +320,27 @@ runFastMNN <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
 #' if (require("harmony"))
 #'     sceCorr <- runHarmony(sceBatches)
 #' }
-runHarmony <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
+runHarmony <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
                        batch = "batch", reducedDimName = "HARMONY",
                        nComponents = 50, lambda = 0.1, theta = 5,
-                       sigma = 0.1, nIter = 10, verbose = TRUE, ...) {
+                       sigma = 0.1, nIter = 10, seed = 12345, verbose = TRUE, ...) {
   if (!requireNamespace("harmony", quietly = TRUE)) {
     stop("The Harmony package is required to run this function. ",
          "Install harmony with: ",
          "install.packages('harmony')",
          call. = FALSE)
   }
+  
+  # Check if both useAssay and useReducedDim are not NULL
+  if(is.null(useAssay) && is.null(useReducedDim)){
+    stop("Both 'useAssay' & 'useReducedDim' cannot be NULL. It is recommended to use a reducedDim (PCA) for this algorithm but a full-sized assay can also be used. However, using an assay may cause the algorithm to not converge.")
+  }
+  
+  # If using useAssay, send a warning to recommend using PCA
+  if((!is.null(useAssay)) && is.null(useReducedDim)){
+    warning("You are using a full-sized assay with Harmony. It is recommended to use a reducedDim (PCA) for better results, as using a full sized assay may cause the algorithm to not converge. Computation will proceed with selected assay ...")
+  }
+  
   ## Input check
   useMat <- .selectSCEMatrix(inSCE, useAssay, useReducedDim,
                              useAltExp = NULL, returnMatrix = TRUE)
@@ -342,11 +358,13 @@ runHarmony <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
     }
     mat <- mat[,seq(nComponents)]
   }
-  h <- harmony::HarmonyMatrix(data_mat = mat, meta_data = batchVec,
-                              do_pca = do_pca, npcs = nComponents,
-                              lambda = lambda, theta = theta,
-                              sigma = sigma, max.iter.harmony = nIter,
-                              verbose = verbose, return_object = FALSE, ...)
+  h <- withr::with_seed(seed, {
+    harmony::HarmonyMatrix(data_mat = mat, meta_data = batchVec,
+                           do_pca = do_pca, npcs = nComponents,
+                           lambda = lambda, theta = theta,
+                           sigma = sigma, max.iter.harmony = nIter,
+                           verbose = verbose, return_object = FALSE, ...)
+  })
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- h
   S4Vectors::metadata(inSCE)$batchCorr[[reducedDimName]] <-
     list(useAssay = useAssay, origLogged = TRUE, method = "harmony",
@@ -775,10 +793,12 @@ runZINBWaVE <- function(inSCE, useAssay = 'counts', batch = 'batch',
     stop("\"inSCE\" should be a SingleCellExperiment Object.")
   }
   if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-    stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found"))
+    p <- paste("\"useAssay\" (assay) name: ", useAssay, " not found")
+    stop(p)
   }
   if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
-    stop(paste("\"batch name:", batch, "not found."))
+    p <- paste("\"batch name:", batch, "not found.")
+    stop(p)
   }
   reducedDimName <- gsub(' ', '_', reducedDimName)
   nHVG <- as.integer(nHVG)

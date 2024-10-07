@@ -33,7 +33,7 @@ reportSeurat(
   runMSClusters = TRUE,
   runMSBioGroup = TRUE,
   numTopFeatures = 10,
-  forceRun = FALSE
+  forceRun = TRUE
 )
 }
 \arguments{
@@ -128,7 +128,7 @@ to visualize in each group. Default \code{10}.}
 
 \item{forceRun}{A logical value indicating if all algorithms should be
 re-run regardless if they have been computed previously in the input object.
-Default is \code{FALSE}.}
+Default is \code{TRUE}.}
 }
 \value{
 A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object

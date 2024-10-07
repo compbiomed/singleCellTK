@@ -9,7 +9,8 @@ importMitoGeneSet(
   reference = "human",
   id = "ensembl",
   by = "rownames",
-  collectionName = "human_mito"
+  collectionName = "mito",
+  noMatchError = TRUE
 )
 }
 \arguments{
@@ -32,7 +33,10 @@ Default \code{"rownames"}.}
 \item{collectionName}{Character. Name of collection to add gene sets to.
 If this collection already exists in \code{inSCE}, then these gene sets will
 be added to that collection. Any gene sets within the collection with the
-same name will be overwritten.}
+same name will be overwritten. Default \code{"mito"}.}
+
+\item{noMatchError}{Boolean. Show an error if a collection does not have
+any matching features. Default \code{TRUE}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object
@@ -46,7 +50,7 @@ downstream quality control and analysis functions in \link{singleCellTK}.
 }
 \details{
 The gene identifiers of mitochondrial genes will be loaded with
-"data(AllMito)". Currently, it supports human and mouse reference.
+"data(AllMito)". Currently, it supports human and mouse references.
 Also, it supports entrez ID, gene symbol, ensemble ID and ensemble transcript ID.
 They will be mapped to the IDs in \code{inSCE} using the \code{by} parameter and
 stored in a \linkS4class{GeneSetCollection} object from package

@@ -11,11 +11,12 @@
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object
 #' @param method Specify which method to use for variable gene extraction
 #' from Seurat \code{"vst"}, \code{"mean.var.plot"}, \code{"dispersion"} or
-#' Scran \code{"modelGeneVar"}. Default \code{"vst"}
+#' Scran \code{"modelGeneVar"} or Scanpy \code{"seurat"}, \code{"cell_ranger"}, 
+#' \code{"seurat_v3"}. Default \code{"vst"}
 #' @param hvgNumber Specify the number of top variable genes to extract.
 #' @param useFeatureSubset Get the feature names in the HVG list set by
-#' \code{setTopHVG}. Will ignore \code{method} and \code{hvgNumber} if not
-#' \code{NULL}. Default \code{NULL}.
+#' \code{setTopHVG}. \code{method} and \code{hvgNumber} will not be used if not
+#' this is not \code{NULL}. Default \code{"hvf"}.
 #' @param featureDisplay A character string for the \code{rowData} variable name
 #' to indicate what type of feature ID should be displayed. If set by
 #' \code{\link{setSCTKDisplayRow}}, will by default use it. If \code{NULL}, will
@@ -30,8 +31,7 @@
 #' the selected HVGs and store this subset in the \code{altExps} slot, named by
 #' \code{hvgListName}. Default \code{FALSE}.
 #' @param featureSubsetName A character string for the \code{rowData} variable
-#' name to store a logical index of selected features. Default \code{NULL}, will
-#' be determined basing on other parameters.
+#' name to store a logical index of selected features. Default \code{"hvg2000"}.
 #' @return
 #' \item{getTopHVG}{A character vector of the top \code{hvgNumber} variable
 #' feature names}
@@ -43,18 +43,33 @@
 #' @author Irzam Sarfraz, Yichen Wang
 #' @examples
 #' data("scExample", package = "singleCellTK")
-#' sce <- runSeuratFindHVG(sce)
-#' hvgs <- getTopHVG(sce, hvgNumber = 10)
-#' sce <- setTopHVG(sce, method = "vst", hvgNumber = 5)
+#' 
+#' # Create a "highy variable feature" subset using Seurat's vst method:
+#' sce <- runSeuratFindHVG(sce,  method = "vst", hvgNumber = 2000,
+#'        createFeatureSubset = "hvf")
+#'        
+#' # Get the list of genes for a feature subset:
+#' hvgs <- getTopHVG(sce, useFeatureSubset = "hvf")
+#' 
+#' # Create a new feature subset on the fly without rerunning the algorithm:
+#' sce <- setTopHVG(sce, method = "vst", hvgNumber = 100,
+#'                 featureSubsetName = "hvf100")
+#' hvgs <- getTopHVG(sce, useFeatureSubset = "hvf100")
+#' 
+#' # Get a list of variable features without creating a new feature subset:
+#' hvgs <- getTopHVG(sce, useFeatureSubset = NULL,
+#'                   method = "vst", hvgNumber = 10)
+#' 
 #' @seealso \code{\link{runFeatureSelection}}, \code{\link{runSeuratFindHVG}},
 #' \code{\link{runModelGeneVar}}, \code{\link{plotTopHVG}}
 #' @importFrom SummarizedExperiment rowData
 #' @importFrom S4Vectors metadata
 getTopHVG <- function(inSCE,
                       method = c("vst", "dispersion",
-                                 "mean.var.plot", "modelGeneVar"),
+                                 "mean.var.plot", "modelGeneVar", "seurat", 
+                                 "seurat_v3", "cell_ranger"),
                       hvgNumber = 2000,
-                      useFeatureSubset = NULL,
+                      useFeatureSubset = "hvf",
                       featureDisplay = metadata(inSCE)$featureDisplay) {
     method <- match.arg(method)
     topGenes <- character()
@@ -64,7 +79,12 @@ getTopHVG <- function(inSCE,
     } else {
         metrics <- .dfFromHVGMetric(inSCE, method)
         metrics <- metrics[order(-metrics$v_rank),]
-        metrics <- metrics[metrics$v_rank > 0, ]
+        if (method == "seurat"){
+          metrics <- metrics[metrics$v_plot > 0, ]
+        }
+        else{
+          metrics <- metrics[metrics$v_rank > 0, ]
+        }
         if (method == "mean.var.plot") {
             means.use <- (metrics$mean > 0.1) & (metrics$mean < 8)
             dispersions.use <- (metrics$v_plot > 1) & (metrics$v_plot < Inf)
@@ -78,6 +98,10 @@ getTopHVG <- function(inSCE,
         geneIdx <- featureIndex(topGenes, inSCE)
         topGenes <- rowData(inSCE)[[featureDisplay]][geneIdx]
     }
+    
+    topGenes <- topGenes[!is.na(topGenes)]
+    topGenes <- topGenes[1:hvgNumber]
+
     return(topGenes)
 }
 
@@ -86,13 +110,14 @@ getTopHVG <- function(inSCE,
 #' @importFrom SingleCellExperiment rowSubset
 #' @importFrom S4Vectors metadata<-
 setTopHVG <- function(inSCE,
-                      method =  c("vst", "dispersion",
-                                  "mean.var.plot", "modelGeneVar"),
+                      method = c("vst", "dispersion",
+                                 "mean.var.plot", "modelGeneVar", "seurat", 
+                                 "seurat_v3", "cell_ranger"),
                       hvgNumber = 2000,
-                      featureSubsetName = NULL,
+                      featureSubsetName = "hvg2000",
                       genes = NULL, genesBy = NULL,
                       altExp = FALSE) {
-    method <- match.arg(method)
+    method <- match.arg(method, choices = c("vst", "dispersion", "mean.var.plot", "modelGeneVar", "seurat", "seurat_v3", "cell_ranger"))
     features <- character()
     useAssay <- NULL
     if (!is.null(genes)) {
@@ -105,7 +130,7 @@ setTopHVG <- function(inSCE,
         }
     } else {
         # Use pre-calculated variability metrics
-        features <- getTopHVG(inSCE, method = method, hvgNumber = hvgNumber,
+        features <- getTopHVG(inSCE, method = method, hvgNumber = hvgNumber,useFeatureSubset = NULL,
                               featureDisplay = NULL)
         useAssay <- metadata(inSCE)$sctk$runFeatureSelection[[method]]$useAssay
     }
@@ -118,8 +143,9 @@ setTopHVG <- function(inSCE,
         }
     }
     rowSubset(inSCE, featureSubsetName) <- features
-    message(paste0(date(), " ... Feature subset variable '", featureSubsetName,
-                   "' created."))
+    p <- paste0(date(), " ... Feature subset variable '", featureSubsetName,
+                "' created.")
+    message(p)
     metadata(inSCE)$sctk$featureSubsets[[featureSubsetName]] <-
         list(method = method,
              number = nFeature,
@@ -138,13 +164,15 @@ setTopHVG <- function(inSCE,
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object
 #' @param method Specify which method to use for variable gene extraction
 #' from Seurat \code{"vst"}, \code{"mean.var.plot"}, \code{"dispersion"} or
-#' Scran \code{"modelGeneVar"}. Default \code{"vst"}
+#' Scran \code{"modelGeneVar"} or Scanpy \code{"seurat"}, \code{"cell_ranger"}, 
+#' \code{"seurat_v3"}. Default \code{"vst"}
 #' @return data.frame object of HVG metrics calculated by \code{method},
 #' containing columns of \code{"mean"}, \code{"v_rank"}, \code{"v_plot"}
 #' @noRd
 .dfFromHVGMetric <- function(inSCE,
                              method = c("vst", "mean.var.plot", "dispersion",
-                                        "modelGeneVar")) {
+                                        "modelGeneVar", "seurat", 
+                                        "seurat_v3", "cell_ranger")) {
     method <- match.arg(method)
     df <- data.frame(featureNames = rownames(inSCE))
     if (method == "vst") {
@@ -167,6 +195,39 @@ setTopHVG <- function(inSCE,
                  "Run `runSeuratFindHVG()` with 'dispersion' method ",
                  "before using this function!")
         }
+    }else if (method == "seurat_v3") {
+      m <- "means"
+      v_rank <- "variances"
+      v_plot <- "variances_norm"
+      if (is.null(rowData(inSCE)[[v_rank]]) ||
+          is.null(rowData(inSCE)[[m]]) ||
+          is.null(rowData(inSCE)[[v_plot]])) {
+        stop("Scanpy variance metric not found in inSCE. ",
+             "Run `runScanpyFindHVG()` with 'seurat_v3' method ",
+             "before using this function!")
+      }
+    }else if (method == "cell_ranger") {
+      m <- "means"
+      v_rank <- "dispersions"
+      v_plot <- "dispersions_norm"
+      if (is.null(rowData(inSCE)[[v_rank]]) ||
+          is.null(rowData(inSCE)[[m]]) ||
+          is.null(rowData(inSCE)[[v_plot]])) {
+        stop("Scanpy dispersion metric not found in inSCE. ",
+             "Run `runScanpyFindHVG()` with 'cell_ranger' method ",
+             "before using this function!")
+      }
+    }else if (method == "seurat") {
+      m <- "means"
+      v_rank <- "dispersions"
+      v_plot <- "dispersions_norm"
+      if (is.null(rowData(inSCE)[[v_rank]]) ||
+          is.null(rowData(inSCE)[[m]]) ||
+          is.null(rowData(inSCE)[[v_plot]])) {
+        stop("Scanpy dispersion metric not found in inSCE. ",
+             "Run `runScanpyFindHVG()` with 'dispersion' method ",
+             "before using this function!")
+      }
     } else if (method == "modelGeneVar") {
         m <- "scran_modelGeneVar_mean"
         v_rank <- "scran_modelGeneVar_bio"

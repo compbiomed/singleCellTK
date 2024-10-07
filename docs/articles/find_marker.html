@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.14.0</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -197,6 +200,14 @@
         </li>
         <li>
           <a href="../articles/heatmap.html">Generic Heatmap</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Web Application</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/webApp.html">FAQs</a>
         </li>
       </ul>
 </li>
@@ -440,26 +451,26 @@ can be fetched by <code><a href="../reference/getFindMarkerTopTable.html">getFin
 include for each clsuter.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getFindMarkerTopTable.html">getFindMarkerTopTable</a></span><span class="op">(</span><span class="va">sce</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, topN <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##          Gene   Log2_FC        Pvalue           FDR cluster clusterExprPerc</span></span>
-<span><span class="co">## 8764     IL7R 0.8117772  4.180664e-79  4.562219e-75       1       0.7500000</span></span>
-<span><span class="co">## 309761  NOSIP 0.5887454  2.681549e-48  1.125494e-45       2       0.6821561</span></span>
-<span><span class="co">## 1956   S100A9 4.3853548 1.686234e-262 5.520393e-258       3       0.9977064</span></span>
-<span><span class="co">## 30657   CD79A 2.2532545 9.589851e-192 3.139525e-187       4       0.9257143</span></span>
-<span><span class="co">## 26825    CCL5 3.0924934 7.429786e-188 2.432363e-183       5       0.9712644</span></span>
-<span><span class="co">## 106091   LST1 2.8683989 1.035264e-124 3.389247e-120       6       1.0000000</span></span>
-<span><span class="co">## 310761   NKG7 4.2398710 8.586372e-104  2.811007e-99       7       1.0000000</span></span>
-<span><span class="co">## 288182   CST3 3.2975861  2.308760e-20  1.511684e-16       8       1.0000000</span></span>
-<span><span class="co">## 7697     PPBP 5.9620589  3.332310e-08  1.747705e-04       9       1.0000000</span></span>
+<pre><code><span><span class="co">##           Gene   Log2_FC        Pvalue           FDR cluster clusterExprPerc</span></span>
+<span><span class="co">## 8764      IL7R 0.7697338  9.053691e-69  2.279998e-65       1       0.7212885</span></span>
+<span><span class="co">## 1956    S100A9 4.3853548 2.397248e-207 3.924055e-203       2       0.9977064</span></span>
+<span><span class="co">## 269581    CCR7 0.6150976  1.881449e-41  9.332559e-39       3       0.5688312</span></span>
+<span><span class="co">## 106781 HLA-DRA 3.2752984 1.682895e-182 2.754731e-178       4       1.0000000</span></span>
+<span><span class="co">## 26825     CCL5 3.0878935 2.507059e-148 8.207610e-144       5       0.9712644</span></span>
+<span><span class="co">## 106091    LST1 2.8683989  1.038405e-98  1.133177e-94       6       1.0000000</span></span>
+<span><span class="co">## 310761    NKG7 4.2435780  8.853054e-82  2.898313e-77       7       1.0000000</span></span>
+<span><span class="co">## 288182    CST3 3.2975861  2.221917e-16  1.039159e-12       8       1.0000000</span></span>
+<span><span class="co">## 7697      PPBP 5.9620589  9.423341e-07  2.504757e-03       9       1.0000000</span></span>
 <span><span class="co">##        ControlExprPerc clusterAveExpr</span></span>
-<span><span class="co">## 8764        0.31156265       1.266208</span></span>
-<span><span class="co">## 309761      0.36716132       1.069871</span></span>
-<span><span class="co">## 1956        0.23094477       4.733569</span></span>
-<span><span class="co">## 30657       0.04172156       2.296094</span></span>
-<span><span class="co">## 26825       0.21676174       3.470436</span></span>
-<span><span class="co">## 106091      0.30477759       3.454109</span></span>
-<span><span class="co">## 310761      0.25687702       4.781861</span></span>
-<span><span class="co">## 288182      0.39113680       4.371755</span></span>
-<span><span class="co">## 7697        0.02406417       5.989445</span></span></code></pre>
+<span><span class="co">## 8764        0.28698380      1.1880037</span></span>
+<span><span class="co">## 1956        0.23094477      4.7335694</span></span>
+<span><span class="co">## 269581      0.13380910      0.7705352</span></span>
+<span><span class="co">## 106781      0.49538867      4.4065968</span></span>
+<span><span class="co">## 26825       0.21676174      3.4664459</span></span>
+<span><span class="co">## 106091      0.30477759      3.4541085</span></span>
+<span><span class="co">## 310761      0.25717752      4.7869642</span></span>
+<span><span class="co">## 288182      0.39113680      4.3717555</span></span>
+<span><span class="co">## 7697        0.02406417      5.9894455</span></span></code></pre>
 <p>Similarly to the Differential Expression section, we also provide a
 automated and organized <strong>heatmap plotting</strong> for the
 markers:</p>
@@ -489,12 +500,12 @@ document.getElementById("ia-button").click();
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Ming Liu, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

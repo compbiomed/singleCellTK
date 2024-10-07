@@ -6,8 +6,8 @@
 \usage{
 sctkPythonInstallVirtualEnv(
   envname = "sctk-reticulate",
-  packages = c("scipy", "numpy", "astroid", "six", "scrublet", "scanpy", "scanorama",
-    "bbknn", "anndata"),
+  packages = c("scipy", "numpy", "astroid", "six", "scrublet", "scanpy", "louvain",
+    "leidenalg", "scanorama", "bbknn", "anndata"),
   selectEnvironment = TRUE,
   python = NULL
 )

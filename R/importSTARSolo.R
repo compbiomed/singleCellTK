@@ -49,6 +49,13 @@
 
     res <- vector("list", length = length(samples))
 
+    temp <- STARsoloOuts
+    # in case the old style arguments get passed in
+    if (length(STARsoloOuts) == 2 && identical(STARsoloOuts, c("Gene", "GeneFull"))) {
+        STARsoloOuts <- paste0(STARsoloOuts, "/filtered")
+    } else if (length(STARsoloOuts) == 1 && (STARsoloOuts == "Gene" || STARsoloOuts == "GeneFull")) {
+        STARsoloOuts <- paste0(STARsoloOuts, "/filtered")
+    }
     STARsoloOuts <- .getVectorized(STARsoloOuts, length(samples))
     matrixFileNames <- .getVectorized(matrixFileNames, length(samples))
     featuresFileNames <- .getVectorized(featuresFileNames, length(samples))
@@ -82,7 +89,7 @@
     metrics_summary <- .importMetricsStarSolo(
       samplePaths = STARsoloDirs, 
       sampleNames = samples, 
-      metricsPath = c("Gene", "GeneFull"), 
+      metricsPath = temp, 
       metricsFile = "Summary.csv")
     # sce <- setSampleSummaryStatsTable(sce, "starsolo", metrics_summary)
     if (ncol(metrics_summary) > 0) {
@@ -105,11 +112,11 @@
 #'  \code{samples}.
 #' @param samples A vector of user-defined sample names for the sample to be
 #'  imported. Must have the same length as \code{STARsoloDirs}.
-#' @param STARsoloOuts Character vector. The intermediate
-#'  paths to filtered or raw cell barcode, feature, and matrix files
-#'  for each of \code{samples}. Default \code{"Gene/filtered"}  which works
-#'  for STAR 2.7.3a. Must have length 1 or the same
-#'  length as \code{samples}.
+#' @param STARsoloOuts Character. The intermediate
+#'  folder to filtered or raw cell barcode, feature, and matrix files
+#'  for each of \code{samples}. Default \code{"Gene"}.
+#'  It can be either Gene or GeneFull as the main folder from
+#'  which data needs to be imported. 
 #' @param matrixFileNames Filenames for the Market Exchange Format (MEX) sparse
 #'  matrix file (.mtx file). Must have length 1 or the same
 #'  length as \code{samples}.
@@ -167,7 +174,7 @@
 importSTARsolo <- function(
     STARsoloDirs,
     samples,
-    STARsoloOuts = "Gene/filtered",
+    STARsoloOuts = c("Gene", "GeneFull"),
     matrixFileNames = "matrix.mtx",
     featuresFileNames = "features.tsv",
     barcodesFileNames = "barcodes.tsv",
@@ -176,7 +183,14 @@ importSTARsolo <- function(
     delayedArray = FALSE,
     rowNamesDedup = TRUE) {
 
+    # accepted STARSolo output directories
+    STARsoloOutputs <- c("Gene", "GeneFull", "Gene/filtered", "Gene/raw", "GeneFull/raw", "GeneFull/filtered")
     class <- match.arg(class)
+    STARsoloOuts <- match.arg(STARsoloOuts, STARsoloOutputs, several.ok = TRUE)
+    # in case the old style arguments get passed in
+    if (identical(STARsoloOuts, c("Gene", "GeneFull"))) {
+        STARsoloOuts <- paste0(STARsoloOuts, "/filtered")
+    }
 
     .importSTARsolo(
         STARsoloDirs = STARsoloDirs,

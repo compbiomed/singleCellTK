@@ -6,8 +6,8 @@
 \usage{
 runDimReduce(
   inSCE,
-  method = c("scaterPCA", "seuratPCA", "seuratICA", "rTSNE", "seuratTSNE", "scaterUMAP",
-    "seuratUMAP"),
+  method = c("scaterPCA", "seuratPCA", "seuratICA", "scanpyPCA", "rTSNE", "seuratTSNE",
+    "scaterUMAP", "seuratUMAP", "scanpyUMAP", "scanpyTSNE"),
   useAssay = NULL,
   useReducedDim = NULL,
   useAltExp = NULL,
@@ -15,7 +15,7 @@ runDimReduce(
   nComponents = 20,
   useFeatureSubset = NULL,
   scale = FALSE,
-  seed = NULL,
+  seed = 12345,
   ...
 )
 }
@@ -23,8 +23,8 @@ runDimReduce(
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{method}{One from \code{"scaterPCA"}, \code{"seuratPCA"},
-\code{"seuratICA"}, \code{"rTSNE"}, \code{"seuratTSNE"}, \code{"scaterUMAP"}
-and \code{"seuratUMAP"}.}
+\code{"seuratICA"}, \code{"rTSNE"}, \code{"seuratTSNE"}, \code{"scaterUMAP"},
+\code{"seuratUMAP"}, \code{"scanpyPCA"}, \code{"scanpyUMAP"} and \code{"scanpyTSNE"}.}
 
 \item{useAssay}{Assay to use for computation. If \code{useAltExp} is
 specified, \code{useAssay} has to exist in

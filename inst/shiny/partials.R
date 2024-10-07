@@ -198,6 +198,41 @@ importModal <- function(failed=FALSE, needsDir=FALSE) {
 }
 
 
+importStarModal <- function(failed=FALSE, needsDir=FALSE) {
+  modalDialog(
+    h3("Sample Name"),
+    textInput("sampleName", "*This is the name you would like to give your sample."),
+    # only some functions need this input
+    if (needsDir)
+      h3("Sample ID"),
+    if (needsDir)
+      textInput("sampleID", "*This name must match your sample's directory name."),
+    
+    selectInput(
+      inputId = "geneFolder",
+      label = "Select Gene Folder: ",
+      choices = c("Gene" = "Gene",
+                  "GeneFull" = "GeneFull")
+    ),
+    
+    
+    h3("Base Directory"),
+    #shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = ),
+    
+    shinyFiles::shinyDirButton("directory", label = "Choose Directory", title = "Upload"),
+    # A UI to display what users select
+    verbatimTextOutput("directoryPath", placeholder = TRUE),
+    
+    if (failed)
+      div(tags$b("Please fill out all the required fields", style = "color: red;")),
+    
+    footer = tagList(
+      modalButton("Cancel"),
+      actionButton("modalStarOk", "OK")
+    )
+  )
+}
+
 
 
 #--------------#

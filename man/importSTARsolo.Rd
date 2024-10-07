@@ -7,7 +7,7 @@
 importSTARsolo(
   STARsoloDirs,
   samples,
-  STARsoloOuts = "Gene/filtered",
+  STARsoloOuts = c("Gene", "GeneFull"),
   matrixFileNames = "matrix.mtx",
   featuresFileNames = "features.tsv",
   barcodesFileNames = "barcodes.tsv",
@@ -27,11 +27,11 @@ Each sample should have its own path. Must have the same length as
 \item{samples}{A vector of user-defined sample names for the sample to be
 imported. Must have the same length as \code{STARsoloDirs}.}
 
-\item{STARsoloOuts}{Character vector. The intermediate
-paths to filtered or raw cell barcode, feature, and matrix files
-for each of \code{samples}. Default \code{"Gene/filtered"}  which works
-for STAR 2.7.3a. Must have length 1 or the same
-length as \code{samples}.}
+\item{STARsoloOuts}{Character. The intermediate
+folder to filtered or raw cell barcode, feature, and matrix files
+for each of \code{samples}. Default \code{"Gene"}.
+It can be either Gene or GeneFull as the main folder from
+which data needs to be imported.}
 
 \item{matrixFileNames}{Filenames for the Market Exchange Format (MEX) sparse
 matrix file (.mtx file). Must have length 1 or the same

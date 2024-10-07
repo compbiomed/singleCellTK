@@ -13,3 +13,4 @@ vignettes/articles/raw_data/*
 raw_data/*
 *.rds
 .RDataTmp
+docs

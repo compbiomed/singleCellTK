@@ -135,7 +135,8 @@ runScrublet <- function(inSCE,
   #assayNames(inSCE)[which(useAssay %in% assayNames(inSCE))] <- "counts"
   #useAssay <- "counts"
   
-  message(paste0(date(), " ... Running 'scrublet'"))
+  p <- paste0(date(), " ... Running 'scrublet'")
+  message(p)
   
   ##  Getting current arguments values
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
@@ -152,106 +153,131 @@ runScrublet <- function(inSCE,
                                  scrublet_call = logical(ncol(inSCE)))
   
   ## Loop through each sample and run scrublet
-  error <- try({
-    samples <- unique(sample)
-    umapDims <- matrix(ncol = 2,
-                       nrow = ncol(inSCE))
-    rownames(umapDims) = colnames(inSCE)
-    colnames(umapDims) = c("UMAP_1", "UMAP_2")
-    
-    tsneDims <- matrix(ncol = 2,
-                       nrow = ncol(inSCE))
-    rownames(tsneDims) = colnames(inSCE)
-    colnames(tsneDims) = c("TSNE_1", "TSNE_2")
-    
-    for (s in samples) {
-      sceSampleInd <- sample == s
-      sceSample <- inSCE[, sceSampleInd]
-      
-      mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
-      mat <- .convertToMatrix(mat)
-      
-      scr <- scrublet$Scrublet(counts_matrix = t(mat),
-                               sim_doublet_ratio = simDoubletRatio,
-                               n_neighbors = nNeighbors,
-                               expected_doublet_rate = expectedDoubletRate,
-                               stdev_doublet_rate = stdevDoubletRate)
-      
-      result <- scr$scrub_doublets(
-        synthetic_doublet_umi_subsampling = syntheticDoubletUmiSubsampling,
-        use_approx_neighbors = useApproxNeighbors,
-        distance_metric = distanceMetric,
-        get_doublet_neighbor_parents = getDoubletNeighborParents,
-        min_counts = minCounts,
-        min_cells = as.integer(minCells),
-        min_gene_variability_pctl = minGeneVariabilityPctl,
-        log_transform = logTransform,
-        mean_center = meanCenter,
-        normalize_variance = normalizeVariance,
-        n_prin_comps = as.integer(nPrinComps),
-        verbose = verbose)
-      
-      output[sceSampleInd, "scrublet_score"] <- result[[1]]
-      output[sceSampleInd, "scrublet_call"] <- result[[2]]
-      
-      ## Extract UMAP and TSNE coordinates
-      if (is.null(nNeighbors) && is.null(minDist)) {
-        umap_coordinates <- scrublet$get_umap(scr$manifold_obs_)
-      } else if (!is.null(nNeighbors) && !is.null(minDist)) {
-        umap_coordinates <- scrublet$get_umap(
-          scr$manifold_obs_,
-          n_neighbors = as.integer(nNeighbors),
-          min_dist = minDist
-        )
-      } else {
-        warning("`nNeighbors` and `minDist` has to be specified or set to NULL",
-                " at the same time. Setting both to NULL.")
-        umap_coordinates <- scrublet$get_umap(scr$manifold_obs_)
-      }
-      umapDims[sceSampleInd, ] <- umap_coordinates
-      
-      if (is.null(tsneAngle) && is.null(tsnePerplexity)) {
-        tsne_coordinates <- scrublet$get_tsne(scr$manifold_obs_)
-      } else if (!is.null(tsneAngle) && !is.null(tsnePerplexity)) {
-        tsne_coordinates <- scrublet$get_tsne(
-          scr$manifold_obs_,
-          angle = tsneAngle,
-          perplexity = as.integer(tsnePerplexity)
-        )
-      } else {
-        warning("`tsneAngle` and `tsnePerplexity` has to be specified or set ", 
-                "to NULL at the same time. Setting both to NULL.")
-        tsne_coordinates <- scrublet$get_tsne(scr$manifold_obs_)
-      }
-      tsneDims[sceSampleInd, ] <- tsne_coordinates
-      if (!identical(samples, 1)) {
-        metadata(inSCE)$sctk$runScrublet[[s]] <- argsList
-      }
+
+  # try/catch block for when Scrublet fails (which can be often)
+
+  # boolean flag variable for if the try/catch works
+  successful = FALSE
+
+  result <- tryCatch(
+    {
+        samples <- unique(sample)
+        umapDims <- matrix(ncol = 2,
+                         nrow = ncol(inSCE))
+        rownames(umapDims) = colnames(inSCE)
+        colnames(umapDims) = c("UMAP_1", "UMAP_2")
+        
+        tsneDims <- matrix(ncol = 2,
+                          nrow = ncol(inSCE))
+        rownames(tsneDims) = colnames(inSCE)
+        colnames(tsneDims) = c("TSNE_1", "TSNE_2")
+        
+        for (s in samples) {
+          sceSampleInd <- sample == s
+          sceSample <- inSCE[, sceSampleInd]
+          
+          mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
+          mat <- .convertToMatrix(mat)
+          
+          scr <- scrublet$Scrublet(counts_matrix = t(mat),
+                                  sim_doublet_ratio = simDoubletRatio,
+                                  n_neighbors = nNeighbors,
+                                  expected_doublet_rate = expectedDoubletRate,
+                                  stdev_doublet_rate = stdevDoubletRate)
+          
+          result <- scr$scrub_doublets(
+            synthetic_doublet_umi_subsampling = syntheticDoubletUmiSubsampling,
+            use_approx_neighbors = useApproxNeighbors,
+            distance_metric = distanceMetric,
+            get_doublet_neighbor_parents = getDoubletNeighborParents,
+            min_counts = minCounts,
+            min_cells = as.integer(minCells),
+            min_gene_variability_pctl = minGeneVariabilityPctl,
+            log_transform = logTransform,
+            mean_center = meanCenter,
+            normalize_variance = normalizeVariance,
+            n_prin_comps = as.integer(nPrinComps),
+            verbose = verbose)
+          
+          output[sceSampleInd, "scrublet_score"] <- result[[1]]
+          output[sceSampleInd, "scrublet_call"] <- result[[2]]
+          
+          ## Extract UMAP and TSNE coordinates
+          if (is.null(nNeighbors) && is.null(minDist)) {
+            umap_coordinates <- scrublet$get_umap(scr$manifold_obs_)
+          } else if (!is.null(nNeighbors) && !is.null(minDist)) {
+            umap_coordinates <- scrublet$get_umap(
+              scr$manifold_obs_,
+              n_neighbors = as.integer(nNeighbors),
+              min_dist = minDist
+            )
+          } else {
+            warning("`nNeighbors` and `minDist` has to be specified or set to NULL",
+                    " at the same time. Setting both to NULL.")
+            umap_coordinates <- scrublet$get_umap(scr$manifold_obs_)
+          }
+          umapDims[sceSampleInd, ] <- umap_coordinates
+          
+          if (is.null(tsneAngle) && is.null(tsnePerplexity)) {
+            tsne_coordinates <- scrublet$get_tsne(scr$manifold_obs_)
+          } else if (!is.null(tsneAngle) && !is.null(tsnePerplexity)) {
+            tsne_coordinates <- scrublet$get_tsne(
+              scr$manifold_obs_,
+              angle = tsneAngle,
+              perplexity = as.integer(tsnePerplexity)
+            )
+          } else {
+            warning("`tsneAngle` and `tsnePerplexity` has to be specified or set ", 
+                    "to NULL at the same time. Setting both to NULL.")
+            tsne_coordinates <- scrublet$get_tsne(scr$manifold_obs_)
+          }
+          tsneDims[sceSampleInd, ] <- tsne_coordinates
+          if (!identical(samples, 1)) {
+            metadata(inSCE)$sctk$runScrublet[[s]] <- argsList
+          }
+        }
+        if (identical(samples, 1)) {
+          metadata(inSCE)$sctk$runScrublet$all_cells <- argsList
+        }
+        colData(inSCE)$scrublet_score <- NULL
+        colData(inSCE)$scrublet_call <- NULL
+        
+        colData(inSCE) = cbind(colData(inSCE), output)
+        
+        ## convert doublet call from TRUE/FALSE to Singlet/Doublet
+        inSCE$scrublet_call <- as.factor(inSCE$scrublet_call)
+        
+        levels(inSCE$scrublet_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
+        
+        reducedDim(inSCE,'scrublet_TSNE') <- tsneDims
+        reducedDim(inSCE,'scrublet_UMAP') <- umapDims
+        
+        colData(tempSCE) <- colData(inSCE)
+        metadata(tempSCE) <- metadata(inSCE)
+        reducedDims(tempSCE) <- reducedDims(inSCE)
+        
+        successful = TRUE
+        return(tempSCE)   
+    },
+    error=function(cond) {
+        p <- paste0(date(), " ... Scrublet did not complete successfully; Returning SCE without changes. Scrublet error:")
+        message(p)
+        message(cond)
+        return(inSCE)
+    },
+    finally={
+        if (isTRUE(successful)) {
+          return(tempSCE)
+        }
+        else {
+          return(inSCE)
+        }
     }
-    if (identical(samples, 1)) {
-      metadata(inSCE)$sctk$runScrublet$all_cells <- argsList
-    }
-    colData(inSCE)$scrublet_score <- NULL
-    colData(inSCE)$scrublet_call <- NULL
-    
-    colData(inSCE) = cbind(colData(inSCE), output)
-  }, silent = TRUE)
-  
-  if (inherits(error, "try-error")) {
-    warning("Scrublet did not complete successfully. Returning SCE without",
-            " making any changes. Error given by Scrublet: \n\n", error)
-  }
-  
-  ## convert doublet call from TRUE/FALSE to Singlet/Doublet
-  inSCE$scrublet_call <- as.factor(inSCE$scrublet_call)
-  levels(inSCE$scrublet_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
-  
-  reducedDim(inSCE,'scrublet_TSNE') <- tsneDims
-  reducedDim(inSCE,'scrublet_UMAP') <- umapDims
-  
-  colData(tempSCE) <- colData(inSCE)
-  metadata(tempSCE) <- metadata(inSCE)
-  reducedDims(tempSCE) <- reducedDims(inSCE)
-  
-  return(tempSCE)
+    # if (inherits(error, "try-error")) {
+  #   warning("Scrublet did not complete successfully. Returning SCE without",
+  #           " making any changes. Error given by Scrublet: \n\n", error)
+  #   return(inSCE)
+  # }
+  )
+  return(result)
 }

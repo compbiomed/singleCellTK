@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.14.0</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -197,6 +200,14 @@
         </li>
         <li>
           <a href="../articles/heatmap.html">Generic Heatmap</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Web Application</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/webApp.html">FAQs</a>
         </li>
       </ul>
 </li>
@@ -636,20 +647,20 @@ feature ID type to display in the table can also be changed.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DEG</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDEGTopTable.html">getDEGTopTable</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"c1_2_VS_c5"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DEG</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##        Gene   Log2_FC       Pvalue          FDR group1MeanExp group2MeanExp</span></span>
-<span><span class="co">## 10608   LTB 1.1264965 6.754884e-43 1.053054e-39      2.474387      1.347890</span></span>
-<span><span class="co">## 29915  JUNB 0.8900972 9.865921e-31 6.591644e-28      3.116122      2.226025</span></span>
-<span><span class="co">## 20398  LDHB 0.7723192 7.738507e-44 1.333385e-40      1.939164      1.166845</span></span>
-<span><span class="co">## 5522  RPL32 0.6061814 2.730154e-64 8.125436e-61      4.613614      4.007433</span></span>
-<span><span class="co">## 23081   FOS 0.5978641 2.252030e-16 6.093138e-14      2.641626      2.043762</span></span>
-<span><span class="co">## 18502 RPS13 0.5829358 1.815492e-36 1.917277e-33      3.223682      2.640746</span></span>
+<pre><code><span><span class="co">##         Gene  Log2_FC       Pvalue          FDR group1MeanExp group2MeanExp</span></span>
+<span><span class="co">## 21054    LYZ 1.923606 6.697866e-37 8.770990e-34      2.450818    0.52721136</span></span>
+<span><span class="co">## 1956  S100A9 1.725115 1.258673e-34 1.329239e-31      1.906373    0.18125751</span></span>
+<span><span class="co">## 1958  S100A8 1.499733 2.665313e-43 4.362851e-40      1.543568    0.04383467</span></span>
+<span><span class="co">## 28818   CST3 1.346308 5.206233e-36 6.087202e-33      1.542021    0.19571280</span></span>
+<span><span class="co">## 18999   FTH1 1.335794 1.078589e-49 2.077108e-46      3.934564    2.59877029</span></span>
+<span><span class="co">## 30934    FTL 1.295643 2.519141e-21 1.472708e-18      4.054030    2.75838685</span></span>
 <span><span class="co">##       group1ExprPerc group2ExprPerc</span></span>
-<span><span class="co">## 10608      0.9417122      0.6206897</span></span>
-<span><span class="co">## 29915      0.9526412      0.8275862</span></span>
-<span><span class="co">## 20398      0.9417122      0.6867816</span></span>
-<span><span class="co">## 5522       1.0000000      0.9971264</span></span>
-<span><span class="co">## 23081      0.9562842      0.8390805</span></span>
-<span><span class="co">## 18502      0.9899818      0.9683908</span></span></code></pre>
+<span><span class="co">## 21054      0.7086957     0.39080460</span></span>
+<span><span class="co">## 1956       0.4895652     0.15229885</span></span>
+<span><span class="co">## 1958       0.4408696     0.04022989</span></span>
+<span><span class="co">## 28818      0.5060870     0.15804598</span></span>
+<span><span class="co">## 18999      0.9947826     0.98275862</span></span>
+<span><span class="co">## 30934      0.9921739     0.98563218</span></span></code></pre>
 <p>To visualize the result in a heatmap:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"c1_2_VS_c5"</span>, log2fcThreshold <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span></span></code></pre></div>
@@ -671,7 +682,7 @@ document.getElementById("ia-button").click();
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body">
+<div id="refs" class="references csl-bib-body" entry-spacing="0">
 <div id="ref-Aaron2016" class="csl-entry">
 <div class="csl-left-margin">[1] </div>
 <div class="csl-right-inline">A.
@@ -728,12 +739,12 @@ reference online</em>, American Cancer Society, 2014. doi: <a href="https://doi.
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Ming Liu, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

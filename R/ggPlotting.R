@@ -29,7 +29,7 @@
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotSize Size of dots. Default 0.5.
+#' @param dotSize Size of dots. Default 0.1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param colorScale Vector. Needs to be same length as the
 #'  number of unique levels of `colorBy`. Will be used only if
@@ -78,7 +78,7 @@
                        dim2 = NULL,
                        bin = NULL,
                        binLabel = NULL,
-                       dotSize = 0.5,
+                       dotSize = 0.1,
                        transparency = 1,
                        colorScale = NULL,
                        colorLow = "white",
@@ -333,7 +333,7 @@
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotSize Size of dots. Default 0.5.
+#' @param dotSize Size of dots. Default 0.1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param colorScale Vector. Needs to be same length as the
 #'  number of unique levels of colorBy. Will be used only if
@@ -394,7 +394,7 @@ plotSCEDimReduceColData <- function(inSCE,
                                     dim2 = NULL,
                                     bin = NULL,
                                     binLabel = NULL,
-                                    dotSize = 0.5,
+                                    dotSize = 0.1,
                                     transparency = 1,
                                     colorScale = NULL,
                                     colorLow = "white",
@@ -481,7 +481,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotSize Size of dots. Default 0.5.
+#' @param dotSize Size of dots. Default 0.1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param colorLow Character. A color available from `colors()`.
 #'  The color will be used to signify the lowest values on the scale.
@@ -529,7 +529,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      dim2 = NULL,
                                      bin = NULL,
                                      binLabel = NULL,
-                                     dotSize = 0.5,
+                                     dotSize = 0.1,
                                      transparency = 1,
                                      colorLow = "white",
                                      colorMid = "gray",
@@ -637,7 +637,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotSize Size of dots. Default 0.5.
+#' @param dotSize Size of dots. Default 0.1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param colorLow Character. A color available from `colors()`.
 #'  The color will be used to signify the lowest values on the scale.
@@ -686,7 +686,7 @@ plotSCEScatter <- function(inSCE,
                            dim2 = NULL,
                            bin = NULL,
                            binLabel = NULL,
-                           dotSize = 0.5,
+                           dotSize = 0.1,
                            transparency = 1,
                            colorLow = "white",
                            colorMid = "gray",
@@ -789,7 +789,7 @@ plotSCEScatter <- function(inSCE,
 #'  Can be overwritten by titleSize, axisSize, and axisLabelSize.
 #' @param axisSize Size of x/y-axis ticks. Default NULL.
 #' @param axisLabelSize Size of x/y-axis labels. Default NULL.
-#' @param dotSize Size of dots. Default 0.5.
+#' @param dotSize Size of dots. Default 0.1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -835,7 +835,7 @@ plotSCEScatter <- function(inSCE,
                       baseSize = 12,
                       axisSize = NULL,
                       axisLabelSize = NULL,
-                      dotSize = 0.5,
+                      dotSize = 0.1,
                       transparency = 1,
                       defaultTheme = TRUE,
                       gridLine = FALSE,
@@ -891,7 +891,7 @@ plotSCEScatter <- function(inSCE,
   if (violin == TRUE) {
     p <- p + ggplot2::geom_violin(trim = TRUE,
                                   scale = "width",
-                                  size = 1,
+                                  linewidth = 0.5,
                                   fill = "grey",
                                   alpha = 0.75)
   }
@@ -973,7 +973,9 @@ plotSCEScatter <- function(inSCE,
                                    fun.max = fun,
                                    geom = "crossbar",
                                    color = "red",
-                                   linetype = "dashed")
+                                   linetype = 1,
+                                   linewidth = 0.5,
+                                   width = 0.5)
   }
   if(!is.null(hcutoff)){
     p <- .ggAddLine(p, hcutoff = hcutoff, hcolor = hcolor,
@@ -1012,7 +1014,7 @@ plotSCEScatter <- function(inSCE,
 #'  Can be overwritten by titleSize, axisSize, and axisLabelSize.
 #' @param axisSize Size of x/y-axis ticks. Default NULL.
 #' @param axisLabelSize Size of x/y-axis labels. Default NULL.
-#' @param dotSize Size of dots. Default 0.5.
+#' @param dotSize Size of dots. Default 0.1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -1065,7 +1067,7 @@ plotSCEViolinColData <- function(inSCE,
                                  baseSize = 12,
                                  axisSize = NULL,
                                  axisLabelSize = NULL,
-                                 dotSize = 0.5,
+                                 dotSize = 0.1,
                                  transparency = 1,
                                  defaultTheme = TRUE,
                                  gridLine = FALSE,
@@ -1087,7 +1089,8 @@ plotSCEViolinColData <- function(inSCE,
   
   if (!is.null(coldata)) {
     if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
-      stop("'", paste(coldata), "' is not found in ColData.")
+      p <- paste(coldata)
+      stop("'", p, "' is not found in ColData.")
     }
     coldata <- SummarizedExperiment::colData(inSCE)[, coldata]
   } else {
@@ -1103,7 +1106,8 @@ plotSCEViolinColData <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p, "' is not found in ColData.")
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
@@ -1212,7 +1216,7 @@ plotSCEViolinColData <- function(inSCE,
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
 #' @param axisLabelSize Size of x/y-axis labels. Default 10.
-#' @param dotSize Size of dots. Default 0.5.
+#' @param dotSize Size of dots. Default 0.1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -1265,7 +1269,7 @@ plotSCEViolinAssayData <- function(inSCE,
                                    ylab = NULL,
                                    axisSize = 10,
                                    axisLabelSize = 10,
-                                   dotSize = 0.5,
+                                   dotSize = 0.1,
                                    transparency = 1,
                                    defaultTheme = TRUE,
                                    gridLine = FALSE,
@@ -1312,7 +1316,8 @@ plotSCEViolinAssayData <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p , "' is not found in ColData.")
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
@@ -1431,7 +1436,7 @@ plotSCEViolinAssayData <- function(inSCE,
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
 #' @param axisLabelSize Size of x/y-axis labels. Default 10.
-#' @param dotSize Size of dots. Default 0.5.
+#' @param dotSize Size of dots. Default 0.1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -1484,7 +1489,7 @@ plotSCEViolin <- function(inSCE,
                           ylab = NULL,
                           axisSize = 10,
                           axisLabelSize = 10,
-                          dotSize = 0.5,
+                          dotSize = 0.1,
                           transparency = 1,
                           defaultTheme = TRUE,
                           gridLine = FALSE,
@@ -1545,7 +1550,8 @@ plotSCEViolin <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p , "' is not found in ColData.")
       }
       groupBy <- SummarizedExperiment::colData(inSCE)[, groupBy]
     }
@@ -1766,7 +1772,8 @@ plotSCEDensityColData <- function(inSCE,
   
   if (!is.null(coldata)) {
     if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
-      stop("'", paste(coldata), "' is not found in ColData.")
+      p <- paste(coldata)
+      stop("'", p , "' is not found in ColData.")
     }
     coldata <- SummarizedExperiment::colData(inSCE)[, coldata]
   } else {
@@ -1782,7 +1789,8 @@ plotSCEDensityColData <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p , "' is not found in ColData.")
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
@@ -1937,7 +1945,8 @@ plotSCEDensityAssayData <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p , "' is not found in ColData.")
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
@@ -2101,7 +2110,8 @@ plotSCEDensity <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p , "' is not found in ColData.")
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
@@ -2183,7 +2193,7 @@ plotSCEDensity <- function(inSCE,
 #' \code{0.01}.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 
 #' \code{10} when \code{TRUE}. Default \code{TRUE}.
-#' @param dotSize Size of dots. Default \code{0.5}.
+#' @param dotSize Size of dots. Default \code{0.1}.
 #' @param title Title of plot. Default \code{NULL}.
 #' @param titleSize Size of title of plot. Default \code{18}.
 #' @param xlab Character vector. Label for x-axis. Default \code{NULL}.
@@ -2219,7 +2229,7 @@ plotEmptyDropsScatter <- function(inSCE,
                                   sample = NULL,
                                   fdrCutoff = 0.01,
                                   defaultTheme = TRUE,
-                                  dotSize = 0.5,
+                                  dotSize = 0.1,
                                   title = NULL,
                                   titleSize = 18,
                                   xlab = NULL,
@@ -2338,7 +2348,7 @@ plotEmptyDropsScatter <- function(inSCE,
 #' sample each cell belongs to. Default \code{NULL}.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 
 #' \code{10} when \code{TRUE}. Default \code{TRUE}.
-#' @param dotSize Size of dots. Default \code{0.5}.
+#' @param dotSize Size of dots. Default \code{0.1}.
 #' @param title Title of plot. Default \code{NULL}.
 #' @param titleSize Size of title of plot. Default \code{18}.
 #' @param xlab Character vector. Label for x-axis. Default \code{NULL}.
@@ -2365,7 +2375,7 @@ plotEmptyDropsScatter <- function(inSCE,
 plotBarcodeRankScatter <- function(inSCE,
                                    sample = NULL,
                                    defaultTheme = TRUE,
-                                   dotSize = 0.5,
+                                   dotSize = 0.1,
                                    title = NULL,
                                    titleSize = 18,
                                    xlab = NULL,
@@ -2472,7 +2482,7 @@ plotBarcodeRankScatter <- function(inSCE,
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
 #' @param axisLabelSize Size of x/y-axis labels. Default 10.
-#' @param dotSize Size of dots. Default 0.5.
+#' @param dotSize Size of dots. Default 0.1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -2493,7 +2503,7 @@ plotBarcodeRankScatter <- function(inSCE,
                    ylab = NULL,
                    axisSize = 10,
                    axisLabelSize = 10,
-                   dotSize = 0.5,
+                   dotSize = 0.1,
                    transparency = 1,
                    defaultTheme = TRUE,
                    gridLine = FALSE,
@@ -2598,7 +2608,7 @@ plotBarcodeRankScatter <- function(inSCE,
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
 #' @param axisLabelSize Size of x/y-axis labels. Default 10.
-#' @param dotSize Size of dots. Default 0.5.
+#' @param dotSize Size of dots. Default 0.1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -2628,7 +2638,7 @@ plotSCEBarColData <- function(inSCE,
                               ylab = NULL,
                               axisSize = 10,
                               axisLabelSize = 10,
-                              dotSize = 0.5,
+                              dotSize = 0.1,
                               transparency = 1,
                               defaultTheme = TRUE,
                               gridLine = FALSE,
@@ -2638,7 +2648,8 @@ plotSCEBarColData <- function(inSCE,
                               combinePlot = TRUE) {
   if (!is.null(coldata)) {
     if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
-      stop("'", paste(coldata), "' is not found in ColData.")
+      p <- paste(coldata)
+      stop("'", p , "' is not found in ColData.")
     }
     coldata <- SummarizedExperiment::colData(inSCE)[, coldata]
   } else {
@@ -2654,7 +2665,8 @@ plotSCEBarColData <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p , "' is not found in ColData.")
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
@@ -2705,7 +2717,7 @@ plotSCEBarColData <- function(inSCE,
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
 #' @param axisLabelSize Size of x/y-axis labels. Default 10.
-#' @param dotSize Size of dots. Default 0.5.
+#' @param dotSize Size of dots. Default 0.1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -2737,7 +2749,7 @@ plotSCEBarAssayData <- function(inSCE,
                                 ylab = NULL,
                                 axisSize = 10,
                                 axisLabelSize = 10,
-                                dotSize = 0.5,
+                                dotSize = 0.1,
                                 transparency = 1,
                                 defaultTheme = TRUE,
                                 gridLine = FALSE,
@@ -2773,7 +2785,8 @@ plotSCEBarAssayData <- function(inSCE,
       }
     } else {
       if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
+        p <- paste(groupBy)
+        stop("'", p , "' is not found in ColData.")
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }

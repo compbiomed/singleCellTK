@@ -276,7 +276,7 @@ filterTableServer <- function(input, output, session, dataframe,
                 label = "Remove Filter"
               )
             }
-      ),
+      )
     )
   })
 
@@ -580,11 +580,11 @@ filterTableServer <- function(input, output, session, dataframe,
             parameters$values[i] <- paste0(input[[inputFirst[i]]], ",", input[[inputSecond[i]]])
           }
           else{
-            parameters$values[i] <- input[[inputFirst[i]]]
+            parameters$values[i] <- paste0(input[[inputFirst[i]]], collapse = ",")
           }
         }
         else{
-          parameters$values[i] <- input[[inputFirst[i]]]
+          parameters$values[i] <- paste0(input[[inputFirst[i]]], collapse = ",")
         }
       }
     }
@@ -790,40 +790,42 @@ filterTableServer <- function(input, output, session, dataframe,
   return(rv)
 }
 
-.filterDF <- function(df, operators = NULL, cols, values, topN = 100){
+.filterDF <- function(df, operators = NULL, cols = NULL, values = NULL, topN = 100){
   filters <- NULL
   if(!is.null(operators)){
     for(i in seq(length(cols))){
       if(operators[i]!="NULL"){
         if(operators[i] == "="){
           operators[i] <- "=="
-        }
-        if(operators[i] == "range" || operators[i] == "extremes"){
-          splitValues <- values[[i]]
-          splitValues <- strsplit(splitValues, ",")
-          if(operators[i] == "range"){
-            filters <- c(filters, paste0("eval(call('", ">=", "', df[['", cols[i], "']],", splitValues[[1]][1], "))"))
-            filters <- c(filters, paste0("eval(call('", "<=", "', df[['", cols[i], "']],", splitValues[[1]][2], "))"))
+          df <- df %>% dplyr::filter(eval(parse(text = cols[i])) == strsplit(values[[1]], split = ',')[[1]])
+          next
+          }
+          if(operators[i] == "range" || operators[i] == "extremes"){
+            splitValues <- values[[i]]
+            splitValues <- strsplit(splitValues, ",")
+            if(operators[i] == "range"){
+              filters <- c(filters, paste0("eval(call('", ">=", "', df[['", cols[i], "']],", splitValues[[1]][1], "))"))
+              filters <- c(filters, paste0("eval(call('", "<=", "', df[['", cols[i], "']],", splitValues[[1]][2], "))"))
+            }
+            else{
+              filters <- c(filters, paste0("df[['", cols[i],"']] >= ", splitValues[[1]][1]," | df[['", cols[i],"']] <= ", splitValues[[1]][2]))
+            }
           }
           else{
-            filters <- c(filters, paste0("df[['", cols[i],"']] >= ", splitValues[[1]][1]," | df[['", cols[i],"']] <= ", splitValues[[1]][2]))
+            if(is.na(as.numeric(values[i]))){
+              values[i] <- paste0("'", values[i], "'")
+            }
+            filters <- c(filters, paste0("eval(call('", operators[i], "', df[['", cols[i], "']],", values[i], "))"))
           }
-        }
-        else{
-          if(is.na(as.numeric(values[i]))){
-            values[i] <- paste0("'", values[i], "'")
-          }
-          filters <- c(filters, paste0("eval(call('", operators[i], "', df[['", cols[i], "']],", values[i], "))"))
-        }
       }
     }
   }
   filters <- paste(filters, collapse = ",")
-  if(is.null(topN)){
-    parseString <- paste0("df %>% dplyr::filter(", filters, ")")
-  }
-  else {
-    parseString <- paste0("df %>% dplyr::filter(", filters, ") %>% slice_head(n = ", topN, ")")
-  }
-  eval(parse(text = parseString))
+    if(is.null(topN)){
+      parseString <- paste0("df %>% dplyr::filter(", filters, ")")
+    }
+    else {
+      parseString <- paste0("df %>% dplyr::filter(", filters, ") %>% slice_head(n = ", topN, ")")
+    }
+    eval(parse(text = parseString))
 }

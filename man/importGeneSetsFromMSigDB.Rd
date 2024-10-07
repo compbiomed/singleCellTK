@@ -6,11 +6,12 @@
 \usage{
 importGeneSetsFromMSigDB(
   inSCE,
-  categoryIDs,
+  categoryIDs = "H",
   species = "Homo sapiens",
   mapping = c("gene_symbol", "human_gene_symbol", "entrez_gene"),
   by = "rownames",
-  verbose = TRUE
+  verbose = TRUE,
+  noMatchError = TRUE
 )
 }
 \arguments{
@@ -18,7 +19,8 @@ importGeneSetsFromMSigDB(
 
 \item{categoryIDs}{Character vector containing the MSigDB gene set ids.
 The column \code{ID} in the table returned by \code{getMSigDBTable()} shows
-the list of possible gene set IDs that can be obtained.}
+the list of possible gene set IDs that can be obtained. 
+Default is \code{"H"}.}
 
 \item{species}{Character. Species available can be found using the function
 \code{\link[msigdbr]{msigdbr_show_species}}. Default \code{"Homo sapiens"}.}
@@ -38,6 +40,9 @@ of \code{inSCE}. See \link{featureIndex} for more information.
 Default \code{"rownames"}.}
 
 \item{verbose}{Boolean. Whether to display progress. Default \code{TRUE}.}
+
+\item{noMatchError}{Boolean. Show an error if a collection does not have
+any matching features. Default \code{TRUE}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object

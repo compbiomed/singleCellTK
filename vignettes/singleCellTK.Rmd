@@ -18,6 +18,9 @@ author:
 - name: Salam Abdullatif
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
+- name: Nida Pervaiz
+  affiliation: 
+  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
 - name: David Jenkins
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
@@ -50,6 +53,10 @@ author:
   - Program in Bioinformatics, Boston University, Boston, MA
 - name: W. Evan Johnson
   affiliation: 
+  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
+  - Program in Bioinformatics, Boston University, Boston, MA
+- name: Ming Liu
+  affiliation:
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
   - Program in Bioinformatics, Boston University, Boston, MA
 - name: Joshua D. Campbell

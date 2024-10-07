@@ -99,6 +99,7 @@ reference:
   - runScranSNN
   - runSeuratFindClusters
   - runKMeans
+  - runClusterSummaryMetrics
 - title: "Differential Expression"
 - contents:
   - runDEAnalysis
@@ -145,6 +146,9 @@ reference:
   - starts_with("runSeurat")
   - computeHeatmap
   - getSeuratVariableFeatures
+- title: "Scanpy Curated Workflow"
+- contents:
+  - starts_with("runScanpy")
 - title: "Visualization"
 - contents:
   - starts_with("plot")
@@ -225,6 +229,8 @@ navbar:
         href: articles/seurat_curated_workflow.html
       - text: "Celda Curated Workflow - PBMC3K"
         href: articles/celda_curated_workflow.html
+      - text: "Scanpy Curated Workflow - PBMC3K"
+        href: articles/scanpy_curated_workflow.html
     - text: "SCTK-QC"
       href: articles/cmd_qc.html
     - text: "Documentation"
@@ -297,6 +303,10 @@ navbar:
             href: articles/visualization.html
           - text: "Generic Heatmap"
             href: articles/heatmap.html
+        - text: "Web Application"
+          menu:
+          - text: "FAQs"
+            href: articles/webApp.html
     - text: "Reference"
       href: reference/index.html
     - text: "NEWS"

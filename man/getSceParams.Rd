@@ -6,7 +6,8 @@
 \usage{
 getSceParams(
   inSCE,
-  skip = c("scrublet", "runDecontX", "runBarcodeRanksMetaOutput"),
+  skip = c("runScrublet", "runDecontX", "runBarcodeRanksMetaOutput", "genesets",
+    "runSoupX"),
   ignore = c("algorithms", "estimates", "contamination", "z", "sample", "rank",
     "BPPARAM", "batch", "geneSetCollection", "barcodeArgs"),
   directory = "./",

@@ -43,7 +43,7 @@
 #' @param pca Logical. Whether to perform dimension reduction with PCA before
 #' UMAP. Ignored when using \code{useReducedDim}. Default \code{TRUE}.
 #' @param initialDims Number of dimensions from PCA to use as input in UMAP.
-#' Default \code{25}.
+#' Default \code{10}.
 #' @param nNeighbors The size of local neighborhood used for manifold
 #' approximation. Larger values result in more global views of the manifold,
 #' while smaller values result in more local data being preserved. Default
@@ -65,6 +65,7 @@
 #' Default \code{NULL} will use global seed in use by the R environment.
 #' @param BPPARAM A \linkS4class{BiocParallelParam} object specifying whether
 #' the PCA should be parallelized.
+#' @param verbose Logical. Whether to print log messages. Default \code{TRUE}.
 #' @return A \linkS4class{SingleCellExperiment} object with UMAP computation
 #' updated in \code{reducedDim(inSCE, reducedDimName)}.
 #' @export
@@ -73,22 +74,16 @@
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' # Run from raw counts
 #' sce <- runQuickUMAP(sce)
-#' \dontrun{
-#' # Run from PCA
-#' sce <- scaterlogNormCounts(sce, "logcounts")
-#' sce <- runModelGeneVar(sce)
-#' sce <- scaterPCA(sce, useAssay = "logcounts",
-#'                  useFeatureSubset = "HVG_modelGeneVar2000", scale = TRUE)
-#' sce <- runUMAP(sce, useReducedDim = "PCA")
-#' }
+#' plotDimRed(sce, "UMAP")
+#' 
 #' @importFrom S4Vectors metadata<-
 #' @importFrom BiocParallel SerialParam
 runUMAP <- function(inSCE, useReducedDim = "PCA", useAssay = NULL, 
                     useAltExp = NULL, sample = NULL, reducedDimName = "UMAP",
                     logNorm = TRUE, useFeatureSubset = NULL, nTop = 2000,
-                    scale = TRUE, pca = TRUE, initialDims = 25, nNeighbors = 30,
+                    scale = TRUE, pca = TRUE, initialDims = 10, nNeighbors = 30,
                     nIterations = 200, alpha = 1, minDist = 0.01, spread = 1,
-                    seed = NULL, BPPARAM = SerialParam()) {
+                    seed = 12345, verbose = TRUE, BPPARAM = SerialParam()) {
   params <- as.list(environment())
   params$inSCE <- NULL
   params$BPPARAM <- NULL
@@ -127,10 +122,14 @@ runUMAP <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
     }
     
     nNeighbors <- min(ncol(sceSample), nNeighbors)
-    message(paste0(date(), " ... Computing Scater UMAP for sample '",
-                   samples[i], "'."))
-    .withSeed(seed, {
-      umapRes <- scater::calculateUMAP(sceSample, exprs_values = useAssayTemp,
+    if(isTRUE(verbose)) {
+      p <- paste0(date(), " ... Computing Scater UMAP for sample '",
+                  samples[i], "'.")
+      message(p)
+    }
+    
+    umapRes <- withr::with_seed(seed, {
+      scater::calculateUMAP(sceSample, exprs_values = useAssayTemp,
                                        dimred = useReducedDim, scale = scale,
                                        n_neighbors = nNeighbors,
                                        learning_rate = alpha,
@@ -178,7 +177,7 @@ getUMAP <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
                     logNorm = TRUE, useFeatureSubset = NULL, nTop = 2000,
                     scale = TRUE, pca = TRUE, initialDims = 25, nNeighbors = 30,
                     nIterations = 200, alpha = 1, minDist = 0.01, spread = 1,
-                    seed = NULL, BPPARAM = SerialParam()) {
+                    seed = 12345, BPPARAM = SerialParam()) {
   .Deprecated("runUMAP")
   runUMAP(inSCE, useReducedDim = useReducedDim, useAssay = useAssay, 
           useAltExp = useAltExp, sample = sample, 

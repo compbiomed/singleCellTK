@@ -64,7 +64,8 @@ the result. A \code{data.frame} object, with variables of \code{Gene},
 data("sceBatches")
 sceBatches <- scaterlogNormCounts(sceBatches, "logcounts")
 sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
-sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+sce.w <- runWilcox(sce.w, class = "cell_type",
+                   classGroup1 = "alpha", classGroup2 = "beta",
                    groupName1 = "w.alpha", groupName2 = "w.beta",
                    analysisName = "w.aVSb")
 getDEGTopTable(sce.w, "w.aVSb")

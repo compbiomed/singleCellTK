@@ -23,7 +23,7 @@ data"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathja
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.14.0</span>
       </span>
     </div>
 
@@ -54,6 +54,9 @@ data"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathja
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul></li>
 <li>
@@ -167,6 +170,12 @@ data"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathja
           <a href="../articles/heatmap.html">Generic Heatmap</a>
         </li>
       </ul></li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Web Application</a>
+      <ul class="dropdown-menu" role="menu"><li>
+          <a href="../articles/webApp.html">FAQs</a>
+        </li>
+      </ul></li>
   </ul></li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -248,16 +257,25 @@ be displayed. Default is <code>TRUE</code>.</p></dd>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mouseBrainSubsetSCE</span> <span class="op">&lt;-</span> <span class="fu">runSeuratSCTransform</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating cell attributes from input UMI matrix: log_umi</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Running SCTransform on assay: RNA</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Running SCTransform on layer: counts</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> vst.flavor='v2' set. Using model with fixed slope and excluding poisson genes.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> `vst.flavor` is set to 'v2' but could not find glmGamPoi installed.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Please install the glmGamPoi package for much faster estimation.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> install.packages('BiocManager')</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> BiocManager::install('glmGamPoi')</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Falling back to native (slower) implementation.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Variance stabilizing transformation of count matrix of size 2282 by 30</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Model formula is y ~ log_umi</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Get Negative Binomial regression parameters per gene</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using 2000 genes, 30 cells</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                                              |                                                                      |   0%  |                                                                              |==================                                                    |  25%  |                                                                              |===================================                                   |  50%  |                                                                              |====================================================                  |  75%  |                                                                              |======================================================================| 100%</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Found 96 outliers - those will be ignored in fitting/regularization step</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Second step: Get residuals using fitted parameters for 2282 genes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                                              |                                                                      |   0%  |                                                                              |==============                                                        |  20%  |                                                                              |============================                                          |  40%  |                                                                              |==========================================                            |  60%  |                                                                              |========================================================              |  80%  |                                                                              |======================================================================| 100%</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing corrected count matrix for 2282 genes</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating gene attributes</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Wall clock passed: Time difference of 1.617938 secs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wall clock passed: Time difference of 21.10225 secs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Determine variable features</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Centering data matrix</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Set default assay to SCTransform</span>
@@ -271,11 +289,11 @@ be displayed. Default is <code>TRUE</code>.</p></dd>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Ming Liu, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

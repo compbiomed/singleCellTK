@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.14.0</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul>
 </li>
@@ -200,6 +203,14 @@
         </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Web Application</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="articles/webApp.html">FAQs</a>
+        </li>
+      </ul>
+</li>
   </ul>
 </li>
 <li>
@@ -235,52 +246,60 @@
       </header><div class="row">
   <div class="contents col-md-9">
 <div class="section level1">
-<div class="page-header"><h1 id="single-cell-tk">Single Cell TK<a class="anchor" aria-label="anchor" href="#single-cell-tk"></a>
+<div class="page-header"><h1 id="the-single-cell-tool-kit">The Single Cell Tool Kit<a class="anchor" aria-label="anchor" href="#the-single-cell-tool-kit"></a>
 </h1></div>
-
-<p>The Single Cell ToolKit (SCTK) is an analysis platform that provides an <strong>R interface to several popular single-cell RNA-sequencing (scRNAseq) data preprocessing, quality control, analysis, and visualization tools</strong>. SCTK imports raw or filtered counts from various scRNAseq preprocessing tools such as 10x CellRanger, BUStools, Optimus, STARSolo, and more. By integrating several publicly available tools written in R or Python, SCTK can be used to perform extensive quality control including doublet detection, ambient RNA removal. SCTK integrates analysis workflows from popular tools such as Seurat and Bioconductor/OSCA into a single unified framework. Results from various workflows can be summarized and easily shared using comprehensive HTML reports. Lastly, data can be exported to Seurat or AnnData object to allow for seamless integration with other downstream analysis workflows. More information about the toolkit can be found at the toolkit <a href="https://camplab.net/sctk/" class="external-link">Homepage</a>.</p>
+<p><a href="https://github.com/compbiomed/singleCellTK/actions/workflows/BioC-check.yaml" class="external-link"><img src="https://github.com/compbiomed/singleCellTK/actions/workflows/BioC-check.yaml/badge.svg?branch=master" alt="BioC-check"></a> <a href="https://github.com/compbiomed/singleCellTK/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/compbiomed/singleCellTK/actions/workflows/R-CMD-check.yaml/badge.svg?branch=master" alt="R-CMD-check"></a> <a href="https://codecov.io/gh/compbiomed/singleCellTK" class="external-link"><img src="https://codecov.io/gh/compbiomed/singleCellTK/branch/devel/graph/badge.svg" alt="codecov"></a></p>
+<p>The Single Cell Toolkit (SCTK) in the <em>singleCellTK</em> R package is an analysis platform that provides an <strong>R interface to several popular single-cell RNA-sequencing (scRNAseq) data preprocessing, quality control, analysis, and visualization tools</strong>. SCTK imports raw or filtered counts from various scRNAseq preprocessing tools such as 10x CellRanger, BUStools, Optimus, STARSolo, and more. By integrating several publicly available tools written in R or Python, SCTK can be used to perform extensive quality control including doublet detection, ambient RNA removal. SCTK integrates analysis workflows from popular tools such as Seurat and Bioconductor/OSCA into a single unified framework. Results from various workflows can be summarized and easily shared using comprehensive HTML reports. Lastly, data can be exported to Seurat or AnnData object to allow for seamless integration with other downstream analysis workflows.</p>
+<p><img src="https://camplab.net/sctk/img/interior-2.png"></p>
 <div class="section level2">
 <h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
 </h2>
-<p>SCTK offers multiple ways to analyze your scRNAseq data both through the R console, commandline (QC) and graphical user interface (GUI) with the ability to use a large number of algorithms from both R &amp; Python integrated within the toolkit.</p>
-<div class="section level4">
-<h4 id="interactive-analysis">Interactive Analysis<a class="anchor" aria-label="anchor" href="#interactive-analysis"></a>
-</h4>
-<p>The Shiny APP allows users without programming experience to easily analyze their scRNAseq data with a GUI. Try the instance at <a href="https://sctk.bu.edu/" class="external-link uri">https://sctk.bu.edu/</a></p>
+<p>SCTK offers multiple ways to analyze your scRNAseq data through the R console, the command line, and a graphical user interface (GUI) with the ability to use a large number of algorithms from both R &amp; Python integrated within the toolkit.</p>
+<ul>
+<li><p><strong>Interactive Analysis:</strong> The Shiny APP allows users without programming experience to easily analyze their scRNAseq data with a GUI. Try it out at <a href="https://sctk.bu.edu/" class="external-link uri">https://sctk.bu.edu/</a>.</p></li>
+<li><p><strong>Console Analysis:</strong> Traditional analysis of scRNAseq data can be performed in the R console using wrapper functions for a multitude of tools and algorithms.</p></li>
+<li><p><strong>Reports:</strong> Comprehensive HTML reports developed with RMarkdown allows users to document, explore, and share their analyses.</p></li>
+<li><p><strong>Interoperability:</strong> Tools from both R and Python package can be seamlessly integrated within the same analysis workflow without the need for manual conversion between different data objects and file formats.</p></li>
+<li><p><strong>Number of tools:</strong> SCTK provides access to the largest number of tools within the same platform streamlining end-to-end analysis workflows. Curated workflows include those from Seurat, Scanpy, Scater/Scran (Bioconductor), and Celda.</p></li>
+</ul>
 </div>
-<div class="section level4">
-<h4 id="console-analysis">Console Analysis<a class="anchor" aria-label="anchor" href="#console-analysis"></a>
-</h4>
-<p>Traditional analysis of scRNAseq data can be performed in the R console using wrapper functions for a multitude of tools and algorithms.</p>
-</div>
-<div class="section level4">
-<h4 id="reports">Reports<a class="anchor" aria-label="anchor" href="#reports"></a>
-</h4>
-<p>Comprehensive HTML reports developed with RMarkdown allows users to document, explore, and share their analyses.</p>
-</div>
-<div class="section level4">
-<h4 id="interoperability">Interoperability<a class="anchor" aria-label="anchor" href="#interoperability"></a>
-</h4>
-<p>Tools from both R and Python can be seamlessly integrated within the same analysis workflow.</p>
-</div>
+<div class="section level2">
+<h2 id="tutorials">Tutorials<a class="anchor" aria-label="anchor" href="#tutorials"></a>
+</h2>
+<ul>
+<li>
+<a href="https://camplab.net/sctk/current/articles/import_data.html" class="external-link">Import and QC:</a> The Import and QC workflows allow users to import data from multiple formats and perform comprehensive quality control and filtering.</li>
+<li>
+<a href="https://camplab.net/sctk/current/articles/02_a_la_carte_workflow.html" class="external-link">“<em>A la carte</em>” workflow:</a> The “A la carte” workflow lets users choose from a variety of options during each step of the analysis workflow including normalization, batch correction (optional), dimensionality reduction, 2-D embedding, and clustering.</li>
+<li>
+<a href="https://camplab.net/sctk/current/articles/seurat_curated_workflow.html" class="external-link">Seurat curated workflow:</a> This curated workflows recapitulates the steps for clustering and integration from the Seurat package (R).</li>
+<li>
+<a href="https://camplab.net/sctk/current/articles/scanpy_curated_workflow.html" class="external-link">Scanpy curated workflow:</a> This curated workflows recapitulates the steps for clustering from the Scanpy package (Python).</li>
+<li>
+<a href="https://camplab.net/sctk/current/articles/celda_curated_workflow.html" class="external-link">Celda curated workflow:</a> The curated Celda workflow performs matrix factorization by clustering genes into co-expression modules, cells into subpopulations, and estimating the amount of each module in each cell population.</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>R package <code>singleCellTK</code> is available on <a href="https://bioconductor.org/packages/release/bioc/html/singleCellTK.html" class="external-link">Bioconductor</a>.</p>
+<p>R package <code>singleCellTK</code> is available on <a href="https://bioconductor.org/packages/release/bioc/html/singleCellTK.html" class="external-link">Bioconductor</a> and can be installed with the following commands:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://bioconductor.github.io/BiocManager/" class="external-link">"BiocManager"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"singleCellTK"</span><span class="op">)</span></span></code></pre></div>
-<p>Detailed instruction on how to install SCTK and additional dependencies are available at our <a href="https://camplab.net/sctk/" class="external-link">Homepage</a>.</p>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"singleCellTK"</span><span class="op">)</span></span></code></pre></div>
+<p>Additional information on how to install from GitHub, install Python dependencies, and for troubleshooting is available on the <a href="https://camplab.net/sctk/current/articles/installation.html" class="external-link">Installation</a> page.</p>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
-<p>If you use SCTK, please cite our <em>Nature Communication</em> paper</p>
+<p>If you use SCTK for quality control, please cite our <em>Nature Communication</em> paper:</p>
 <blockquote>
 <p>Rui Hong, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Yichen Wang, Vidya Akavoor, Xinyun Cao, Irzam Sarfraz, Zhe Wang, Salam Alabdullatif, Frederick Jansen, Masanao Yajima, W. Evan Johnson &amp; Joshua D. Campbell, “Comprehensive generation, visualization, and reporting of quality control metrics for single-cell RNA sequencing data,” <em>Nature Communications</em>, vol. 13, no. 1688, 2022, doi: 10.1038/s41467-022-29212-9.</p>
+</blockquote>
+<p>If you use SCTK for analysis in the Rconsole or the interactive graphical user interface, please cite our <em>Patterns</em> paper:</p>
+<blockquote>
+<p>Yichen Wang, Irzam Sarfraz, Nida Pervaiz, Rui Hong, Yusuke Koga, Vidya Akavoor, Xinyun Cao, Salam Alabdullatif, Syed Ali Zaib, Zhe Wang, Frederick Jansen, Masanao Yajima, W Evan Johnson, Joshua D Campbell, “Interactive analysis of single-cell data using flexible workflows with SCTK2”, <em>Patterns (N Y)</em>, Aug 3;4(8):100814, 2023, doi: 10.1016/j.patter.2023.100814.</p>
 </blockquote>
 </div>
 <div class="section level2">
@@ -321,11 +340,12 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Yichen Wang <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-4347-5199" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Yichen Wang <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-4347-5199" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Irzam Sarfraz <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-8121-792X" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Rui Hong <br><small class="roles"> Author </small>  </li>
 <li>Yusuke Koga <br><small class="roles"> Author </small>  </li>
 <li>Salam Alabdullatif <br><small class="roles"> Author </small>  </li>
+<li>Nida Pervaiz <br><small class="roles"> Author </small>  </li>
 <li>David Jenkins <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-7451-4288" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Vidya Akavoor <br><small class="roles"> Author </small>  </li>
 <li>Xinyun Cao <br><small class="roles"> Author </small>  </li>
@@ -335,18 +355,12 @@
 <li>Mohammed Muzamil Khan <br><small class="roles"> Author </small>  </li>
 <li>Zhe Wang <br><small class="roles"> Author </small>  </li>
 <li>W. Evan Johnson <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-6247-6595" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Joshua David Campbell <br><small class="roles"> Author </small>  </li>
+<li>Ming Liu <br><small class="roles"> Author </small>  </li>
+<li>Joshua David Campbell <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-0780-8662" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://github.com/compbiomed/singleCellTK/actions/workflows/BioC-check.yaml" class="external-link"><img src="https://github.com/compbiomed/singleCellTK/actions/workflows/BioC-check.yaml/badge.svg?branch=master" alt="BioC-check"></a></li>
-<li><a href="https://github.com/compbiomed/singleCellTK/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/compbiomed/singleCellTK/actions/workflows/R-CMD-check.yaml/badge.svg?branch=master" alt="R-CMD-check"></a></li>
-<li><a href="https://codecov.io/gh/compbiomed/singleCellTK" class="external-link"><img src="https://codecov.io/gh/compbiomed/singleCellTK/branch/devel/graph/badge.svg" alt="codecov"></a></li>
-</ul>
-</div>
+
 
   </div>
 </div>
@@ -354,12 +368,12 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+<p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Ming Liu, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

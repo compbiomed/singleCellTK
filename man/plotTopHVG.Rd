@@ -6,10 +6,10 @@
 \usage{
 plotTopHVG(
   inSCE,
-  method = c("vst", "mean.var.plot", "dispersion", "modelGeneVar"),
-  hvgNumber = NULL,
+  method = "modelGeneVar",
+  hvgNumber = 2000,
   useFeatureSubset = NULL,
-  labelsCount = 20,
+  labelsCount = 10,
   featureDisplay = metadata(inSCE)$featureDisplay,
   labelSize = 2,
   dotSize = 2,
@@ -24,14 +24,14 @@ computations.}
 \code{"dispersion"} or \code{"modelGeneVar"}.}
 
 \item{hvgNumber}{Specify the number of top genes to highlight in red. Default
-\code{NULL}. See details.}
+\code{2000}. See details.}
 
 \item{useFeatureSubset}{A character string for the \code{rowData} variable
 name to store a logical index of selected features. Default \code{NULL}. See
 details.}
 
 \item{labelsCount}{Specify the number of data points/genes to label. Should
-be less than \code{hvgNumber}. Default \code{20}. See details.}
+be less than \code{hvgNumber}. Default \code{10}. See details.}
 
 \item{featureDisplay}{A character string for the \code{rowData} variable name
 to indicate what type of feature ID should be displayed. If set by

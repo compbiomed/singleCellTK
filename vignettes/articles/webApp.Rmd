@@ -1,0 +1,41 @@
+---
+title: "SCTK Web Application"
+author: "Irzam Sarfraz"
+output:
+  html_document:
+    toc: true
+    toc_depth: 5
+bibliography: references.bib
+csl: ieee.csl
+---
+
+```{r develSetting, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+## Quick Links:
+- [Go to SCTK web-app](https://sctk.bu.edu/) 
+- [How to import and upload data?](import_data.html)
+- [How to export and save data?](export_data.html)
+
+## Common FAQs for the SCTK app:
+
+**1. What is the maximum data size you can upload to the web-application?**
+
+The maximum data upload size is 1GB. 
+
+**2. Can you login and store your data?**
+
+Currently users are not able to create a unique login and store their data on the SCTK server.
+
+**3. How to save your progress?**
+
+Go to the “Data” tab, click on “Export Single Cell Data” and download the RDS object. The RDS file will contain a SingleCellExperiment object with your single cell data and results.
+
+**4. How to continue analysis starting from  previously saved data?**
+
+Go to the “Data” tab, click on “Import Single Cell Data”, select the “Upload SingleCellExperiment or Seurat object stored in an RDS File” option, and click “Add to sample list” to upload the previously saved RDS object containing the SingleCellExperiment.
+
+**5. How to generate HTML reports for reproducible analysis?**
+
+Tables and figures can be exported when generated in the user-interface but at this time, reports cannot be generated through the interface and we are working towards adding the ability to generate reports through it. 

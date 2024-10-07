@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.14.0</span>
       </span>
     </div>
 
@@ -49,6 +49,9 @@
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul></li>
 <li>
@@ -162,6 +165,12 @@
           <a href="../articles/heatmap.html">Generic Heatmap</a>
         </li>
       </ul></li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Web Application</a>
+      <ul class="dropdown-menu" role="menu"><li>
+          <a href="../articles/webApp.html">FAQs</a>
+        </li>
+      </ul></li>
   </ul></li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -269,7 +278,7 @@ pointed by this parameter. Default to NULL.</p></dd>
 <dt>z</dt>
 <dd><p>Numeric or character vector. Cell cluster labels. If NULL,
 PCA will be used to reduce the dimensionality of the dataset initially,
-'<a href="https://rdrr.io/pkg/uwot/man/umap.html" class="external-link">umap</a>' from the 'uwot' package
+'<a href="https://jlmelville.github.io/uwot/reference/umap.html" class="external-link">umap</a>' from the 'uwot' package
 will be used to further reduce the dataset to 2 dimenions and
 the '<a href="https://rdrr.io/pkg/dbscan/man/dbscan.html" class="external-link">dbscan</a>' function from the 'dbscan' package
 will be used to identify clusters of broad cell types. Default NULL.</p></dd>
@@ -357,35 +366,30 @@ decontaminated counts will be added as an assay called 'decontXCounts'.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runDecontX</span><span class="op">(</span><span class="va">sce</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>,<span class="fl">20</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:31 2022 ... Running 'DecontX'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:51 2024 ... Running 'DecontX'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting DecontX</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:31 2022 .. Analyzing all cells</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:31 2022 .... Generating UMAP and estimating cell types</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by ‘spam’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by ‘spam’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by ‘spam’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 .... Estimating contamination</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 10 | converge: 0.01749</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 20 | converge: 0.007662</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 30 | converge: 0.004958</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 40 | converge: 0.003703</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 50 | converge: 0.00228</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 60 | converge: 0.001732</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 70 | converge: 0.00162</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 80 | converge: 0.001494</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 90 | converge: 0.001375</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 100 | converge: 0.001265</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 110 | converge: 0.001168</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 120 | converge: 0.001077</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 130 | converge: 0.000996</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 .. Calculating final decontaminated matrix</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:51 2024 .. Analyzing all cells</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:51 2024 .... Generating UMAP and estimating cell types</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 .... Estimating contamination</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 ...... Completed iteration: 10 | converge: 0.01985</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 ...... Completed iteration: 20 | converge: 0.01116</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 ...... Completed iteration: 30 | converge: 0.006593</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 ...... Completed iteration: 40 | converge: 0.003919</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 ...... Completed iteration: 50 | converge: 0.002691</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 ...... Completed iteration: 60 | converge: 0.002093</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 ...... Completed iteration: 70 | converge: 0.001932</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 ...... Completed iteration: 80 | converge: 0.001769</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 ...... Completed iteration: 90 | converge: 0.001605</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 ...... Completed iteration: 100 | converge: 0.00145</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 ...... Completed iteration: 110 | converge: 0.001304</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 ...... Completed iteration: 120 | converge: 0.001168</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 ...... Completed iteration: 130 | converge: 0.001041</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 ...... Completed iteration: 134 | converge: 0.0009927</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:17:55 2024 .. Calculating final decontaminated matrix</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 2.447904 secs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 3.801916 secs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 </code></pre></div>
     </div>
@@ -397,11 +401,11 @@ decontaminated counts will be added as an assay called 'decontXCounts'.</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Ming Liu, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

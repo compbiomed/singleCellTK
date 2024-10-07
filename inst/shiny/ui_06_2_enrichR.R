@@ -4,8 +4,13 @@ shinyPanelEnrichR <- fluidPage(
     h1("Gene Set Enrichment Analysis using enrichR"),
     h5(tags$a(href = paste0(docs.artPath, "cnsl_enrichR.html"),
               "(help)", target = "_blank")),
+    div(
+      id = 'enrichrError', class = 'simpleDiv',
+      'The Enrichr web portal was not available. Enrichr analysis currently disabled.'
+    ),
     sidebarLayout(
       sidebarPanel(
+        id="sidebarEnrichr",
         h4("Choose data source:"),
         radioButtons(
           "geneListChoice", label = NULL, c("Import DEG" = "deg",

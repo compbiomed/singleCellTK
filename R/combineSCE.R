@@ -70,30 +70,36 @@
 }
 
 
-.mergeRowDataSCE <- function(sceList, by.r) {
-  feList <- lapply(sceList, function(x){
-    rw <- SummarizedExperiment::rowData(x)
-    rw[['rownames']] <- rownames(rw)
-    return(rw)
-  })
-  
-  ## Get merged rowData
-  by.r <- unique(c('rownames', by.r))
-  unionFe <- Reduce(function(r1, r2) merge(r1, r2, by=by.r, all=TRUE), feList)
-  allGenes <- unique(unlist(lapply(feList, rownames)))
-  
-  ## rowData
-  newFe <- unionFe
-  if (nrow(newFe) != length(allGenes)) {
-    warning("Conflicts were found when merging two rowData. ",
-            "Resolved the conflicts by choosing the first entries.",
-            "To avoid conflicts, please provide the 'by.r' arguments to ",
-            "specify columns in rowData that does not have conflict between two singleCellExperiment object. ")
-    newFe <- newFe[!duplicated(newFe$rownames), ]
-  }
-  rownames(newFe) <- newFe[['rownames']]
-  newFe <- newFe[allGenes,]
-  return(newFe)
+.mergeRowDataSCE <- function(sce.list, by.r) {
+    feList <- lapply(sce.list, function(x){
+        rw <- SummarizedExperiment::rowData(x)
+        rw[['rownames']] <- rownames(rw)
+        return(rw)
+    })
+    
+    ## Get merged rowData
+    if (is.null(by.r)) {
+        by.r <- unique(c('rownames', by.r))
+        unionFe <- Reduce(function(r1, r2) merge(r1, r2, by=unique(c(by.r, intersect(names(r1), names(r2)))), all=TRUE), feList)
+    }
+    else {
+      by.r <- unique(c('rownames', by.r))
+      unionFe <- Reduce(function(r1, r2) merge(r1, r2, by=by.r, all=TRUE), feList)
+    }
+    allGenes <- unique(unlist(lapply(feList, rownames)))
+    
+    ## rowData
+    newFe <- unionFe
+    if (nrow(newFe) != length(allGenes)) {
+        warning("Conflicts were found when merging two rowData. ",
+                "Resolved the conflicts by choosing the first entries.",
+                "To avoid conflicts, please provide the 'by.r' arguments to ",
+                "specify columns in rowData that does not have conflict between two singleCellExperiment object. ")
+        newFe <- newFe[!duplicated(newFe$rownames), ]
+    }
+    rownames(newFe) <- newFe[['rownames']]
+    newFe <- newFe[allGenes,]
+    return(newFe)
 }
 
 .mergeColDataSCE <- function(sceList, by.c) {
@@ -103,8 +109,15 @@
     return(cD)
   })
   
-  by.c <- unique(c("rownames", by.c))
-  unionCb <- Reduce(function(c1, c2) merge(c1, c2, by=by.c, all=TRUE), cbList)
+  # Merge columns
+  if (is.null(by.c)) {
+    by.c <- unique(c("rownames", by.c))
+    unionCb <- Reduce(function(c1, c2) merge(c1, c2, by=unique(c(by.c, intersect(names(c1), names(c2)))), all=TRUE), cbList)
+  }
+  else {
+    by.c <- unique(c("rownames", by.c))
+    unionCb <- Reduce(function(c1, c2) merge(c1, c2, by=by.c, all=TRUE), cbList)
+  }
   rownames(unionCb) <- unionCb[['rownames']]
   newCbList <- list()
   for (i in seq_along(sceList)) {
@@ -264,6 +277,9 @@
 combineSCE <- function(sceList, by.r = NULL, by.c = NULL, combined = TRUE){
   if (length(sceList) == 1) {
     return(sceList[[1]])
+  }
+  if (typeof(sceList) != "list") {
+    stop("Error in combineSCE: input must be a list of SCE objects")
   }
   ##  rowData
   newFeList <- .mergeRowDataSCE(sceList, by.r)

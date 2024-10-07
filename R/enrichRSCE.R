@@ -85,7 +85,7 @@ runEnrichR <- function(inSCE,
   internetConnection <- suppressWarnings(Biobase::testBioCConnection())
   #check for internet connection
   if (!internetConnection){
-    stop("Please connect to the Internet and continue..")
+    stop("The Enrichr database could not be queried. No internet connection available.")
   }
   err <- tryCatch(
     {
@@ -95,14 +95,20 @@ runEnrichR <- function(inSCE,
   )
   #options(enrichR.base.address = "https://maayanlab.cloud/Enrichr/")
   #options(enrichR.live = TRUE)
-  temp_db <- enrichR::listEnrichrDbs()
+  temp_db <- NULL
+  err <- tryCatch(
+    {
+      temp_db <- .getEnrichrDB(noConnect = "error")
+    },
+    error = function(e) {}
+  )
   enrdb <- temp_db$libraryName
   #test for db existing
   if (is.null(db)){
     db <- enrdb
   } else if (!all(db %in% enrdb)){
     db.notFound <- db[!db %in% enrdb]
-    stop("database ", paste(db.notFound, collapse = ", "), " do not exist.")
+    stop("Database(s) ", paste(db.notFound, collapse = ", "), " were not found in Enrichr.")
   }
   
   enriched <- enrichR::enrichr(features, db)
@@ -110,23 +116,21 @@ runEnrichR <- function(inSCE,
                                                fill = TRUE,
                                                idcol = "Database_selected"))
   
-  enriched$link <- vapply(enriched$Database_selected, function(x){
-    temp_db$link[temp_db$libraryName %in% x]
-  }, FUN.VALUE = character(1))
+  if(!is.null(enriched) && nrow(enriched) > 0) {
+
+    #sort the results based on p-values
+    enriched <- enriched[order(enriched$P.value, decreasing = FALSE), ]
+    
+    getEnrichRResult(inSCE, analysisName) <- list(result = enriched,
+                                                  param = list(
+                                                    features = features,
+                                                    by = by,
+                                                    db = db
+                                                  )) 
+  } else {
+    stop("No enrichments identified. No enrichment results were created.")
+  }
   
-  #sort the results based on p-values
-  enriched <- enriched[order(enriched$P.value, decreasing = FALSE), ]
-  
-  #round the numeric values to their 7th digit
-  #nums <- vapply(enriched, is.numeric, FUN.VALUE = logical(1))
-  #enriched[, nums] <- round(enriched[, nums], digits = 7)
-  
-  getEnrichRResult(inSCE, analysisName) <- list(result = enriched,
-                                                param = list(
-                                                  features = features,
-                                                  by = by,
-                                                  db = db
-                                                )) 
   return(inSCE)
 }
 
@@ -181,3 +185,17 @@ setReplaceMethod("getEnrichRResult",
                    S4Vectors::metadata(inSCE)$sctk$runEnrichR[[analysisName]] <- value
                    return(inSCE)
                  })
+
+.getEnrichrDB <- function(noConnect = c("warn", "error", "ignore")) {
+  db <- NULL
+  noConnect <- match.arg(noConnect)
+  db <- enrichR::listEnrichrDbs()
+  if(is.null(db)) {
+    if(noConnect == "error") {
+      stop("Connection to the online Enrichr database could not be established. No database information retrieved.")
+    } else if (noConnect == "warn") {
+      warning("Connection to the online Enrichr database could not be established. No database information retrieved.")
+    }
+  }
+  return(db)
+}

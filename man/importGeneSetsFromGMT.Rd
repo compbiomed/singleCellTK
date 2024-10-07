@@ -9,7 +9,8 @@ importGeneSetsFromGMT(
   file,
   collectionName = "GeneSetCollection",
   by = "rownames",
-  sep = "\\t"
+  sep = "\\t",
+  noMatchError = TRUE
 )
 }
 \arguments{
@@ -38,6 +39,9 @@ of the GMT file. See \link{featureIndex} for more information.
 Default \code{"rownames"}.}
 
 \item{sep}{Character. Delimiter of the GMT file. Default \code{"\t"}.}
+
+\item{noMatchError}{Boolean. Show an error if a collection does not have
+any matching features. Default \code{TRUE}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object

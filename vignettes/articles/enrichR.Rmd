@@ -139,6 +139,11 @@ After running the analysis, the result table will be automatically shown on the 
 **1. Select genes and databases**
 
 ```{r "enrichR_1", eval = FALSE}
+websiteLive <- getOption("enrichR.live")
+if (isTRUE(websiteLive)) {
+  enrichR::listEnrichrSites()
+  enrichR::setEnrichrSite("Enrichr") # Human genes   
+}
 genes <- c("HES1", "PON2", "FBXO44", "DEK", "SOX4", "FBXL16")
 databases <- enrichR::listEnrichrDbs()$libraryName
 ```
@@ -176,15 +181,22 @@ getEnrichRResult(sce, analysisName = "tutorial_analysis")$result
 ````  
   
 ```{r "enrichR_example_1", results='hide', fig.keep='all', message = FALSE, warning = FALSE}
+# Fetch databases
+library(enrichR)
+websiteLive <- getOption("enrichR.live")
+if (isTRUE(websiteLive)) {
+  listEnrichrSites()
+  setEnrichrSite("Enrichr") # Human genes   
+}
+# Make enrichR do its job, and connect to the database
+databases <- listEnrichrDbs()
 # Load singleCellTK & pbmc3k example data
 library(singleCellTK)
 sce <- importExampleData(dataset = "pbmc3k")
 # Select genes
 genes <- c("HES1", "PON2", "FBXO44", "DEK", "SOX4", "FBXL16")
-# Fetch databases
-databases <- enrichR::listEnrichrDbs()$libraryName
 # Run enrichR
-sce <- runEnrichR(inSCE = sce, features = genes, db = databases, 
+sce <- runEnrichR(inSCE = sce, features = genes, db = databases$libraryName, 
                   analysisName = "tutorial_test")
 ```
 

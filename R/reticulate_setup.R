@@ -59,7 +59,7 @@ ad <- NULL
 sctkPythonInstallConda <- function(envname = "sctk-reticulate",
                                    conda = "auto",
                                    packages = c("scipy", "numpy", "astroid", "six"),
-                                   pipPackages = c("scrublet", "scanpy", "bbknn", "scanorama", "anndata"),
+                                   pipPackages = c("scrublet", "scanpy", "louvain", "leidenalg", "bbknn", "scanorama", "anndata"),
                                    selectConda = TRUE,
                                    forge = FALSE,
                                    pipIgnoreInstalled = TRUE,
@@ -106,7 +106,7 @@ sctkPythonInstallConda <- function(envname = "sctk-reticulate",
 #' going through the whole installation process again.
 #' @export
 sctkPythonInstallVirtualEnv <- function(envname = "sctk-reticulate",
-                                        packages = c("scipy", "numpy", "astroid", "six", "scrublet", "scanpy", "scanorama", "bbknn", "anndata"),
+                                        packages = c("scipy", "numpy", "astroid", "six", "scrublet", "scanpy", "louvain", "leidenalg", "scanorama", "bbknn", "anndata"),
                                         selectEnvironment = TRUE,
                                         python = NULL) {
 
@@ -144,11 +144,13 @@ selectSCTKConda <- function(envname = "sctk-reticulate") {
   ix <- condaList$name == envname
 
   if(!any(ix)) {
-    stop(paste0("Environment '", envname, "', not found. Run sctkPythonInstallConda(envname = '", envname, "') to install Python packages into a conda environmanet with this name."))
+    p <- paste0("Environment '", envname, "', not found. Run sctkPythonInstallConda(envname = '", envname, "') to install Python packages into a conda environmanet with this name.")
+    stop(p)
   }
   if(sum(ix) > 1) {
     envs <- paste(condaList[ix,"python"], collapse="\n")
-    warning(paste0("More than one Conda environment detected with the name '", envname, "'. Selecting the first one in the list:\n", envs))
+    p <- paste0("More than one Conda environment detected with the name '", envname, "'. Selecting the first one in the list:\n", envs)
+    warning(p)
   }
 
   reticulate::use_condaenv(condaenv = envname, required = TRUE)
@@ -175,10 +177,12 @@ selectSCTKVirtualEnvironment <- function(envname = "sctk-reticulate") {
   ix <- res == envname
 
   if(!any(ix)) {
-    stop(paste0("Environmnet '", envname, "', not found. Run selectSCTKVirtualEnvironment(envname = '", envname, "') to install Python packages into a virtual environmanet with this name."))
+    p <- paste0("Environmnet '", envname, "', not found. Run selectSCTKVirtualEnvironment(envname = '", envname, "') to install Python packages into a virtual environmanet with this name.")
+    stop(p)
   }
   if(sum(ix) > 1) {
-    warning(paste0("More than one virtual environment detected with the name '", envname, "'. Selecting the first one in the list."))
+    p <- paste0("More than one virtual environment detected with the name '", envname, "'. Selecting the first one in the list.")
+    warning(p)
   }
 
   reticulate::use_virtualenv(res[which(ix)[1]], required = TRUE)

@@ -19,7 +19,7 @@ downstream quality control and analysis functions in singleCellTK."><!-- mathjax
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.14.0</span>
       </span>
     </div>
 
@@ -50,6 +50,9 @@ downstream quality control and analysis functions in singleCellTK."><!-- mathjax
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/scanpy_curated_workflow.html">Scanpy Curated Workflow - PBMC3K</a>
     </li>
   </ul></li>
 <li>
@@ -163,6 +166,12 @@ downstream quality control and analysis functions in singleCellTK."><!-- mathjax
           <a href="../articles/heatmap.html">Generic Heatmap</a>
         </li>
       </ul></li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Web Application</a>
+      <ul class="dropdown-menu" role="menu"><li>
+          <a href="../articles/webApp.html">FAQs</a>
+        </li>
+      </ul></li>
   </ul></li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -205,11 +214,12 @@ downstream quality control and analysis functions in <a href="singleCellTK.html"
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">importGeneSetsFromMSigDB</span><span class="op">(</span></span>
 <span>  <span class="va">inSCE</span>,</span>
-<span>  <span class="va">categoryIDs</span>,</span>
+<span>  categoryIDs <span class="op">=</span> <span class="st">"H"</span>,</span>
 <span>  species <span class="op">=</span> <span class="st">"Homo sapiens"</span>,</span>
 <span>  mapping <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gene_symbol"</span>, <span class="st">"human_gene_symbol"</span>, <span class="st">"entrez_gene"</span><span class="op">)</span>,</span>
 <span>  by <span class="op">=</span> <span class="st">"rownames"</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  noMatchError <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -222,7 +232,8 @@ downstream quality control and analysis functions in <a href="singleCellTK.html"
 <dt>categoryIDs</dt>
 <dd><p>Character vector containing the MSigDB gene set ids.
 The column <code>ID</code> in the table returned by <code><a href="getMSigDBTable.html">getMSigDBTable()</a></code> shows
-the list of possible gene set IDs that can be obtained.</p></dd>
+the list of possible gene set IDs that can be obtained. 
+Default is <code>"H"</code>.</p></dd>
 
 
 <dt>species</dt>
@@ -250,6 +261,11 @@ Default <code>"rownames"</code>.</p></dd>
 
 <dt>verbose</dt>
 <dd><p>Boolean. Whether to display progress. Default <code>TRUE</code>.</p></dd>
+
+
+<dt>noMatchError</dt>
+<dd><p>Boolean. Show an error if a collection does not have
+any matching features. Default <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -289,9 +305,9 @@ GeneSetCollection objects.</p></div>
 <span class="r-in"><span>                                species <span class="op">=</span> <span class="st">"Homo sapiens"</span>,</span></span>
 <span class="r-in"><span>                                mapping <span class="op">=</span> <span class="st">"gene_symbol"</span>,</span></span>
 <span class="r-in"><span>                                by <span class="op">=</span> <span class="st">"feature_name"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:44:40 2022 .. Importing 'H' gene sets (n = 50)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:44:40 2022 .... Completed 50 gene sets for 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:44:40 2022 .. Matching gene sets to 'feature_name'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:14:56 2024 .. Importing 'H' gene sets (n = 50)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:14:56 2024 .... Completed 50 gene sets for 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fri May  3 07:14:56 2024 .. Matching gene sets to 'feature_name'</span>
 </code></pre></div>
     </div>
   </div>
@@ -302,11 +318,11 @@ GeneSetCollection objects.</p></div>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p></p><p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, Nida Pervaiz, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Ming Liu, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

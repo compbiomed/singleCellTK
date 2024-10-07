@@ -34,6 +34,7 @@ exportSCEtoAnnData <- function(sce,
                                 compressionOpts = NULL,
                                 forceDense = FALSE){
   compression <- match.arg(compression)
+  # currently not needed
   #forceDense <- match.arg(forceDense)
   if (compression == 'None'){
     compression <- NULL
@@ -53,12 +54,13 @@ exportSCEtoAnnData <- function(sce,
   fileName <- paste0(prefix,".h5ad")
   filePath <- file.path(outputDir,fileName)
   if (file.exists(filePath) && !isTRUE(overwrite)) {
-    stop(paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE."))
+    p <- paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE.")
+    stop(p)
   }
-  if (isTRUE(forceDense)) {
-    forceDense <- "True"
-  } else if (isFALSE(forceDense)) {
-    forceDense <- "False"
+  if (isFALSE(forceDense)) {
+    forceDense <- NULL
+  } else if (isTRUE(forceDense)) {
+    forceDense <- "X"
   } else {
     stop("Argument `forceDense` should be `TRUE` or `FALSE`")
   }
@@ -68,9 +70,28 @@ exportSCEtoAnnData <- function(sce,
       SummarizedExperiment::assay(sce, assay) <- .convertToMatrix(SummarizedExperiment::assay(sce, assay))
     }
   }
+  # convert to AnnData
   annData <- .sce2adata(sce, useAssay)
-  annData$write_h5ad(filePath,
-                     compression = compression,
-                     compression_opts = compressionOpts,
-                     force_dense = forceDense)
+  # use zellkonverter to output h5ad, but first we have to turn it back into SCE for it to process
+  # and zellkonverter won't take the output SCE as it stands
+  out <- zellkonverter::AnnData2SCE(annData)
+  zellkonverter::writeH5AD(out, file = filePath, compression = compression)
+
+  # commented out until a permanent fix can be found with zellkonverter
+  # in the future, sce2adata may be depreciated altogether in favor of just this function, since zellkonverter's output takes an SCE object and writes it
+  # and we can drop forceDense from the options, because sparse is default
+
+  #if (is.null(forceDense)) {
+  #  anndata::write_h5ad(annData, 
+  #                    filePath,
+  #                     compression = compression,
+  #                     compression_opts = compressionOpts)
+  # }
+  # else {
+  #   anndata::write_h5ad(annData, 
+  #                     filePath,
+  #                     compression = compression,
+  #                     compression_opts = compressionOpts,
+  #                     as.dense = forceDense)
+  # }
 }
