@@ -262,9 +262,9 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                                 store.number = NULL, statistics = "mean")
     # TODO: `aggregateAcrossCells` produce duplicated variables in colData
     # and unwanted "ncell" variable even if I set `store.number = NULL`.
-    colData(SCE) <- colData(SCE)[,c(aggregateCol),drop=FALSE] ##change
-    newColnames <- do.call(paste, c(colData(SCE), list(sep = "_")))
-    colnames(SCE) <- newColnames
+   #colData(SCE) <- colData(SCE)[,c(aggregateCol),drop=FALSE] ##change
+    temp_df<-as.data.frame(colData(SCE)[,c(aggregateCol),drop=FALSE]) %>% unite("new_colnames",1:ncol(.),sep = "_") %>% remove_rownames() %>% column_to_rownames("new_colnames")
+    colData(SCE)<-DataFrame(temp_df)
     rowData(SCE) <- origRowData
   }
   if (!is.null(aggregateRow)) {
@@ -292,7 +292,8 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
   }
   
   # Prepare
-  if(useAssay == "reducedDim"){
+  
+  if(!is.null(useReducedDim)){
     mat <- assay(SCE)
     mat <- .orderMatrix(mat)
     
