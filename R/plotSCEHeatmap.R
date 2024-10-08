@@ -263,9 +263,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     # TODO: `aggregateAcrossCells` produce duplicated variables in colData
     # and unwanted "ncell" variable even if I set `store.number = NULL`.
     colData(SCE) <- colData(SCE)[,c(aggregateCol),drop=FALSE] ##change
-    print(c(colData(SCE), list(sep = "_")))
-    newColnames <- do.call(paste, c(colData(SCE), list(sep = "_")))
-    print(newColnames)
+    newColnames <- do.call(paste, list(colData(SCE)[,c(aggregateCol),drop=FALSE], list(sep = "_")))
     colnames(SCE) <- newColnames
     rowData(SCE) <- origRowData
   }
