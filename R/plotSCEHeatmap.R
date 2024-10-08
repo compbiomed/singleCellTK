@@ -292,6 +292,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
   }
   
   # Prepare
+  
   if(useAssay == "reducedDim"){
     mat <- assay(SCE)
     mat <- .orderMatrix(mat)
