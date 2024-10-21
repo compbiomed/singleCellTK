@@ -7776,7 +7776,7 @@ shinyServer(function(input, output, session) {
     {
       req(vals$counts)
       message(paste0(date(), " ... Finding High Variable Genes"))
-      if(input$hvg_method == "vst" || packageVersion(pkg = "SeuratObject") >= 5.0){
+      if(input$hvg_method == "vst" || packageVersion(pkg = "SeuratObject") >= "5.0"){
         vals$counts <- runSeuratFindHVG(inSCE = vals$counts,
                                         useAssay = metadata(vals$counts)$sctk$seuratUseAssay,
                                         method = input$hvg_method,
@@ -7813,7 +7813,7 @@ shinyServer(function(input, output, session) {
   output$hvg_output <- renderText({
     req(vals$counts)
     if (!is.null(vals$counts@metadata$seurat$obj)) {
-      if(packageVersion(pkg = "SeuratObject") >= 5.0){
+      if(packageVersion(pkg = "SeuratObject") >= "5.0"){
         #if (length(vals$counts@metadata$seurat$obj$RNA$"var.features") > 0) {
           isolate({
             
@@ -8114,7 +8114,7 @@ shinyServer(function(input, output, session) {
     msg = "Please wait while clusters are being computed. See console log for progress.",
     {
       req(vals$counts)
-      if(packageVersion(pkg = "SeuratObject") >= 5.0){
+      if(packageVersion(pkg = "SeuratObject") >= "5.0"){
         pathToCluster = vals$counts@metadata$seurat$obj@reductions[[input$reduction_clustering_method]]
       }
       else
@@ -8138,7 +8138,7 @@ shinyServer(function(input, output, session) {
         updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
         message(paste0(date(), " ... Finding Clusters Complete"))
         
-        if(packageVersion(pkg = "SeuratObject") >= 5.0){
+        if(packageVersion(pkg = "SeuratObject") >= "5.0"){
           pathToUMAP = vals$counts@metadata$seurat$obj@reductions[["umap"]]
         }
         else
@@ -8165,7 +8165,7 @@ shinyServer(function(input, output, session) {
             condition = !is.null(pathToUMAP))
         }
         
-        if(packageVersion(pkg = "SeuratObject") >= 5.0){
+        if(packageVersion(pkg = "SeuratObject") >= "5.0"){
           pathToTSNE = vals$counts@metadata$seurat$obj@reductions[["tsne"]]
         }
         else
@@ -8193,7 +8193,7 @@ shinyServer(function(input, output, session) {
             condition = !is.null(pathToTSNE))
         }
         
-        if(packageVersion(pkg = "SeuratObject") >= 5.0){
+        if(packageVersion(pkg = "SeuratObject") >= "5.0"){
           pathToPCA = vals$counts@metadata$seurat$obj@reductions[["pca"]]
         }
         else
@@ -8220,7 +8220,7 @@ shinyServer(function(input, output, session) {
             condition = !is.null(pathToPCA))
         }
         
-        if(packageVersion(pkg = "SeuratObject") >= 5.0){
+        if(packageVersion(pkg = "SeuratObject") >= "5.0"){
           pathToICA = vals$counts@metadata$seurat$obj@reductions[["ica"]]
         }
         else
@@ -8439,7 +8439,7 @@ shinyServer(function(input, output, session) {
             x = t,
             fixed = TRUE)
         )
-        if(seurat.version >= 5.0){
+        if(seurat.version >= "5.0"){
           Idents(seuratObject, cells = unlist(cells[[i]])) <- groups[i]
           
         }
@@ -8528,7 +8528,7 @@ shinyServer(function(input, output, session) {
             x = t,
             fixed = TRUE)
         )
-        if(seurat.version >= 5.0){
+        if(seurat.version >= "5.0"){
           cells[[i]] = unlist(cells[[i]])
         }
         Idents(seuratObject, cells = cells[[i]]) <- groups[i]
@@ -8642,7 +8642,7 @@ shinyServer(function(input, output, session) {
     {
       req(vals$counts)
       
-      if(packageVersion(pkg = "SeuratObject") >= 5.0){
+      if(packageVersion(pkg = "SeuratObject") >= "5.0"){
         pathToTSNE = vals$counts@metadata$seurat$obj@reductions[[input$reduction_tsne_method]]
       }
       else
@@ -8699,7 +8699,7 @@ shinyServer(function(input, output, session) {
     msg = "Please wait while UMAP is being computed. See console log for progress.",
     {
       req(vals$counts)
-      if(packageVersion(pkg = "SeuratObject") >= 5.0){
+      if(packageVersion(pkg = "SeuratObject") >= "5.0"){
         #pathToUMAP = vals$counts@metadata$seurat$obj$"reductions"[[input$reduction_umap_method]]
         pathToUMAP = vals$counts@metadata$seurat$obj@reductions[[input$reduction_umap_method]]
       }
@@ -8838,7 +8838,7 @@ shinyServer(function(input, output, session) {
       
   #     #Proceed only if sce object has metadata slot
   #     if(!is.null(vals$counts@metadata)){
-  #       if(packageVersion(pkg = "SeuratObject") >= 5.0){
+  #       if(packageVersion(pkg = "SeuratObject") >= "5.0"){
   #         #Proceed only if sce object has seurat object stored in metadata slot
   #         if(!is.null(vals$counts@metadata$seurat$obj)){
   #           #If variableFeatures have been removed from sce object, reset HVG tab and reset/lock next tab
