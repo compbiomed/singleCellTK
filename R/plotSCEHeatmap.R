@@ -14,8 +14,8 @@
 #' @param cellIndex A vector that can subset the input SCE object by columns
 #' (cells). Alternatively, it can be a vector identifying cells in another
 #' cell list indicated by \code{featureIndexBy}. Default \code{NULL}.
-#' @param scale Whether to perform z-score scaling on each row. Default
-#' \code{TRUE}.
+#' @param scale Whether to perform z-score or min-max scaling on each row.Choose from \code{"zscore"}, \code{"min-max"} or default
+#' \code{TRUE} or \code{FALSE}
 #' @param trim A 2-element numeric vector. Values outside of this range will be
 #' trimmed to their nearst bound. Default \code{c(-2, 2)}
 #' @param featureIndexBy A single character specifying a column name of
@@ -103,8 +103,11 @@
 #' @importFrom stringr str_replace_all str_c
 #' @importFrom stats prcomp quantile
 #' @importFrom dplyr select arrange group_by count ungroup mutate one_of desc
-#' @importFrom tidyr spread
+#' @importFrom tidyr spread unite column_to_rownames remove_rownames
 #' @importFrom grid gpar
+#' @importFrom ComplexHeatmap anno_barplot
+#' @importFrom rlang .data
+#' 
 plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                            doLog = FALSE, featureIndex = NULL, cellIndex = NULL,
                            scale = TRUE, trim = c(-2,2),
@@ -238,14 +241,26 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     }
     featureIndex <- which(featureIndex)
   }
-  colnames(SCE) <- colLabelName
-  rownames(SCE) <- rowLabelName
+  if(is.null(colLabelName)){
+    colnames(SCE) <- NULL
+  }
+  else{
+    colnames(SCE) <- colLabelName
+  }
+ 
+  if(is.null(rowLabelName)){
+    rownames(SCE) <- NULL
+  }
+  else{
+    rownames(SCE) <- rowLabelName
+  }
+  
   SCE <- SCE[featureIndex, cellIndex]
   ### Scaling should be done before aggregating
   if (isTRUE(doLog)) assay(SCE) <- log1p(assay(SCE))
   if(isTRUE(scale)) scale <- "zscore"
   if ((scale == "zscore")) {
-    assay(SCE) <- as.matrix(scale(assay(SCE)))
+    assay(SCE) <- as.matrix(base::scale(assay(SCE)))
   } else if (scale ==  "min_max") {
     assay(SCE) <- as.matrix(.minmax(assay(SCE)))
   }    
@@ -263,7 +278,14 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     # TODO: `aggregateAcrossCells` produce duplicated variables in colData
     # and unwanted "ncell" variable even if I set `store.number = NULL`.
    #colData(SCE) <- colData(SCE)[,c(aggregateCol),drop=FALSE] ##change
-    temp_df<-as.data.frame(colData(SCE)[,c(aggregateCol),drop=FALSE]) %>% unite("new_colnames",1:ncol(.),sep = "_") %>% remove_rownames() %>% column_to_rownames("new_colnames")
+    
+    temp_df<-as.data.frame(colData(SCE)[,c(aggregateCol),drop=FALSE]) %>% 
+      unite("new_colnames",1:ncol(.),sep = "_",remove = FALSE) %>% 
+      remove_rownames() %>% 
+      mutate(aggregated_column = new_colnames) %>%
+      dplyr::select(new_colnames, aggregated_column) %>%
+      column_to_rownames("new_colnames")
+
     colData(SCE)<-DataFrame(temp_df)
     rowData(SCE) <- origRowData
   }
@@ -278,14 +300,14 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     colData(SCE) <- origColData
   }
   # STAGE 4: Other minor preparation for plotting ####
-
+ 
   # Create a function that sorts the matrix by PC1
   .orderMatrix<-function(mat){
     # Adding extra character to rownames because presence of some char gets a "." if I don't
     mat2<-data.frame(t(mat))
     rownames(mat2)<-stringr::str_c("K_",rownames(mat2))
     pca_mat<-stats::prcomp(mat2,center = TRUE, scale. = FALSE)
-    kl<-dplyr::arrange(data.frame(pca_mat$x)["PC1"],desc(PC1))
+    kl<-dplyr::arrange(data.frame(pca_mat$x)["PC1"],desc(data.frame(pca_mat$x)["PC1"]))
     mat<-data.frame(t(mat2)) %>% dplyr::select(rownames(kl))
     colnames(mat)<-stringr::str_replace_all(colnames(mat),"K_","")
     return(as.matrix(mat))
@@ -298,10 +320,15 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     mat <- .orderMatrix(mat)
     
   } else{
-    mat<- assay(SCE)
+    
+    if(class(assay(SCE))[1] == "dgCMatrix"){
+      mat<- as.matrix(assay(SCE))
+    }
+    else{
+     mat <- assay(SCE)
+    }
   }
    
- 
   
   if (!is.null(trim) & scale == "zscore") {
     assay(SCE) <- trimCounts(assay(SCE), trim)  
@@ -344,6 +371,8 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     if (breaks[1] != min(trim) || breaks[length(breaks)] != max(trim))
       stop('Breaks of `colorScheme` do not match with `trim`.')
   }
+  
+  
   ### Generate HeatmapAnnotation object
   ca <- NULL
   cellAnnotationColor <- .heatmapAnnColor(SCE, slot = "colData",
@@ -351,7 +380,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                                           palette = palette)
   if(dim(cellAnnotations)[2] > 0)
     if(is.null(addCellSummary)){
-      ca <- ComplexHeatmap::HeatmapAnnotation(df = colData(SCE),
+      ca <- ComplexHeatmap::HeatmapAnnotation(df = as.data.frame(colData(SCE)),
                                               col = cellAnnotationColor)
     }
   else if (!addCellSummary %in% colnames(oldColData)){
@@ -415,6 +444,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                                 show_row_names = rowLabel,
                                 row_names_gp = grid::gpar(fontsize = rowLabelSize),
                                 show_row_dend = rowDend,
+                                show_column_dend = colDend,
                                 row_dend_reorder = TRUE,
                                 cluster_columns = FALSE,
                                 show_column_names = colLabel,
