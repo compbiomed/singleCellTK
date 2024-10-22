@@ -53,9 +53,9 @@ object. Only used when "assays" slotName is selected. Default NULL.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
-\item{dimension}{Desired dimension stored in the specified reducedDims.
-Either an integer which indicates the column or a character vector specifies
-column name. By default, the 1st dimension/column will be used.
+\item{dimension}{Desired dimension(s) stored in the specified reducedDims.
+Either an integer which indicates the column(s) or a character vector specifies
+column name(s). By default, the 1st dimension/column will be used.
 Only used when "reducedDims" slotName is selected. Default NULL.}
 
 \item{groupBy}{Groupings for each numeric value. A user may input a vector

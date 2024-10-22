@@ -131,6 +131,13 @@ computeHeatmap <- function(inSCE,
     features[[i]] <- .convertToHyphen(features[[i]])
   }
 
+  ## temp fix
+  # make sure the cell names are consistent
+  # UPDATE THIS IN .convertSCEToSeurat function eventually
+  rownames(object@reductions$pca@cell.embeddings) <- 
+    unlist(.convertToHyphen(rownames(object@reductions$pca@cell.embeddings)))
+  ## 
+  
   object <- Seurat::ScaleData(object, features = features.all)
 
   # get assay data with only selected features (all dims) and

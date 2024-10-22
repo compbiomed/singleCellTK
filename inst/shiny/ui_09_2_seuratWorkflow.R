@@ -301,7 +301,6 @@ shinyPanelSeurat <- fluidPage(
                               column(12,
                                      tags$div(class = "seurat_findmarker_plots",
                                               panel(heading = "",
-                                                    HTML("<center><h5><span style='color:red; font-weight:bold; text-align:center;'>Select marker genes above to plot them below!</span></h5></br></center>"),
                                                     tabsetPanel(id = "seuratFindMarkerPlotTabset", type = "tabs"))
                                      )
                               )

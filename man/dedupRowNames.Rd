@@ -7,11 +7,11 @@
 dedupRowNames(x, as.rowData = FALSE, return.list = FALSE)
 }
 \arguments{
-\item{x}{A matrix like or /linkS4class{SingleCellExperiment} object, on which
+\item{x}{A matrix like or \linkS4class{SingleCellExperiment} object, on which
 we can apply \code{rownames()} to and has duplicated rownames.}
 
 \item{as.rowData}{Only applicable when \code{x} is a
-/linkS4class{SingleCellExperiment} object. When set to \code{TRUE}, will
+\linkS4class{SingleCellExperiment} object. When set to \code{TRUE}, will
 insert a new column called \code{"rownames.uniq"} to \code{rowData(x)}, with
 the deduplicated rownames.}
 
@@ -19,9 +19,9 @@ the deduplicated rownames.}
 of the deduplicated rownames.}
 }
 \value{
-By default, a matrix or /linkS4class{SingleCellExperiment} object
+By default, a matrix or \linkS4class{SingleCellExperiment} object
 with rownames deduplicated.
-When \code{x} is a /linkS4class{SingleCellExperiment} and \code{as.rowData}
+When \code{x} is a \linkS4class{SingleCellExperiment} and \code{as.rowData}
 is set to \code{TRUE}, will return \code{x} with \code{rowData} updated.
 When \code{return.list} is set to \code{TRUE}, will return a character vector
 with the deduplicated rownames.

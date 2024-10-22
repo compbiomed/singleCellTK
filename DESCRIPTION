@@ -118,8 +118,9 @@ Imports:
     scuttle,
     utils,
     stats,
-    zellkonverter
-RoxygenNote: 7.3.1
+    zellkonverter,
+    tidyr
+RoxygenNote: 7.3.2
 Suggests:
     testthat,
     Rsubread,
