@@ -25,6 +25,11 @@
 #' @param cellIndexBy A single character specifying a column name of
 #' \code{colData(inSCE)}, or a vector of the same length as \code{ncol(inSCE)},
 #' where we search for the non-rowname cell indices. Default \code{"rownames"}.
+#' @param cluster_columns A logical scalar that turns on/off 
+#' clustering of columns. Default \code{FALSE}. Clustering columns should be turned off when using reduced dim 
+#' for plotting as it will be sorted by PCs
+#' @param cluster_rows A logical scalar that turns on/off clustering of rows. 
+#' Default \code{FALSE}.
 #' @param rowDataName character. The column name(s) in \code{rowData} that need
 #' to be added to the annotation. Not applicable for
 #' \code{plotSCEDimReduceHeatmap}. Default \code{NULL}.
@@ -103,7 +108,8 @@
 #' @importFrom stringr str_replace_all str_c
 #' @importFrom stats prcomp quantile
 #' @importFrom dplyr select arrange group_by count ungroup mutate one_of desc
-#' @importFrom tidyr spread unite column_to_rownames remove_rownames
+#' @importFrom tidyr spread unite 
+#' @importFrom tibble column_to_rownames remove_rownames
 #' @importFrom grid gpar
 #' @importFrom ComplexHeatmap anno_barplot
 #' @importFrom rlang .data
@@ -113,6 +119,8 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                            scale = TRUE, trim = c(-2,2),
                            featureIndexBy = 'rownames',
                            cellIndexBy = 'rownames',
+                           cluster_columns = FALSE,
+                           cluster_rows = FALSE,
                            rowDataName = NULL, colDataName = NULL,
                            aggregateRow = NULL, aggregateCol = NULL,
                            featureAnnotations = NULL, cellAnnotations = NULL,
@@ -282,8 +290,8 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     temp_df<-as.data.frame(colData(SCE)[,c(aggregateCol),drop=FALSE]) %>% 
       unite("new_colnames",1:ncol(.),sep = "_",remove = FALSE) %>% 
       remove_rownames() %>% 
-      mutate(aggregated_column = new_colnames) %>%
-      dplyr::select(new_colnames, aggregated_column) %>%
+    #  mutate(aggregated_column = new_colnames) %>%
+    #  dplyr::select(new_colnames, aggregated_column) %>%
       column_to_rownames("new_colnames")
 
     colData(SCE)<-DataFrame(temp_df)
@@ -446,7 +454,8 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                                 show_row_dend = rowDend,
                                 show_column_dend = colDend,
                                 row_dend_reorder = TRUE,
-                                cluster_columns = FALSE,
+                                cluster_columns = cluster_columns,
+                                cluster_rows = cluster_rows,
                                 show_column_names = colLabel,
                                 column_names_gp = grid::gpar(fontsize = colLabelSize),
                                 row_gap = rowGap, column_gap = colGap,
