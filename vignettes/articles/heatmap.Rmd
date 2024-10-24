@@ -322,7 +322,16 @@ rownames(new_row_data)<-new_row_data$feature_name
 
 rowData(sce2)<-new_row_data
 
-plotSCEHeatmap(inSCE = sce2, useAssay = "logcounts", featureIndex = topMarkers$Gene, colDataName = c("type"), aggregateCol = "scranSNN_PCA", rowGap = grid::unit(2, 'mm'),rowLabel = TRUE, rowDataName = "cluster_markers", rowSplitBy = "cluster_markers" )
+plotSCEHeatmap(inSCE = sce2, useAssay = "logcounts", featureIndex = topMarkers$Gene, colDataName = c("type"), aggregateCol = "scranSNN_PCA", rowGap = grid::unit(2, 'mm'),rowLabel = TRUE, rowDataName = "cluster_markers", rowSplitBy = "cluster_markers")
+
+# Adding a summary 
+
+data.frame(colData(sce2)) %>% 
+  mutate(summary_col = sample(5,n(), replace = TRUE)) -> new_col_data
+
+colData(sce2)<-DataFrame(new_col_data)
+
+plotSCEHeatmap(inSCE = sce2, useAssay = "logcounts", featureIndex = topMarkers$Gene, colDataName = c("type"), aggregateCol = "scranSNN_PCA", rowGap = grid::unit(2, 'mm'),rowLabel = TRUE, rowDataName = "cluster_markers", rowSplitBy = "cluster_markers", addCellSummary = "summary_col" )
 ```
 
 **2. Cell/Feature Labeling** Text labels of features or cells can be added via `rowLabel` or `colLabel`. Use `TRUE` or `FALSE` to specify whether to show the `rownames` or `colnames` of the subsetted SCE object. Additionally, giving a single string of a column name of `rowData` or `colData` can enable the labeling of the annotation. Furthermore, users can directly throw a character vector to the parameter, with the same length of either the full SCE object or the subsetted.  
