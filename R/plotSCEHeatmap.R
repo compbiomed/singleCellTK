@@ -113,6 +113,8 @@
 #' @importFrom grid gpar
 #' @importFrom ComplexHeatmap anno_barplot
 #' @importFrom rlang .data
+#' @importFrom S4Vectors DataFrame
+#' 
 #' 
 plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                            doLog = FALSE, featureIndex = NULL, cellIndex = NULL,
@@ -380,6 +382,9 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
       stop('Breaks of `colorScheme` do not match with `trim`.')
   }
   
+  # Avoid documentation error by setting these values to NULL
+  # removed NOTE about namespaces.
+  n<-value<-NULL
   
   ### Generate HeatmapAnnotation object
   ca <- NULL
