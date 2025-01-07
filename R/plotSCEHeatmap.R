@@ -113,6 +113,8 @@
 #' @importFrom grid gpar
 #' @importFrom ComplexHeatmap anno_barplot
 #' @importFrom rlang .data
+#' @importFrom S4Vectors DataFrame
+#' 
 #' 
 plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                            doLog = FALSE, featureIndex = NULL, cellIndex = NULL,
@@ -288,7 +290,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
    #colData(SCE) <- colData(SCE)[,c(aggregateCol),drop=FALSE] ##change
     
     temp_df<-as.data.frame(colData(SCE)[,c(aggregateCol),drop=FALSE]) %>% 
-      unite("new_colnames",1:ncol(.),sep = "_",remove = FALSE) %>% 
+      unite("new_colnames",1:ncol(.data),sep = "_",remove = FALSE) %>% 
       remove_rownames() %>% 
     #  mutate(aggregated_column = new_colnames) %>%
     #  dplyr::select(new_colnames, aggregated_column) %>%
@@ -380,6 +382,9 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
       stop('Breaks of `colorScheme` do not match with `trim`.')
   }
   
+  # Avoid documentation error by setting these values to NULL
+  # removed NOTE about namespaces.
+  n<-value<-NULL
   
   ### Generate HeatmapAnnotation object
   ca <- NULL
