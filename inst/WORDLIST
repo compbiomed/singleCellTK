@@ -147,6 +147,7 @@ SCANORAMA
 SCDS
 SCE
 SCEsetObject
+SCT
 SCTK
 SCTK's
 SCTransform
@@ -267,7 +268,6 @@ colorBy
 colorScheme
 combineSCE
 compbiomed
-complexed
 computating
 computeHeatmap
 conda
