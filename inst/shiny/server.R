@@ -2025,7 +2025,7 @@ shinyServer(function(input, output, session) {
       soupXParams[["cluster"]] <- NULL
     }
     # add to master params list
-    paramsList[["decontX"]] = soupXParams
+    paramsList[["soupX"]] = soupXParams
     return(paramsList)
   }
   

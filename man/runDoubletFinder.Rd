@@ -12,6 +12,7 @@ runDoubletFinder(
   seuratNfeatures = 2000,
   seuratPcs = seq(15),
   seuratRes = 1.5,
+  sct = FALSE,
   formationRate = 0.075,
   nCores = NULL,
   verbose = FALSE
@@ -38,6 +39,8 @@ determine number of clusters. Default \code{1:15}.}
 \item{seuratRes}{Numeric vector. The resolution parameter used in Seurat,
 which adjusts the number of clusters determined via the algorithm. Default 
 \code{1.5}.}
+
+\item{sct}{Whether or not to use SCT. Default \code{FALSE}.}
 
 \item{formationRate}{Doublet formation rate used within algorithm. Default 
 \code{0.075}.}

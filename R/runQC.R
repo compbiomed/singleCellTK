@@ -86,7 +86,7 @@ runCellQC <- function(inSCE,
         mitoRef = mitoRef,
         mitoIDType = mitoIDType,
         mitoPrefix = mitoPrefix,
-        mitoID = mitoID,
+        mitoID = list(mitoID),
         mitoGeneLocation = mitoGeneLocation,
         paramsList[["QCMetrics"]]))
   }
