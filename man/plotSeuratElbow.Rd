@@ -12,7 +12,7 @@ plotSeuratElbow(
   reduction = "pca",
   ndims = 20,
   externalReduction = NULL,
-  interactive = TRUE
+  interactive = FALSE
 )
 }
 \arguments{
@@ -33,7 +33,7 @@ other libraries. Default \code{NULL}.}
 
 \item{interactive}{Logical value indicating if the returned object should
 be an interactive plotly object if \code{TRUE} or a ggplot object if
-set to \code{FALSE}. Default is \code{TRUE}.}
+set to \code{FALSE}. Default is \code{FALSE}.}
 }
 \value{
 plot object

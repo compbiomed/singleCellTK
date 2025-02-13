@@ -1,7 +1,17 @@
+Changes in Version 2.16.1 (2024-02-12)
+================================================================================
+* Fixed decontX/soupX webapp error
+* Fixed error in reportCellQC 
+* Fixed additional bugs with Seurat V5 integration
+
+Changes in Version 2.16.0 (2024-10-29)
+================================================================================
+* Updated version to match Bioconductor 3.20
+
 Changes in Version 2.14.0 (2024-05-03)
 ================================================================================
 * Updated version to match Bioconductor 3.19
-* Update runGSVA fucntion to work with newer GSVA package
+* Update runGSVA function to work with newer GSVA package
 
 Changes in Version 2.12.2 (2024-01-28)
 ================================================================================
