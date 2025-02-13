@@ -1,38 +1,37 @@
-pandoc: 3.1.11.1
-pkgdown: 2.0.7
+pandoc: '3.2'
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
-  01_import_and_qc_tutorial: 01_import_and_qc_tutorial.html
-  02_a_la_carte_workflow: 02_a_la_carte_workflow.html
-  2d_embedding: 2d_embedding.html
-  batch_correction: batch_correction.html
-  celda_curated_workflow: celda_curated_workflow.html
-  cell_type_labeling: cell_type_labeling.html
-  clustering: clustering.html
-  cmd_qc: cmd_qc.html
-  cnsl_cellqc: cnsl_cellqc.html
-  cnsl_dropletqc: cnsl_dropletqc.html
-  delete_data: delete_data.html
-  differential_expression: differential_expression.html
-  dimensionality_reduction: dimensionality_reduction.html
-  enrichR: enrichR.html
-  export_data: export_data.html
-  feature_selection: feature_selection.html
-  filtering: filtering.html
-  find_marker: find_marker.html
-  heatmap: heatmap.html
-  import_annotation: import_annotation.html
-  import_data: import_data.html
-  import_genesets: import_genesets.html
-  installation: installation.html
-  normalization: normalization.html
-  pathwayAnalysis: pathwayAnalysis.html
-  scanpy_curated_workflow: scanpy_curated_workflow.html
-  seurat_curated_workflow: seurat_curated_workflow.html
-  trajectoryAnalysis: trajectoryAnalysis.html
-  ui_qc: ui_qc.html
-  visualization: visualization.html
-  webApp: webApp.html
+  articles/01_import_and_qc_tutorial: 01_import_and_qc_tutorial.html
+  articles/02_a_la_carte_workflow: 02_a_la_carte_workflow.html
+  articles/2d_embedding: 2d_embedding.html
+  articles/batch_correction: batch_correction.html
+  articles/celda_curated_workflow: celda_curated_workflow.html
+  articles/cell_type_labeling: cell_type_labeling.html
+  articles/clustering: clustering.html
+  articles/cmd_qc: cmd_qc.html
+  articles/cnsl_cellqc: cnsl_cellqc.html
+  articles/cnsl_dropletqc: cnsl_dropletqc.html
+  articles/delete_data: delete_data.html
+  articles/differential_expression: differential_expression.html
+  articles/dimensionality_reduction: dimensionality_reduction.html
+  articles/enrichR: enrichR.html
+  articles/export_data: export_data.html
+  articles/feature_selection: feature_selection.html
+  articles/filtering: filtering.html
+  articles/find_marker: find_marker.html
+  articles/heatmap: heatmap.html
+  articles/import_annotation: import_annotation.html
+  articles/import_data: import_data.html
+  articles/import_genesets: import_genesets.html
+  articles/installation: installation.html
+  articles/normalization: normalization.html
+  articles/pathwayAnalysis: pathwayAnalysis.html
+  articles/scanpy_curated_workflow: scanpy_curated_workflow.html
+  articles/seurat_curated_workflow: seurat_curated_workflow.html
   singleCellTK: singleCellTK.html
-last_built: 2024-05-03T11:13Z
-
+  articles/trajectoryAnalysis: trajectoryAnalysis.html
+  articles/ui_qc: ui_qc.html
+  articles/visualization: visualization.html
+  articles/webApp: webApp.html
+last_built: 2025-02-13T15:26Z

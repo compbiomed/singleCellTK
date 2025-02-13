@@ -6,21 +6,20 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Differential Expression • singleCellTK</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <script src="../extra.js"></script><meta property="og:title" content="Differential Expression">
-<meta property="og:description" content="singleCellTK">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -34,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.14.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.16.1</span>
       </span>
     </div>
 
@@ -43,7 +42,7 @@
 <li>
   <a href="https://www.camplab.net/sctk" class="external-link">
     <span class="fas fa-home fa-lg"></span>
-     
+
   </a>
 </li>
 <li>
@@ -52,7 +51,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -79,7 +78,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -224,13 +223,13 @@
 <li>
   <a href="https://github.com/compbiomed/singleCellTK" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
 <li>
   <a href="https://twitter.com/camplab1" class="external-link">
     <span class="fab fa-twitter fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -241,7 +240,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -648,19 +647,19 @@ feature ID type to display in the table can also be changed.</p>
 <code class="sourceCode R"><span><span class="va">DEG</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDEGTopTable.html">getDEGTopTable</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"c1_2_VS_c5"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DEG</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##         Gene  Log2_FC       Pvalue          FDR group1MeanExp group2MeanExp</span></span>
-<span><span class="co">## 21054    LYZ 1.923606 6.697866e-37 8.770990e-34      2.450818    0.52721136</span></span>
-<span><span class="co">## 1956  S100A9 1.725115 1.258673e-34 1.329239e-31      1.906373    0.18125751</span></span>
-<span><span class="co">## 1958  S100A8 1.499733 2.665313e-43 4.362851e-40      1.543568    0.04383467</span></span>
-<span><span class="co">## 28818   CST3 1.346308 5.206233e-36 6.087202e-33      1.542021    0.19571280</span></span>
-<span><span class="co">## 18999   FTH1 1.335794 1.078589e-49 2.077108e-46      3.934564    2.59877029</span></span>
-<span><span class="co">## 30934    FTL 1.295643 2.519141e-21 1.472708e-18      4.054030    2.75838685</span></span>
+<span><span class="co">## 21054    LYZ 2.535345 1.348180e-48 1.050875e-45      3.136112    0.60076686</span></span>
+<span><span class="co">## 1956  S100A9 2.399927 5.532280e-53 5.659868e-50      2.574507    0.17457975</span></span>
+<span><span class="co">## 1958  S100A8 2.016443 7.806040e-56 8.812211e-53      2.104506    0.08806257</span></span>
+<span><span class="co">## 1965  S100A4 1.986609 1.998237e-68 2.973558e-65      2.516309    0.52970004</span></span>
+<span><span class="co">## 30430 TYROBP 1.838078 3.723853e-55 4.063717e-52      1.969446    0.13136797</span></span>
+<span><span class="co">## 28818   CST3 1.825178 2.316276e-51 2.106396e-48      2.053687    0.22850832</span></span>
 <span><span class="co">##       group1ExprPerc group2ExprPerc</span></span>
-<span><span class="co">## 21054      0.7086957     0.39080460</span></span>
-<span><span class="co">## 1956       0.4895652     0.15229885</span></span>
-<span><span class="co">## 1958       0.4408696     0.04022989</span></span>
-<span><span class="co">## 28818      0.5060870     0.15804598</span></span>
-<span><span class="co">## 18999      0.9947826     0.98275862</span></span>
-<span><span class="co">## 30934      0.9921739     0.98563218</span></span></code></pre>
+<span><span class="co">## 21054      0.7600979     0.42979943</span></span>
+<span><span class="co">## 1956       0.5899633     0.14040115</span></span>
+<span><span class="co">## 1958       0.5618115     0.08022923</span></span>
+<span><span class="co">## 1965       0.8102815     0.36962751</span></span>
+<span><span class="co">## 30430      0.5777234     0.11174785</span></span>
+<span><span class="co">## 28818      0.6095471     0.18624642</span></span></code></pre>
 <p>To visualize the result in a heatmap:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"c1_2_VS_c5"</span>, log2fcThreshold <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span></span></code></pre></div>
@@ -729,9 +728,7 @@ reference online</em>, American Cancer Society, 2014. doi: <a href="https://doi.
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -744,16 +741,16 @@ reference online</em>, American Cancer Society, 2014. doi: <a href="https://doi.
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>
