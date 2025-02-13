@@ -290,7 +290,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
    #colData(SCE) <- colData(SCE)[,c(aggregateCol),drop=FALSE] ##change
     
     temp_df<-as.data.frame(colData(SCE)[,c(aggregateCol),drop=FALSE]) %>% 
-      unite("new_colnames",1:ncol(.data),sep = "_",remove = FALSE) %>% 
+      unite("new_colnames",dplyr::everything(),sep = "_",remove = FALSE) %>% 
       remove_rownames() %>% 
     #  mutate(aggregated_column = new_colnames) %>%
     #  dplyr::select(new_colnames, aggregated_column) %>%
