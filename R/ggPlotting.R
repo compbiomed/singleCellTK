@@ -411,7 +411,6 @@ plotSCEDimReduceColData <- function(inSCE,
                                     combinePlot = "none",
                                     plotLabels = NULL) {
   combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
-  
   colorPlot <- SingleCellExperiment::colData(inSCE)[, colorBy]
   
   g <- .ggScatter(
