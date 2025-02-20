@@ -313,14 +313,11 @@ colAnnotattionColor <- list(
 ```{R split, eval=TRUE, cache=TRUE}
 
 # Create a new label in the rowData using the cluster markers
-
+library(dplyr)
 data.frame(rowData(sce2)) %>% 
   left_join(topMarkers, by = c("feature_name" = "Gene")) %>%
   rename("cluster_markers" = "scranSNN_PCA") -> new_row_data
-
-rownames(new_row_data)<-new_row_data$feature_name
-
-rowData(sce2)<-new_row_data
+rowData(sce2)$cluster_markers <-new_row_data$cluster_markers
 
 plotSCEHeatmap(inSCE = sce2, useAssay = "logcounts", featureIndex = topMarkers$Gene, colDataName = c("type"), aggregateCol = "scranSNN_PCA", rowGap = grid::unit(2, 'mm'),rowLabel = TRUE, rowDataName = "cluster_markers", rowSplitBy = "cluster_markers")
 

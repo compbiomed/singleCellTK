@@ -6,21 +6,20 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Heatmap Visualization • singleCellTK</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <script src="../extra.js"></script><meta property="og:title" content="Heatmap Visualization">
-<meta property="og:description" content="singleCellTK">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -34,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.14.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.16.1</span>
       </span>
     </div>
 
@@ -43,7 +42,7 @@
 <li>
   <a href="https://www.camplab.net/sctk" class="external-link">
     <span class="fas fa-home fa-lg"></span>
-     
+
   </a>
 </li>
 <li>
@@ -52,7 +51,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -79,7 +78,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -224,13 +223,13 @@
 <li>
   <a href="https://github.com/compbiomed/singleCellTK" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
 <li>
   <a href="https://twitter.com/camplab1" class="external-link">
     <span class="fab fa-twitter fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -241,7 +240,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -448,6 +447,12 @@ specific heatmap.</p>
 <div id="console" class="tabcontent">
 <p>To present the usage of <code><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap()</a></code>, we would like
 to use a small example provided with SCTK.</p>
+<p><strong>“Raw” plotting</strong></p>
+<p>The minimum setting for <code><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap()</a></code> is the input
+SCE object and the data matrix to plot (default
+<code>"logcounts"</code>). In this way, all cells and features will be
+presented while no annotation or legend (except the main color scheme)
+will be shown.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"scExample"</span><span class="op">)</span> <span class="co"># This imports SCE object "sce"</span></span>
@@ -465,15 +470,17 @@ to use a small example provided with SCTK.</p>
 <span><span class="co">## reducedDimNames(0):</span></span>
 <span><span class="co">## mainExpName: NULL</span></span>
 <span><span class="co">## altExpNames(0):</span></span></code></pre>
-<p><strong>“Raw” plotting</strong></p>
-<p>The minimum setting for <code><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap()</a></code> is the input
-SCE object and the data matrix to plot (default
-<code>"logcounts"</code>). In this way, all cells and features will be
-presented while no annotation or legend (except the main color scheme)
-will be shown.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="heatmap_files/figure-html/hmFull-1.png" width="700"></p>
+<code class="sourceCode R"><span><span class="co"># QC - Remove empty droplets</span></span>
+<span><span class="va">sce2</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Normalize the counts </span></span>
+<span><span class="va">sce2</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span><span class="va">sce2</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, outAssayName <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>                        normalizationMethod <span class="op">=</span> <span class="st">"logNormCounts"</span>,scale <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># plot the data</span></span>
+<span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span><span class="va">sce2</span>,useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,cluster_rows <span class="op">=</span> <span class="cn">TRUE</span>, cluster_columns <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="heatmap_files/figure-html/setup-1.png" width="700"></p>
 <p><strong>Subsetting</strong></p>
 <p>SCTK allows relatively flexible approaches to select the
 cells/features to plot.</p>
@@ -482,13 +489,9 @@ vector that can subset the input SCE object to <code>featureIndex</code>
 and <code>cellIndex</code>, including <code>numeric</code>, and
 <code>logical</code> vectors, which are widely used, and
 <code>character</code> vector containing the row/col names. Of course,
-user can directly use a subsetted SCE object as input.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Make up random downsampling numeric vector</span></span>
-<span><span class="va">featureSubset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>, <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="va">cellSubset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>, <span class="fl">50</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, featureIndex <span class="op">=</span> <span class="va">featureSubset</span>, cellIndex <span class="op">=</span> <span class="va">cellSubset</span><span class="op">)</span></span></code></pre></div>
+user can directly use a subsetted SCE object as input. First let’s run a
+simple clustering workflow to identify clusters and find DE genes for
+each cluster. We can subset the heatmap using this list of DE genes</p>
 <p><img src="heatmap_files/figure-html/idxSubset-1.png" width="700"></p>
 
 <details><summary><b>Using Identifiers in <code>rowData</code>/<code>colData</code></b></summary><p>In a more complex situation, where users might only have a set of
@@ -498,10 +501,10 @@ subset, in this situation, can be accessed via specifying a vector that
 contains the identifiers users have, to <code>featureIndexBy</code> or
 <code>cellIndexBy</code>. This specification allows directly giving one
 column name of <code>rowData</code> or <code>colData</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">subsetFeatureName</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">feature_name</span>, <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="va">subsetCellBarcode</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">cell_barcode</span>, <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, featureIndex <span class="op">=</span> <span class="va">subsetFeatureName</span>, featureIndexBy <span class="op">=</span> <span class="st">"feature_name"</span>, cellIndex <span class="op">=</span> <span class="va">subsetCellBarcode</span>, cellIndexBy <span class="op">=</span> <span class="st">"cell_barcode"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">list_of_FIDs</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ENSG00000251562"</span>,<span class="st">"ENSG00000205542"</span>,<span class="st">"ENSG00000177954"</span>,<span class="st">"ENSG00000166710"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce2</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, featureIndexBy <span class="op">=</span> <span class="st">"feature_ID"</span>,  featureIndex <span class="op">=</span> <span class="va">list_of_FIDs</span>, cluster_rows <span class="op">=</span> <span class="cn">TRUE</span>, cluster_columns <span class="op">=</span> <span class="cn">TRUE</span>, rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="heatmap_files/figure-html/indexBy-1.png" width="700"></p>
 </details><p><strong>Adding Annotations</strong></p>
 <p>As introduced before, we allow directly using column names of
@@ -509,16 +512,12 @@ column name of <code>rowData</code> or <code>colData</code>.</p>
 annotations. To make use of this functionality, pass a
 <code>character</code> vector to <code>rowDataName</code> or
 <code>colDataName</code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Make up arbitrary annotation, </span></span>
-<span><span class="va">rowRandLabel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">'aa'</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">'bb'</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">randLabel</span> <span class="op">&lt;-</span> <span class="va">rowRandLabel</span></span>
-<span><span class="va">colRandLabel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">'cc'</span>, <span class="fl">195</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">'dd'</span>, <span class="fl">195</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">randLabel</span> <span class="op">&lt;-</span> <span class="va">colRandLabel</span></span>
-<span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, featureIndex <span class="op">=</span> <span class="va">featureSubset</span>, cellIndex <span class="op">=</span> <span class="va">cellSubset</span>, rowDataName <span class="op">=</span> <span class="st">"randLabel"</span>, colDataName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"randLabel"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Creat new annotation for markers </span></span>
+<span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce2</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, featureIndex <span class="op">=</span> <span class="va">topMarkers</span><span class="op">$</span><span class="va">Gene</span>, colDataName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="st">"scranSNN_PCA"</span><span class="op">)</span>,rowLabel <span class="op">=</span> <span class="cn">TRUE</span>, cluster_rows <span class="op">=</span> <span class="cn">TRUE</span>, cluster_columns <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="heatmap_files/figure-html/colRowAnn-1.png" width="700"></p>
 <details><summary><b>Customized Annotation</b></summary><p>Fully customized annotation is also supported, though it can be
-complexed for users. For the labeling, it is more recommanded to insert
+complex for users. For the labeling, it is more recommended to insert
 the information into <code>rowData</code> or <code>colData</code> and
 then make use. For coloring, information should be passed to
 <code>featureAnnotationColor</code> or <code>cellAnnotationColor</code>.
@@ -535,9 +534,56 @@ such as evaluating the differential expression. For this need, use
 <code>rowSplitBy</code> or <code>colSplitBy</code>, and the arguments
 must be a <code>character</code> vector that is a subset of the
 specified annotation.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, featureIndex <span class="op">=</span> <span class="va">featureSubset</span>, cellIndex <span class="op">=</span> <span class="va">cellSubset</span>, rowDataName <span class="op">=</span> <span class="st">"randLabel"</span>, colDataName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"randLabel"</span><span class="op">)</span>, rowSplitBy <span class="op">=</span> <span class="st">"randLabel"</span>, colSplitBy <span class="op">=</span> <span class="st">"type"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create a new label in the rowData using the cluster markers</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Attaching package: 'dplyr'</span></span></code></pre>
+<pre><code><span><span class="co">## The following object is masked from 'package:Biobase':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     combine</span></span></code></pre>
+<pre><code><span><span class="co">## The following objects are masked from 'package:GenomicRanges':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     intersect, setdiff, union</span></span></code></pre>
+<pre><code><span><span class="co">## The following object is masked from 'package:GenomeInfoDb':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     intersect</span></span></code></pre>
+<pre><code><span><span class="co">## The following objects are masked from 'package:IRanges':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     collapse, desc, intersect, setdiff, slice, union</span></span></code></pre>
+<pre><code><span><span class="co">## The following objects are masked from 'package:S4Vectors':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     first, intersect, rename, setdiff, setequal, union</span></span></code></pre>
+<pre><code><span><span class="co">## The following objects are masked from 'package:BiocGenerics':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     combine, intersect, setdiff, union</span></span></code></pre>
+<pre><code><span><span class="co">## The following object is masked from 'package:matrixStats':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     count</span></span></code></pre>
+<pre><code><span><span class="co">## The following objects are masked from 'package:stats':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     filter, lag</span></span></code></pre>
+<pre><code><span><span class="co">## The following objects are masked from 'package:base':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     intersect, setdiff, setequal, union</span></span></code></pre>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">sce2</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">topMarkers</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"feature_name"</span> <span class="op">=</span> <span class="st">"Gene"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="st">"cluster_markers"</span> <span class="op">=</span> <span class="st">"scranSNN_PCA"</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">new_row_data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">sce2</span><span class="op">)</span><span class="op">$</span><span class="va">cluster_markers</span> <span class="op">&lt;-</span><span class="va">new_row_data</span><span class="op">$</span><span class="va">cluster_markers</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce2</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, featureIndex <span class="op">=</span> <span class="va">topMarkers</span><span class="op">$</span><span class="va">Gene</span>, colDataName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"type"</span><span class="op">)</span>, aggregateCol <span class="op">=</span> <span class="st">"scranSNN_PCA"</span>, rowGap <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">2</span>, <span class="st">'mm'</span><span class="op">)</span>,rowLabel <span class="op">=</span> <span class="cn">TRUE</span>, rowDataName <span class="op">=</span> <span class="st">"cluster_markers"</span>, rowSplitBy <span class="op">=</span> <span class="st">"cluster_markers"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="heatmap_files/figure-html/split-1.png" width="700"></p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Adding a summary </span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce2</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>summary_col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">new_col_data</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce2</span><span class="op">)</span><span class="op">&lt;-</span><span class="fu">DataFrame</span><span class="op">(</span><span class="va">new_col_data</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce2</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, featureIndex <span class="op">=</span> <span class="va">topMarkers</span><span class="op">$</span><span class="va">Gene</span>, colDataName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"type"</span><span class="op">)</span>, aggregateCol <span class="op">=</span> <span class="st">"scranSNN_PCA"</span>, rowGap <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">2</span>, <span class="st">'mm'</span><span class="op">)</span>,rowLabel <span class="op">=</span> <span class="cn">TRUE</span>, rowDataName <span class="op">=</span> <span class="st">"cluster_markers"</span>, rowSplitBy <span class="op">=</span> <span class="st">"cluster_markers"</span>, addCellSummary <span class="op">=</span> <span class="st">"summary_col"</span> <span class="op">)</span></span></code></pre></div>
+<p><img src="heatmap_files/figure-html/split-2.png" width="700"></p>
 <p><strong>2. Cell/Feature Labeling</strong> Text labels of features or
 cells can be added via <code>rowLabel</code> or <code>colLabel</code>.
 Use <code>TRUE</code> or <code>FALSE</code> to specify whether to show
@@ -554,8 +600,8 @@ can be removed by passing <code>FALSE</code> to <code>rowDend</code> or
 (<code>"Genes"</code>) and column title (<code>"Cells"</code>) can be
 changed or removed by passing a string or <code>NULL</code> to
 <code>rowTitle</code> or <code>colTitle</code>, respectively.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, featureIndex <span class="op">=</span> <span class="va">featureSubset</span>, cellIndex <span class="op">=</span> <span class="va">cellSubset</span>, rowLabel <span class="op">=</span> <span class="st">"feature_name"</span>, colLabel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span>, colDend <span class="op">=</span> <span class="cn">FALSE</span>, rowTitle <span class="op">=</span> <span class="st">"Downsampled features"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce2</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, featureIndex <span class="op">=</span> <span class="va">topMarkers</span><span class="op">$</span><span class="va">Gene</span>, rowGap <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">2</span>, <span class="st">'mm'</span><span class="op">)</span>,rowLabel <span class="op">=</span> <span class="cn">TRUE</span>,  rowTitle <span class="op">=</span> <span class="st">"Markers"</span>,colTitle <span class="op">=</span> <span class="st">"Clusters"</span>, cluster_columns <span class="op">=</span> <span class="cn">TRUE</span>, cluster_rows <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="heatmap_files/figure-html/label-1.png" width="700"></p>
 <p>There are still some parameters not mentioned here, but they are not
 frequently used. Please refer to <code><a href="../reference/plotSCEHeatmap.html">?plotSCEHeatmap</a></code> as well as
@@ -583,9 +629,7 @@ Sep. 2016, doi: <a href="https://doi.org/10.1093/bioinformatics/btw313" class="e
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -598,16 +642,16 @@ Sep. 2016, doi: <a href="https://doi.org/10.1093/bioinformatics/btw313" class="e
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>

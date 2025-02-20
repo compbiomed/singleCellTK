@@ -1117,7 +1117,7 @@ runSeuratUMAP <- function(inSCE,
 #' other libraries. Default \code{NULL}.
 #' @param interactive Logical value indicating if the returned object should
 #'  be an interactive plotly object if \code{TRUE} or a ggplot object if
-#'  set to \code{FALSE}. Default is \code{TRUE}.
+#'  set to \code{FALSE}. Default is \code{FALSE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -1134,7 +1134,7 @@ plotSeuratElbow <- function(inSCE,
                             reduction = "pca",
                             ndims = 20,
                             externalReduction = NULL,
-                            interactive = TRUE) {
+                            interactive = FALSE) {
   seuratObject <- convertSCEToSeurat(inSCE)
   if (!is.null(externalReduction)) {
     seuratObject@reductions <- list(pca = externalReduction)
