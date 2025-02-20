@@ -5,8 +5,10 @@ context("Testing dropletUtils algorithms")
 data(scExample, package = "singleCellTK")
 
 test_that(desc = "Testing runBarcodeRankDrops", {
-        sceres <- runBarcodeRankDrops(inSCE = sce)
-        expect_equal(length(colData(sceres)$dropletUtils_BarcodeRank_Inflection),ncol(sce))
-        expect_equal(class(colData(sceres)$dropletUtils_BarcodeRank_Inflection), "integer")
+        sce <- runBarcodeRankDrops(inSCE = sce)
+        expect_equal(length(colData(sce)$dropletUtils_BarcodeRank_Inflection),ncol(sce))
+        expect_equal(class(colData(sce)$dropletUtils_BarcodeRank_Inflection), "integer")
+        gg <- plotBarcodeRankDropsResults(sce)
+        expect_is(gg$scatterBarcodeRank, "ggplot")
 })
 

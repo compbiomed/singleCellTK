@@ -9,20 +9,20 @@
                                        fit.bounds = fit.bounds,
                                        df = df)
   
-  knee.ix <- as.integer(output@listData$total >= 
+  knee.ix <- as.integer(output$total >= 
                           S4Vectors::metadata(output)$knee)
-  inflection.ix <- as.integer(output@listData$total >= 
+  inflection.ix <- as.integer(output$total >= 
                                 S4Vectors::metadata(output)$inflection)
+
   rank.ix <- as.integer(output$rank)
   total.ix <- as.integer(output$total)
-  fitted.ix <- as.integer(output$fitted)
   
-  result <- cbind(knee.ix, inflection.ix, rank.ix, total.ix, fitted.ix)
+  result <- cbind(knee.ix, inflection.ix, rank.ix, total.ix)
   colnames(result) <- c("dropletUtils_barcodeRank_knee",
                         "dropletUtils_barcodeRank_inflection",
                         "dropletUtils_barcodeRank_rank",
-                        "dropletUtils_barcodeRank_total",
-                        "dropletUtils_barcodeRank_fitted")
+                        "dropletUtils_barcodeRank_total")
+  
   result.list <- list(result,
                       S4Vectors::metadata(output)$knee,
                       S4Vectors::metadata(output)$inflection)
@@ -117,8 +117,7 @@ runBarcodeRankDrops <- function(inSCE,
                         "dropletUtils_barcodeRank_inflection")]
     
     metaCols <- c("dropletUtils_barcodeRank_rank", 
-                  "dropletUtils_barcodeRank_total",
-                  "dropletUtils_barcodeRank_fitted")
+                  "dropletUtils_barcodeRank_total")
     metaOutput[, metaCols] <- result.matrix[, metaCols]
     metaOutput[,"dropletUtils_barcodeRank_knee"] <- rep(result$knee,
                                                         sum(sceSampleInd))
