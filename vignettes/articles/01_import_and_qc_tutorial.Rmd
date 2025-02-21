@@ -36,7 +36,7 @@ SCTK also supports importing a raw count matrix, with metadata in the following 
 
 SCTK also allows for the importing of multiple batches (samples) of dataset at the same time. 
 
-This tutorial focuses on how to import and QC the example PBMC3k data stored in an RDS object. For a more detailed overview, refer to the [advanced user guide on importing](import_data.html) for different function call syntax. 
+This tutorial focuses on how to import and QC the example PBMC3k data stored in an RDS object. **For a more detailed overview, refer to the [advanced user guide on importing](import_data.html) for different data importing functions.**
 
 ````{=html}
 <div class="tabset" id="tabset1">
