@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Comprehensive and Interactive Analysis of Single Cell RNA-Seq Data
-Version: 2.16.1
+Version: 2.17.2
 Authors@R: c(person(given="Yichen", family="Wang", email="wangych@bu.edu", role=c("aut"),
                     comment = c(ORCID = "0000-0003-4347-5199")),
              person(given="Irzam", family="Sarfraz", email="isarfraz@bu.edu", role=c("aut"),
