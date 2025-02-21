@@ -77,6 +77,27 @@
 #' plotDimRed(sce, "UMAP")
 #' 
 #' @importFrom S4Vectors metadata<-
+
+#' @param ... Parameters passed to \code{runUMAP}
+#' @importFrom BiocParallel SerialParam
+#' @export
+
+runQuickUMAP <- function(inSCE, useAssay = "counts", sample = "sample", ...) {
+  args <- list(...)
+  if (!is.null(args$useReducedDim)) {
+    warning("Forcing `useReducedDim` to be `NULL`. Please use `runUMAP` for ",
+            "using reducedDim.")
+  }
+  # Here `useReducedDim` entry is removed from list
+  # Later, we add the entry with value `NULL`
+  args$useReducedDim <- NULL
+  args <- c(list(inSCE = inSCE, useAssay = useAssay, useReducedDim = NULL, 
+                 sample = sample), args)
+  inSCE <- do.call("runUMAP", args = args)
+  return(inSCE)
+}
+
+
 #' @importFrom BiocParallel SerialParam
 runUMAP <- function(inSCE, useReducedDim = "PCA", useAssay = NULL, 
                     useAltExp = NULL, sample = NULL, reducedDimName = "UMAP",
@@ -150,24 +171,6 @@ runUMAP <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
   return(inSCE)
 }
 
-#' @rdname runUMAP
-#' @param ... Parameters passed to \code{runUMAP}
-#' @importFrom BiocParallel SerialParam
-#' @export
-runQuickUMAP <- function(inSCE, useAssay = "counts", sample = "sample", ...) {
-  args <- list(...)
-  if (!is.null(args$useReducedDim)) {
-    warning("Forcing `useReducedDim` to be `NULL`. Please use `runUMAP` for ",
-            "using reducedDim.")
-  }
-  # Here `useReducedDim` entry is removed from list
-  # Later, we add the entry with value `NULL`
-  args$useReducedDim <- NULL
-  args <- c(list(inSCE = inSCE, useAssay = useAssay, useReducedDim = NULL, 
-                 sample = sample), args)
-  inSCE <- do.call("runUMAP", args = args)
-  return(inSCE)
-}
 
 #' @rdname runUMAP
 #' @export
