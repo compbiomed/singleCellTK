@@ -131,7 +131,7 @@ As mentioned in the introduction, our 11 methods vary in type of input and outpu
 
 **1. Prepare an SCE object with multiple batches**
 
-Here we present an example dataset that is combined from "pbmc3k" and "pbmc4k", originally available from package [TENxPBMCData](https://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html), which you can import by a function called `importExampleData()`.
+Here we present an example dataset that is combined from "pbmc6k" and "pbmc8k", originally available from package [TENxPBMCData](https://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html), which you can import by a function called `importExampleData()`.
 ```{r import}
 library(singleCellTK)
 pbmc6k <- importExampleData('pbmc6k')

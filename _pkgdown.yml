@@ -303,7 +303,7 @@ navbar:
                 menu:
                  - text: "FAQs"
                    href: articles/webApp.html
-    - text: "SCTK-QC"
+    - text: "SCTK-QC (command line)"
       href: articles/cmd_qc.html
     - text: "Reference"
       href: reference/index.html
