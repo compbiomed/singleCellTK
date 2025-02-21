@@ -133,7 +133,7 @@ To import an Optimus sample, the user must select the directory that contains th
 </details>
 </details>
 <details>
-  <summary><b>Flat files (.cvs, .tsv)</b></summary>
+  <summary><b>Flat files (.csv, .tsv)</b></summary>
 ````
 
 To import tab-separated data, the user must provide **a counts file** (.csv or .tsv) and specify what type of input assay it is. The user can optionally also provide **cell annotation** and **feature** files (also .csv or .tsv). The user must then click **"Add to dataset list"** to add it to the table of samples.  
@@ -197,7 +197,7 @@ SCTK provides wrapper functions that import data from the output of all pre-proc
 
 ````{=html}
 <details>
-  <summary><b>Function Reference for pre-processing tools</b></summary>
+  <summary><b>Function reference for pre-processing tools</b></summary>
 ````
 
 | Upstream Tool |   Function   |
@@ -215,7 +215,7 @@ Click on the link of the function names to read the detailed manual of the them.
 ````{=html}
 </details>
 <details>
-  <summary><b>Function reference for importing Flat files (.csv, .tsv)</b></summary>
+  <summary><b>Function reference for importing flat files (.csv, .tsv)</b></summary>
 ````
 
 | File Format |   Function   |
@@ -227,10 +227,10 @@ Click on the link of the function names to read the detailed manual of the them.
 ````{=html}
 </details>
 <details>
-  <summary><b>Function reference for importing an example</b></summary>
+  <summary><b>Function reference for importing example data</b></summary>
 ````
 
-Run the following command to import the "PBMC-3K" dataset provided by TEN-X.  
+Run the following command to import the "PBMC3k" dataset provided by TEN-X.  
 
 ```{R importpbmc3k, eval=FALSE}
 library(singleCellTK)
@@ -238,6 +238,54 @@ sce <- importExampleData("pbmc3k")
 ```
 
 Click on the link of the function names to read the detailed manual of the it.  
+
+````{=html}
+</details>
+<details>
+  <summary><b>Importing from CellRanger output </b></summary>
+````
+
+CellRanger is one of the most common preprocessing tools, and exports its output in a specific structure, as follows:
+```
+./datasets/
+    sample1/
+        outs/filtered_feature_bc_matrix/
+            barcodes.tsv.gz
+            features.tsv.gz
+            matrix.mtx.gz
+    sample2/
+        outs/filtered_feature_bc_matrix/
+            barcodes.tsv.gz
+            features.tsv.gz
+            matrix.mtx.gz
+./otherCellRangerData/
+    barcodes.tsv
+    genes.tsv
+    matrix.mtx
+```
+Run the following command to import a set of flat files, consisting of count matrix, barcode (annotation) file, and features file:
+
+```{R importCellRanger, eval=FALSE}
+sce <- importCellRanger("path/to/CellRanger/root/", "sample_folder_name")
+```
+
+The second argument is optional, but recommended if the root directory has folders that do not have CellRanger data.
+
+In the above example, to import `sample1`, run:
+```{R importCellRanger2, eval=FALSE}
+sce <- importCellRanger("datasets", "sample_folder_name")
+```
+
+To import both samples simultaneously, run:
+```{R importCellRanger3, eval=FALSE}
+sce <- importCellRanger("datasets")
+```
+
+Note that the barcode and features files may be tab- or comma-separated, and all three files may also be gzipped (.gz). `importCellRanger` supports both v2 and v3, and `importCellRangerV2()` and `importCellRangerV3()` explicitly addresses the different versions of `CellRanger`.
+
+````{=html}
+</details>
+````
 
 ````{=html}
 </details>
@@ -265,6 +313,24 @@ sce <- importAnnData("path/to/filename.h5ad")
 ```
 
 Click on the link of the function names to read the detailed manual of the them.  
+
+````{=html}
+</details>
+````
+
+````{=html}
+</details>
+<details>
+  <summary><b>Importing from flat files </b></summary>
+````
+
+Run the following command to import a set of loose files, consisting of count matrix, barcode (annotation) file, and features file:
+
+```{R importLooseFiles, eval=FALSE}
+sce <- importFromFiles("path/to/matrix.mtx", "path/to/barcodes.csv", "path/to/features.csv")
+```
+
+Note that the barcode and features files may be tab- or comma-separated, and all three files may also be gzipped (.gz).
 
 ````{=html}
 </details>
