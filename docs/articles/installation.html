@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.16.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.17.2</span>
       </span>
     </div>
 
@@ -410,6 +410,19 @@ unexpected behavior or crashes.</p>
 </div>
 </div>
 <div class="section level2">
+<h2 id="local-sctk-ui">Local SCTK UI<a class="anchor" aria-label="anchor" href="#local-sctk-ui"></a>
+</h2>
+<p>It is possible to run the UI version of singleCellTK on a local
+machine using <a href="https://shiny.posit.co/" class="external-link">Shiny</a>, for a more
+user friendly experience. To start the application, make sure your
+working directory is set to the singleCellTK root folder using
+<code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd()</a></code>, and run <strong>in the R console</strong>:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="st">"./inst/shiny/"</span><span class="op">)</span></span></code></pre></div>
+<p>This will open the Shiny web application using your computer as a
+local server.</p>
+</div>
+<div class="section level2">
 <h2 id="troubleshooting-installation">Troubleshooting Installation<a class="anchor" aria-label="anchor" href="#troubleshooting-installation"></a>
 </h2>
 <div class="section level3">
@@ -421,23 +434,23 @@ version of the singleCellTK without any errors.</p>
 versions of some packages that are required for the singleCellTK. If you
 encounter an error during installation, use the commands below to check
 the version of Bioconductor that is installed:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
 <span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/version.html" class="external-link">version</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>If the version number is not 3.6 or higher, you must upgrade
 Bioconductor to install the toolkit:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>After you install Bioconductor 3.6 or higher, you should be able to
 install the toolkit. If you still encounter an error, ensure your
 Bioconductor packages are up to date by running the following
 command.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/valid.html" class="external-link">valid</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>If the command above does not return <code>TRUE</code>, run the
 following command to update your R packages:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Then, try to install the toolkit again.</p>
 </div>
@@ -451,7 +464,7 @@ installed the dependencies or restart the R session, please try to
 specify the correct Python executable/binary file in a <strong>new R
 session</strong> <strong><em>(where “new” means no Python or reticulate
 related operations have been performed)</em></strong>.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/reticulate/" class="external-link">reticulate</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">use_python</a></span><span class="op">(</span><span class="st">"{PATH to the correct Python exexutable/binary file}"</span><span class="op">)</span></span></code></pre></div>
 <p>You can always use <code><a href="https://rstudio.github.io/reticulate/reference/py_config.html" class="external-link">reticulate::py_config()</a></code> to check what

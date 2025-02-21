@@ -123,6 +123,16 @@ selectSCTKVirtualEnvironment("{NAME of your VENV}")
 selectSCTKConda("{NAME of your VENV}")
 ```
 
+## Local SCTK UI
+
+It is possible to run the UI version of singleCellTK on a local machine using [Shiny](https://shiny.posit.co/), for a more user friendly and interactive experience. To start the application, make sure your working directory is set to the singleCellTK root folder using `setwd()`, and run **in the R console**:
+
+```{R shiny, eval=FALSE}
+shiny::runApp("./inst/shiny/")
+```
+
+This will open the Shiny web application using your computer as a local server.
+
 ## Troubleshooting Installation
 
 ### BioConductor Versioning
