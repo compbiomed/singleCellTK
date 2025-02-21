@@ -290,6 +290,43 @@ Note that the barcode and features files may be tab- or comma-separated, and all
 ````{=html}
 </details>
 <details>
+  <summary><b>Importing from STARSolo output </b></summary>
+````
+
+STARSolo is another tool for doing preprocessing on FASTQ files, and presents data in the following format:
+
+```
+./datasets/
+    sample1/
+        gene/
+            filtered/
+                barcodes.tsv
+                features.tsv
+                matrix.mtx
+            raw/
+                barcodes.tsv
+                features.tsv
+                matrix.mtx
+            Features.stats
+            Summary.csv
+            UMIperCellSorted.txt
+```
+
+To read this data, run:
+
+```{R importSTAR, eval=FALSE}
+sce <- importSTARsolo("datasets/sample1", "sample1")
+```
+
+Note that the second argument is **required** as it provides a sample name.
+
+````{=html}
+</details>
+````
+
+````{=html}
+</details>
+<details>
   <summary><b>Importing from saved objects (SingleCellExperiment, Seurat, AnnData)</b></summary>
 ````
 

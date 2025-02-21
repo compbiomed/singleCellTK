@@ -379,7 +379,7 @@ import: <strong><code>"call-MergeCountFiles"</code></strong>,
 <strong><code>"call-RunEmptyDrops"</code></strong>. Then the user must
 prove a sample name and click “OK.”</p>
 <p><img src="ui_screenshots/import/import_ui_Optimus.png" alt="Optimus"><br></p>
-</details></details><details><summary><b>Flat files (.cvs, .tsv)</b></summary><p>To import tab-separated data, the user must provide <strong>a counts
+</details></details><details><summary><b>Flat files (.csv, .tsv)</b></summary><p>To import tab-separated data, the user must provide <strong>a counts
 file</strong> (.csv or .tsv) and specify what type of input assay it is.
 The user can optionally also provide <strong>cell annotation</strong>
 and <strong>feature</strong> files (also .csv or .tsv). The user must
@@ -459,7 +459,7 @@ counts matrix as a SingleCellExperiment object <code>assay</code>, with
 associated information in respective <code>colData</code>,
 <code>rowData</code>, <code>reducedDim</code>, and <code>metadata</code>
 fields.</p>
-<details><summary><b>Function Reference for pre-processing tools</b></summary><table class="table">
+<details><summary><b>Function reference for pre-processing tools</b></summary><table class="table">
 <colgroup>
 <col width="50%">
 <col width="50%">
@@ -506,7 +506,7 @@ fields.</p>
 </table>
 <p>Click on the link of the function names to read the detailed manual
 of the them.</p>
-</details><details><summary><b>Function reference for importing Flat files (.csv, .tsv)</b></summary><table class="table">
+</details><details><summary><b>Function reference for importing flat files (.csv, .tsv)</b></summary><table class="table">
 <thead><tr class="header">
 <th align="center">File Format</th>
 <th align="center">Function</th>
@@ -542,7 +542,7 @@ its output in a specific structure, as follows:</p>
 <span>    <span class="va">barcodes.tsv</span></span>
 <span>    <span class="va">genes.tsv</span></span>
 <span>    <span class="va">matrix.mtx</span></span></code></pre>
-<p>Run the following command to import a set of loose files, consisting
+<p>Run the following command to import a set of flat files, consisting
 of count matrix, barcode (annotation) file, and features file:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importCellRanger.html">importCellRanger</a></span><span class="op">(</span><span class="st">"path/to/CellRanger/root/"</span>, <span class="st">"sample_folder_name"</span><span class="op">)</span></span></code></pre></div>
@@ -560,33 +560,54 @@ comma-separated, and all three files may also be gzipped (.gz).
 <code><a href="../reference/importCellRanger.html">importCellRangerV2()</a></code> and <code><a href="../reference/importCellRanger.html">importCellRangerV3()</a></code>
 explicitly addresses the different versions of
 <code>CellRanger</code>.</p>
+</details><details><summary><b>Importing from STARSolo output </b></summary><p>STARSolo is another tool for doing preprocessing on FASTQ files, and
+presents data in the following format:</p>
+<pre><code><span><span class="va">.</span><span class="op">/</span><span class="va">datasets</span><span class="op">/</span></span>
+<span>    <span class="va">sample1</span><span class="op">/</span></span>
+<span>        <span class="va">gene</span><span class="op">/</span></span>
+<span>            <span class="va">filtered</span><span class="op">/</span></span>
+<span>                <span class="va">barcodes.tsv</span></span>
+<span>                <span class="va">features.tsv</span></span>
+<span>                <span class="va">matrix.mtx</span></span>
+<span>            <span class="va">raw</span><span class="op">/</span></span>
+<span>                <span class="va">barcodes.tsv</span></span>
+<span>                <span class="va">features.tsv</span></span>
+<span>                <span class="va">matrix.mtx</span></span>
+<span>            <span class="va">Features.stats</span></span>
+<span>            <span class="va">Summary.csv</span></span>
+<span>            <span class="va">UMIperCellSorted.txt</span></span></code></pre>
+<p>To read this data, run:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importSTARsolo.html">importSTARsolo</a></span><span class="op">(</span><span class="st">"datasets/sample1"</span>, <span class="st">"sample1"</span><span class="op">)</span></span></code></pre></div>
+<p>Note that the second argument is <strong>required</strong> as it
+provides a sample name.</p>
 </details><details><summary><b>Importing from saved objects (SingleCellExperiment, Seurat, AnnData)</b></summary><p>Run the following command to import a
 <strong>SingleCellExperiment</strong> object saved in RDS file</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"path/to/filename.rds"</span><span class="op">)</span></span></code></pre></div>
 <p>Run the following commands to import a <strong>Seurat</strong> object
 saved in RDS file, and convert it to SingleCellExperiment object to be
 compatible with SCTK’s workflow.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">seuratObj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"path/to/filename.rds"</span><span class="op">)</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/convertSeuratToSCE.html">convertSeuratToSCE</a></span><span class="op">(</span><span class="va">seuratObj</span><span class="op">)</span></span></code></pre></div>
 <p>Run the following commands to import an <strong>AnnData</strong>
 object saved in H5AD file, and convert it to SingleCellExperiment object
 to be compatible with SCTK’s workflow.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importAnnData.html">importAnnData</a></span><span class="op">(</span><span class="st">"path/to/filename.h5ad"</span><span class="op">)</span></span></code></pre></div>
 <p>Click on the link of the function names to read the detailed manual
 of the them.</p>
-</details><details><summary><b>Importing from loose files </b></summary><p>Run the following command to import a set of loose files, consisting
+</details><details><summary><b>Importing from flat files </b></summary><p>Run the following command to import a set of loose files, consisting
 of count matrix, barcode (annotation) file, and features file:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importFromFiles.html">importFromFiles</a></span><span class="op">(</span><span class="st">"path/to/matrix.mtx"</span>, <span class="st">"path/to/barcodes.csv"</span>, <span class="st">"path/to/features.csv"</span><span class="op">)</span></span></code></pre></div>
 <p>Note that the barcode and features files may be tab- or
 comma-separated, and all three files may also be gzipped (.gz).</p>
 </details><p>When multiple datasets are imported and users would like to perform
 analysis of all the samples at the same time, users can use the
 following utility function to combine them</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce.list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sampleName1 <span class="op">=</span> <span class="va">sce1</span>, sampleName2 <span class="op">=</span> <span class="va">sce2</span><span class="op">)</span></span>
 <span><span class="va">sce.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/combineSCE.html">combineSCE</a></span><span class="op">(</span><span class="va">sce.list</span>, by.r <span class="op">=</span> <span class="cn">NULL</span>, by.c <span class="op">=</span> <span class="cn">NULL</span>, combined <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
