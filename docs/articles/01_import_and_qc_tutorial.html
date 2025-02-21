@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Importing and Quality Control Tutorial - PBMC3K • singleCellTK</title>
+<title>Importing and Quality Control Tutorial - PBMC3k • singleCellTK</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<script src="../extra.js"></script><meta property="og:title" content="Importing and Quality Control Tutorial - PBMC3K">
+<script src="../extra.js"></script><meta property="og:title" content="Importing and Quality Control Tutorial - PBMC3k">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -240,7 +240,7 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Importing and Quality Control Tutorial -
-PBMC3K</h1>
+PBMC3k</h1>
                         <h4 data-toc-skip class="author">Yichen
 Wang</h4>
             
@@ -269,8 +269,9 @@ Curated Workflows (<a href="seurat_curated_workflow.html">Seurat</a> or
 <a href="celda_curated_workflow.html">Celda</a>). These tutorials will
 take the real-world scRNAseq dataset as an example, which consists of
 2,700 Peripheral Blood Mononuclear Cells (PBMCs) collected from a
-healthy donor, namingly PBMC3K. This dataset is available from 10X
-Genomics and can be found on the 10X website.</p>
+healthy donor, named PBMC3k. This dataset is available from 10X Genomics
+and can be found on the <a href="https://www.10xgenomics.com/datasets/3-k-pbm-cs-from-a-healthy-donor-1-standard-1-1-0" class="external-link">10X
+website</a>.</p>
 <p>Before starting the analysis from either UI or console, users should
 have SCTK properly installed first. Please refer to the <a href="installation.html">Installation</a> documentation for detail of
 installing the <code>singleCellTK</code> package and relevant
@@ -281,12 +282,23 @@ server deployment https://sctk.bu.edu/</a>, or using a stand-alone <a href="http
 <div class="section level2">
 <h2 id="importing-data">Importing Data<a class="anchor" aria-label="anchor" href="#importing-data"></a>
 </h2>
-<p>SCTK allows importing dataset from various type of sources, such as
-preprocessing tools like cellranger or flat text files. SCTK also allows
-importing multiple batches (samples) of dataset at the same time. Please
-refer to the <a href="import_data.html">detailed documentation of
-Importing</a> for different ways of importing. This tutorial only shows
-how we can import the example PBMC3K data.</p>
+<p>SCTK allows importing datasets from preprocessing tools like
+CellRanger, STARSolo, or flat text files: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger" class="external-link">CellRanger</a>
+<span class="citation">[1]</span>, <a href="https://data.humancellatlas.org/pipelines/optimus-workflow" class="external-link">Optimus</a>,
+<a href="https://github.com/hms-dbmi/dropEst" class="external-link">DropEst</a> <span class="citation">[2]</span>, <a href="https://github.com/BUStools/bustools" class="external-link">BUStools</a> <span class="citation">[3]</span>, <a href="https://github.com/dpeerlab/seqc" class="external-link">Seqc</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md" class="external-link">STARSolo</a>
+<span class="citation">[4]</span>, <a href="https://salmon.readthedocs.io/en/latest/alevin.html" class="external-link">Alevin</a>
+<span class="citation">[5]</span> Please refer to the <a href="import_data.html">advanced user guide on importing</a> on how to
+structure the input formats.</p>
+<p>SCTK also supports importing a raw count matrix, with metadata in the
+following formats: loose text files (.csv/.tsv), <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a>
+object saved in RDS file, <a href="https://satijalab.org/seurat/" class="external-link">Seurat</a> object saved in RDS file
+(requires conversion to SingleCellExperiment), <a href="https://anndata.readthedocs.io/en/latest/" class="external-link">AnnData</a> object
+saved in hdf5 file</p>
+<p>SCTK also allows for the importing of multiple batches (samples) of
+dataset at the same time.</p>
+<p>This tutorial focuses on how to import and QC the example PBMC3k data
+stored in an RDS object. For a more detailed overview, refer to the <a href="import_data.html">advanced user guide on importing</a> for
+different function call syntax.</p>
 <div class="tabset" id="tabset1">
 <div class="tab">
   <button class="tablinks ia" onclick="openTab(event, 'ia', 'tabset1')">Interactive Analysis</button>
@@ -294,9 +306,10 @@ how we can import the example PBMC3K data.</p>
 </div>
 
 <div class="tabcontent ia">
-<p>After starting the UI, the landing page will be for importing the
-scRNAseq data. To import the PBMC3K dataset previously mentioned, users
-should follow these steps:</p>
+<p>After entering the <a href="sctk.bu.edu">website</a> or starting the
+UI from the Shiny web application locally, the landing page will be for
+importing the scRNAseq data. To import the PBMC3k dataset previously
+mentioned, users should follow these steps:</p>
 <p><img src="ui_screenshots/ui_tutorial/import_1.png" alt="import"><br></p>
 <ol style="list-style-type: decimal">
 <li>If you are not already at the starting import page, you start by
@@ -340,6 +353,8 @@ the Bioconductor package <a href="https://bioconductor.org/packages/release/data
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
+<span><span class="co">##   object 'type_sum.accel' not found</span></span></code></pre>
 <p>An <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link"><code>SingleCellExperiment</code></a>
 (SCE) object is returned as the data container. An SCE object is
 designed for storing and manipulating expression matrices, gene/cell
@@ -347,13 +362,17 @@ metadata, low-dimension representation and unstructured information. All
 the methods wrapped by SCTK will be performed on the SCE object.</p>
 <p><strong>Importing CellRanger Output Data</strong></p>
 <p>Here, we briefly introduce the approach to importing the output of
-the widely used preprocessing tool, <code>cellranger</code>. SCTK has a
-generic function <code><a href="../reference/importCellRanger.html">importCellRanger()</a></code> for this purpose, and,
-explicitly, <code><a href="../reference/importCellRanger.html">importCellRangerV2()</a></code> and
+the widely used preprocessing tool, <code>CellRanger</code>; many users
+will directly get their data from 10x after running CellRanger. SCTK has
+a generic function <code><a href="../reference/importCellRanger.html">importCellRanger()</a></code> for this purpose,
+and, explicitly, <code><a href="../reference/importCellRanger.html">importCellRangerV2()</a></code> and
 <code><a href="../reference/importCellRanger.html">importCellRangerV3()</a></code> for different versions of
-<code>cellranger</code>. For the detail of these functions, please click
-on the function names to be redirected to the reference page.</p>
-<p>The input arguments basically asks users what the exact paths of the
+<code>CellRanger</code>. For the detail of these functions, please click
+on the function names to be redirected to the reference page. <strong>If
+you are following the tutorial PBMC3k data, you may skip this paragraph
+and move on to Quality Control.</strong></p>
+
+<details><summary><b>Reference for importing CellRanger output</b></summary><p>The input arguments basically asks users what the exact paths of the
 input data files are (i.e. <code>"matrix.mtx"</code>,
 <code>"features.tsv"</code>, and <code>"barcodes.tsv"</code>). They are
 <code>cellRangerDirs</code>, <code>sampleDirs</code>,
@@ -386,7 +405,7 @@ combination rule above and the error messages.</p>
 <span>    <span class="va">barcodes.tsv</span></span>
 <span>    <span class="va">genes.tsv</span></span>
 <span>    <span class="va">matrix.mtx</span></span></code></pre>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Default use case</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importCellRanger.html">importCellRanger</a></span><span class="op">(</span>cellRangerDirs <span class="op">=</span> <span class="st">"dataset"</span><span class="op">)</span></span>
 <span><span class="co"># In case the three files are placed in a different way</span></span>
@@ -395,6 +414,7 @@ combination rule above and the error messages.</p>
 <span>                        barcodesFileNames <span class="op">=</span> <span class="st">"barcodes.tsv"</span>,</span>
 <span>                        featuresFileNames <span class="op">=</span> <span class="st">"genes.tsv"</span>,</span>
 <span>                        matrixFileNames <span class="op">=</span> <span class="st">"matrix.mtx"</span><span class="op">)</span></span></code></pre></div>
+</details>
 </div>
 </div>
 </div>
@@ -451,7 +471,7 @@ function. This is a wrapper for several methods for calculation of QC
 metrics, doublet detection, and estimation of ambient RNA. For a full
 list of algorithms that this function runs by default, see
 <code><a href="../reference/runCellQC.html">?runCellQC</a></code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run QC</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">sce</span>, sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>                 algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"decontX"</span><span class="op">)</span>,</span>
@@ -473,25 +493,25 @@ For example to plot distributions of total numbers of UMIs derived from
 <code><a href="../reference/runDecontX.html">runDecontX()</a></code> (all of which were run by the
 <code><a href="../reference/runCellQC.html">runCellQC()</a></code> function), the following plotting functions can
 be used:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotRunPerCellQCResults.html">plotRunPerCellQCResults</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
 <p><img src="01_import_and_qc_tutorial_files/figure-html/plotPerCellQC-1.png" width="768"></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotScDblFinderResults.html">plotScDblFinderResults</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"QC_UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="01_import_and_qc_tutorial_files/figure-html/plotScDblFinder-1.png" width="768"></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDecontXResults.html">plotDecontXResults</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"QC_UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="01_import_and_qc_tutorial_files/figure-html/plottDecontX-1.png" width="768"></p>
 <p>A comprehensive HTML report can be generated to visualize and explore
 the QC metrics in greater detail:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/reportCellQC.html">reportCellQC</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
 <p>Please find <a href="cnsl_cellqc.html">the detailed documentation for
 running QC functions</a> for detail.</p>
 </div>
 </div>
 <p>Besides the approaches described above, we have also published the
-SCTK-QC pipeline <span class="citation">[1]</span>. Please refer to the
+SCTK-QC pipeline <span class="citation">[6]</span>. Please refer to the
 <a href="cmd_qc.html">SCTK-QC Documentation</a> for detail.</p>
 </div>
 <div class="section level2">
@@ -554,11 +574,11 @@ original data.</p>
 <p>Cells can be removed using the <code><a href="../reference/subsetSCECols.html">subsetSCECols()</a></code> function.
 Metrics stored in the <code>colData</code> slot of the SCE object can be
 filtered using the <code>colData</code> parameter.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># See number of cells before filtering</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 2700</span></span></code></pre>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"total &gt; 600"</span>, </span>
 <span>                                      <span class="st">"detected &gt; 300"</span>,</span>
 <span>                                      <span class="st">"mito_percent &lt; 5"</span><span class="op">)</span><span class="op">)</span></span>
@@ -581,9 +601,9 @@ var ia_buttons = document.getElementsByClassName("tablinks ia")
 for (var i = 0; i < ia_buttons.length; i++){
     ia_buttons[i].classList.add("active");
 }
-</script><div id="refs" class="references csl-bib-body">
+</script><div id="refs" class="references csl-bib-body" entry-spacing="0">
 <div id="ref-Rui2022" class="csl-entry">
-<div class="csl-left-margin">[1] </div>
+<div class="csl-left-margin">[6] </div>
 <div class="csl-right-inline">R.
 Hong <em>et al.</em>, <span>“Comprehensive generation, visualization,
 and reporting of quality control metrics for single-cell RNA sequencing
