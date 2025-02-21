@@ -361,9 +361,9 @@ Click on the link of the function names to read the detailed manual of the them.
   <summary><b>Importing from flat files </b></summary>
 ````
 
-Run the following command to import a set of loose files, consisting of count matrix, barcode (annotation) file, and features file:
+Run the following command to import a set of flat files, consisting of count matrix, barcode (annotation) file, and features file:
 
-```{R importLooseFiles, eval=FALSE}
+```{R importfromFiles, eval=FALSE}
 sce <- importFromFiles("path/to/matrix.mtx", "path/to/barcodes.csv", "path/to/features.csv")
 ```
 
