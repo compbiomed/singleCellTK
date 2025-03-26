@@ -289,11 +289,11 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
         old.gsc <- S4Vectors::metadata(inSCE)$sctk$genesets[[collectionName]]
       }
     }
-    
+
     if(!is.null(old.gsc)) {
       # Remove any old gene sets with same name as new gene sets
       old.gsc <- old.gsc[!(names(old.gsc) %in% names(new.gsc))]
-      
+
       # Combine old and new GeneSetCollections and save back to metadata
       S4Vectors::metadata(inSCE)$sctk$genesets[[collectionName]] <-
         GSEABase::GeneSetCollection(c(old.gsc, new.gsc))
@@ -302,7 +302,7 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
     }
   }
 
-  
+
   return(inSCE)
 }
 
@@ -315,7 +315,7 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param categoryIDs Character vector containing the MSigDB gene set ids.
 #' The column \code{ID} in the table returned by \code{getMSigDBTable()} shows
-#' the list of possible gene set IDs that can be obtained. 
+#' the list of possible gene set IDs that can be obtained.
 #' Default is \code{"H"}.
 #' @param species Character. Species available can be found using the function
 #' \code{\link[msigdbr]{msigdbr_show_species}}. Default \code{"Homo sapiens"}.
@@ -400,13 +400,17 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs = "H",
     category <- msigdb_table[categoryIDs[i],"Category"]
     subcat <- msigdb_table[categoryIDs[i],"Subcategory"]
     if(subcat == "N/A") {
-      subcat <- NA
+      subcat <- NULL
     }
 
     # Retrieve lists from msigdbr
     gs <- as.data.frame(msigdbr::msigdbr(species = species,
-                    category = category,
-                    subcategory = subcat))
+                    collection = category,
+                    subcollection = subcat))
+
+    if(is.null(subcat)) {
+        subcat <- NA
+    }
 
     # Parse data.frame into list of GeneSets
     gs.names <- unique(gs$gs_name)
