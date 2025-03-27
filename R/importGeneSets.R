@@ -318,7 +318,7 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
 #' the list of possible gene set IDs that can be obtained.
 #' Default is \code{"H"}.
 #' @param species Character. Species available can be found using the function
-#' \code{\link[msigdbr]{msigdbr_show_species}}. Default \code{"Homo sapiens"}.
+#' \code{\link[msigdbr]{msigdbr_species}}. Default \code{"Homo sapiens"}.
 #' @param mapping Character. One of "gene_symbol", "human_gene_symbol", or
 #' "entrez_gene". Gene identifiers to be used for MSigDB gene sets. IDs
 #' denoted by the \code{by} parameter must be either in gene symbol or
