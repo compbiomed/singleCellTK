@@ -222,11 +222,22 @@ navbar:
     - text: "Tutorials"
       menu:
          - text: "Beginners Guide"
-           menu:
-            - text: "PBMC3K"
-              href: articles/01_import_and_qc_tutorial.html
+           href: articles/01_import_and_qc_tutorial.html
          - text: ---------------------
-         - text: "Other Clustering Workflows"
+         - text: "Import"
+           href: articles/import_data.html
+         - text: "QC & Filtering"
+           menu:
+                  - text: "Droplet QC (R console)"
+                    href: articles/cnsl_dropletqc.html
+                  - text: "Cell QC (R console)"
+                    href: articles/cnsl_cellqc.html
+                  - text: "Cell QC (Shiny UI)"
+                    href: articles/ui_qc.html
+                  - text: "Filtering"
+                    href: articles/filtering.html
+           
+         - text: "Curated Clustering Workflows"
            menu:
               - text: "Seurat Curated Workflow - PBMC3K"
                 href: articles/seurat_curated_workflow.html
@@ -237,10 +248,8 @@ navbar:
          - text: ----------------------
          - text: "Detailed Documentation"
            menu:
-              - text: "Data"
+              - text: "Import and Export"
                 menu:
-                  - text: "Import Data"
-                    href: articles/import_data.html
                   - text: "Import Gene Sets"
                     href: articles/import_genesets.html
                   - text: "Annotation"
@@ -249,22 +258,6 @@ navbar:
                     href: articles/export_data.html
                   - text: "Delete Data"
                     href: articles/delete_data.html
-              - text: "QC & Filtering"
-                menu:
-                  - text: "Droplet QC (R console)"
-                    href: articles/cnsl_dropletqc.html
-                  - text: "Cell QC (R console)"
-                    href: articles/cnsl_cellqc.html
-                  - text: "Cell QC (Shiny UI)"
-                    href: articles/ui_qc.html
-                  - text: "Filtering"
-                    href: articles/filtering.html
-              - text: "Normalization & Batch Correction"
-                menu:
-                  - text: "Normalization"
-                    href: articles/normalization.html
-                  - text: "Batch Correction"
-                    href: articles/batch_correction.html
               - text: "Feature Selection & Dimensionality Reduction"
                 menu:
                  - text: "Feature Selection"
