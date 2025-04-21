@@ -11,30 +11,30 @@ runScDblFinder(
   nNeighbors = 50,
   simDoublets = max(10000, ncol(inSCE)),
   seed = 12345,
-  BPPARAM = BiocParallel::SerialParam()
+  BPPARAM = BiocParallel::SerialParam(RNGseed = seed)
 )
 }
 \arguments{
 \item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
 
-\item{sample}{Character vector or colData variable name. Indicates which 
+\item{sample}{Character vector or colData variable name. Indicates which
 sample each cell belongs to. Default \code{NULL}.}
 
-\item{useAssay}{A string specifying which assay in the SCE to use. Default 
+\item{useAssay}{A string specifying which assay in the SCE to use. Default
 \code{"counts"}.}
 
 \item{nNeighbors}{Number of nearest neighbors used to calculate density for
 doublet detection. Default \code{50}.}
 
-\item{simDoublets}{Number of simulated doublets created for doublet 
+\item{simDoublets}{Number of simulated doublets created for doublet
 detection. Default \code{10000}.}
 
-\item{seed}{Seed for the random number generator, can be set to \code{NULL}. 
+\item{seed}{Seed for the random number generator, can be set to \code{NULL}.
 Default \code{12345}.}
 
-\item{BPPARAM}{A \code{\link[BiocParallel]{BiocParallelParam-class}} object 
-specifying whether the neighbour searches should be parallelized. Default 
-\code{BiocParallel::SerialParam()}.}
+\item{BPPARAM}{A \code{\link[BiocParallel]{BiocParallelParam-class}} object
+specifying whether the neighbour searches should be parallelized. Default
+\code{BiocParallel::SerialParam(RNGseed = seed)}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with the
@@ -46,10 +46,10 @@ A wrapper function for \link[scDblFinder]{scDblFinder}. Identify
  profiles. Generate a doublet score for each cell.
 }
 \details{
-This function is a wrapper function for 
-\link[scDblFinder]{scDblFinder}. \code{runScDblFinder} runs 
-\link[scDblFinder]{scDblFinder} for each sample within \code{inSCE} 
-iteratively. The resulting doublet scores for all cells will be appended to 
+This function is a wrapper function for
+\link[scDblFinder]{scDblFinder}. \code{runScDblFinder} runs
+\link[scDblFinder]{scDblFinder} for each sample within \code{inSCE}
+iteratively. The resulting doublet scores for all cells will be appended to
 the \code{\link{colData}} of \code{inSCE}.
 }
 \examples{
@@ -62,6 +62,6 @@ Lun ATL (2018). Detecting doublet cells with scran.
  \url{https://ltla.github.io/SingleCellThoughts/software/doublet_detection/bycell.html}
 }
 \seealso{
-\code{\link[scDblFinder]{scDblFinder}}, 
+\code{\link[scDblFinder]{scDblFinder}},
 \code{\link{plotScDblFinderResults}}, \code{\link{runCellQC}}
 }
