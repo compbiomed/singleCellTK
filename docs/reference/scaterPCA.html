@@ -19,7 +19,7 @@ object."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mat
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.16.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.18.0</span>
       </span>
     </div>
 
@@ -302,15 +302,15 @@ updated in <code>reducedDim(inSCE, reducedDimName)</code>.</p>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runModelGeneVar.html">runModelGeneVar</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"modelGeneVar"</span>, hvgNumber <span class="op">=</span> <span class="fl">100</span>,</span></span>
 <span class="r-in"><span>                 featureSubsetName <span class="op">=</span> <span class="st">"hvf"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:33:47 2025 ... Feature subset variable 'hvf' created.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:42:33 2025 ... Feature subset variable 'hvf' created.</span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">scaterPCA</span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                 useFeatureSubset <span class="op">=</span> <span class="st">"hvf"</span>, nComponents <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:33:47 2025 ... Computing Scater PCA.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:42:33 2025 ... Computing Scater PCA.</span>
 <span class="r-in"><span>                 </span></span>
 <span class="r-in"><span><span class="co"># Alternatively, let the scater PCA function select the top variable genes</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">scaterPCA</span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                 useFeatureSubset <span class="op">=</span> <span class="cn">NULL</span>, ntop <span class="op">=</span> <span class="fl">100</span>, nComponents <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:33:47 2025 ... Computing Scater PCA.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:42:33 2025 ... Computing Scater PCA.</span>
 </code></pre></div>
     </div>
   </div>

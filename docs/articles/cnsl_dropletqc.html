@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.16.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.18.0</span>
       </span>
     </div>
 
@@ -332,10 +332,10 @@ function <code><a href="../reference/runDropletQC.html">runDropletQC()</a></code
 algorithms will be run.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDropletQC.html">runDropletQC</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Thu Feb 13 11:08:32 2025 ... Running 'perCellQCMetrics'</span></span></code></pre>
-<pre><code><span><span class="co">## Thu Feb 13 11:08:32 2025 ...... Attempting to find mitochondrial genes by identifying features in 'rownames' that match mitochondrial genes from reference 'human' and ID type 'ensembl'.</span></span></code></pre>
-<pre><code><span><span class="co">## Thu Feb 13 11:08:36 2025 ... Running 'emptyDrops'</span></span></code></pre>
-<pre><code><span><span class="co">## Thu Feb 13 11:08:57 2025 ... Running 'barcodeRanks'</span></span></code></pre>
+<pre><code><span><span class="co">## Wed Apr 23 12:13:23 2025 ... Running 'perCellQCMetrics'</span></span></code></pre>
+<pre><code><span><span class="co">## Wed Apr 23 12:13:23 2025 ...... Attempting to find mitochondrial genes by identifying features in 'rownames' that match mitochondrial genes from reference 'human' and ID type 'ensembl'.</span></span></code></pre>
+<pre><code><span><span class="co">## Wed Apr 23 12:13:26 2025 ... Running 'emptyDrops'</span></span></code></pre>
+<pre><code><span><span class="co">## Wed Apr 23 12:13:42 2025 ... Running 'barcodeRanks'</span></span></code></pre>
 <p>If users choose to only run a specific set of algorithms, they can
 specify which to run with the <code>algorithms</code> parameter.</p>
 <p>After running QC functions with SCTK, the output will be stored in
@@ -1017,7 +1017,7 @@ documentation</a>.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.4.2 (2024-10-31)</span></span>
 <span><span class="co">## Platform: x86_64-apple-darwin20</span></span>
-<span><span class="co">## Running under: macOS Sequoia 15.3</span></span>
+<span><span class="co">## Running under: macOS Sequoia 15.4</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRblas.0.dylib </span></span>
@@ -1036,7 +1036,7 @@ documentation</a>.</p>
 <span><span class="co">## other attached packages:</span></span>
 <span><span class="co">##  [1] cowplot_1.1.3               BiocFileCache_2.14.0       </span></span>
 <span><span class="co">##  [3] dbplyr_2.5.0                dplyr_1.1.4                </span></span>
-<span><span class="co">##  [5] singleCellTK_2.16.1         DelayedArray_0.32.0        </span></span>
+<span><span class="co">##  [5] singleCellTK_2.18.0         DelayedArray_0.32.0        </span></span>
 <span><span class="co">##  [7] SparseArray_1.6.1           S4Arrays_1.6.0             </span></span>
 <span><span class="co">##  [9] abind_1.4-8                 Matrix_1.7-2               </span></span>
 <span><span class="co">## [11] SingleCellExperiment_1.28.1 SummarizedExperiment_1.36.0</span></span>
@@ -1061,7 +1061,7 @@ documentation</a>.</p>
 <span><span class="co">##  [25] plyr_1.8.9                cachem_1.1.0             </span></span>
 <span><span class="co">##  [27] lifecycle_1.0.4           iterators_1.0.14         </span></span>
 <span><span class="co">##  [29] pkgconfig_2.0.3           rsvd_1.0.5               </span></span>
-<span><span class="co">##  [31] R6_2.6.0                  fastmap_1.2.0            </span></span>
+<span><span class="co">##  [31] R6_2.6.1                  fastmap_1.2.0            </span></span>
 <span><span class="co">##  [33] GenomeInfoDbData_1.2.13   clue_0.3-66              </span></span>
 <span><span class="co">##  [35] digest_0.6.37             colorspace_2.1-1         </span></span>
 <span><span class="co">##  [37] AnnotationDbi_1.68.0      scater_1.34.0            </span></span>
@@ -1098,7 +1098,7 @@ documentation</a>.</p>
 <span><span class="co">##  [99] yaml_2.3.10               kableExtra_1.4.0         </span></span>
 <span><span class="co">## [101] evaluate_1.0.3            codetools_0.2-20         </span></span>
 <span><span class="co">## [103] tibble_3.2.1              graph_1.84.1             </span></span>
-<span><span class="co">## [105] cli_3.6.3                 xtable_1.8-4             </span></span>
+<span><span class="co">## [105] cli_3.6.4                 xtable_1.8-4             </span></span>
 <span><span class="co">## [107] reticulate_1.40.0         systemfonts_1.2.1        </span></span>
 <span><span class="co">## [109] munsell_0.5.1             jquerylib_0.1.4          </span></span>
 <span><span class="co">## [111] Rcpp_1.0.14               png_0.1-8                </span></span>

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.16.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.18.0</span>
       </span>
     </div>
 
@@ -344,12 +344,12 @@ install and set up docker in <a href="https://docs.docker.com/desktop/windows/in
 <h4 id="running-sctk-qc-pipeline-using-docker-image">Running SCTK-QC pipeline using docker image<a class="anchor" aria-label="anchor" href="#running-sctk-qc-pipeline-using-docker-image"></a>
 </h4>
 <p>The Docker image can be obtained by running:</p>
-<pre><code>docker pull campbio/sctk_qc:2.16.1</code></pre>
+<pre><code>docker pull campbio/sctk_qc:2.18.0</code></pre>
 <p>The usage of each argument is the same as running command line
 analysis. Here is an example code to perform QC on CellRangerV3 data
 with SCTK docker:</p>
 <pre><code>docker run --rm -v /path/to/data:/SCTK_docker \
-  -it campbio/sctk_qc:2.16.1 \
+  -it campbio/sctk_qc:2.18.0 \
   -b /SCTK_docker/cellranger_folder \
   -P CellRangerV3 \
   -s SampleName \
@@ -376,7 +376,7 @@ parameters.</p>
 before can install it following the instruction <a href="https://sylabs.io/guides/3.1/user-guide/installation.html" class="external-link">here</a>.
 The Singularity image for SCTK-QC can be easily built using Docker Hub
 as a source:</p>
-<pre><code>singularity pull docker://campbio/sctk_qc:2.16.1</code></pre>
+<pre><code>singularity pull docker://campbio/sctk_qc:2.18.0</code></pre>
 <p>The usage of singleCellTK Singularity image is very similar to that
 of Docker. In Singularity 3.0+, the mount volume is <a href="https://sylabs.io/guides/3.1/user-guide/bind_paths_and_mounts.html" class="external-link">automatically
 overlaid</a>.</p>
@@ -395,7 +395,7 @@ mount volume, which is the path that contains the dataset and will be
 used to store the output of QC pipeline. The example is shown as
 below:</p>
 <pre><code>singularity run --home=/PathToSanitizedHome \
-  --bind /PathToData:/data sctk_qc_2.16.1.sif \
+  --bind /PathToData:/data sctk_qc_2.18.0.sif \
   -b /SCTK_docker/cellranger_folder \
   -P CellRangerV3 \
   -s SampleName \
@@ -425,7 +425,7 @@ shown below:</p>
 #$ -l cpu_arch=broadwell|haswell|skylake|cascadelake
 
 singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run'
-  --bind /PathToData:/data sctk_qc_2.16.1.sif \
+  --bind /PathToData:/data sctk_qc_2.18.0.sif \
   -b /SCTK_docker/cellranger_folder \
   -P CellRangerV3 \
   -s SampleName \

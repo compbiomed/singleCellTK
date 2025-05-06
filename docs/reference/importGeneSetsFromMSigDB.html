@@ -19,7 +19,7 @@ downstream quality control and analysis functions in singleCellTK."><!-- mathjax
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.16.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.18.0</span>
       </span>
     </div>
 
@@ -240,7 +240,7 @@ Default is <code>"H"</code>.</p></dd>
 
 <dt id="arg-species">species<a class="anchor" aria-label="anchor" href="#arg-species"></a></dt>
 <dd><p>Character. Species available can be found using the function
-<code><a href="https://igordot.github.io/msigdbr/reference/msigdbr_show_species.html" class="external-link">msigdbr_show_species</a></code>. Default <code>"Homo sapiens"</code>.</p></dd>
+<code><a href="https://igordot.github.io/msigdbr/reference/msigdbr_species.html" class="external-link">msigdbr_species</a></code>. Default <code>"Homo sapiens"</code>.</p></dd>
 
 
 <dt id="arg-mapping">mapping<a class="anchor" aria-label="anchor" href="#arg-mapping"></a></dt>
@@ -305,9 +305,12 @@ GeneSetCollection objects.</p></div>
 <span class="r-in"><span>                                species <span class="op">=</span> <span class="st">"Homo sapiens"</span>,</span></span>
 <span class="r-in"><span>                                mapping <span class="op">=</span> <span class="st">"gene_symbol"</span>,</span></span>
 <span class="r-in"><span>                                by <span class="op">=</span> <span class="st">"feature_name"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:28:05 2025 .. Importing 'H' gene sets (n = 50)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:28:05 2025 .... Completed 50 gene sets for 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:28:05 2025 .. Matching gene sets to 'feature_name'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The 'msigdbdf' package must be installed to access the full dataset.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Please run the following command to install the 'msigdbdf' package:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> install.packages('msigdbdf', repos = 'https://igordot.r-universe.dev')</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:37:55 2025 .. Importing 'H' gene sets (n = 50)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:37:55 2025 .... Completed 50 gene sets for 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:37:55 2025 .. Matching gene sets to 'feature_name'</span>
 </code></pre></div>
     </div>
   </div>

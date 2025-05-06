@@ -19,7 +19,7 @@ and project them onto the MST."><!-- mathjax --><script src="https://cdnjs.cloud
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.16.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.18.0</span>
       </span>
     </div>
 
@@ -243,11 +243,11 @@ colored on a cell 2D embedding, and the MST path drawn on it.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mouseBrainSubsetSCE</span> <span class="op">&lt;-</span> <span class="fu"><a href="runTSCAN.html">runTSCAN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">mouseBrainSubsetSCE</span>,</span></span>
 <span class="r-in"><span>                                useReducedDim <span class="op">=</span> <span class="st">"PCA_logcounts"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:00 2025 ... Running 'scran SNN clustering' with 'louvain' algorithm</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:00 2025 ...   Identified 2 clusters</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:00 2025 ... Running TSCAN to estimate pseudotime</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:01 2025 ...   Clusters involved in path index 2 are: 1, 2</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:01 2025 ...   Number of estimated paths is 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:17 2025 ... Running 'scran SNN clustering' with 'louvain' algorithm</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:18 2025 ...   Identified 2 clusters</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:18 2025 ... Running TSCAN to estimate pseudotime</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:18 2025 ...   Clusters involved in path index 2 are: 1, 2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:18 2025 ...   Number of estimated paths is 1</span>
 <span class="r-in"><span><span class="fu">plotTSCANResults</span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">mouseBrainSubsetSCE</span>,</span></span>
 <span class="r-in"><span>                 useReducedDim <span class="op">=</span> <span class="st">"TSNE_logcounts"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Scale for <span style="color: #00BB00;">colour</span> is already present.</span>

@@ -18,7 +18,7 @@ general quality control metrics for each cell in the count matrix."><!-- mathjax
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.16.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.18.0</span>
       </span>
     </div>
 
@@ -384,8 +384,8 @@ specified are:</p><ul><li><p>A combination of <code>mitoRef</code> and <code>mit
 <span class="r-in"><span><span class="va">mito.ix</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^MT-"</span>, <span class="fu">rowData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">feature_name</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">geneSet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Mito"</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="va">mito.ix</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runPerCellQC</span><span class="op">(</span><span class="va">sce</span>, geneSetList <span class="op">=</span> <span class="va">geneSet</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:32:19 2025 ... Running 'perCellQCMetrics'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:32:19 2025 ...... Attempting to find mitochondrial genes by identifying features in 'rownames' that match mitochondrial genes from reference 'human' and ID type 'ensembl'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:41:26 2025 ... Running 'perCellQCMetrics'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:41:26 2025 ...... Attempting to find mitochondrial genes by identifying features in 'rownames' that match mitochondrial genes from reference 'human' and ID type 'ensembl'.</span>
 </code></pre></div>
     </div>
   </div>

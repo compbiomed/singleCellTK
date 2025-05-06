@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.16.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.18.0</span>
       </span>
     </div>
 
@@ -365,30 +365,30 @@ decontaminated counts will be added as an assay called 'decontXCounts'.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runDecontX</span><span class="op">(</span><span class="va">sce</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>,<span class="fl">20</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:25 2025 ... Running 'DecontX'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:38 2025 ... Running 'DecontX'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting DecontX</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:25 2025 .. Analyzing all cells</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:25 2025 .... Generating UMAP and estimating cell types</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 .... Estimating contamination</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 ...... Completed iteration: 10 | converge: 0.01985</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 ...... Completed iteration: 20 | converge: 0.01116</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 ...... Completed iteration: 30 | converge: 0.006593</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 ...... Completed iteration: 40 | converge: 0.003919</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 ...... Completed iteration: 50 | converge: 0.002691</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 ...... Completed iteration: 60 | converge: 0.002093</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 ...... Completed iteration: 70 | converge: 0.001932</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 ...... Completed iteration: 80 | converge: 0.001769</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 ...... Completed iteration: 90 | converge: 0.001605</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 ...... Completed iteration: 100 | converge: 0.00145</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 ...... Completed iteration: 110 | converge: 0.001304</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 ...... Completed iteration: 120 | converge: 0.001168</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 ...... Completed iteration: 130 | converge: 0.001041</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 ...... Completed iteration: 134 | converge: 0.0009927</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Feb 13 10:31:29 2025 .. Calculating final decontaminated matrix</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:38 2025 .. Analyzing all cells</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:39 2025 .... Generating UMAP and estimating cell types</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 .... Estimating contamination</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 ...... Completed iteration: 10 | converge: 0.01985</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 ...... Completed iteration: 20 | converge: 0.01116</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 ...... Completed iteration: 30 | converge: 0.006593</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 ...... Completed iteration: 40 | converge: 0.003919</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 ...... Completed iteration: 50 | converge: 0.002691</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 ...... Completed iteration: 60 | converge: 0.002093</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 ...... Completed iteration: 70 | converge: 0.001932</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 ...... Completed iteration: 80 | converge: 0.001769</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 ...... Completed iteration: 90 | converge: 0.001605</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 ...... Completed iteration: 100 | converge: 0.00145</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 ...... Completed iteration: 110 | converge: 0.001304</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 ...... Completed iteration: 120 | converge: 0.001168</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 ...... Completed iteration: 130 | converge: 0.001041</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 ...... Completed iteration: 134 | converge: 0.0009927</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Wed Apr 23 11:40:42 2025 .. Calculating final decontaminated matrix</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 4.091687 secs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 3.68077 secs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 </code></pre></div>
     </div>

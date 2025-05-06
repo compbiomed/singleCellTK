@@ -1,3 +1,9 @@
+Changes in Version 2.18.0 (2025-04-15)
+================================================================================
+* Updated call to msigdbr to work with newer version
+* Updated version to match Bioconductor 3.21
+* Fixed reproducibility with scDblFinder
+
 Changes in Version 2.16.1 (2024-02-12)
 ================================================================================
 * Fixed decontX/soupX webapp error
