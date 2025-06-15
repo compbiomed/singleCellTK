@@ -475,3 +475,28 @@ getGenesetNamesFromCollection <- function(inSCE, geneSetCollectionName) {
                      code)
   }
 }
+
+#' Add together two numbers
+#'
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param clusterName Input 
+#' @param From value to describe what to map
+#' @param To value to describe what to map to
+#' @param newCluster value to change name of cluster
+#' @return inSCE object with changed values
+renameClusters <- function(inSCE, clusterName, from, to, newClusterName = NULL) {
+  
+  # Retrieve cluster label and rename values
+  clusterLabels <- as.factor(colData(inSCE)[,clusterName])
+  renamedLabels <- plyr::mapvalues(clusterLabels, from = from, to = to)
+  
+  # Set clusters in the same or new variable
+  if (!is.null(newClusterName)) {
+    colData(inSCE)[, newClusterName] <- renamedLabels
+  } else {
+    colData(inSCE)[, clusterName] <- renamedLabels
+  }
+  
+  return(inSCE)
+  
+}
