@@ -1,7 +1,14 @@
+source("module_renameCluster.R")
 shinyPanelCluster <- fluidPage(
   tags$script("Shiny.addCustomMessageHandler('close_dropDownClust', function(x){
                   $('html').click();
                 });"),
+  tags$script('
+  Shiny.addCustomMessageHandler("button_pressed", function(message) {
+    Shiny.setInputValue("button_pressed", message, {priority: "event"});
+  });
+'),
+  
   tags$div(
     class = "container",
     h1("Clustering"),
@@ -134,6 +141,7 @@ shinyPanelCluster <- fluidPage(
                 inline = TRUE
               )
             ),
+            renameClusterUI(id = "renameCluster_cluster"),
             column(
               width = 9,
               fluidRow(
@@ -152,6 +160,7 @@ shinyPanelCluster <- fluidPage(
           ),
           hr(),
           br(),
+          
           shinyjqui::jqui_resizable(
             plotlyOutput("clustVisPlot")
           )

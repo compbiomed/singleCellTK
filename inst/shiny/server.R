@@ -3749,7 +3749,6 @@ shinyServer(function(input, output, session) {
           })
         })
       }
-      # Show downstream analysis options
       callModule(module = nonLinearWorkflow, id = "nlw-cl", parent = session,
                  de = TRUE, fm = TRUE, pa = TRUE, cv = TRUE, tj = TRUE)
     }
@@ -6413,10 +6412,56 @@ shinyServer(function(input, output, session) {
     })
     session$sendCustomMessage("close_dropDownFS", "")
   })
+  # Corrected syntax with proper closing parenthesis
+  observeEvent(input$button_pressed, {
+    req(vals$counts)
+    choice <- NULL
+    if (input$clustVisChoicesType == 1) {
+      # Use result
+      if (is.null(input$clustVisRes) ||
+          input$clustVisRes == "") {
+        shinyalert::shinyalert("Error!", "Select the clusters to plot",
+                               type = "error")
+      }
+      choice <- input$clustVisRes
+    } else if (input$clustVisChoicesType == 2) {
+      if (is.null(input$clustVisCol) ||
+          input$clustVisCol == "") {
+        shinyalert::shinyalert("Error!", "Select the clusters to plot",
+                               type = "error")
+      }
+      choice <- input$clustVisCol
+    }
+    if (is.null(input$clustVisReddim) || input$clustVisReddim == "") {
+      shinyalert::shinyalert("Error!",
+                             "No reduction selected. Select one or run dimension reduction first",
+                             type = "error")
+    }
+    if (!is.null(choice) && choice != "" &&
+        !is.null(input$clustVisReddim) && input$clustVisReddim != "") {
+      output$clustVisPlot <- renderPlotly({
+        isolate({
+          plotSCEDimReduceColData(inSCE = vals$counts,
+                                  colorBy = choice,
+                                  conditionClass = "factor",
+                                  reducedDimName = input$clustVisReddim,
+                                  labelClusters = TRUE,
+                                  dim1 = 1, dim2 = 2,
+                                  legendTitle = choice)
+        })
+      })
+    }
+    session$sendCustomMessage("close_dropDownClust", "")
+  })
+  
+  callModule(module = renameClusterServer, id = "renameCluster_featureDim", inSCE = vals, isCluster = FALSE, clustRedDim = NULL, clustVisCol = NULL)
+  callModule(module = renameClusterServer, id = "renameCluster_cluster", inSCE = vals, isCluster = TRUE, clustRedDim = input$clustVisReddim, clustVisCol = input$clustVisRes)
   
   observeEvent(input$closeDropDownFS, {
     session$sendCustomMessage("close_dropDownFS", "")
   })
+  
+  
   
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression ####
