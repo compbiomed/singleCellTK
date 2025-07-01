@@ -1,46 +1,46 @@
 #' Run EnrichR on SCE object
-#' @details 
-#' EnrichR works by querying the specified \code{features} to its online 
-#' databases, thus it requires the Internet connection. 
-#' 
-#' Available \code{db} options could be shown by running 
+#' @details
+#' EnrichR works by querying the specified \code{features} to its online
+#' databases, thus it requires the Internet connection.
+#'
+#' Available \code{db} options could be shown by running
 #' \code{enrichR::listEnrichrDbs()$libraryName}
-#' 
-#' This function checks for the existence of features in the SCE object. When 
-#' \code{features} do not have a match in \code{rownames(inSCE)}, users may 
-#' try to specify \code{by} to pass the check. 
-#' 
-#' EnrichR expects gene symbols/names as the input (i.e. Ensembl ID might not 
-#' work). When specified \code{features} are not qualified for this, users may 
-#' try to specify \code{featureName} to change the identifier type to pass to 
-#' EnrichR. 
+#'
+#' This function checks for the existence of features in the SCE object. When
+#' \code{features} do not have a match in \code{rownames(inSCE)}, users may
+#' try to specify \code{by} to pass the check.
+#'
+#' EnrichR expects gene symbols/names as the input (i.e. Ensembl ID might not
+#' work). When specified \code{features} are not qualified for this, users may
+#' try to specify \code{featureName} to change the identifier type to pass to
+#' EnrichR.
 #' @param inSCE A \linkS4class{SingleCellExperiment} object.
-#' @param features Character vector, selected genes for enrichment analysis. 
+#' @param features Character vector, selected genes for enrichment analysis.
 #' @param analysisName A string that identifies each specific analysis.
-#' @param db Character vector. Selected database name(s) from the enrichR 
-#' database list. If \code{NULL} then EnrichR will be run on all the available 
+#' @param db Character vector. Selected database name(s) from the enrichR
+#' database list. If \code{NULL} then EnrichR will be run on all the available
 #' databases on the enrichR database. See details. Default \code{NULL}
-#' @param by Character. From where should we find the \code{features}? 
+#' @param by Character. From where should we find the \code{features}?
 #' \code{"rownames"} for from \code{rownames(inSCE)}, otherwise, from a column
-#' of feature metadata (\code{rowData(inSCE)[[by]]}). See details. Default 
+#' of feature metadata (\code{rowData(inSCE)[[by]]}). See details. Default
 #' \code{"rownames"}.
 #' @param featureName Character. Indicates the actual feature identifiers to be
-#' passed to EnrichR. Can be \code{"rownames"}, a column in feature metadata 
+#' passed to EnrichR. Can be \code{"rownames"}, a column in feature metadata
 #' (\code{rowData(inSCE)[[featureName]]}), or a character vector with its length
 #' equals to \code{nrow(inSCE)}. See details. Default \code{"rownames"}.
-#' @return Updates \code{inSCE} metadata with a data.frame of enrichment terms 
+#' @return Updates \code{inSCE} metadata with a data.frame of enrichment terms
 #' overlapping in the respective databases along with p-values, z-scores etc.
 #' @export
 #' @seealso \code{\link{getEnrichRResult}}
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' if (Biobase::testBioCConnection()) {
-#'   mouseBrainSubsetSCE <- runEnrichR(mouseBrainSubsetSCE, features = "Cmtm5", 
-#'                                     db = "GO_Cellular_Component_2017",
+#'   mouseBrainSubsetSCE <- runEnrichR(mouseBrainSubsetSCE, features =  c("Vamp7","Cntn2","Olig1"),
+#'                                     db = "GO_Cellular_Component_2025",
 #'                                     analysisName = "analysis1")
 #' }
-#' 
-runEnrichR <- function(inSCE, 
+#'
+runEnrichR <- function(inSCE,
                        features,
                        analysisName,
                        db = NULL,
@@ -110,27 +110,27 @@ runEnrichR <- function(inSCE,
     db.notFound <- db[!db %in% enrdb]
     stop("Database(s) ", paste(db.notFound, collapse = ", "), " were not found in Enrichr.")
   }
-  
+
   enriched <- enrichR::enrichr(features, db)
   enriched <- data.frame(data.table::rbindlist(enriched, use.names = TRUE,
                                                fill = TRUE,
                                                idcol = "Database_selected"))
-  
+
   if(!is.null(enriched) && nrow(enriched) > 0) {
 
     #sort the results based on p-values
     enriched <- enriched[order(enriched$P.value, decreasing = FALSE), ]
-    
+
     getEnrichRResult(inSCE, analysisName) <- list(result = enriched,
                                                   param = list(
                                                     features = features,
                                                     by = by,
                                                     db = db
-                                                  )) 
+                                                  ))
   } else {
     stop("No enrichments identified. No enrichment results were created.")
   }
-  
+
   return(inSCE)
 }
 
@@ -143,26 +143,26 @@ runEnrichR <- function(inSCE,
 #' For setter method, \code{inSCE} with EnrichR results updated.
 #' @export
 #' @seealso \code{\link{runEnrichR}}
-#' @examples 
+#' @examples
 #' data("mouseBrainSubsetSCE")
 #' if (Biobase::testBioCConnection()) {
-#'   mouseBrainSubsetSCE <- runEnrichR(mouseBrainSubsetSCE, features = "Cmtm5", 
-#'                                     db = "GO_Cellular_Component_2017",
+#'   mouseBrainSubsetSCE <- runEnrichR(mouseBrainSubsetSCE, features = c("Vamp7","Cntn2","Olig1"),
+#'                                     db = "GO_Cellular_Component_2025",
 #'                                     analysisName = "analysis1")
 #'   result <- getEnrichRResult(mouseBrainSubsetSCE, "analysis1")
 #' }
-setGeneric("getEnrichRResult<-", function(inSCE, analysisName, value) 
+setGeneric("getEnrichRResult<-", function(inSCE, analysisName, value)
   standardGeneric("getEnrichRResult<-"))
 
 #' @rdname getEnrichRResult
 #' @export
-setGeneric("getEnrichRResult", function(inSCE, analysisName) 
+setGeneric("getEnrichRResult", function(inSCE, analysisName)
   standardGeneric("getEnrichRResult"))
 
 #' @rdname getEnrichRResult
 #' @export
-setMethod("getEnrichRResult", 
-          "SingleCellExperiment", 
+setMethod("getEnrichRResult",
+          "SingleCellExperiment",
           function(inSCE, analysisName){
             if (!"runEnrichR" %in% names(S4Vectors::metadata(inSCE)$sctk)) {
               stop("EnrichR analysis not performed yet. ",
@@ -176,8 +176,8 @@ setMethod("getEnrichRResult",
 
 #' @rdname getEnrichRResult
 #' @export
-setReplaceMethod("getEnrichRResult", 
-                 c("SingleCellExperiment"), 
+setReplaceMethod("getEnrichRResult",
+                 c("SingleCellExperiment"),
                  function(inSCE, analysisName, value) {
                    if (is.null(analysisName)) {
                      stop("Have to specify analysisName.")
