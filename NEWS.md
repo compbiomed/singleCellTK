@@ -1,3 +1,7 @@
+Changes in Version 2.18.1 (2025-07-01)
+================================================================================
+* Updated enrichR examples
+
 Changes in Version 2.18.0 (2025-04-15)
 ================================================================================
 * Updated call to msigdbr to work with newer version
