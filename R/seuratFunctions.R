@@ -2133,8 +2133,13 @@ plotSeuratGenes <- function(inSCE,
     seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay, copyReducedDim = TRUE)
     seurat.version <- .getSeuratObjectMajorVersion(seuratObject)
 
-    seuratObject <-
-        Seurat::ScaleData(seuratObject, features = features)
+    if(plotType %in% c("dot", "heatmap")){
+        if (length(features) < 2) {
+            stop("At least 2 features are required for this plotType.")
+        }
+        seuratObject <-
+            Seurat::ScaleData(seuratObject, features = features)
+    }
 
     indices <- list()
     cells <- list()
