@@ -60,8 +60,8 @@ EnrichR.
 \examples{
 data("mouseBrainSubsetSCE")
 if (Biobase::testBioCConnection()) {
-  mouseBrainSubsetSCE <- runEnrichR(mouseBrainSubsetSCE, features = "Cmtm5",
-                                    db = "GO_Cellular_Component_2017",
+  mouseBrainSubsetSCE <- runEnrichR(mouseBrainSubsetSCE, features =  c("Vamp7","Cntn2","Olig1"),
+                                    db = "GO_Cellular_Component_2025",
                                     analysisName = "analysis1")
 }
 
