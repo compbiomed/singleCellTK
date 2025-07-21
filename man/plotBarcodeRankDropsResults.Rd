@@ -20,10 +20,10 @@ plotBarcodeRankDropsResults(
 dimension reduction components or a variable with saved results from
 \code{\link{runBarcodeRankDrops}}. Required.}
 
-\item{sample}{Character vector or colData variable name. Indicates which 
+\item{sample}{Character vector or colData variable name. Indicates which
 sample each cell belongs to. Default \code{NULL}.}
 
-\item{defaultTheme}{Removes grid in plot and sets axis title size to 
+\item{defaultTheme}{Removes grid in plot and sets axis title size to
 \code{10} when \code{TRUE}. Default \code{TRUE}.}
 
 \item{dotSize}{Size of dots. Default \code{0.5}.}
@@ -41,7 +41,7 @@ list of .ggplot objects
 }
 \description{
 A wrapper function which visualizes outputs from the
-\code{runBarcodeRankDrops} function stored in the \code{metadata} slot of 
+\code{runBarcodeRankDrops} function stored in the \code{metadata} slot of
 the \linkS4class{SingleCellExperiment} object.
 }
 \examples{

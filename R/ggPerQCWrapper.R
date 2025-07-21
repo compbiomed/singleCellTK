@@ -5,52 +5,52 @@
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runPerCellQC}}. Required.
-#' @param sample Character vector or colData variable name. Indicates which 
+#' @param sample Character vector or colData variable name. Indicates which
 #' sample each cell belongs to. Default \code{NULL}.
 #' @param groupBy Groupings for each numeric value. Users may input a vector
-#' equal length to the number of the samples in \code{inSCE}, or can be 
+#' equal length to the number of the samples in \code{inSCE}, or can be
 #' retrieved from the colData slot. Default \code{NULL}.
-#' @param violin Boolean. If \code{TRUE}, will plot the violin plot. Default 
+#' @param violin Boolean. If \code{TRUE}, will plot the violin plot. Default
 #' \code{TRUE}.
-#' @param boxplot Boolean. If \code{TRUE}, will plot boxplots for each violin 
+#' @param boxplot Boolean. If \code{TRUE}, will plot boxplots for each violin
 #' plot. Default \code{FALSE}.
 #' @param dots Boolean. If \code{TRUE}, will plot dots for each violin plot.
 #' Default \code{TRUE}.
 #' @param dotSize Size of dots. Default \code{0.5}.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
-#' violin plot. Options are \code{"mean"} or \code{"median"}. Default 
+#' violin plot. Options are \code{"mean"} or \code{"median"}. Default
 #' \code{"median"}.
 #' @param summaryTextSize The text size of the summary statistic displayed
 #' above the violin plot. Default \code{3}.
 #' @param baseSize The base font size for all text. Default \code{15}.
-#' Can be overwritten by \code{titleSize}, \code{axisSize}, and 
+#' Can be overwritten by \code{titleSize}, \code{axisSize}, and
 #' \code{axisLabelSize}.
 #' @param titleSize Size of title of plot. Default \code{NULL}.
 #' @param axisSize Size of x/y-axis ticks. Default \code{NULL}.
 #' @param axisLabelSize Size of x/y-axis labels. Default \code{NULL}.
 #' @param transparency Transparency of the dots, values will be 0-1. Default \code{1}.
-#' @param defaultTheme Removes grid in plot and sets axis title size to 
+#' @param defaultTheme Removes grid in plot and sets axis title size to
 #' \code{10} when \code{TRUE}. Default \code{TRUE}.
-#' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or 
-#' \code{"none"}. \code{"all"} will combine all plots into a single ggplot 
-#' object, while \code{"sample"} will output a list of plots separated by 
+#' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or
+#' \code{"none"}. \code{"all"} will combine all plots into a single ggplot
+#' object, while \code{"sample"} will output a list of plots separated by
 #' sample. Default \code{"all"}.
-#' @param relHeights Relative heights of plots when combine is set. Default 
+#' @param relHeights Relative heights of plots when combine is set. Default
 #' \code{1}.
-#' @param relWidths Relative widths of plots when combine is set. Default 
+#' @param relWidths Relative widths of plots when combine is set. Default
 #' \code{1}.
-#' @param labelSamples Will label sample name in title of plot if \code{TRUE}. 
+#' @param labelSamples Will label sample name in title of plot if \code{TRUE}.
 #' Default \code{TRUE}.
-#' @param plotNCols Number of columns when plots are combined in a grid. Default 
+#' @param plotNCols Number of columns when plots are combined in a grid. Default
 #' \code{NULL}.
-#' @param plotNRows Number of rows when plots are combined in a grid. Default 
+#' @param plotNRows Number of rows when plots are combined in a grid. Default
 #' \code{NULL}.
-#' @param samplePerColumn If \code{TRUE}, when there are multiple samples and 
-#' combining by \code{"all"}, the output .ggplot will have plots from each 
+#' @param samplePerColumn If \code{TRUE}, when there are multiple samples and
+#' combining by \code{"all"}, the output .ggplot will have plots from each
 #' sample on a single column. Default \code{TRUE}.
-#' @param sampleRelHeights If there are multiple samples and combining by 
+#' @param sampleRelHeights If there are multiple samples and combining by
 #' \code{"all"}, the relative heights for each plot. Default \code{1}.
-#' @param sampleRelWidths If there are multiple samples and combining by 
+#' @param sampleRelWidths If there are multiple samples and combining by
 #' \code{"all"}, the relative widths for each plot. Default \code{1}.
 #' @return list of .ggplot objects
 #' @seealso \code{\link{runPerCellQC}}
@@ -89,13 +89,13 @@ plotRunPerCellQCResults <- function(inSCE,
     sample = rep(1, ncol(inSCE))
   }
   samples <- unique(sample)
-  
+
   if(combinePlot == "sample" && length(samples) == 1){
     warning("'combinePlot' was set to 'sample' but the sample was not set,
             or there is only one type of sample specified.")
     combinePlot = "all"
   }
-  
+
   if (length(samples) > 1) {
     combined.sum <- plotSCEViolinColData(
       inSCE=inSCE,
@@ -119,7 +119,7 @@ plotRunPerCellQCResults <- function(inSCE,
       combinePlot = "all",
       plotLabels = "none"
     )
-    
+
     combined.detected <- plotSCEViolinColData(
       inSCE=inSCE,
       coldata="detected",
@@ -164,12 +164,12 @@ plotRunPerCellQCResults <- function(inSCE,
       combinePlot = "all",
       plotLabels = "none"
     )
-    
+
     merged.plots <- list(combined.sum, combined.detected, combined.toppercent)
     names(merged.plots) <- c("Sum", "Detected", "TopPercent")
-    
+
     if (any(grepl(pattern="subsets_",names(colData(inSCE))
-    ) | grepl(pattern="mito_", names(colData(inSCE))))) { 
+    ) | grepl(pattern="mito_", names(colData(inSCE))))) {
       subsets <- grep(
         pattern="subsets_",
         names(colData(inSCE)), value=TRUE
@@ -179,7 +179,7 @@ plotRunPerCellQCResults <- function(inSCE,
         names(colData(inSCE)), value=TRUE
       )
       subsets <- c(subsets, mitos)
-      
+
       combined.subset <- lapply(subsets, function(x) {
         plotSCEViolinColData(
           inSCE=inSCE,
@@ -208,22 +208,22 @@ plotRunPerCellQCResults <- function(inSCE,
     } else {
       combined.subset <- NULL
     }
-    
+
     merged.plots <- list(Violin = merged.plots)
   }
-  
+
   res.list <- c()
   plotlist <- lapply(samples, function(x) {
     sampleInd <- which(sample == x)
     sampleSub <- sample[sampleInd]
     inSCESub <- inSCE[, sampleInd]
-    
+
     if(combinePlot == "sample" | combinePlot == "none" | length(samples) == 1){
       title = "Total counts per cell"
       if(labelSamples && length(samples) > 1){
         title = paste0(title, ", ", x)
       }
-      
+
       if(combinePlot == "sample" | combinePlot == "all"){
         baseSize = baseSize * 0.5
       }
@@ -249,7 +249,7 @@ plotRunPerCellQCResults <- function(inSCE,
         combinePlot="all"
       ))
       res.list <- c(res.list, violin.sum)
-      
+
       title = "Total features detected per cell"
       if(labelSamples && length(samples) > 1){
         title = paste0(title, ", ", x)
@@ -276,7 +276,7 @@ plotRunPerCellQCResults <- function(inSCE,
         combinePlot="all"
       ))
       res.list <- c(res.list, violin.detected)
-      
+
       topPattern <- grep(
         pattern="percent.top_50$",
         names(colData(inSCESub)), value=TRUE
@@ -308,7 +308,7 @@ plotRunPerCellQCResults <- function(inSCE,
       ))
       res.list <- c(res.list, violin.toppercent)
       names(res.list) <- c("Sum", "Detected", "TopPercent")
-      
+
       if (any(grepl(pattern="subsets_", names(colData(inSCESub))) |
               grepl(pattern="mito_", names(colData(inSCESub))))) {
         subsets <- grep(
@@ -320,7 +320,7 @@ plotRunPerCellQCResults <- function(inSCE,
           names(colData(inSCESub)), value=TRUE
         )
         subsets <- c(subsets, mitos)
-        
+
         violin.subset <- lapply(subsets, function(y) {
           title = paste0(y, " per cell")
           if(labelSamples && length(samples) > 1){
@@ -352,15 +352,15 @@ plotRunPerCellQCResults <- function(inSCE,
       } else {
         violin.subset <- NULL
       }
-      
+
       if (!is.null(violin.subset)) {
         res.list <- c(res.list, violin.subset)
       }
     }
-    
+
     return(res.list)
   })
-  
+
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
     if (combinePlot == "all") {
@@ -374,7 +374,7 @@ plotRunPerCellQCResults <- function(inSCE,
     plotlist <- unlist(plotlist, recursive = FALSE)
     relHeights <- 1
   }
-  
+
   if (!is.null(combinePlot)) {
     if (combinePlot %in% c("all", "sample")) {
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
@@ -393,17 +393,17 @@ plotRunPerCellQCResults <- function(inSCE,
 
 #' @title Plots for runEmptyDrops outputs.
 #' @description A wrapper function which visualizes outputs from the
-#' \code{\link{runEmptyDrops}} function stored in the \code{colData} slot of the 
+#' \code{\link{runEmptyDrops}} function stored in the \code{colData} slot of the
 #' \linkS4class{SingleCellExperiment} object.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runEmptyDrops}}. Required.
-#' @param sample Character vector or colData variable name. Indicates which 
+#' @param sample Character vector or colData variable name. Indicates which
 #' sample each cell belongs to. Default \code{NULL}.
-#' @param defaultTheme Removes grid in plot and sets axis title size to 
+#' @param defaultTheme Removes grid in plot and sets axis title size to
 #' \code{10} when \code{TRUE}. Default \code{TRUE}.
 #' @param fdrCutoff Numeric. Thresholds barcodes based on the FDR values from
-#' \code{\link{runEmptyDrops}} as "Empty Droplet" or "Putative Cell". Default 
+#' \code{\link{runEmptyDrops}} as "Empty Droplet" or "Putative Cell". Default
 #' \code{0.01}.
 #' @param dotSize Size of dots. Default \code{0.5}.
 #' @param titleSize Size of title of plot. Default \code{18}.
@@ -412,19 +412,19 @@ plotRunPerCellQCResults <- function(inSCE,
 #' @param legendSize size of legend. Default \code{15}.
 #' @param legendTitleSize size of legend title. Default \code{16}.
 #' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or object,
-#' \code{"none"}. \code{"all"} will combine all plots into a single .ggplot 
-#' while \code{"sample"} will output a list of plots separated by sample. 
+#' \code{"none"}. \code{"all"} will combine all plots into a single .ggplot
+#' while \code{"sample"} will output a list of plots separated by sample.
 #' Default \code{"all"}.
-#' @param relHeights Relative heights of plots when combine is set. Default 
+#' @param relHeights Relative heights of plots when combine is set. Default
 #' \code{1}.
-#' @param relWidths Relative widths of plots when combine is set. Default 
+#' @param relWidths Relative widths of plots when combine is set. Default
 #' \code{1}.
-#' @param samplePerColumn If \code{TRUE}, when there are multiple samples and 
-#' combining by \code{"all"}, the output .ggplot will have plots from each 
+#' @param samplePerColumn If \code{TRUE}, when there are multiple samples and
+#' combining by \code{"all"}, the output .ggplot will have plots from each
 #' sample on a single column. Default \code{TRUE}.
-#' @param sampleRelHeights If there are multiple samples and combining by 
+#' @param sampleRelHeights If there are multiple samples and combining by
 #' \code{"all"}, the relative heights for each plot. Default \code{1}.
-#' @param sampleRelWidths If there are multiple samples and combining by 
+#' @param sampleRelWidths If there are multiple samples and combining by
 #' \code{"all"}, the relative widths for each plot. Default \code{1}.
 #' @return list of .ggplot objects
 #' @seealso \code{\link{runEmptyDrops}}, \code{\link{plotEmptyDropsScatter}}
@@ -471,7 +471,7 @@ plotEmptyDropsResults <- function(inSCE,
     sampleRelHeights = sampleRelHeights,
     sampleRelWidths = sampleRelWidths
   )
-  
+
   res.list <- list(scatterEmptyDrops)
   names(res.list) <- c("scatterEmptyDrops")
   return(res.list)
@@ -479,14 +479,14 @@ plotEmptyDropsResults <- function(inSCE,
 
 #' @title Plots for runBarcodeRankDrops outputs.
 #' @description A wrapper function which visualizes outputs from the
-#' \code{runBarcodeRankDrops} function stored in the \code{metadata} slot of 
+#' \code{runBarcodeRankDrops} function stored in the \code{metadata} slot of
 #' the \linkS4class{SingleCellExperiment} object.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runBarcodeRankDrops}}. Required.
-#' @param sample Character vector or colData variable name. Indicates which 
+#' @param sample Character vector or colData variable name. Indicates which
 #' sample each cell belongs to. Default \code{NULL}.
-#' @param defaultTheme Removes grid in plot and sets axis title size to 
+#' @param defaultTheme Removes grid in plot and sets axis title size to
 #' \code{10} when \code{TRUE}. Default \code{TRUE}.
 #' @param dotSize Size of dots. Default \code{0.5}.
 #' @param titleSize Size of title of plot. Default \code{18}.
@@ -517,7 +517,7 @@ plotBarcodeRankDropsResults <- function(inSCE,
                                                axisSize = axisSize,
                                                legendSize = legendSize
   )
-  
+
   res.list <- list(scatterBarcodeRank)
   names(res.list) <- c("scatterBarcodeRank")
   return(res.list)
@@ -530,71 +530,71 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runCxds}}. Required.
-#' @param sample Character vector or colData variable name. Indicates which 
+#' @param sample Character vector or colData variable name. Indicates which
 #' sample each cell belongs to. Default \code{NULL}.
 #' @param shape If provided, add shapes based on the value. Default \code{NULL}.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
-#' equal length to the number of the samples in \code{inSCE}, or can be 
+#' equal length to the number of the samples in \code{inSCE}, or can be
 #' retrieved from the colData slot. Default \code{NULL}.
-#' @param violin Boolean. If \code{TRUE}, will plot the violin plot. Default 
+#' @param violin Boolean. If \code{TRUE}, will plot the violin plot. Default
 #' \code{TRUE}.
-#' @param boxplot Boolean. If \code{TRUE}, will plot boxplots for each violin 
+#' @param boxplot Boolean. If \code{TRUE}, will plot boxplots for each violin
 #' plot. Default \code{TRUE}.
 #' @param dots Boolean. If \code{TRUE}, will plot dots for each violin plot.
 #' Default \code{TRUE}.
-#' @param reducedDimName Saved dimension reduction name in \code{inSCE}. 
+#' @param reducedDimName Saved dimension reduction name in \code{inSCE}.
 #' Default \code{"UMAP"}.
 #' @param xlab Character vector. Label for x-axis. Default \code{NULL}.
 #' @param ylab Character vector. Label for y-axis. Default \code{NULL}.
-#' @param dim1 1st dimension to be used for plotting. Can either be a string 
-#' which specifies the name of the dimension to be plotted from reducedDims, or 
-#' a numeric value which specifies the index of the dimension to be plotted. 
+#' @param dim1 1st dimension to be used for plotting. Can either be a string
+#' which specifies the name of the dimension to be plotted from reducedDims, or
+#' a numeric value which specifies the index of the dimension to be plotted.
 #' Default is \code{NULL}.
-#' @param dim2 2nd dimension to be used for plotting. Similar to \code{dim1}. 
+#' @param dim2 2nd dimension to be used for plotting. Similar to \code{dim1}.
 #' Default is \code{NULL}.
-#' @param bin Numeric vector. If single value, will divide the numeric values 
+#' @param bin Numeric vector. If single value, will divide the numeric values
 #' into \code{bin} groups. If more than one value, will bin numeric values using
 #' values as a cut point. Default \code{NULL}.
 #' @param binLabel Character vector. Labels for the bins created by \code{bin}.
 #' Default \code{NULL}.
-#' @param defaultTheme Removes grid in plot and sets axis title size to 
+#' @param defaultTheme Removes grid in plot and sets axis title size to
 #' \code{10} when \code{TRUE}. Default \code{TRUE}.
 #' @param dotSize Size of dots. Default \code{0.5}.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
-#' violin plot. Options are \code{"mean"} or \code{"median"}. Default 
+#' violin plot. Options are \code{"mean"} or \code{"median"}. Default
 #' \code{NULL}.
 #' @param summaryTextSize The text size of the summary statistic displayed
 #' above the violin plot. Default \code{3}.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 
+#' @param transparency Transparency of the dots, values will be 0-1. Default
 #' \code{1}.
 #' @param baseSize The base font size for all text. Default \code{12}.
-#' Can be overwritten by \code{titleSize}, \code{axisSize}, and 
+#' Can be overwritten by \code{titleSize}, \code{axisSize}, and
 #' \code{axisLabelSize}, \code{legendSize}, \code{legendTitleSize}.
 #' @param titleSize Size of title of plot. Default \code{NULL}.
 #' @param axisSize Size of x/y-axis ticks. Default \code{NULL}.
 #' @param axisLabelSize Size of x/y-axis labels. Default \code{NULL}.
 #' @param legendSize size of legend. Default \code{NULL}.
 #' @param legendTitleSize size of legend title. Default \code{NULL}.
-#' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or 
-#' \code{"none"}. \code{"all"} will combine all plots into a single .ggplot 
-#' object, while \code{"sample"} will output a list of plots separated by 
+#' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or
+#' \code{"none"}. \code{"all"} will combine all plots into a single .ggplot
+#' object, while \code{"sample"} will output a list of plots separated by
 #' sample. Default \code{"all"}.
-#' @param relHeights Relative heights of plots when combine is set. Default 
+#' @param relHeights Relative heights of plots when combine is set. Default
 #' \code{1}.
-#' @param relWidths Relative widths of plots when combine is set. Default 
+#' @param relWidths Relative widths of plots when combine is set. Default
 #' \code{c(1, 1, 1)}.
-#' @param plotNCols Number of columns when plots are combined in a grid. Default 
+#' @param plotNCols Number of columns when plots are combined in a grid. Default
 #' \code{NULL}.
-#' @param plotNRows Number of rows when plots are combined in a grid. Default 
+#' @param plotNRows Number of rows when plots are combined in a grid. Default
 #' \code{NULL}.
-#' @param labelSamples Will label sample name in title of plot if TRUE. Default 
+#' @param labelSamples Will label sample name in title of plot if TRUE. Default
 #' \code{TRUE}.
-#' @param samplePerColumn If \code{TRUE}, when there are multiple samples and 
-#' combining by \code{"all"}, the output .ggplot will have plots from each 
+#' @param samplePerColumn If \code{TRUE}, when there are multiple samples and
+#' combining by \code{"all"}, the output .ggplot will have plots from each
 #' sample on a single column. Default \code{TRUE}.
-#' @param sampleRelHeights If there are multiple samples and combining by 
+#' @param sampleRelHeights If there are multiple samples and combining by
 #' \code{"all"}, the relative heights for each plot. Default \code{1}.
-#' @param sampleRelWidths If there are multiple samples and combining by 
+#' @param sampleRelWidths If there are multiple samples and combining by
 #' \code{"all"}, the relative widths for each plot. Default \code{1}.
 #' @return list of .ggplot objects
 #' @seealso \code{\link{runScrublet}}
@@ -676,17 +676,17 @@ plotScrubletResults <- function(
     merged.plots <- list(merged.plots)
     names(merged.plots) <- "Violin"
   }
-  
+
   res.list <- list()
   plotlist <- lapply(samples, function(x) {
     sampleInd <- which(sample == x)
     sampleSub <- sample[sampleInd]
     inSCESub <- inSCE[, sampleInd]
-    
+
     if (combinePlot == "sample" | combinePlot == "all") {
       baseSize = baseSize * 0.5
     }
-    
+
     title = "Density, Scrublet Score"
     if (labelSamples && length(samples) > 1) {
       title = paste0(title, ", ", x)
@@ -709,7 +709,7 @@ plotScrubletResults <- function(
       )
     )
     res.list <- c(res.list, densityScore)
-    
+
     title = "Scrublet Doublet Score"
     if (labelSamples && length(samples) > 1) {
       title = paste0(title, ", ", x)
@@ -744,16 +744,16 @@ plotScrubletResults <- function(
       )
     )
     res.list <- c(res.list, scatterScore)
-    
+
     if (combinePlot != "all" | length(samples) == 1) {
       title = "Scrublet Score"
       if (labelSamples && length(samples) > 1) {
         title = paste0(title, ", ", x)
       }
-      
+
       violinScore <- list(
         violin_doubletScore = plotSCEViolinColData(
-          inSCE = inSCESub, 
+          inSCE = inSCESub,
           coldata = "scrublet_score",
           sample = sampleSub,
           xlab = "",
@@ -768,7 +768,7 @@ plotScrubletResults <- function(
           title = title,
           titleSize = titleSize,
           dotSize = dotSize,
-          axisSize = axisSize, 
+          axisSize = axisSize,
           axisLabelSize = axisLabelSize,
           summary = summary,
           summaryTextSize = summaryTextSize,
@@ -777,7 +777,7 @@ plotScrubletResults <- function(
       )
       res.list <- c(res.list, violinScore)
     }
-    
+
     title = "Scrublet Doublet Assignment"
     if (labelSamples && length(samples) > 1) {
       title = paste0(title, ", ", x)
@@ -803,7 +803,7 @@ plotScrubletResults <- function(
         defaultTheme = defaultTheme,
         title = title,
         titleSize = titleSize,
-        axisSize = axisSize, 
+        axisSize = axisSize,
         axisLabelSize = axisLabelSize,
         labelClusters = FALSE,
         legendTitle = "Doublet \nAssignment",
@@ -813,10 +813,10 @@ plotScrubletResults <- function(
       )
     )
     res.list <- c(res.list, scatterCall)
-    
+
     return(res.list)
   })
-  
+
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
     plotlist <- c(merged.plots, list(Sample = plotlist))
@@ -825,7 +825,7 @@ plotScrubletResults <- function(
     plotLabels <- "none"
     relHeights <- 1
   }
-  
+
   if (!is.null(combinePlot)) {
     if (combinePlot %in% c("all", "sample")) {
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
@@ -838,7 +838,7 @@ plotScrubletResults <- function(
                                       sampleRelWidths = sampleRelWidths)
     }
   }
-  
+
   return(plotlist)
 }
 
@@ -849,76 +849,77 @@ plotScrubletResults <- function(
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runDoubletFinder}}. Required.
-#' @param sample Character vector or colData variable name. Indicates which 
+#' @param sample Character vector or colData variable name. Indicates which
 #' sample each cell belongs to. Default \code{NULL}.
 #' @param shape If provided, add shapes based on the value. Default \code{NULL}.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
-#' equal length to the number of the samples in \code{inSCE}, or can be 
+#' equal length to the number of the samples in \code{inSCE}, or can be
 #' retrieved from the colData slot. Default \code{NULL}.
-#' @param violin Boolean. If \code{TRUE}, will plot the violin plot. Default 
+#' @param violin Boolean. If \code{TRUE}, will plot the violin plot. Default
 #' \code{TRUE}.
-#' @param boxplot Boolean. If \code{TRUE}, will plot boxplots for each violin 
+#' @param boxplot Boolean. If \code{TRUE}, will plot boxplots for each violin
 #' plot. Default \code{TRUE}.
 #' @param dots Boolean. If \code{TRUE}, will plot dots for each violin plot.
 #' Default \code{TRUE}.
-#' @param reducedDimName Saved dimension reduction name in \code{inSCE}. 
+#' @param reducedDimName Saved dimension reduction name in \code{inSCE}.
 #' Default \code{"UMAP"}.
 #' @param xlab Character vector. Label for x-axis. Default \code{NULL}.
 #' @param ylab Character vector. Label for y-axis. Default \code{NULL}.
-#' @param dim1 1st dimension to be used for plotting. Can either be a string 
-#' which specifies the name of the dimension to be plotted from reducedDims, or 
-#' a numeric value which specifies the index of the dimension to be plotted. 
+#' @param dim1 1st dimension to be used for plotting. Can either be a string
+#' which specifies the name of the dimension to be plotted from reducedDims, or
+#' a numeric value which specifies the index of the dimension to be plotted.
 #' Default is \code{NULL}.
-#' @param dim2 2nd dimension to be used for plotting. Similar to \code{dim1}. 
+#' @param dim2 2nd dimension to be used for plotting. Similar to \code{dim1}.
 #' Default is \code{NULL}.
-#' @param bin Numeric vector. If single value, will divide the numeric values 
+#' @param bin Numeric vector. If single value, will divide the numeric values
 #' into \code{bin} groups. If more than one value, will bin numeric values using
 #' values as a cut point. Default \code{NULL}.
 #' @param binLabel Character vector. Labels for the bins created by \code{bin}.
 #' Default \code{NULL}.
-#' @param defaultTheme Removes grid in plot and sets axis title size to 
+#' @param defaultTheme Removes grid in plot and sets axis title size to
 #' \code{10} when \code{TRUE}. Default \code{TRUE}.
 #' @param dotSize Size of dots. Default \code{0.5}.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
-#' violin plot. Options are \code{"mean"} or \code{"median"}. Default 
+#' violin plot. Options are \code{"mean"} or \code{"median"}. Default
 #' \code{NULL}.
 #' @param summaryTextSize The text size of the summary statistic displayed
 #' above the violin plot. Default \code{3}.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 
+#' @param transparency Transparency of the dots, values will be 0-1. Default
 #' \code{1}.
 #' @param baseSize The base font size for all text. Default \code{12}.
-#' Can be overwritten by \code{titleSize}, \code{axisSize}, and 
+#' Can be overwritten by \code{titleSize}, \code{axisSize}, and
 #' \code{axisLabelSize}, \code{legendSize}, \code{legendTitleSize}.
 #' @param titleSize Size of title of plot. Default \code{NULL}.
 #' @param axisSize Size of x/y-axis ticks. Default \code{NULL}.
 #' @param axisLabelSize Size of x/y-axis labels. Default \code{NULL}.
 #' @param legendSize size of legend. Default \code{NULL}.
 #' @param legendTitleSize size of legend title. Default \code{NULL}.
-#' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or 
-#' \code{"none"}. \code{"all"} will combine all plots into a single .ggplot 
-#' object, while \code{"sample"} will output a list of plots separated by 
+#' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or
+#' \code{"none"}. \code{"all"} will combine all plots into a single .ggplot
+#' object, while \code{"sample"} will output a list of plots separated by
 #' sample. Default \code{"all"}.
-#' @param relHeights Relative heights of plots when combine is set. Default 
+#' @param relHeights Relative heights of plots when combine is set. Default
 #' \code{1}.
-#' @param relWidths Relative widths of plots when combine is set. Default 
+#' @param relWidths Relative widths of plots when combine is set. Default
 #' \code{c(1, 1, 1)}.
-#' @param plotNCols Number of columns when plots are combined in a grid. Default 
+#' @param plotNCols Number of columns when plots are combined in a grid. Default
 #' \code{NULL}.
-#' @param plotNRows Number of rows when plots are combined in a grid. Default 
+#' @param plotNRows Number of rows when plots are combined in a grid. Default
 #' \code{NULL}.
-#' @param labelSamples Will label sample name in title of plot if TRUE. Default 
+#' @param labelSamples Will label sample name in title of plot if TRUE. Default
 #' \code{TRUE}.
-#' @param samplePerColumn If \code{TRUE}, when there are multiple samples and 
-#' combining by \code{"all"}, the output .ggplot will have plots from each 
+#' @param samplePerColumn If \code{TRUE}, when there are multiple samples and
+#' combining by \code{"all"}, the output .ggplot will have plots from each
 #' sample on a single column. Default \code{TRUE}.
-#' @param sampleRelHeights If there are multiple samples and combining by 
+#' @param sampleRelHeights If there are multiple samples and combining by
 #' \code{"all"}, the relative heights for each plot. Default \code{1}.
-#' @param sampleRelWidths If there are multiple samples and combining by 
+#' @param sampleRelWidths If there are multiple samples and combining by
 #' \code{"all"}, the relative widths for each plot. Default \code{1}.
 #' @return list of .ggplot objects
 #' @seealso \code{\link{runDoubletFinder}}
 #' @examples
 #' data(scExample, package="singleCellTK")
+#' options(future.globals.maxSize = 786432000)
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runQuickUMAP(sce)
 #' sce <- runDoubletFinder(sce)
@@ -965,18 +966,18 @@ plotDoubletFinderResults <- function(
     sample <- rep(1, ncol(inSCE))
   }
   samples <- unique(sample)
-  
+
   if (!(reducedDimName %in% reducedDimNames(inSCE))) {
     stop("Specified `reducedDimName` is not found in input
          SingleCellExperiment object. Please check for spelling errors
          with reducedDimNames().")
   }
-  
+
   df.scores <- grep(
     pattern = "doubletFinder_doublet_score_resolution_",
     names(colData(inSCE)), value = TRUE
   )
-  
+
   df.labels <- grep(
     pattern = "doubletFinder_doublet_label_resolution_",
     names(colData(inSCE)), value = TRUE
@@ -1010,28 +1011,28 @@ plotDoubletFinderResults <- function(
         plotLabels = "none"
       )
     })
-    
+
     names(merged.plots) <- vapply(df.scores, function(x) {
       paste0("Violin_", gsub(
         pattern = "doubletFinder_doublet_score_",
         "", x = x
       ))
     }, character(1))
-    
+
     # merged.plots <- list(merged.plots)
     merged.plots <- list(Violin = merged.plots)
   }
-  
+
   res.list <- list()
   plotlist <- lapply(samples, function(x) {
     sampleInd <- which(sample == x)
     sampleSub <- sample[sampleInd]
     inSCESub <- inSCE[, sampleInd]
-    
+
     if (combinePlot == "sample" | combinePlot == "all") {
       baseSize = baseSize * 0.5
     }
-    
+
     densityScore <- lapply(df.scores, function(y) {
       title <- paste(
         "Density, Doublet Score Resolution",
@@ -1057,12 +1058,12 @@ plotDoubletFinderResults <- function(
       )
     })
     names(densityScore) <- vapply(df.scores, function(y) {
-      paste0("Density_", gsub(pattern = "doubletFinder_doublet_score_", "", 
+      paste0("Density_", gsub(pattern = "doubletFinder_doublet_score_", "",
                               x = y
       ))
     }, character(1))
     res.list <- c(res.list, densityScore)
-    
+
     scatterScore <- lapply(df.scores, function(y) {
       title <- paste(
         "Doublet Score Resolution",
@@ -1071,7 +1072,7 @@ plotDoubletFinderResults <- function(
       if (labelSamples && length(samples) > 1) {
         title = paste0(title, ", ", x)
       }
-      
+
       plotSCEDimReduceColData(
         inSCE = inSCESub,
         sample = sampleSub,
@@ -1100,7 +1101,7 @@ plotDoubletFinderResults <- function(
         combinePlot = "all"
       )
     })
-    
+
     names(scatterScore) <- vapply(df.scores, function(y) {
       paste0("Scatter_Score_", gsub(
         pattern = "doubletFinder_doublet_score_",
@@ -1108,20 +1109,20 @@ plotDoubletFinderResults <- function(
       ))
     }, character(1))
     res.list <- c(res.list, scatterScore)
-    
+
     if (combinePlot != "all" | length(samples) == 1) {
-      
+
       violinScore <- lapply(df.scores, function(y) {
         title <- paste(
           "Doublet Score Resolution",
           gsub(
             pattern = "doubletFinder_doublet_score_resolution_",
             "", y))
-        
+
         if (labelSamples && length(samples) > 1) {
           title = paste0(title, ", ", x)
         }
-        
+
         plotSCEViolinColData(
           inSCE = inSCESub,
           coldata = y,
@@ -1145,7 +1146,7 @@ plotDoubletFinderResults <- function(
           combinePlot = "all"
         )
       })
-      
+
       names(violinScore) <- vapply(df.scores, function(y) {
         paste0("violin_", gsub(
           pattern = "doubletFinder_doublet_score_",
@@ -1154,18 +1155,18 @@ plotDoubletFinderResults <- function(
       }, character(1))
       res.list <- c(res.list, violinScore)
     }
-    
+
     scatterCall <- lapply(df.labels, function(y) {
       title <- paste(
         "Doublet Call Resolution",
         gsub(
           pattern = "doubletFinder_doublet_label_resolution_",
           "", y))
-      
+
       if (labelSamples && length(samples) > 1) {
         title = paste0(title, ", ", x)
       }
-      
+
       plotSCEDimReduceColData(
         inSCE = inSCESub,
         sample = sampleSub,
@@ -1195,7 +1196,7 @@ plotDoubletFinderResults <- function(
         combinePlot = "all"
       )
     })
-    
+
     names(scatterCall) <- vapply(df.labels, function(y) {
       paste0("Scatter_Call_", gsub(
         pattern = "doubletFinder_doublet_label_",
@@ -1235,70 +1236,70 @@ plotDoubletFinderResults <- function(
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runScDblFinder}}. Required.
-#' @param sample Character vector or colData variable name. Indicates which 
+#' @param sample Character vector or colData variable name. Indicates which
 #' sample each cell belongs to. Default \code{NULL}.
 #' @param shape If provided, add shapes based on the value. Default \code{NULL}.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
-#' equal length to the number of the samples in \code{inSCE}, or can be 
+#' equal length to the number of the samples in \code{inSCE}, or can be
 #' retrieved from the colData slot. Default \code{NULL}.
-#' @param violin Boolean. If \code{TRUE}, will plot the violin plot. Default 
+#' @param violin Boolean. If \code{TRUE}, will plot the violin plot. Default
 #' \code{TRUE}.
-#' @param boxplot Boolean. If \code{TRUE}, will plot boxplots for each violin 
+#' @param boxplot Boolean. If \code{TRUE}, will plot boxplots for each violin
 #' plot. Default \code{TRUE}.
 #' @param dots Boolean. If \code{TRUE}, will plot dots for each violin plot.
 #' Default \code{TRUE}.
-#' @param reducedDimName Saved dimension reduction name in \code{inSCE}. 
+#' @param reducedDimName Saved dimension reduction name in \code{inSCE}.
 #' Default \code{"UMAP"}.
 #' @param xlab Character vector. Label for x-axis. Default \code{NULL}.
 #' @param ylab Character vector. Label for y-axis. Default \code{NULL}.
-#' @param dim1 1st dimension to be used for plotting. Can either be a string 
-#' which specifies the name of the dimension to be plotted from reducedDims, or 
-#' a numeric value which specifies the index of the dimension to be plotted. 
+#' @param dim1 1st dimension to be used for plotting. Can either be a string
+#' which specifies the name of the dimension to be plotted from reducedDims, or
+#' a numeric value which specifies the index of the dimension to be plotted.
 #' Default is \code{NULL}.
-#' @param dim2 2nd dimension to be used for plotting. Similar to \code{dim1}. 
+#' @param dim2 2nd dimension to be used for plotting. Similar to \code{dim1}.
 #' Default is \code{NULL}.
-#' @param bin Numeric vector. If single value, will divide the numeric values 
+#' @param bin Numeric vector. If single value, will divide the numeric values
 #' into \code{bin} groups. If more than one value, will bin numeric values using
 #' values as a cut point. Default \code{NULL}.
 #' @param binLabel Character vector. Labels for the bins created by \code{bin}.
 #' Default \code{NULL}.
-#' @param defaultTheme Removes grid in plot and sets axis title size to 
+#' @param defaultTheme Removes grid in plot and sets axis title size to
 #' \code{10} when \code{TRUE}. Default \code{TRUE}.
 #' @param dotSize Size of dots. Default \code{0.5}.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
-#' violin plot. Options are \code{"mean"} or \code{"median"}. Default 
+#' violin plot. Options are \code{"mean"} or \code{"median"}. Default
 #' \code{NULL}.
 #' @param summaryTextSize The text size of the summary statistic displayed
 #' above the violin plot. Default \code{3}.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 
+#' @param transparency Transparency of the dots, values will be 0-1. Default
 #' \code{1}.
 #' @param baseSize The base font size for all text. Default \code{12}.
-#' Can be overwritten by \code{titleSize}, \code{axisSize}, and 
+#' Can be overwritten by \code{titleSize}, \code{axisSize}, and
 #' \code{axisLabelSize}, \code{legendSize}, \code{legendTitleSize}.
 #' @param titleSize Size of title of plot. Default \code{NULL}.
 #' @param axisSize Size of x/y-axis ticks. Default \code{NULL}.
 #' @param axisLabelSize Size of x/y-axis labels. Default \code{NULL}.
 #' @param legendSize size of legend. Default \code{NULL}.
 #' @param legendTitleSize size of legend title. Default \code{NULL}.
-#' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or 
-#' \code{"none"}. \code{"all"} will combine all plots into a single .ggplot 
-#' object, while \code{"sample"} will output a list of plots separated by 
+#' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or
+#' \code{"none"}. \code{"all"} will combine all plots into a single .ggplot
+#' object, while \code{"sample"} will output a list of plots separated by
 #' sample. Default \code{"all"}.
 #' @param relHeights Relative heights of plots when combine is set. Default \code{1}.
-#' @param relWidths Relative widths of plots when combine is set. Default 
+#' @param relWidths Relative widths of plots when combine is set. Default
 #' \code{c(1, 1, 1)}.
-#' @param plotNCols Number of columns when plots are combined in a grid. Default 
+#' @param plotNCols Number of columns when plots are combined in a grid. Default
 #' \code{NULL}.
-#' @param plotNRows Number of rows when plots are combined in a grid. Default 
+#' @param plotNRows Number of rows when plots are combined in a grid. Default
 #' \code{NULL}.
-#' @param labelSamples Will label sample name in title of plot if TRUE. Default 
+#' @param labelSamples Will label sample name in title of plot if TRUE. Default
 #' \code{TRUE}.
 #' @param samplePerColumn If \code{TRUE}, when there are multiple samples and combining
-#' by \code{"all"}, the output .ggplot will have plots from each sample on a 
+#' by \code{"all"}, the output .ggplot will have plots from each sample on a
 #' single column. Default \code{TRUE}.
-#' @param sampleRelHeights If there are multiple samples and combining by 
+#' @param sampleRelHeights If there are multiple samples and combining by
 #' \code{"all"}, the relative heights for each plot. Default \code{1}.
-#' @param sampleRelWidths If there are multiple samples and combining by 
+#' @param sampleRelWidths If there are multiple samples and combining by
 #' \code{"all"}, the relative widths for each plot. Default \code{1}.
 #' @return list of .ggplot objects
 #' @seealso \code{\link{runScDblFinder}}
@@ -1349,7 +1350,7 @@ plotScDblFinderResults <- function(
   if (is.null(sample)) {
     sample = rep(1, ncol(inSCE))
   }
-  
+
   if (!(reducedDimName %in% reducedDimNames(inSCE))){
     stop("Specified `reducedDimName` is not found in input
          SingleCellExperiment object. Please check for spelling errors
@@ -1357,7 +1358,7 @@ plotScDblFinderResults <- function(
   }
   coldata = "scDblFinder_doublet_score"
   titleScDblFinder <- "ScDblFinder Doublet Score"
-  
+
   samples <- unique(sample)
   if (length(samples) > 1) {
     merged.plots <- list(Score = plotSCEViolinColData(
@@ -1385,13 +1386,13 @@ plotScDblFinderResults <- function(
     merged.plots <- list(merged.plots)
     names(merged.plots) <- "Violin"
   }
-  
+
   res.list <- list()
   plotlist <- lapply(samples, function(x) {
     sampleInd <- which(sample == x)
     sampleSub <- sample[sampleInd]
     inSCESub <- inSCE[, sampleInd]
-    
+
     title = paste0("Density, ", titleScDblFinder)
     if(labelSamples && length(samples) > 1){
       title = paste0(title, ", ", x)
@@ -1415,7 +1416,7 @@ plotScDblFinderResults <- function(
       combinePlot="all"
     ))
     res.list = c(res.list, densityScore)
-    
+
     title = titleScDblFinder
     if(labelSamples && length(samples) > 1){
       title = paste0(title, ", ", x)
@@ -1450,7 +1451,7 @@ plotScDblFinderResults <- function(
       combinePlot="all"
     ))
     res.list = c(res.list, scatterScore)
-    
+
     if("scDblFinder_doublet_call" %in% names(SingleCellExperiment::colData(inSCE))){
       title = "scDblFinder Doublet Assignment"
       if(labelSamples && length(samples) > 1){
@@ -1485,7 +1486,7 @@ plotScDblFinderResults <- function(
       ))
       res.list <- c(res.list, scatterCall)
     }
-    
+
     if(combinePlot != "all" | length(samples) == 1){
       if(labelSamples && length(samples) > 1){
         title = paste0(title, ", ", x)
@@ -1514,7 +1515,7 @@ plotScDblFinderResults <- function(
       ))
       res.list = c(res.list, violinScore)
     }
-    
+
     return(res.list)
   })
   if (length(unique(samples)) > 1) {
@@ -1547,71 +1548,71 @@ plotScDblFinderResults <- function(
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runCxds}}. Required.
-#' @param sample Character vector or colData variable name. Indicates which 
+#' @param sample Character vector or colData variable name. Indicates which
 #' sample each cell belongs to. Default \code{NULL}.
 #' @param shape If provided, add shapes based on the value. Default \code{NULL}.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
-#' equal length to the number of the samples in \code{inSCE}, or can be 
+#' equal length to the number of the samples in \code{inSCE}, or can be
 #' retrieved from the colData slot. Default \code{NULL}.
-#' @param violin Boolean. If \code{TRUE}, will plot the violin plot. Default 
+#' @param violin Boolean. If \code{TRUE}, will plot the violin plot. Default
 #' \code{TRUE}.
-#' @param boxplot Boolean. If \code{TRUE}, will plot boxplots for each violin 
+#' @param boxplot Boolean. If \code{TRUE}, will plot boxplots for each violin
 #' plot. Default \code{TRUE}.
 #' @param dots Boolean. If \code{TRUE}, will plot dots for each violin plot.
 #' Default \code{TRUE}.
-#' @param reducedDimName Saved dimension reduction name in \code{inSCE}. 
+#' @param reducedDimName Saved dimension reduction name in \code{inSCE}.
 #' Default \code{"UMAP"}.
 #' @param xlab Character vector. Label for x-axis. Default \code{NULL}.
 #' @param ylab Character vector. Label for y-axis. Default \code{NULL}.
-#' @param dim1 1st dimension to be used for plotting. Can either be a string 
-#' which specifies the name of the dimension to be plotted from reducedDims, or 
-#' a numeric value which specifies the index of the dimension to be plotted. 
+#' @param dim1 1st dimension to be used for plotting. Can either be a string
+#' which specifies the name of the dimension to be plotted from reducedDims, or
+#' a numeric value which specifies the index of the dimension to be plotted.
 #' Default is \code{NULL}.
-#' @param dim2 2nd dimension to be used for plotting. Similar to \code{dim1}. 
+#' @param dim2 2nd dimension to be used for plotting. Similar to \code{dim1}.
 #' Default is \code{NULL}.
-#' @param bin Numeric vector. If single value, will divide the numeric values 
+#' @param bin Numeric vector. If single value, will divide the numeric values
 #' into \code{bin} groups. If more than one value, will bin numeric values using
 #' values as a cut point. Default \code{NULL}.
 #' @param binLabel Character vector. Labels for the bins created by \code{bin}.
 #' Default \code{NULL}.
-#' @param defaultTheme Removes grid in plot and sets axis title size to 
+#' @param defaultTheme Removes grid in plot and sets axis title size to
 #' \code{10} when \code{TRUE}. Default \code{TRUE}.
 #' @param dotSize Size of dots. Default \code{0.5}.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
-#' violin plot. Options are \code{"mean"} or \code{"median"}. Default 
+#' violin plot. Options are \code{"mean"} or \code{"median"}. Default
 #' \code{NULL}.
 #' @param summaryTextSize The text size of the summary statistic displayed
 #' above the violin plot. Default \code{3}.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 
+#' @param transparency Transparency of the dots, values will be 0-1. Default
 #' \code{1}.
 #' @param baseSize The base font size for all text. Default \code{12}.
-#' Can be overwritten by \code{titleSize}, \code{axisSize}, and 
+#' Can be overwritten by \code{titleSize}, \code{axisSize}, and
 #' \code{axisLabelSize}, \code{legendSize}, \code{legendTitleSize}.
 #' @param titleSize Size of title of plot. Default \code{NULL}.
 #' @param axisSize Size of x/y-axis ticks. Default \code{NULL}.
 #' @param axisLabelSize Size of x/y-axis labels. Default \code{NULL}.
 #' @param legendSize size of legend. Default \code{NULL}.
 #' @param legendTitleSize size of legend title. Default \code{NULL}.
-#' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or 
-#' \code{"none"}. \code{"all"} will combine all plots into a single .ggplot 
-#' object, while \code{"sample"} will output a list of plots separated by 
+#' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or
+#' \code{"none"}. \code{"all"} will combine all plots into a single .ggplot
+#' object, while \code{"sample"} will output a list of plots separated by
 #' sample. Default \code{"all"}.
-#' @param relHeights Relative heights of plots when combine is set. Default 
+#' @param relHeights Relative heights of plots when combine is set. Default
 #' \code{1}.
-#' @param relWidths Relative widths of plots when combine is set. Default 
+#' @param relWidths Relative widths of plots when combine is set. Default
 #' \code{c(1, 1, 1)}.
-#' @param plotNCols Number of columns when plots are combined in a grid. Default 
+#' @param plotNCols Number of columns when plots are combined in a grid. Default
 #' \code{NULL}.
-#' @param plotNRows Number of rows when plots are combined in a grid. Default 
+#' @param plotNRows Number of rows when plots are combined in a grid. Default
 #' \code{NULL}.
-#' @param labelSamples Will label sample name in title of plot if TRUE. Default 
+#' @param labelSamples Will label sample name in title of plot if TRUE. Default
 #' \code{TRUE}.
-#' @param samplePerColumn If \code{TRUE}, when there are multiple samples and 
-#' combining by \code{"all"}, the output .ggplot will have plots from each 
+#' @param samplePerColumn If \code{TRUE}, when there are multiple samples and
+#' combining by \code{"all"}, the output .ggplot will have plots from each
 #' sample on a single column. Default \code{TRUE}.
-#' @param sampleRelHeights If there are multiple samples and combining by 
+#' @param sampleRelHeights If there are multiple samples and combining by
 #' \code{"all"}, the relative heights for each plot. Default \code{1}.
-#' @param sampleRelWidths If there are multiple samples and combining by 
+#' @param sampleRelWidths If there are multiple samples and combining by
 #' \code{"all"}, the relative widths for each plot. Default \code{1}.
 #' @seealso \code{\link{runCxds}}
 #' @return list of .ggplot objects
@@ -1663,9 +1664,9 @@ plotCxdsResults <- function(
   if (is.null(sample)) {
     sample = rep(1, ncol(inSCE))
   }
-  
+
   if (!(reducedDimName %in% SingleCellExperiment::reducedDimNames(inSCE))) {
-    stop("Specified `reducedDimName` is not found in input", 
+    stop("Specified `reducedDimName` is not found in input",
          "SingleCellExperiment object. Please check for spelling errors with ",
          "reducedDimNames().")
   }
@@ -1698,13 +1699,13 @@ plotCxdsResults <- function(
     merged.plots <- list(merged.plots)
     names(merged.plots) <- "Violin"
   }
-  
+
   res.list <- list()
   plotlist <- lapply(samples, function(x) {
     sampleInd <- which(sample == x)
     sampleSub <- sample[sampleInd]
     inSCESub <- inSCE[, sampleInd]
-    
+
     title = "Density, CXDS Score"
     if (labelSamples && length(samples) > 1) {
       title = paste0(title, ", ", x)
@@ -1731,7 +1732,7 @@ plotCxdsResults <- function(
       )
     )
     res.list = c(res.list, densityScore)
-    
+
     title = "CXDS Doublet Score"
     if (labelSamples && length(samples) > 1) {
       title = paste0(title, ", ", x)
@@ -1767,7 +1768,7 @@ plotCxdsResults <- function(
       )
     )
     res.list = c(res.list, scatterScore)
-    
+
     if (combinePlot != "all" | length(samples) == 1) {
       title = "CXDS Doublet Score"
       if (labelSamples && length(samples) > 1) {
@@ -1799,7 +1800,7 @@ plotCxdsResults <- function(
       )
       res.list = c(res.list, violinScore)
     }
-    
+
     if ("scds_cxds_call" %in% names(SingleCellExperiment::colData(inSCE))) {
       title = "CXDS Doublet Assignment"
       if (labelSamples && length(samples) > 1) {
@@ -1826,7 +1827,7 @@ plotCxdsResults <- function(
           defaultTheme = defaultTheme,
           title = title,
           titleSize = titleSize,
-          axisSize = axisSize, 
+          axisSize = axisSize,
           axisLabelSize = axisLabelSize,
           labelClusters = FALSE,
           legendTitle = "Doublet \nAssignment",
@@ -1869,71 +1870,71 @@ plotCxdsResults <- function(
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runBcds}}. Required.
-#' @param sample Character vector or colData variable name. Indicates which 
+#' @param sample Character vector or colData variable name. Indicates which
 #' sample each cell belongs to. Default \code{NULL}.
 #' @param shape If provided, add shapes based on the value. Default \code{NULL}.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
-#' equal length to the number of the samples in \code{inSCE}, or can be 
+#' equal length to the number of the samples in \code{inSCE}, or can be
 #' retrieved from the colData slot. Default \code{NULL}.
-#' @param violin Boolean. If \code{TRUE}, will plot the violin plot. Default 
+#' @param violin Boolean. If \code{TRUE}, will plot the violin plot. Default
 #' \code{TRUE}.
-#' @param boxplot Boolean. If \code{TRUE}, will plot boxplots for each violin 
+#' @param boxplot Boolean. If \code{TRUE}, will plot boxplots for each violin
 #' plot. Default \code{TRUE}.
 #' @param dots Boolean. If \code{TRUE}, will plot dots for each violin plot.
 #' Default \code{TRUE}.
-#' @param reducedDimName Saved dimension reduction name in \code{inSCE}. 
+#' @param reducedDimName Saved dimension reduction name in \code{inSCE}.
 #' Default \code{"UMAP"}.
 #' @param xlab Character vector. Label for x-axis. Default \code{NULL}.
 #' @param ylab Character vector. Label for y-axis. Default \code{NULL}.
-#' @param dim1 1st dimension to be used for plotting. Can either be a string 
-#' which specifies the name of the dimension to be plotted from reducedDims, or 
-#' a numeric value which specifies the index of the dimension to be plotted. 
+#' @param dim1 1st dimension to be used for plotting. Can either be a string
+#' which specifies the name of the dimension to be plotted from reducedDims, or
+#' a numeric value which specifies the index of the dimension to be plotted.
 #' Default is \code{NULL}.
-#' @param dim2 2nd dimension to be used for plotting. Similar to \code{dim1}. 
+#' @param dim2 2nd dimension to be used for plotting. Similar to \code{dim1}.
 #' Default is \code{NULL}.
-#' @param bin Numeric vector. If single value, will divide the numeric values 
+#' @param bin Numeric vector. If single value, will divide the numeric values
 #' into \code{bin} groups. If more than one value, will bin numeric values using
 #' values as a cut point. Default \code{NULL}.
 #' @param binLabel Character vector. Labels for the bins created by \code{bin}.
 #' Default \code{NULL}.
-#' @param defaultTheme Removes grid in plot and sets axis title size to 
+#' @param defaultTheme Removes grid in plot and sets axis title size to
 #' \code{10} when \code{TRUE}. Default \code{TRUE}.
 #' @param dotSize Size of dots. Default \code{0.5}.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
-#' violin plot. Options are \code{"mean"} or \code{"median"}. Default 
+#' violin plot. Options are \code{"mean"} or \code{"median"}. Default
 #' \code{NULL}.
 #' @param summaryTextSize The text size of the summary statistic displayed
 #' above the violin plot. Default \code{3}.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 
+#' @param transparency Transparency of the dots, values will be 0-1. Default
 #' \code{1}.
 #' @param baseSize The base font size for all text. Default \code{12}.
-#' Can be overwritten by \code{titleSize}, \code{axisSize}, and 
+#' Can be overwritten by \code{titleSize}, \code{axisSize}, and
 #' \code{axisLabelSize}, \code{legendSize}, \code{legendTitleSize}.
 #' @param titleSize Size of title of plot. Default \code{NULL}.
 #' @param axisSize Size of x/y-axis ticks. Default \code{NULL}.
 #' @param axisLabelSize Size of x/y-axis labels. Default \code{NULL}.
 #' @param legendSize size of legend. Default \code{NULL}.
 #' @param legendTitleSize size of legend title. Default \code{NULL}.
-#' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or 
-#' \code{"none"}. \code{"all"} will combine all plots into a single .ggplot 
-#' object, while \code{"sample"} will output a list of plots separated by 
+#' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or
+#' \code{"none"}. \code{"all"} will combine all plots into a single .ggplot
+#' object, while \code{"sample"} will output a list of plots separated by
 #' sample. Default \code{"all"}.
-#' @param relHeights Relative heights of plots when combine is set. Default 
+#' @param relHeights Relative heights of plots when combine is set. Default
 #' \code{1}.
-#' @param relWidths Relative widths of plots when combine is set. Default 
+#' @param relWidths Relative widths of plots when combine is set. Default
 #' \code{c(1, 1, 1)}.
-#' @param plotNCols Number of columns when plots are combined in a grid. Default 
+#' @param plotNCols Number of columns when plots are combined in a grid. Default
 #' \code{NULL}.
-#' @param plotNRows Number of rows when plots are combined in a grid. Default 
+#' @param plotNRows Number of rows when plots are combined in a grid. Default
 #' \code{NULL}.
-#' @param labelSamples Will label sample name in title of plot if TRUE. Default 
+#' @param labelSamples Will label sample name in title of plot if TRUE. Default
 #' \code{TRUE}.
-#' @param samplePerColumn If \code{TRUE}, when there are multiple samples and 
-#' combining by \code{"all"}, the output .ggplot will have plots from each 
+#' @param samplePerColumn If \code{TRUE}, when there are multiple samples and
+#' combining by \code{"all"}, the output .ggplot will have plots from each
 #' sample on a single column. Default \code{TRUE}.
-#' @param sampleRelHeights If there are multiple samples and combining by 
+#' @param sampleRelHeights If there are multiple samples and combining by
 #' \code{"all"}, the relative heights for each plot. Default \code{1}.
-#' @param sampleRelWidths If there are multiple samples and combining by 
+#' @param sampleRelWidths If there are multiple samples and combining by
 #' \code{"all"}, the relative widths for each plot. Default \code{1}.
 #' @seealso \code{\link{runBcds}}
 #' @return list of .ggplot objects
@@ -1984,9 +1985,9 @@ plotBcdsResults <- function(
   if (is.null(sample)) {
     sample = rep(1, ncol(inSCE))
   }
-  
+
   if (!(reducedDimName %in% SingleCellExperiment::reducedDimNames(inSCE))) {
-    stop("Specified `reducedDimName` is not found in input", 
+    stop("Specified `reducedDimName` is not found in input",
          "SingleCellExperiment object. Please check for spelling errors with ",
          "reducedDimNames().")
   }
@@ -2019,13 +2020,13 @@ plotBcdsResults <- function(
     merged.plots <- list(merged.plots)
     names(merged.plots) <- "Violin"
   }
-  
+
   res.list <- list()
   plotlist <- lapply(samples, function(x) {
     sampleInd <- which(sample == x)
     sampleSub <- sample[sampleInd]
     inSCESub <- inSCE[, sampleInd]
-    
+
     title = "Density, BCDS Score"
     if (labelSamples && length(samples) > 1) {
       title = paste0(title, ", ", x)
@@ -2052,7 +2053,7 @@ plotBcdsResults <- function(
       )
     )
     res.list = c(res.list, densityScore)
-    
+
     title = "BCDS Doublet Score"
     if (labelSamples && length(samples) > 1) {
       title = paste0(title, ", ", x)
@@ -2088,7 +2089,7 @@ plotBcdsResults <- function(
       )
     )
     res.list = c(res.list, scatterScore)
-    
+
     if (combinePlot != "all" | length(samples) == 1) {
       title = "BCDS Doublet Score"
       if (labelSamples && length(samples) > 1) {
@@ -2120,7 +2121,7 @@ plotBcdsResults <- function(
       )
       res.list = c(res.list, violinScore)
     }
-    
+
     if ("scds_bcds_call" %in% names(SummarizedExperiment::colData(inSCE))) {
       title = "BCDS Doublet Assignment"
       if (labelSamples && length(samples) > 1) {
@@ -2147,7 +2148,7 @@ plotBcdsResults <- function(
           defaultTheme = defaultTheme,
           title = title,
           titleSize = titleSize,
-          axisSize = axisSize, 
+          axisSize = axisSize,
           axisLabelSize = axisLabelSize,
           labelClusters = FALSE,
           legendTitle = "Doublet \nAssignment",
@@ -2297,7 +2298,7 @@ plotScdsHybridResults <- function(inSCE,
   } else {
     sample <- rep(1, ncol(inSCE))
   }
-  
+
   if (!(reducedDimName %in% reducedDimNames(inSCE))){
     stop("Specified `reducedDimName` is not found in input
          SingleCellExperiment object. Please check for spelling errors
@@ -2331,7 +2332,7 @@ plotScdsHybridResults <- function(inSCE,
     merged.plots <- list(merged.plots)
     names(merged.plots) <- "Violin"
   }
-  
+
   res.list <- c()
   plotlist <- lapply(samples, function(x) {
     sampleInd <- which(sample == x)
@@ -2360,7 +2361,7 @@ plotScdsHybridResults <- function(inSCE,
       combinePlot="all"
     ))
     res.list = c(res.list, densityScore)
-    
+
     title = "CXDS BCDS Hybrid Score"
     if(labelSamples && length(samples) > 1){
       title = paste0(title, ", ", x)
@@ -2393,7 +2394,7 @@ plotScdsHybridResults <- function(inSCE,
       combinePlot="all"
     ))
     res.list = c(res.list, scatterScore)
-    
+
     if(combinePlot != "all" | length(samples) == 1){
       title = "CXDS BCDS Hybrid Score"
       if(labelSamples && length(samples) > 1){
@@ -2423,7 +2424,7 @@ plotScdsHybridResults <- function(inSCE,
       ))
       res.list = c(res.list, violinScore)
     }
-    
+
     if("scds_hybrid_call" %in% names(SingleCellExperiment::colData(inSCE))){
       title = "CXDS BCDS Doublet Assignment"
       if(labelSamples && length(samples) > 1){
@@ -2458,10 +2459,10 @@ plotScdsHybridResults <- function(inSCE,
       ))
       res.list <- c(res.list, scatterCall)
     }
-    
+
     return(res.list)
   })
-  
+
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
     plotlist <- c(merged.plots, list(Sample = plotlist))
@@ -2495,7 +2496,7 @@ plotScdsHybridResults <- function(inSCE,
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param bgResult Boolean. If TRUE, will plot decontX results generated with
-#' raw/droplet matrix Default FALSE. 
+#' raw/droplet matrix Default FALSE.
 #' @param shape If provided, add shapes based on the value.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
@@ -2606,29 +2607,29 @@ plotDecontXResults <- function(inSCE,
   } else {
     sample <- rep(1, ncol(inSCE))
   }
-  
+
   if (!(reducedDimName %in% reducedDimNames(inSCE))){
     stop("Specified `reducedDimName` is not found in input
          SingleCellExperiment object. Please check for spelling errors
          with reducedDimNames().")
   }
-  
+
   scoreCol <- "decontX_contamination"
   clusterCol <- "decontX_clusters"
-  
+
   if (!isTRUE(bgResult) & !scoreCol %in% colnames(SummarizedExperiment::colData(inSCE))) {
-    stop("The result of running decontX without raw/droplet matrix 
-           is not found in the input SingleCellExperiment object. 
+    stop("The result of running decontX without raw/droplet matrix
+           is not found in the input SingleCellExperiment object.
            Please check whether runDecontX has been run without
-           'background' parameter. ")    
+           'background' parameter. ")
   }
-  
+
   if (isTRUE(bgResult)) {
     bgColId <- grep('decontX_contamination_bg', colnames(SummarizedExperiment::colData(inSCE)))
-    
+
     if (length(bgColId) == 0) {
-      stop("The result of running decontX with raw/droplet matrix 
-           is not found in the input SingleCellExperiment object. 
+      stop("The result of running decontX with raw/droplet matrix
+           is not found in the input SingleCellExperiment object.
            Please check whether runDecontX has been run with
            'background' parameter. ")
     } else {
@@ -2636,7 +2637,7 @@ plotDecontXResults <- function(inSCE,
       clusterCol <- "decontX_clusters_bg"
     }
   }
-  
+
   samples <- unique(sample)
   sampleVector <- sample
   if (length(samples) > 1) {
@@ -2665,7 +2666,7 @@ plotDecontXResults <- function(inSCE,
     merged.plots <- list(merged.plots)
     names(merged.plots) <- "Violin"
   }
-  
+
   res.list = list()
   plotlist <- lapply(samples, function(x) {
     sampleInd <- which(sample == x)
@@ -2695,7 +2696,7 @@ plotDecontXResults <- function(inSCE,
       combinePlot="all"
     ))
     res.list = c(res.list, densityContamination)
-    
+
     scatterContamination <- list(scatter_decontXContamination = plotSCEDimReduceColData(
       inSCE=inSCESub,
       sample=sampleSub,
@@ -2724,7 +2725,7 @@ plotDecontXResults <- function(inSCE,
       combinePlot="all"
     ))
     res.list = c(res.list, scatterContamination)
-    
+
     if(combinePlot != "all" | length(samples) == 1){
       title = "DecontX Contamination Score"
       if(labelSamples && length(samples) > 1){
@@ -2753,7 +2754,7 @@ plotDecontXResults <- function(inSCE,
       ))
       res.list = c(res.list, violinContamination)
     }
-    
+
     if(is.null(legendSize) && !is.null(baseSize)){
       legendSizeScatterCluster = baseSize - 1
     }else{
@@ -2763,7 +2764,7 @@ plotDecontXResults <- function(inSCE,
     if(labelSamples && length(samples) > 1){
       title = paste0(title, ", ", x)
     }
-    
+
     scatterCluster <- list(scatter_decontXClusters = plotSCEDimReduceColData(
       inSCE=inSCESub,
       sample=sampleSub,
@@ -2793,10 +2794,10 @@ plotDecontXResults <- function(inSCE,
       combinePlot="all"
     ))
     res.list = c(res.list, scatterCluster)
-    
+
     return(res.list)
   })
-  
+
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
     plotlist <- c(merged.plots, list(Sample = plotlist))
