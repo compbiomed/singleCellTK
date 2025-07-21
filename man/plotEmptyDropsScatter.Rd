@@ -32,14 +32,14 @@ plotEmptyDropsScatter(
 dimension reduction components or a variable with saved results from
 \code{\link{runEmptyDrops}}. Required.}
 
-\item{sample}{Character vector or colData variable name. Indicates which 
+\item{sample}{Character vector or colData variable name. Indicates which
 sample each cell belongs to. Default \code{NULL}.}
 
 \item{fdrCutoff}{Numeric. Thresholds barcodes based on the FDR values from
-\code{\link{runEmptyDrops}} as "Empty Droplet" or "Putative Cell". Default 
+\code{\link{runEmptyDrops}} as "Empty Droplet" or "Putative Cell". Default
 \code{0.01}.}
 
-\item{defaultTheme}{Removes grid in plot and sets axis title size to 
+\item{defaultTheme}{Removes grid in plot and sets axis title size to
 \code{10} when \code{TRUE}. Default \code{TRUE}.}
 
 \item{dotSize}{Size of dots. Default \code{0.1}.}
@@ -62,25 +62,25 @@ sample each cell belongs to. Default \code{NULL}.}
 
 \item{legendSize}{size of legend. Default \code{10}.}
 
-\item{combinePlot}{Must be either \code{"all"}, \code{"sample"}, or 
-\code{"none"}. \code{"all"} will combine all plots into a single .ggplot 
-object, while \code{"sample"} will output a list of plots separated by 
+\item{combinePlot}{Must be either \code{"all"}, \code{"sample"}, or
+\code{"none"}. \code{"all"} will combine all plots into a single .ggplot
+object, while \code{"sample"} will output a list of plots separated by
 sample. Default \code{"all"}.}
 
-\item{relHeights}{Relative heights of plots when combine is set. Default 
+\item{relHeights}{Relative heights of plots when combine is set. Default
 \code{1}.}
 
-\item{relWidths}{Relative widths of plots when combine is set. Default 
+\item{relWidths}{Relative widths of plots when combine is set. Default
 \code{1}.}
 
-\item{samplePerColumn}{If \code{TRUE}, when there are multiple samples and 
-combining by \code{"all"}, the output .ggplot will have plots from each 
+\item{samplePerColumn}{If \code{TRUE}, when there are multiple samples and
+combining by \code{"all"}, the output .ggplot will have plots from each
 sample on a single column. Default \code{TRUE}.}
 
-\item{sampleRelHeights}{If there are multiple samples and combining by 
+\item{sampleRelHeights}{If there are multiple samples and combining by
 \code{"all"}, the relative heights for each plot. Default \code{1}.}
 
-\item{sampleRelWidths}{If there are multiple samples and combining by 
+\item{sampleRelWidths}{If there are multiple samples and combining by
 \code{"all"}, the relative widths for each plot. Default \code{1}.}
 }
 \value{
@@ -88,7 +88,7 @@ a ggplot object of the scatter plot.
 }
 \description{
 A plotting function which visualizes outputs from the
-\code{\link{runEmptyDrops}} function stored in the colData slot of the 
+\code{\link{runEmptyDrops}} function stored in the colData slot of the
 \linkS4class{SingleCellExperiment} object via scatter plots.
 }
 \examples{

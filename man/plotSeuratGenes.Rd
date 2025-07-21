@@ -9,7 +9,7 @@ plotSeuratGenes(
   useAssay = "seuratNormData",
   plotType,
   features,
-  groupVariable,
+  groupVariable = NULL,
   reducedDimName = "seuratUMAP",
   splitBy = NULL,
   cols = c("lightgrey", "blue"),
@@ -29,7 +29,8 @@ to "ridge", "violin", "feature", "dot" and "heatmap".}
 \item{features}{Specify the features to compute the plot against.}
 
 \item{groupVariable}{Specify the column name from the colData slot that
-should be used as grouping variable.}
+should be used as grouping variable.
+ Default is \code{NULL}.}
 
 \item{reducedDimName}{saved dimension reduction name in the
 SingleCellExperiment object. Default \code{seuratUMAP}.}

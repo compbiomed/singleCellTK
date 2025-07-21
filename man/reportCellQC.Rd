@@ -6,6 +6,7 @@
 \usage{
 reportCellQC(
   inSCE,
+  sample = "sample",
   output_file = NULL,
   output_dir = NULL,
   subTitle = NULL,
@@ -16,6 +17,8 @@ reportCellQC(
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object containing
 the filtered count matrix with the output from runCellQC function}
+
+\item{sample}{Character. The name of the saved column from the colData indicating the sample grouping variable. Default is "sample"}
 
 \item{output_file}{Character. The name of the generated file. If NULL/default then the output file name will be based on the name of the Rmarkdown template.}
 

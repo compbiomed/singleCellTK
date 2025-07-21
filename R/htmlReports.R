@@ -40,6 +40,7 @@ reportDropletQC <- function(inSCE, output_file = NULL,
 #' @description A  function to generate .html Rmarkdown report containing the visualizations of the runCellQC function output
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object containing
 #' the filtered count matrix with the output from runCellQC function
+#' @param sample Character. The name of the saved column from the colData indicating the sample grouping variable. Default is "sample"
 #' @param useReducedDim Character. The name of the saved dimension reduction slot including cells
 #' from all samples in then\linkS4class{SingleCellExperiment} object, Default is NULL
 #' @param subTitle subtitle of the QC HTML report. Default is NULL.
@@ -55,7 +56,8 @@ reportDropletQC <- function(inSCE, output_file = NULL,
 #' reportCellQC(inSCE = sce)
 #' }
 #' @export
-reportCellQC <- function(inSCE, output_file = NULL,
+reportCellQC <- function(inSCE, sample = "sample",
+                                output_file = NULL,
                                 output_dir = NULL,
                                 subTitle = NULL,
                                 studyDesign = NULL,
@@ -67,7 +69,7 @@ reportCellQC <- function(inSCE, output_file = NULL,
   #file.copy(system.file("rmarkdown/qc/CellQC.Rmd", package = "singleCellTK"), report_path, overwrite = TRUE)
 
   rmarkdown::render(system.file("rmarkdown/qc/CellQC.Rmd", package = "singleCellTK"),
-    params = list(object = inSCE, subTitle = subTitle, studyDesign = studyDesign,
+    params = list(object = inSCE, sample = sample, subTitle = subTitle, studyDesign = studyDesign,
     reducedDimName = useReducedDim),
     output_file = output_file,
     output_dir = output_dir,
