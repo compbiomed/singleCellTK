@@ -514,7 +514,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #' )
 #' @export
 plotSCEDimReduceFeatures <- function(inSCE,
-                                     feature,
+                                     features,
                                      reducedDimName,
                                      sample = NULL,
                                      featureLocation = NULL,
@@ -540,37 +540,35 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      legendTitle = NULL,
                                      legendSize = 10,
                                      legendTitleSize = 12,
+                                     ncols = NULL,
                                      groupBy = NULL,
                                      combinePlot = "none",
-                                     plotLabels = NULL) {
-    combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
+                                     plotLabels = NULL) { 
+  combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
 
-    if(!is.null(featureDisplay)){
-        featureDisplay <- match.arg(featureDisplay,
-                                    c("rownames",
-                                      colnames(SummarizedExperiment::rowData(inSCE)))
-        )
-    }else{
-        if(exists(x = "featureDisplay", inSCE@metadata)){
-            featureDisplay <- inSCE@metadata$featureDisplay
-        }
+  if(!is.null(featureDisplay)){
+    featureDisplay <- match.arg(featureDisplay,
+                                c("rownames",
+                                  colnames(SummarizedExperiment::rowData(inSCE))))
+  }else{
+    if(exists(x = "featureDisplay", inSCE@metadata)){
+      featureDisplay <- inSCE@metadata$featureDisplay
     }
+  }
 
-    mat <- getBiomarker(
+  if (length(features) > 1) {
+    plotlist <- lapply(features, function(f) {
+      mat <- getBiomarker(
         inSCE = inSCE,
         useAssay = useAssay,
-        gene = feature,
+        gene = f,
         binary = "Continuous",
         featureLocation = featureLocation,
         featureDisplay = featureDisplay
-    )
-    counts <- mat[, 2]
-
-    if(!is.null(featureDisplay)){
-        title = utils::tail(colnames(mat),1)
-    }
-
-    g <- .ggScatter(
+      )
+      counts <- mat[, 2]
+      plot_title <- if(!is.null(featureDisplay)) utils::tail(colnames(mat),1) else f
+      .ggScatter(
         inSCE = inSCE,
         sample = sample,
         conditionClass = "numeric",
@@ -591,17 +589,68 @@ plotSCEDimReduceFeatures <- function(inSCE,
         binLabel = binLabel,
         defaultTheme = defaultTheme,
         dotSize = dotSize,
-        title = title,
+        title = plot_title,
         titleSize = titleSize,
         legendTitle = legendTitle,
         legendTitleSize = legendTitleSize,
         legendSize = legendSize,
         groupBy = groupBy,
-        combinePlot = combinePlot,
+        combinePlot = "none",
         plotLabels = plotLabels
+      )
+    })
+    if (combinePlot != "none") {
+      plotlist <- .ggSCTKCombinePlots(plotlist,
+                                      combinePlot = combinePlot,
+                                      ncols = ncols,
+                                      labels = plotLabels)
+    }
+    return(plotlist)
+  } else {
+    mat <- getBiomarker(
+      inSCE = inSCE,
+      useAssay = useAssay,
+      gene = features,
+      binary = "Continuous",
+      featureLocation = featureLocation,
+      featureDisplay = featureDisplay
     )
-
+    counts <- mat[, 2]
+    if(!is.null(featureDisplay)){
+      title = utils::tail(colnames(mat),1)
+    }
+    g <- .ggScatter(
+      inSCE = inSCE,
+      sample = sample,
+      conditionClass = "numeric",
+      colorBy = counts,
+      shape = shape,
+      transparency = 1,
+      colorLow = colorLow,
+      colorMid = colorMid,
+      colorHigh = colorHigh,
+      reducedDimName = reducedDimName,
+      xlab = xlab,
+      ylab = ylab,
+      axisSize = axisSize,
+      axisLabelSize = axisLabelSize,
+      dim1 = dim1,
+      dim2 = dim2,
+      bin = bin,
+      binLabel = binLabel,
+      defaultTheme = defaultTheme,
+      dotSize = dotSize,
+      title = title,
+      titleSize = titleSize,
+      legendTitle = legendTitle,
+      legendTitleSize = legendTitleSize,
+      legendSize = legendSize,
+      groupBy = groupBy,
+      combinePlot = combinePlot,
+      plotLabels = plotLabels
+    )
     return(g)
+  }
 }
 
 #' @title Dimension reduction plot tool for all types of data
