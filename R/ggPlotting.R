@@ -460,7 +460,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @param reducedDimName saved dimension reduction name in the
 #' \linkS4class{SingleCellExperiment} object. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
-#' @param feature Name of feature stored in assay of SingleCellExperiment
+#' @param features Name of feature stored in assay of SingleCellExperiment
 #'  object.
 #' @param featureLocation Indicates which column name of rowData to query gene.
 #' @param featureDisplay Indicates which column name of rowData to use
@@ -498,6 +498,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @param legendTitle title of legend. Default NULL.
 #' @param legendTitleSize size of legend title. Default 12.
 #' @param legendSize size of legend. Default 10.
+#' @param ncols number of columns for multiple feature plotting. Default NULL.
 #' @param groupBy Facet wrap the scatterplot based on value.
 #' Default \code{NULL}.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
@@ -508,7 +509,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' plotSCEDimReduceFeatures(
-#'   inSCE = mouseBrainSubsetSCE, feature = "Apoe",
+#'   inSCE = mouseBrainSubsetSCE, features = "Apoe",
 #'   shape = NULL, reducedDimName = "TSNE_counts",
 #'   useAssay = "counts", xlab = "tSNE1", ylab = "tSNE2"
 #' )
@@ -543,7 +544,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      ncols = NULL,
                                      groupBy = NULL,
                                      combinePlot = "none",
-                                     plotLabels = NULL) { 
+                                     plotLabels = NULL) {
   combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
 
   if(!is.null(featureDisplay)){
