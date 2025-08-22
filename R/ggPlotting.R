@@ -462,6 +462,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param features Name of feature stored in assay of SingleCellExperiment
 #'  object.
+#' @param feature Deprecated, use `features` instead.
 #' @param featureLocation Indicates which column name of rowData to query gene.
 #' @param featureDisplay Indicates which column name of rowData to use
 #' to display feature for visualization.
@@ -506,6 +507,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the reduced dimension plot of feature data.
+#' @importFrom lifecycle deprecated deprecate_warn
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' plotSCEDimReduceFeatures(
@@ -516,6 +518,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @export
 plotSCEDimReduceFeatures <- function(inSCE,
                                      features,
+                                     feature = deprecated(),
                                      reducedDimName,
                                      sample = NULL,
                                      featureLocation = NULL,
@@ -545,6 +548,11 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      groupBy = NULL,
                                      combinePlot = "none",
                                      plotLabels = NULL) {
+  if (lifecycle::is_present(feature)) {
+    deprecate_warn("2.19.1", "singleCellTK::plotSCEDimReduceFeatures(feature = )",
+    "singleCellTK::plotSCEDimReduceFeatures(features = )")
+    features <- feature
+  }
   combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
 
   if(!is.null(featureDisplay)){

@@ -814,7 +814,7 @@ plotTSCANDimReduceFeatures <- function(
     features <- stats::na.omit(features)
     for (f in features) {
         # Should not enter the loop if features is length zero after NA omit
-        g <- plotSCEDimReduceFeatures(inSCE, feature = f,
+        g <- plotSCEDimReduceFeatures(inSCE, features = f,
                                       useAssay = useAssay,
                                       featureLocation = by,dim1 = 1, dim2 = 2,
                                       featureDisplay = featureDisplay,

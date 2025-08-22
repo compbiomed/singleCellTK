@@ -7,6 +7,7 @@
 plotSCEDimReduceFeatures(
   inSCE,
   features,
+  feature = deprecated(),
   reducedDimName,
   sample = NULL,
   featureLocation = NULL,
@@ -44,6 +45,8 @@ dimension reduction components or a variable with saved results. Required.}
 
 \item{features}{Name of feature stored in assay of SingleCellExperiment
 object.}
+
+\item{feature}{Deprecated, use `features` instead.}
 
 \item{reducedDimName}{saved dimension reduction name in the
 \linkS4class{SingleCellExperiment} object. Required.}

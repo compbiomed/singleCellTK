@@ -116,7 +116,7 @@ plotPCA(sce)
 # Customizing scatter plot with more information from cell metadata (colData)
 plotSCEDimReduceColData(sce, colorBy = "cluster", reducedDimName = "PCA")
 # Color scatter plot with feature expression
-plotSCEDimReduceFeatures(sce, feature = "CD8A", reducedDimName = "PCA")
+plotSCEDimReduceFeatures(sce, features = "CD8A", reducedDimName = "PCA")
 ```
 
 Besides, SCTK also wraps elbow plot, Jackstraw plot and DimHeatmap methods from *Seurat*. For usage of these visualization methods, please refer to [Seurat Curated Workflow](seurat_curated_workflow.html)
