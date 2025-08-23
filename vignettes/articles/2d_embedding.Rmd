@@ -93,7 +93,7 @@ plotUMAP(sce)
 # Customizing scatter plot with more information from cell metadata (colData)
 plotSCEDimReduceColData(sce, colorBy = "cluster", reducedDimName = "UMAP")
 # Color scatter plot with feature expression
-plotSCEDimReduceFeatures(sce, feature = "CD8A", reducedDimName = "UMAP")
+plotSCEDimReduceFeatures(sce, features = "CD8A", reducedDimName = "UMAP")
 ```
 
 ````{=html}
