@@ -294,8 +294,11 @@
                                     combinePlot = combinePlot,
                                     ncols = figNcol,
                                     labels = plotLabels)
-  }else if(combinePlot == "none" && length(plotlist) == 1){
-    plotlist <- plotlist[[1]]
+  }else if(combinePlot == "none" && length(plotlist) == 1 && methods::is(plotlist, "list")){
+      # Prior to R4.5 and ggplot3
+      # Started failing after 9/25 when bioc was using R4.5 and ggplot3 as this
+      # was not a list any longer. Added the "is" check for list to the if statement.  
+      plotlist <- plotlist[[1]]
   }
   
   return(plotlist)
@@ -1193,8 +1196,11 @@ plotSCEViolinColData <- function(inSCE,
                                     combinePlot = combinePlot,
                                     ncols = figNcol,
                                     labels = plotLabels)
-  }else if(combinePlot == "none" && length(plotlist) == 1){
-    plotlist <- plotlist[[1]]
+  }else if(combinePlot == "none" && length(plotlist) == 1 && methods::is(plotlist, "list")){
+      # Prior to R4.5 and ggplot3
+      # Started failing after 9/25 when bioc was using R4.5 and ggplot3 as this
+      # was not a list any longer. Added the "is" check for list to the if statement.  
+      plotlist <- plotlist[[1]]
   }
   
   return(plotlist)
@@ -1411,8 +1417,12 @@ plotSCEViolinAssayData <- function(inSCE,
                                     combinePlot = combinePlot,
                                     ncols = figNcol,
                                     labels = plotLabels)
-  }else if(combinePlot == "none" && length(plotlist) == 1){
-    plotlist <- plotlist[[1]]
+  }else if(combinePlot == "none" && length(plotlist) == 1 && methods::is(plotlist, "list")){
+      # Prior to R4.5 and ggplot3
+      # Started failing after 9/25 when bioc was using R4.5 and ggplot3 as this
+      # was not a list any longer. Added the "is" check for list to the if statement.  
+      plotlist <- plotlist[[1]]
+      plotlist <- plotlist[[1]]
   }
   
   return(plotlist)
@@ -1646,8 +1656,11 @@ plotSCEViolin <- function(inSCE,
                                     combinePlot = combinePlot,
                                     ncols = figNcol,
                                     labels = plotLabels)
-  }else if(combinePlot == "none" && length(plotlist) == 1){
-    plotlist <- plotlist[[1]]
+  }else if(combinePlot == "none" && length(plotlist) == 1 && methods::is(plotlist, "list")){
+      # Prior to R4.5 and ggplot3
+      # Started failing after 9/25 when bioc was using R4.5 and ggplot3 as this
+      # was not a list any longer. Added the "is" check for list to the if statement.  
+      plotlist <- plotlist[[1]]
   }
   return(plotlist)
 }
@@ -2188,8 +2201,11 @@ plotSCEDensity <- function(inSCE,
                                     combinePlot = combinePlot,
                                     ncols = figNcol,
                                     labels = plotLabels)
-  }else if(combinePlot == "none" && length(plotlist) == 1){
-    plotlist <- plotlist[[1]]
+  }else if(combinePlot == "none" && length(plotlist) == 1 && methods::is(plotlist, "list")){
+      # Prior to R4.5 and ggplot3
+      # Started failing after 9/25 when bioc was using R4.5 and ggplot3 as this
+      # was not a list any longer. Added the "is" check for list to the if statement.  
+      plotlist <- plotlist[[1]]
   }
   
   return(plotlist)
