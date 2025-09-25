@@ -17,7 +17,7 @@ test_that(desc = "Testing plotSCEScatter functions", {
         reducedDimName = "UMAP", labelClusters = FALSE,
         sample = sampleVector, combinePlot = "all")
     expect_is(p1, c("gg","ggplot"))
-    p2 <- plotSCEDimReduceFeatures(inSCE = sceres, feature = "ENSG00000251562",
+    p2 <- plotSCEDimReduceFeatures(inSCE = sceres, features = "ENSG00000251562",
         shape = NULL, reducedDimName = "UMAP",
         useAssay = "counts", xlab = "UMAP1", ylab = "UMAP2",
         sample = sampleVector, combinePlot = "all")

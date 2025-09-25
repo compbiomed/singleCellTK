@@ -122,6 +122,8 @@ Imports:
     utils,
     stats,
     zellkonverter
+    zellkonverter,
+    lifecycle
 RoxygenNote: 7.3.3
 Suggests:
     testthat,

@@ -134,6 +134,42 @@ runEnrichR <- function(inSCE,
   return(inSCE)
 }
 
+#' @title Plot EnrichR results
+#' @description Plot results of EnrichR analysis as a barplot.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' EnrichR results. Required.
+#' @param analysisName A string that identifies the specific analysis to plot.
+#' Required.
+#' @param showTerms Number of enrichment terms to show. Default is 20.
+#' @param numChar Integer. Indicates the maximum number characters to be
+#' displayed in the term names. Default is 40.
+#' @param y Character string. Indicates the variable to be shown on the
+#' y-axis. Can be one of "Count" or "Ratio". Results that include background
+#' genes can only show "Count". Default is "Count".
+#' @param orderBy Charachter string. Indicates how to order the results prior
+#' to subsetting. Can be one of "P.value", "Adjusted.P.Value",
+#' or "Combined.Score". Default is "Adjusted.P.value".
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param title Character string. Title of the plot. Default NULL.
+#' @return A ggplot object of EnrichR results.
+#' @export
+plotEnrichR <- function(inSCE,
+                        analysisName,
+                        showTerms = 20,
+                        numChar = 40,
+                        y = "Count",
+                        orderBy = "Adjusted.P.value",
+                        xlab = NULL,
+                        ylab = NULL,
+                        title = NULL){
+    res <- getEnrichRResult(inSCE, analysisName = analysisName)
+    p <- enrichR::plotEnrich(df = res$result, showTerms = showTerms, numChar = numChar, y = y,
+                    orderBy = orderBy, xlab = xlab, ylab = ylab, title = title)
+    return(p)
+}
+
+
 #' @title Get or Set EnrichR Result
 #' @rdname getEnrichRResult
 #' @param inSCE A \linkS4class{SingleCellExperiment} object.

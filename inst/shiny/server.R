@@ -4883,7 +4883,7 @@ shinyServer(function(input, output, session) {
                             legendSize = input$adjustlegendsize, legendTitleSize = input$adjustlegendtitlesize,
                             conditionClass = pltVars$class, defaultTheme = as.logical(pltVars$defTheme))
       }else if(input$TypeSelect_Colorby == "Expression Assays"){
-        a <- plotSCEDimReduceFeatures(vals$counts, feature = input$GeneSelect_Assays_Colorby,
+        a <- plotSCEDimReduceFeatures(vals$counts, features = input$GeneSelect_Assays_Colorby,
                                       reducedDimName = input$QuickAccess, useAssay = input$AdvancedMethodSelect_Colorby,
                                       xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjusttitle,
                                       groupBy = pltVars$groupby, bin = pltVars$bin, transparency = input$adjustalpha,
