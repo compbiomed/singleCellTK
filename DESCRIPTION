@@ -121,7 +121,6 @@ Imports:
     scuttle,
     utils,
     stats,
-    zellkonverter
     zellkonverter,
     lifecycle
 RoxygenNote: 7.3.3
