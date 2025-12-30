@@ -158,7 +158,9 @@ runCxds <- function(
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' \dontrun{
 #' sce <- runBcds(sce)
+#' }
 #' @export
 #' @importFrom SummarizedExperiment colData colData<-
 #' @importFrom SingleCellExperiment counts<-
@@ -287,7 +289,9 @@ runBcds <- function(
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' \dontrun{
 #' sce <- runCxdsBcdsHybrid(sce)
+#' }
 #' @export
 #' @importFrom SummarizedExperiment colData colData<-
 #' @importFrom SingleCellExperiment counts counts<-
