@@ -60,5 +60,7 @@ A wrapper function for \link[scds]{cxds_bcds_hybrid}. Annotate
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+\dontrun{
 sce <- runCxdsBcdsHybrid(sce)
+}
 }

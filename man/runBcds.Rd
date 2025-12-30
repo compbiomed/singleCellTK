@@ -68,7 +68,9 @@ all cells will be processed together.
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+\dontrun{
 sce <- runBcds(sce)
+}
 }
 \seealso{
 \code{\link[scds]{bcds}}, \code{\link{plotBcdsResults}}, 
