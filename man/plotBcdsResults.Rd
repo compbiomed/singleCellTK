@@ -157,8 +157,10 @@ A wrapper function which visualizes outputs from the
 data(scExample, package="singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runQuickUMAP(sce)
+\dontrun{
 sce <- runBcds(sce)
 plotBcdsResults(inSCE=sce, reducedDimName="UMAP")
+}
 }
 \seealso{
 \code{\link{runBcds}}

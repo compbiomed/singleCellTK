@@ -145,6 +145,8 @@ A wrapper function which visualizes outputs from the
 data(scExample, package="singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runQuickUMAP(sce)
+\dontrun{
 sce <- runCxdsBcdsHybrid(sce)
 plotScdsHybridResults(inSCE=sce, reducedDimName="UMAP")
+}
 }

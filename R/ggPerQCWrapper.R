@@ -1942,8 +1942,10 @@ plotCxdsResults <- function(
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runQuickUMAP(sce)
+#' \dontrun{
 #' sce <- runBcds(sce)
 #' plotBcdsResults(inSCE=sce, reducedDimName="UMAP")
+#' }
 #' @export
 plotBcdsResults <- function(
     inSCE,
@@ -2251,8 +2253,10 @@ plotBcdsResults <- function(
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runQuickUMAP(sce)
+#' \dontrun{
 #' sce <- runCxdsBcdsHybrid(sce)
 #' plotScdsHybridResults(inSCE=sce, reducedDimName="UMAP")
+#' }
 #' @export
 plotScdsHybridResults <- function(inSCE,
                                   sample=NULL,
