@@ -143,13 +143,23 @@ computeHeatmap <- function(inSCE,
   # get assay data with only selected features (all dims) and
   # selected cells (all)
 
-  data.all <- Seurat::FetchData(
-    object = object,
-    vars = unique(x = unlist(x = features.keyed)),
-    cells = unique(x = unlist(x = cells)),
-    slot = slot
-  )
-
+  # Check the installed Seurat version
+  seurat_version <- packageVersion("SeuratObject")$major
+  
+  if (seurat_version >= 5) {
+    data.all <- Seurat::FetchData(
+      object = object,
+      vars = unique(x = unlist(x = features.keyed)),
+      cells = unique(x = unlist(x = cells)),
+      layer = slot)
+  } else {
+    data.all <- Seurat::FetchData(
+      object = object,
+      vars = unique(x = unlist(x = features.keyed)),
+      cells = unique(x = unlist(x = cells)),
+      slot = slot)
+  }    
+  
   #clip off values for heatmap
   data.all <-
     Seurat::MinMax(data = data.all, min = disp.min, max = disp.max)
