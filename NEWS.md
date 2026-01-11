@@ -1,3 +1,11 @@
+Changes in Version 2.21.1 (2026-01-1)
+================================================================================
+* Updated depreciated parameters in Seurat function calls
+
+Changes in Version 2.20.0 (2025-10-29)
+================================================================================
+* Updated version to match Bioconductor 3.22
+
 Changes in Version 2.18.1 (2025-07-01)
 ================================================================================
 * Updated enrichR examples
