@@ -650,13 +650,30 @@ runSeuratJackStraw <- function(inSCE,
     seuratObject <- Seurat::FindVariableFeatures(seuratObject)
     seuratObject <- Seurat::ScaleData(seuratObject)
     seuratObject@reductions <- list(pca = externalReduction)
-    seuratObject@reductions$pca@feature.loadings <-
-      seuratObject@reductions$pca@feature.loadings[match(
-        rownames(
-          Seurat::GetAssayData(seuratObject, assay = "RNA", slot = "scale.data")
-        ),
-        rownames(seuratObject@reductions$pca@feature.loadings)
-      ), ]
+    
+    if (packageVersion("SeuratObject")$major >= 5) {
+      
+      # Access assay data with "layer" parameter in v5 and above
+      seuratObject@reductions$pca@feature.loadings <-
+        seuratObject@reductions$pca@feature.loadings[match(
+          rownames(
+            Seurat::GetAssayData(seuratObject, assay = "RNA", layer = "scale.data")
+          ),
+          rownames(seuratObject@reductions$pca@feature.loadings)
+        ), ]
+      
+    } else {
+      
+      # Access assay data with "slot" parameter in v4 and below
+      seuratObject@reductions$pca@feature.loadings <-
+        seuratObject@reductions$pca@feature.loadings[match(
+          rownames(
+            Seurat::GetAssayData(seuratObject, assay = "RNA", slot = "scale.data")
+          ),
+          rownames(seuratObject@reductions$pca@feature.loadings)
+        ), ]
+    }
+    
     if (any(is.na(seuratObject@reductions$pca@feature.loadings))) {
       seuratObject@reductions$pca@feature.loadings <-
         stats::na.omit(seuratObject@reductions$pca@feature.loadings)
@@ -1933,11 +1950,24 @@ runSeuratIntegration <- function(inSCE,
     Seurat::IntegrateData(anchorset = seurat.anchors,
                           dims = seq(ndims),
                           k.weight = kWeight)
+  
   #store results back in altExp slot of sce object
-  altExp(inSCE, newAssayName) <-
-    SingleCellExperiment(list(
-      counts = Seurat::GetAssayData(seurat.integrated@assays$integrated, "data")
-    ))
+  if (packageVersion("SeuratObject")$major >= 5) {
+    
+    # Access assay data with "layer" parameter in v5 and above
+    altExp(inSCE, newAssayName) <-
+      SingleCellExperiment(list(
+        counts = Seurat::GetAssayData(seurat.integrated@assays$integrated, layer = "data")
+      ))
+  } else {
+    
+    # Access assay data with "slot" parameter in v4 and below
+    altExp(inSCE, newAssayName) <-
+      SingleCellExperiment(list(
+        counts = Seurat::GetAssayData(seurat.integrated@assays$integrated, slot = "data")
+      ))    
+  }
+  
   SummarizedExperiment::assayNames(altExp(inSCE, newAssayName)) <-
     newAssayName
   # remove this if counts in above line set to altExp
