@@ -1,4 +1,4 @@
-Changes in Version 2.21.1 (2026-01-1)
+Changes in Version 2.20.1 (2026-01-1)
 ================================================================================
 * Updated depreciated parameters in Seurat function calls
 
