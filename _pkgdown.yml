@@ -221,92 +221,90 @@ navbar:
       href: articles/installation.html
     - text: "Tutorials"
       menu:
-      - text: "Importing and QC - PBMC3K"
-        href: articles/01_import_and_qc_tutorial.html
-      - text: "A La Carte Workflow - PBMC3K"
-        href: articles/02_a_la_carte_workflow.html
-      - text: "Seurat Curated Workflow - PBMC3K"
-        href: articles/seurat_curated_workflow.html
-      - text: "Celda Curated Workflow - PBMC3K"
-        href: articles/celda_curated_workflow.html
-      - text: "Scanpy Curated Workflow - PBMC3K"
-        href: articles/scanpy_curated_workflow.html
+         - text: "Basic workflows"
+           menu:
+            - text: "PBMC3K"
+              href: articles/01_import_and_qc_tutorial.html
+         - text: ---------------------
+         - text: "Detailed Documentation"
+           menu:
+              - text: "Data"
+                menu:
+                  - text: "Import Data"
+                    href: articles/import_data.html
+                  - text: "Import Gene Sets"
+                    href: articles/import_genesets.html
+                  - text: "Annotation"
+                    href: articles/import_annotation.html
+                  - text: "Export Data"
+                    href: articles/export_data.html
+                  - text: "Delete Data"
+                    href: articles/delete_data.html
+              - text: "QC & Filtering"
+                menu:
+                  - text: "Droplet QC (R console)"
+                    href: articles/cnsl_dropletqc.html
+                  - text: "Cell QC (R console)"
+                    href: articles/cnsl_cellqc.html
+                  - text: "Cell QC (Shiny UI)"
+                    href: articles/ui_qc.html
+                  - text: "Filtering"
+                    href: articles/filtering.html
+              - text: "Normalization & Batch Correction"
+                menu:
+                  - text: "Normalization"
+                    href: articles/normalization.html
+                  - text: "Batch Correction"
+                    href: articles/batch_correction.html
+              - text: "Feature Selection & Dimensionality Reduction"
+                menu:
+                 - text: "Feature Selection"
+                   href: articles/feature_selection.html
+                 - text: "Dimensionality Reduction"
+                   href: articles/dimensionality_reduction.html
+                 - text: "2D Embedding"
+                   href: articles/2d_embedding.html
+              - text: "Clustering"
+                menu:
+                   - text: "Basic clustering"
+                     href: articles/clustering.html
+                   - text: "Seurat Curated Workflow - PBMC3K"
+                     href: articles/seurat_curated_workflow.html
+                   - text: "Celda Curated Workflow - PBMC3K"
+                     href: articles/celda_curated_workflow.html
+                   - text: "Scanpy Curated Workflow - PBMC3K"
+                     href: articles/scanpy_curated_workflow.html
+              - text: "Differential Expression & Cell Type Labeling"
+                menu:
+                - text: "Differential Expression"
+                  href: articles/differential_expression.html
+                - text: "Find Marker"
+                  href: articles/find_marker.html
+                - text: "Cell Type Labeling"
+                  href: articles/cell_type_labeling.html
+              - text: "Pathway & Enrichment Analysis"
+                menu:
+                - text: "EnrichR"
+                  href: articles/enrichR.html
+                - text: "Pathway Analysis"
+                  href: articles/pathwayAnalysis.html
+              - text: "Trajectory Analysis"
+                menu:
+                - text: "TSCAN"
+                  href: articles/trajectoryAnalysis.html
+              - text: "Visualization"
+                menu:
+                - text: "General Visualization"
+                  href: articles/visualization.html
+                - text: "Generic Heatmap"
+                  href: articles/heatmap.html
+              - text: "Web Application"
+                menu:
+                 - text: "FAQs"
+                   href: articles/webApp.html
     - text: "SCTK-QC"
       href: articles/cmd_qc.html
-    - text: "Documentation"
-      menu:
-        - text: "Data"
-          menu:
-            - text: "Import Data"
-              href: articles/import_data.html
-            - text: "Import Gene Sets"
-              href: articles/import_genesets.html
-            - text: "Annotation"
-              href: articles/import_annotation.html
-            - text: "Export Data"
-              href: articles/export_data.html
-            - text: "Delete Data"
-              href: articles/delete_data.html
-        - text: "QC & Filtering"
-          menu:
-            - text: "Droplet QC (R console)"
-              href: articles/cnsl_dropletqc.html
-            - text: "Cell QC (R console)"
-              href: articles/cnsl_cellqc.html
-            - text: "Cell QC (Shiny UI)"
-              href: articles/ui_qc.html
-            - text: "Filtering"
-              href: articles/filtering.html
-        - text: "Normalization & Batch Correction"
-          menu:
-          - text: "Normalization"
-            href: articles/normalization.html
-          - text: "Batch Correction"
-            href: articles/batch_correction.html
-        - text: "Feature Selection & Dimensionality Reduction"
-          menu:
-          - text: "Feature Selection"
-            href: articles/feature_selection.html
-          - text: "Dimensionality Reduction"
-            href: articles/dimensionality_reduction.html
-          - text: "2D Embedding"
-            href: articles/2d_embedding.html
-        - text: "Clustering"
-          href: articles/clustering.html
-        - text: "Differential Expression & Cell Type Labeling"
-          menu:
-            - text: "Differential Expression"
-              href: articles/differential_expression.html
-            - text: "Find Marker"
-              href: articles/find_marker.html
-            - text: "Cell Type Labeling"
-              href: articles/cell_type_labeling.html
-        - text: "Pathway & Enrichment Analysis"
-          menu:
-            - text: "EnrichR"
-              href: articles/enrichR.html
-            - text: "Pathway Analysis"
-              href: articles/pathwayAnalysis.html
-        - text: "Trajectory Analysis"
-          menu:
-            - text: "TSCAN"
-              href: articles/trajectoryAnalysis.html
-        - text: "Curated Workflows"
-          menu:
-            - text: "Seurat"
-              href: articles/seurat_curated_workflow.html
-            - text: "Celda"
-              href: articles/celda_curated_workflow.html
-        - text: "Visualization"
-          menu:
-          - text: "General Visualization"
-            href: articles/visualization.html
-          - text: "Generic Heatmap"
-            href: articles/heatmap.html
-        - text: "Web Application"
-          menu:
-          - text: "FAQs"
-            href: articles/webApp.html
+      
     - text: "Reference"
       href: reference/index.html
     - text: "NEWS"
