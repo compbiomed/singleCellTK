@@ -1,0 +1,56 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(make help)",
+      "Bash(make test)",
+      "Bash(make check)",
+      "Bash(make bioccheck)",
+      "Bash(make build)",
+      "Bash(make docs)",
+      "Bash(make lint)",
+      "Bash(make app)",
+      "Bash(make test-app)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git blame:*)"
+    ],
+    "deny": [
+      "Edit(man/**)",
+      "Write(man/**)",
+      "Edit(NAMESPACE)",
+      "Write(NAMESPACE)",
+      "Edit(docs/**)",
+      "Write(docs/**)",
+      "Edit(Makefile)",
+      "Write(Makefile)",
+      "Edit(.claude/settings.json)",
+      "Write(.claude/settings.json)",
+      "Edit(dev/hooks/**)",
+      "Write(dev/hooks/**)",
+      "Bash(make site-deploy)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push --force-with-lease:*)",
+      "Bash(rm -rf:*)",
+      "Bash(rm -r:*)",
+      "Bash(rm -fr:*)",
+      "Bash(git clean:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/dev/hooks/lint-changed.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}

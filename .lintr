@@ -1,0 +1,15 @@
+# lintr configuration for singleCellTK (Bioconductor style).
+# lintr::lint_package() lints R/, tests/, inst/ (including inst/shiny/),
+# vignettes/, data-raw/, and exec/. inst/shiny is listed here explicitly
+# because R CMD check never inspects it, so lint is its only style check.
+linters: linters_with_defaults(
+    indentation_linter(indent = 4L),
+    line_length_linter(80L),
+    object_name_linter(styles = c("camelCase", "CamelCase", "symbols")),
+    commented_code_linter = NULL
+  )
+exclusions: list(
+    "docs",
+    "renv"
+  )
+encoding: "UTF-8"
