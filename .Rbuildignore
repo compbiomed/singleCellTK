@@ -18,3 +18,11 @@ exec/png
 ^vignettes/articles/*
 ^images
 .dockerignore
+^Makefile$
+^AGENTS\.md$
+^CLAUDE\.md$
+^GEMINI\.md$
+^dev$
+^\.claude$
+^\.lintr$
+^\.gitattributes$
