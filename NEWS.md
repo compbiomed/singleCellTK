@@ -1,3 +1,8 @@
+Changes in Version 2.19.2 (2026-09-20)
+================================================================================
+* Changed `runScDblFinder()` defaults for `nNeighbors` and `simDoublets` to
+  `NULL`, so scDblFinder chooses these values itself
+
 Changes in Version 2.18.1 (2025-07-01)
 ================================================================================
 * Updated enrichR examples
