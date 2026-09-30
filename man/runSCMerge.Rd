@@ -61,6 +61,13 @@ The scMerge method leverages factor analysis, stably expressed genes (SEGs)
 and (pseudo-) replicates to remove unwanted variations and merge multiple
 scRNA-Seq data.
 }
+\details{
+The \code{scMerge} package is suggested rather than required, so
+it is not installed with singleCellTK. Install it with
+\code{BiocManager::install("scMerge")} before calling this function; it is
+unavailable on some platforms, and making it a hard dependency would block
+installing singleCellTK there.
+}
 \examples{
 data('sceBatches', package = 'singleCellTK')
 \dontrun{
