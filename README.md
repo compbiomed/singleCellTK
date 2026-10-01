@@ -4,7 +4,7 @@
 
 The Single Cell Toolkit (SCTK) in the *singleCellTK* R package is an analysis platform that provides an **R interface to several popular single-cell RNA-sequencing (scRNAseq) data preprocessing, quality control, analysis, and visualization tools**. SCTK imports raw or filtered counts from various scRNAseq preprocessing tools such as 10x CellRanger, BUStools, Optimus, STARSolo, and more. By integrating several publicly available tools written in R or Python, SCTK can be used to perform extensive quality control including doublet detection, ambient RNA removal. SCTK integrates analysis workflows from popular tools such as Seurat and Bioconductor/OSCA into a single unified framework. Results from various workflows can be summarized and easily shared using comprehensive HTML reports. Lastly, data can be exported to Seurat or AnnData object to allow for seamless integration with other downstream analysis workflows.
 
-![](https://camplab.net/sctk/img/interior-2.png)
+![](https://camplab.net/sctk/SingleCellTK_summary.png)
 
 ## Features
 
