@@ -63,8 +63,8 @@ make soft kmeans cluster approach hard clustering. Default \code{0.1}.}
 
 \item{verbose}{Whether to print progress messages. Default \code{TRUE}.}
 
-\item{...}{Other arguments passed to \code{\link[harmony]{HarmonyMatrix}}.
-See details.}
+\item{...}{Other arguments passed to the harmony function in use. See
+details.}
 }
 \value{
 The input \linkS4class{SingleCellExperiment} object with
@@ -76,11 +76,36 @@ embedding in which cells group by cell type rather than dataset-specific
 conditions.
 }
 \details{
-Since some of the arguments of \code{\link[harmony]{HarmonyMatrix}}
-is controlled by this wrapper function. The additional arguments users can
-work with only include: \code{nclust}, \code{tau}, \code{block.size},
-\code{max.iter.cluster}, \code{epsilon.cluster}, \code{epsilon.harmony},
-\code{plot_convergence}, \code{reference_values} and \code{cluster_prior}.
+This wrapper supports both harmony interfaces and picks the one
+matching the installed version, so existing installations keep working:
+\itemize{
+ \item harmony >= 1.0.0 (current): \code{harmony::RunHarmony()} is called.
+ It does not perform PCA itself, so when \code{useAssay} is given the PCA
+ is computed with \code{scater::calculatePCA()}, using all features of the
+ selected assay, scaled, to match what the legacy interface did internally
+ (\code{ntop = Inf}, \code{scale = TRUE}), and keeping
+ \code{nComponents} components. Extra arguments in \code{...} are those
+ of \code{RunHarmony()}, for example \code{nclust}, \code{ncores},
+ \code{plot_convergence} or \code{.options} (see
+ \code{harmony::harmony_options()}).
+ \item harmony < 1.0.0 (legacy): \code{HarmonyMatrix()} is called exactly
+ as before, performing its own PCA. The additional arguments users can work
+ with are \code{nclust}, \code{tau}, \code{block.size},
+ \code{max.iter.cluster}, \code{epsilon.cluster},
+ \code{epsilon.harmony}, \code{plot_convergence},
+ \code{reference_values} and \code{cluster_prior}.
+}
+Because the harmony algorithm itself changed between these versions,
+corrected embeddings are not expected to match across versions.
+
+Note for users upgrading harmony: the legacy tuning arguments
+\code{tau}, \code{block.size}, \code{max.iter.cluster},
+\code{epsilon.cluster} and \code{epsilon.harmony} were moved into an
+options object in harmony 1.0.0. Passing them through \code{...} now
+raises an error from harmony rather than being silently ignored, so a call
+such as \code{runHarmony(inSCE, epsilon.cluster = 1e-5)} must become
+\code{runHarmony(inSCE, .options = harmony::harmony_options(
+epsilon.cluster = 1e-5))}.
 }
 \examples{
 data('sceBatches', package = 'singleCellTK')

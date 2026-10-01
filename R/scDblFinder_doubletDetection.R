@@ -8,9 +8,11 @@
 #' @param useAssay  A string specifying which assay in the SCE to use. Default
 #' \code{"counts"}.
 #' @param nNeighbors Number of nearest neighbors used to calculate density for
-#' doublet detection. Default \code{50}.
+#' doublet detection. When \code{NULL}, \link[scDblFinder]{scDblFinder} selects
+#' the value internally. Default \code{NULL}.
 #' @param simDoublets Number of simulated doublets created for doublet
-#' detection. Default \code{10000}.
+#' detection. When \code{NULL}, \link[scDblFinder]{scDblFinder} selects the
+#' value internally. Default \code{NULL}.
 #' @param seed Seed for the random number generator, can be set to \code{NULL}.
 #' Default \code{12345}.
 #' @param BPPARAM A \code{\link[BiocParallel]{BiocParallelParam-class}} object
@@ -37,8 +39,8 @@
 runScDblFinder <- function(inSCE,
     sample = NULL,
     useAssay = "counts",
-    nNeighbors = 50,
-    simDoublets = max(10000, ncol(inSCE)),
+    nNeighbors = NULL,
+    simDoublets = NULL,
     seed = 12345,
     BPPARAM = BiocParallel::SerialParam(RNGseed = seed)
 ) {

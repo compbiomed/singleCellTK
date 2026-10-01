@@ -2,6 +2,7 @@ Package: singleCellTK
 Type: Package
 Title: Comprehensive and Interactive Analysis of Single Cell RNA-Seq Data
 Version: 2.21.1
+=======
 Authors@R: c(person(given="Yichen", family="Wang", email="wangych@bu.edu", role=c("aut"),
                     comment = c(ORCID = "0000-0003-4347-5199")),
              person(given="Irzam", family="Sarfraz", email="isarfraz@bu.edu", role=c("aut"),
@@ -80,7 +81,6 @@ Imports:
     Rtsne,
     S4Vectors,
     scater,
-    scMerge (>= 1.2.0),
     scran,
     Seurat (>= 3.1.3),
     shiny,
@@ -123,8 +123,8 @@ Imports:
     stats,
     zellkonverter,
     lifecycle
-RoxygenNote: 7.3.3
 Suggests:
+    scMerge (>= 1.2.0),
     testthat,
     Rsubread,
     BiocStyle,
@@ -148,3 +148,4 @@ VignetteBuilder: knitr
 URL: https://www.camplab.net/sctk/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
 Language: en-US
+Config/roxygen2/version: 8.1.0

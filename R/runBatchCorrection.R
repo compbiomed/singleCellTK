@@ -302,13 +302,38 @@ runFastMNN <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
 #' \code{10L}.
 #' @param seed Set seed for reproducibility. Default is \code{12345}.
 #' @param verbose Whether to print progress messages. Default \code{TRUE}.
-#' @param ... Other arguments passed to \code{\link[harmony]{HarmonyMatrix}}.
-#' See details.
-#' @details Since some of the arguments of \code{\link[harmony]{HarmonyMatrix}}
-#' is controlled by this wrapper function. The additional arguments users can
-#' work with only include: \code{nclust}, \code{tau}, \code{block.size},
-#' \code{max.iter.cluster}, \code{epsilon.cluster}, \code{epsilon.harmony},
-#' \code{plot_convergence}, \code{reference_values} and \code{cluster_prior}.
+#' @param ... Other arguments passed to the harmony function in use. See
+#' details.
+#' @details This wrapper supports both harmony interfaces and picks the one
+#' matching the installed version, so existing installations keep working:
+#' \itemize{
+#'  \item harmony >= 1.0.0 (current): \code{harmony::RunHarmony()} is called.
+#'  It does not perform PCA itself, so when \code{useAssay} is given the PCA
+#'  is computed with \code{scater::calculatePCA()}, using all features of the
+#'  selected assay, scaled, to match what the legacy interface did internally
+#'  (\code{ntop = Inf}, \code{scale = TRUE}), and keeping
+#'  \code{nComponents} components. Extra arguments in \code{...} are those
+#'  of \code{RunHarmony()}, for example \code{nclust}, \code{ncores},
+#'  \code{plot_convergence} or \code{.options} (see
+#'  \code{harmony::harmony_options()}).
+#'  \item harmony < 1.0.0 (legacy): \code{HarmonyMatrix()} is called exactly
+#'  as before, performing its own PCA. The additional arguments users can work
+#'  with are \code{nclust}, \code{tau}, \code{block.size},
+#'  \code{max.iter.cluster}, \code{epsilon.cluster},
+#'  \code{epsilon.harmony}, \code{plot_convergence},
+#'  \code{reference_values} and \code{cluster_prior}.
+#' }
+#' Because the harmony algorithm itself changed between these versions,
+#' corrected embeddings are not expected to match across versions.
+#'
+#' Note for users upgrading harmony: the legacy tuning arguments
+#' \code{tau}, \code{block.size}, \code{max.iter.cluster},
+#' \code{epsilon.cluster} and \code{epsilon.harmony} were moved into an
+#' options object in harmony 1.0.0. Passing them through \code{...} now
+#' raises an error from harmony rather than being silently ignored, so a call
+#' such as \code{runHarmony(inSCE, epsilon.cluster = 1e-5)} must become
+#' \code{runHarmony(inSCE, .options = harmony::harmony_options(
+#' epsilon.cluster = 1e-5))}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{reducedDim(inSCE, reducedDimName)} updated.
 #' @export
@@ -359,17 +384,68 @@ runHarmony <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
     mat <- mat[,seq(nComponents)]
   }
   h <- withr::with_seed(seed, {
-    harmony::HarmonyMatrix(data_mat = mat, meta_data = batchVec,
-                           do_pca = do_pca, npcs = nComponents,
-                           lambda = lambda, theta = theta,
-                           sigma = sigma, max.iter.harmony = nIter,
-                           verbose = verbose, return_object = FALSE, ...)
+    if (utils::packageVersion("harmony") < "1.0.0") {
+      .runHarmonyLegacy(mat = mat, batchVec = batchVec, do_pca = do_pca,
+                        nComponents = nComponents, lambda = lambda,
+                        theta = theta, sigma = sigma, nIter = nIter,
+                        verbose = verbose, ...)
+    } else {
+      .runHarmonyCurrent(mat = mat, batchVec = batchVec, do_pca = do_pca,
+                         nComponents = nComponents, lambda = lambda,
+                         theta = theta, sigma = sigma, nIter = nIter,
+                         verbose = verbose, ...)
+    }
   })
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- h
   S4Vectors::metadata(inSCE)$batchCorr[[reducedDimName]] <-
     list(useAssay = useAssay, origLogged = TRUE, method = "harmony",
          matType = "reducedDim", batch = batch)
   return(inSCE)
+}
+
+#' Run Harmony with the legacy (harmony < 1.0.0) interface
+#'
+#' Calls \code{HarmonyMatrix()}, removed in harmony 1.0.0. The function is
+#' looked up at run time rather than with \code{harmony::HarmonyMatrix} so
+#' that \code{R CMD check} does not report it as missing when a current
+#' harmony is installed.
+#' @return A matrix of corrected embeddings, cells as rows.
+#' @noRd
+.runHarmonyLegacy <- function(mat, batchVec, do_pca, nComponents, lambda,
+                              theta, sigma, nIter, verbose, ...) {
+  harmonyMatrix <- utils::getFromNamespace("HarmonyMatrix", "harmony")
+  harmonyMatrix(data_mat = mat, meta_data = batchVec,
+                do_pca = do_pca, npcs = nComponents,
+                lambda = lambda, theta = theta,
+                sigma = sigma, max.iter.harmony = nIter,
+                verbose = verbose, return_object = FALSE, ...)
+}
+
+#' Run Harmony with the current (harmony >= 1.0.0) interface
+#'
+#' \code{RunHarmony()} no longer performs PCA internally, so when a full-size
+#' assay is given the PCA is computed here with \code{scater::calculatePCA()}
+#' before correction.
+#' @return A matrix of corrected embeddings, cells as rows.
+#' @noRd
+.runHarmonyCurrent <- function(mat, batchVec, do_pca, nComponents, lambda,
+                               theta, sigma, nIter, verbose, ...) {
+  if (isTRUE(do_pca)) {
+    # Match the PCA the legacy HarmonyMatrix(do_pca = TRUE) performed: all
+    # supplied features, scaled. scater's defaults (ntop = 500, scale =
+    # FALSE) would silently drop features instead.
+    if (nComponents >= min(dim(mat))) {
+      nComponents <- min(dim(mat)) - 1L
+      warning("Specified number of components more than available, ",
+              "using ", nComponents, " components.")
+    }
+    mat <- scater::calculatePCA(mat, ncomponents = nComponents,
+                                ntop = Inf, scale = TRUE)
+  }
+  harmony::RunHarmony(data_mat = mat, meta_data = batchVec,
+                      lambda = lambda, theta = theta,
+                      sigma = sigma, max_iter = nIter,
+                      verbose = verbose, return_object = FALSE, ...)
 }
 
 # #' Apply LIGER batch effect correction method to SingleCellExperiment object
@@ -686,6 +762,11 @@ integrated = integrated[:, orderIdx]
 #' should be parallelized. Default \code{BiocParallel::SerialParam()}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{assay(inSCE, assayName)} updated.
+#' @details The \code{scMerge} package is suggested rather than required, so
+#' it is not installed with singleCellTK. Install it with
+#' \code{BiocManager::install("scMerge")} before calling this function; it is
+#' unavailable on some platforms, and making it a hard dependency would block
+#' installing singleCellTK there.
 #' @export
 #' @references Hoa, et al., 2020
 #' @examples
@@ -698,6 +779,12 @@ runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
                        assayName = "scMerge", hvgExprs = "counts", seg = NULL,
                        kmeansK = NULL, cellType = NULL,
                        BPPARAM = BiocParallel::SerialParam()){
+  if (!requireNamespace("scMerge", quietly = TRUE)) {
+    stop("The scMerge package is required to run this function. ",
+         "Install scMerge with: ",
+         "BiocManager::install('scMerge')",
+         call. = FALSE)
+  }
   ## Input check
   useMat <- .selectSCEMatrix(inSCE, useAssay = useAssay, returnMatrix = TRUE)
   .selectSCEMatrix(inSCE, useAssay = hvgExprs, returnMatrix = FALSE)

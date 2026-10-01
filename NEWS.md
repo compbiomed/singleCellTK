@@ -6,6 +6,35 @@ Changes in Version 2.20.0 (2025-10-29)
 ================================================================================
 * Updated version to match Bioconductor 3.22
 
+Changes in Version 2.19.4 (2026-09-22)
+=========================================================================
+
+* Moved scMerge from Imports to Suggests. It is only used by runSCMerge(), and
+  it cannot currently be installed on all platforms (an unrelated toolchain
+  problem in one of its dependencies), which blocked installing singleCellTK
+  there entirely. runSCMerge() now stops with an informative message if scMerge
+  is not installed.
+
+Changes in Version 2.19.3 (2026-09-20)
+================================================================================
+* Fixed runHarmony() with harmony >= 1.0.0, where HarmonyMatrix() was removed.
+  The function now detects the installed harmony version and calls RunHarmony()
+  on 1.0.0 and above, while keeping the original HarmonyMatrix() code path for
+  older installations. With harmony >= 1.0.0 the PCA for a full-size assay is
+  computed by singleCellTK, since harmony no longer performs it, using all
+  features of the selected assay with scaling so that it matches the PCA the
+  legacy interface performed internally. Corrected embeddings are not expected
+  to match between harmony versions. After upgrading harmony, the legacy
+  tuning arguments (tau, block.size, max.iter.cluster, epsilon.cluster,
+  epsilon.harmony) are no longer accepted through '...'; harmony raises an
+  error for them, and they must be passed through
+  .options = harmony::harmony_options(...) instead.
+
+Changes in Version 2.19.2 (2026-09-20)
+================================================================================
+* Changed `runScDblFinder()` defaults for `nNeighbors` and `simDoublets` to
+  `NULL`, so scDblFinder chooses these values itself
+
 Changes in Version 2.18.1 (2025-07-01)
 ================================================================================
 * Updated enrichR examples

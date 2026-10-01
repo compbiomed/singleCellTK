@@ -8,8 +8,8 @@ runScDblFinder(
   inSCE,
   sample = NULL,
   useAssay = "counts",
-  nNeighbors = 50,
-  simDoublets = max(10000, ncol(inSCE)),
+  nNeighbors = NULL,
+  simDoublets = NULL,
   seed = 12345,
   BPPARAM = BiocParallel::SerialParam(RNGseed = seed)
 )
@@ -24,10 +24,12 @@ sample each cell belongs to. Default \code{NULL}.}
 \code{"counts"}.}
 
 \item{nNeighbors}{Number of nearest neighbors used to calculate density for
-doublet detection. Default \code{50}.}
+doublet detection. When \code{NULL}, \link[scDblFinder]{scDblFinder} selects
+the value internally. Default \code{NULL}.}
 
 \item{simDoublets}{Number of simulated doublets created for doublet
-detection. Default \code{10000}.}
+detection. When \code{NULL}, \link[scDblFinder]{scDblFinder} selects the
+value internally. Default \code{NULL}.}
 
 \item{seed}{Seed for the random number generator, can be set to \code{NULL}.
 Default \code{12345}.}
