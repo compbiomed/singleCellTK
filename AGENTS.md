@@ -108,6 +108,8 @@ No classes of its own. Everything is built on `SingleCellExperiment`:
 - The website is served from `docs/`, which is committed. Never edit it;
   only the site owner rebuilds it with `make site`.
 - Known debt (backlog, don't fix in unrelated changes): `make lint` reports
-  a large existing backlog in `R/` and `inst/shiny/`, mostly line length,
-  trailing whitespace, and object names. The code uses 2-space indentation,
-  which `.lintr` matches. Only lines you change need to be lint-clean.
+  about 20,300 existing lints (October 2026), roughly half in `R/` and half
+  in `inst/`. The most common are indentation inside calls, line length,
+  trailing whitespace, braces, and infix spacing. The code uses 2-space
+  indentation, which `.lintr` matches. Only lines you change need to be
+  lint-clean.
