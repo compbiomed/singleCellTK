@@ -45,4 +45,11 @@ Proposals in these areas should not be pursued without maintainer approval.
 ## Open questions for the maintainer
 
 - TODO: Is the Shiny app currently in scope for agent-driven changes?
+  (`AGENTS.md` overrides the shared standards with "propose, don't change"
+  until this is decided.)
+- TODO: How is the pkgdown site deployed? Keep the committed `docs/`
+  rebuilt by the site owner (`make site`), or move to a CI deploy?
+- TODO: Convert the code from 2-space to 4-space indentation
+  (Bioconductor's recommendation)? If so, in its own PR, with `.lintr`
+  changed at the same time.
 - TODO: Which deprecated methods or wrappers should be retired?
