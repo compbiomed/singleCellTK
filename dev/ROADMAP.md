@@ -47,8 +47,10 @@ Proposals in these areas should not be pursued without maintainer approval.
 - TODO: Is the Shiny app currently in scope for agent-driven changes?
   (`AGENTS.md` overrides the shared standards with "propose, don't change"
   until this is decided.)
-- TODO: How is the pkgdown site deployed? Keep the committed `docs/`
-  rebuilt by the site owner (`make site`), or move to a CI deploy?
+- Planned: move the pkgdown site to GitHub Pages, deployed by CI, instead
+  of the committed `docs/` rebuilt by the site owner (`make site`). Until
+  then, `_pkgdown.yml` `url:` is `https://www.camplab.net/sctk/` (matching
+  DESCRIPTION `URL`); update both when the site moves.
 - TODO: Convert the code from 2-space to 4-space indentation
   (Bioconductor's recommendation)? If so, in its own PR, with `.lintr`
   changed at the same time.
