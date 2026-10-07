@@ -4,7 +4,10 @@ Changes in Version 2.23.4 (2026-10-07)
   Scran_modelGeneVar and SeuratFindHVG options failed: the first called a
   function that does not exist, the second was never run because its option
   value did not match, and both requested the top genes with an argument
-  that getTopHVG() does not accept.
+  that getTopHVG() does not accept. With SeuratFindHVG, only the vst method
+  works with Seurat 5. The selected genes are now stored in the
+  featureSubset alternative experiment used by Celda; the main dataset keeps
+  all genes, as with the None option, instead of being reduced to them.
 * Fixed starting the Shiny app with data, singleCellTK(inSCE = sce), which
   failed for any object without alternative experiments.
 * The SoupX help page in the app describes the new clustering method.

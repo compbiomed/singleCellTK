@@ -4217,12 +4217,18 @@ shinyServer(function(input, output, session) {
         g <- getTopHVG(vals$counts, method = input$celdaseurathvgmethod,
                        hvgNumber = input$celdafeaturenum,
                        useFeatureSubset = NULL, featureDisplay = NULL)
-        altExp(vals$counts, "featureSubset") <- vals$counts[g, ]
-        
-        vals$counts <- selectFeatures(vals$counts[g, ], minCount = input$celdarowcountsmin,
-                                      minCell = input$celdacolcountsmin, useAssay = input$celdaassayselect, altExpName = "featureSubset")
-      }else if(input$celdafeatureselect == "Scran_modelGeneVar"){
-        if (!("ScaterLogNormCounts" %in% names(assays(vals$counts)))){
+        # Keep all genes in the main object; Celda uses the HVGs, filtered
+        # by the count thresholds, from the "featureSubset" altExp.
+        hvgSCE <- SingleCellExperiment::removeAltExps(vals$counts[g, ])
+        hvgSCE <- selectFeatures(hvgSCE, minCount = input$celdarowcountsmin,
+                                 minCell = input$celdacolcountsmin,
+                                 useAssay = input$celdaassayselect,
+                                 altExpName = "featureSubset")
+        altExp(vals$counts, "featureSubset") <- altExp(hvgSCE, "featureSubset")
+        metadata(vals$counts)$select_features <-
+          metadata(hvgSCE)$select_features
+      } else if (input$celdafeatureselect == "Scran_modelGeneVar") {
+        if (!("ScaterLogNormCounts" %in% names(assays(vals$counts)))) {
           vals$counts <- scaterlogNormCounts(vals$counts,
                                              assayName = "ScaterLogNormCounts",
                                              useAssay = input$celdaassayselect)
@@ -4232,10 +4238,16 @@ shinyServer(function(input, output, session) {
         g <- getTopHVG(vals$counts, method = "modelGeneVar",
                        hvgNumber = input$celdafeaturenum,
                        useFeatureSubset = NULL, featureDisplay = NULL)
-        altExp(vals$counts, "featureSubset") <- vals$counts[g, ]
-        
-        vals$counts <- selectFeatures(vals$counts[g, ], minCount = input$celdarowcountsmin,
-                                      minCell = input$celdacolcountsmin, useAssay = input$celdaassayselect, altExpName = "featureSubset")
+        # Keep all genes in the main object; Celda uses the HVGs, filtered
+        # by the count thresholds, from the "featureSubset" altExp.
+        hvgSCE <- SingleCellExperiment::removeAltExps(vals$counts[g, ])
+        hvgSCE <- selectFeatures(hvgSCE, minCount = input$celdarowcountsmin,
+                                 minCell = input$celdacolcountsmin,
+                                 useAssay = input$celdaassayselect,
+                                 altExpName = "featureSubset")
+        altExp(vals$counts, "featureSubset") <- altExp(hvgSCE, "featureSubset")
+        metadata(vals$counts)$select_features <-
+          metadata(hvgSCE)$select_features
       }
       #counts(altExp(vals$counts)) <- as.matrix(counts(altExp(vals$counts)))
       updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
