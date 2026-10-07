@@ -93,7 +93,7 @@
 #' }
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #' cell QC metrics added to the \link{colData} slot. 
-#' @seealso 
+#' @seealso
 #' \code{link{plotRunPerCellQCResults}}, \code{\link{runCellQC}}
 #' @examples
 #' data(scExample, package = "singleCellTK")
@@ -332,29 +332,14 @@ runPerCellQC <- function(inSCE,
 # scuttle::perCellQCMetrics(), which is deprecated: total counts, detected
 # features, percent of counts in the top N features, the same three metrics
 # for each subset of features and each alternative experiment, and the total
-# over the main and alternative experiments. useAltExps is TRUE (all),
-# FALSE (none), NULL (those with an assay named useAssay, scuttle's default),
-# or names/indices. Returns a DataFrame with one row per cell, nested like
-# scuttle's when flatten = FALSE.
+# over the main and alternative experiments. Returns a DataFrame with one row
+# per cell, nested like scuttle's when flatten = FALSE.
 .perCellQCMetrics <- function(inSCE, useAssay = "counts", subsets = NULL,
                               percentTop = integer(0), useAltExps = FALSE,
                               flatten = TRUE, detectionLimit = 0,
                               chunkSize = 5000) {
   percentTop <- sort(as.integer(percentTop))
-  if (isTRUE(useAltExps)) {
-    altNames <- SingleCellExperiment::altExpNames(inSCE)
-  } else if (is.null(useAltExps)) {
-    allAlt <- SingleCellExperiment::altExpNames(inSCE)
-    hasAssay <- vapply(allAlt, function(n) {
-      useAssay %in% SummarizedExperiment::assayNames(
-        SingleCellExperiment::altExp(inSCE, n))
-    }, logical(1))
-    altNames <- allAlt[hasAssay]
-  } else if (isFALSE(useAltExps)) {
-    altNames <- character(0)
-  } else {
-    altNames <- SingleCellExperiment::altExpNames(inSCE)[useAltExps]
-  }
+  altNames <- .selectAltExps(inSCE, useAltExps, useAssay)
   if (is.null(subsets)) subsets <- list()
 
   main <- .countMetrics(assay(inSCE, useAssay), detectionLimit, percentTop,
@@ -376,14 +361,16 @@ runPerCellQC <- function(inSCE,
     subsetDF[[name]] <- S4Vectors::DataFrame(
       sum = main$subsets[[name]]$sum,
       detected = main$subsets[[name]]$detected,
-      percent = main$subsets[[name]]$sum / libSize * 100)
+      percent = main$subsets[[name]]$sum / libSize * 100
+    )
   }
   altDF <- S4Vectors::make_zero_col_DFrame(ncol(inSCE))
   for (i in seq_along(altNames)) {
     altDF[[altNames[i]]] <- S4Vectors::DataFrame(
       sum = altMetrics[[i]]$sum,
       detected = altMetrics[[i]]$detected,
-      percent = altMetrics[[i]]$sum / total * 100)
+      percent = altMetrics[[i]]$sum / total * 100
+    )
   }
   out <- S4Vectors::DataFrame(sum = libSize, detected = main$detected,
                               row.names = cells)
@@ -393,6 +380,21 @@ runPerCellQC <- function(inSCE,
   out$total <- total
   if (isTRUE(flatten)) out <- .flattenQCMetrics(out)
   out
+}
+
+# Names of the alternative experiments to include in QC metrics. useAltExps
+# is TRUE (all), FALSE (none), NULL (those with an assay named useAssay,
+# scuttle's default), or names or indices.
+.selectAltExps <- function(inSCE, useAltExps, useAssay) {
+  allAlt <- SingleCellExperiment::altExpNames(inSCE)
+  if (isTRUE(useAltExps)) return(allAlt)
+  if (isFALSE(useAltExps)) return(character(0))
+  if (!is.null(useAltExps)) return(allAlt[useAltExps])
+  hasAssay <- vapply(allAlt, function(n) {
+    alt <- SingleCellExperiment::altExp(inSCE, n)
+    useAssay %in% SummarizedExperiment::assayNames(alt)
+  }, logical(1))
+  allAlt[hasAssay]
 }
 
 # Column sums, detected counts, top-N sums, and per-subset sums and detected

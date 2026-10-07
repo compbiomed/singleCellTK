@@ -51,8 +51,9 @@
 }
 
 # Two-sided Wilcoxon rank-sum test of each row of mat between the cells in
-# ix1 and ix2 (logical or integer indices), with the normal approximation, tie correction, and continuity
-# correction, as in stats::wilcox.test(exact = FALSE, correct = TRUE) and
+# ix1 and ix2 (logical or integer indices), with the normal approximation,
+# tie correction, and continuity correction, as in
+# stats::wilcox.test(exact = FALSE, correct = TRUE) and
 # scran::pairwiseWilcox(), which is deprecated without a replacement. Rows
 # without variation get p = 1. Returns a DataFrame with p.value and FDR
 # (Benjamini-Hochberg), one row per row of mat. Rows are processed in chunks

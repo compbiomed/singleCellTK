@@ -26,9 +26,12 @@ scaterlogNormCounts <- function(inSCE,
     size.factors = sizeFactors,
     assay.type = useAssay,
     output.name = assayName,
-    more.norm.args = list(delayed = FALSE))
+    more.norm.args = list(delayed = FALSE)
+  )
+  newSizeFactors <- SingleCellExperiment::sizeFactors(inSCE)
   SingleCellExperiment::sizeFactors(inSCE) <- stats::setNames(
-    SingleCellExperiment::sizeFactors(inSCE), names(sizeFactors))
+    newSizeFactors, names(sizeFactors)
+  )
   
   inSCE <- expSetDataTag(inSCE = inSCE, 
                          assayType = "normalized", 

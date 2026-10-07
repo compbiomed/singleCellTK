@@ -65,6 +65,7 @@ test_that(desc = "Scran SNN builds graphs without deprecations", {
 test_that(desc = "Scran SNN uses the reducedDim of an altExp", {
   res <- suppressWarnings(
     runScranSNN(sce, useReducedDim = NULL, useAltExp = "hvg",
-                altExpRedDim = "PCA", k = 8, clusterName = "ae_pca_snn"))
+                altExpRedDim = "PCA", k = 8, clusterName = "ae_pca_snn")
+  )
   expect_true("ae_pca_snn" %in% names(colData(res)))
 })

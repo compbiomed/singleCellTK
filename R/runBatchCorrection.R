@@ -635,7 +635,8 @@ runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
                           cos.norm.in = cosNormIn,
                           cos.norm.out = cosNormOut, var.adj = varAdj,
                           BPPARAM = BPPARAM),
-    deprecatedWarning = function(w) invokeRestart("muffleWarning"))
+    deprecatedWarning = function(w) invokeRestart("muffleWarning")
+  )
   expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <-
     SummarizedExperiment::assay(corr.sce, "corrected")
   S4Vectors::metadata(inSCE)$batchCorr[[assayName]] <- list(useAssay = useAssay,

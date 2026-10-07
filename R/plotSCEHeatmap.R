@@ -295,12 +295,10 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
         groups[[v]] <- factor(groups[[v]], levels = levels(colIDS[[v]]))
       }
     }
-    temp_df <- as.data.frame(groups) %>%
-      unite("new_colnames", dplyr::everything(), sep = "_", remove = FALSE) %>%
-      remove_rownames() %>%
-      column_to_rownames("new_colnames")
+    groupDf <- as.data.frame(groups)
+    rownames(groupDf) <- do.call(paste, c(as.list(groupDf), sep = "_"))
     SCE <- SingleCellExperiment(assays = stats::setNames(list(avg), useData))
-    colData(SCE)<-DataFrame(temp_df)
+    colData(SCE) <- DataFrame(groupDf)
     rowData(SCE) <- origRowData
   }
   if (!is.null(aggregateRow)) {
