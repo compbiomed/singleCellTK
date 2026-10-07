@@ -1,5 +1,7 @@
 #' scaterlogNormCounts
-#' Uses \link{logNormCounts} to log normalize input data
+#' Log-normalizes counts by library size, as \code{scater::logNormCounts}
+#' did, using \code{\link[scrapper]{normalizeRnaCounts.se}}. Existing
+#' \code{sizeFactors(inSCE)} are used (after centering) when present.
 #' @param inSCE Input SingleCellExperiment object
 #' @param assayName New assay name for log normalized data
 #' @param useAssay Input assay 
@@ -12,10 +14,21 @@
 scaterlogNormCounts <- function(inSCE, 
                                  assayName = "ScaterLogNormCounts", 
                                  useAssay = "counts"){
-  inSCE <- scater::logNormCounts(
-    x = inSCE, 
-    name = assayName,
-    exprs_values = useAssay)
+  sizeFactors <- SingleCellExperiment::sizeFactors(inSCE)
+  if (is.null(sizeFactors)) {
+    sizeFactors <- colSums(assay(inSCE, useAssay))
+  }
+  if (any(sizeFactors <= 0)) {
+    stop("size factors should be positive")
+  }
+  inSCE <- scrapper::normalizeRnaCounts.se(
+    inSCE,
+    size.factors = sizeFactors,
+    assay.type = useAssay,
+    output.name = assayName,
+    more.norm.args = list(delayed = FALSE))
+  SingleCellExperiment::sizeFactors(inSCE) <- stats::setNames(
+    SingleCellExperiment::sizeFactors(inSCE), names(sizeFactors))
   
   inSCE <- expSetDataTag(inSCE = inSCE, 
                          assayType = "normalized", 
