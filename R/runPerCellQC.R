@@ -309,7 +309,8 @@ runPerCellQC <- function(inSCE,
                                  percentTop = percent_top,
                                  useAltExps = use_altexps,
                                  flatten = flatten,
-                                 detectionLimit = detectionLimit)
+                                 detectionLimit = detectionLimit,
+                                 numThreads = BiocParallel::bpnworkers(BPPARAM))
   colData(inSCE) <- cbind(colData(inSCE), qcMetrics)
 
   ## rename mito gene columns in colData(inSCE)
@@ -317,7 +318,7 @@ runPerCellQC <- function(inSCE,
 
   argsList <- argsList[!names(argsList) %in% ("BPPARAM")]
   metadata(inSCE)$sctk$runPerCellQC$all_cells <- argsList[-1]
-  metadata(inSCE)$sctk$runPerCellQC$all_cells$packageVersion <- 
+  metadata(inSCE)$sctk$runPerCellQC$all_cells$packageVersion <-
     utils::packageDescription("singleCellTK")$Version
 
   if(is.null(geneSets)){
@@ -337,18 +338,18 @@ runPerCellQC <- function(inSCE,
 .perCellQCMetrics <- function(inSCE, useAssay = "counts", subsets = NULL,
                               percentTop = integer(0), useAltExps = FALSE,
                               flatten = TRUE, detectionLimit = 0,
-                              chunkSize = 5000) {
+                              chunkSize = 5000, numThreads = 1) {
   percentTop <- sort(as.integer(percentTop))
   altNames <- .selectAltExps(inSCE, useAltExps, useAssay)
   if (is.null(subsets)) subsets <- list()
 
   main <- .countMetrics(assay(inSCE, useAssay), detectionLimit, percentTop,
-                        subsets, chunkSize)
+                        subsets, chunkSize, numThreads)
   libSize <- main$sum
   altMetrics <- lapply(altNames, function(name) {
     alt <- SingleCellExperiment::altExp(inSCE, name)
     .countMetrics(assay(alt, useAssay), detectionLimit, integer(0), list(),
-                  chunkSize)
+                  chunkSize, numThreads)
   })
   total <- libSize + Reduce(`+`, lapply(altMetrics, `[[`, "sum"),
                             numeric(length(libSize)))
@@ -398,45 +399,57 @@ runPerCellQC <- function(inSCE,
 }
 
 # Column sums, detected counts, top-N sums, and per-subset sums and detected
-# counts of a features x cells matrix, processed in column chunks so that
-# sparse and DelayedArray inputs are never fully densified.
+# counts of a features x cells matrix. With the default detectionLimit of 0,
+# sums and detected counts come from scrapper::computeRnaQcMetrics()
+# (compiled, multithreaded). Subset metrics use only the subset rows. Top-N
+# sums need every column's values sorted, so they are computed in column
+# chunks to avoid densifying sparse or DelayedArray inputs.
 .countMetrics <- function(mat, detectionLimit, percentTop, subsets,
-                          chunkSize) {
+                          chunkSize, numThreads = 1) {
   nCells <- ncol(mat)
-  sums <- numeric(nCells)
-  detected <- numeric(nCells)
+  useScrapper <- detectionLimit == 0
+  if (useScrapper) {
+    qc <- scrapper::computeRnaQcMetrics(mat, subsets = list(),
+                                        num.threads = numThreads)
+    sums <- qc$sum
+    detected <- as.numeric(qc$detected)
+  } else {
+    sums <- numeric(nCells)
+    detected <- numeric(nCells)
+  }
   top <- matrix(0, nrow = nCells, ncol = length(percentTop))
-  subsetIndex <- lapply(subsets, function(s) {
-    idx <- seq_len(nrow(mat))
-    names(idx) <- rownames(mat)
-    unname(idx[s])
-  })
-  subsetSums <- lapply(subsets, function(s) numeric(nCells))
-  subsetDetected <- lapply(subsets, function(s) numeric(nCells))
-  for (start in seq(1, nCells, by = chunkSize)) {
-    cols <- seq(start, min(start + chunkSize - 1, nCells))
-    chunk <- methods::as(mat[, cols, drop = FALSE], "CsparseMatrix")
-    chunk <- methods::as(chunk, "dMatrix")
-    sums[cols] <- Matrix::colSums(chunk)
-    detected[cols] <- Matrix::colSums(chunk > detectionLimit)
-    if (length(percentTop) > 0) {
-      top[cols, ] <- .topSums(chunk, percentTop)
-    }
-    for (name in names(subsets)) {
-      part <- chunk[subsetIndex[[name]], , drop = FALSE]
-      subsetSums[[name]][cols] <- Matrix::colSums(part)
-      subsetDetected[[name]][cols] <- Matrix::colSums(part > detectionLimit)
+  if (!useScrapper || length(percentTop) > 0) {
+    for (start in seq(1, nCells, by = chunkSize)) {
+      cols <- seq(start, min(start + chunkSize - 1, nCells))
+      chunk <- .asSparseChunk(mat[, cols, drop = FALSE])
+      if (!useScrapper) {
+        sums[cols] <- Matrix::colSums(chunk)
+        detected[cols] <- Matrix::colSums(chunk > detectionLimit)
+      }
+      if (length(percentTop) > 0) {
+        top[cols, ] <- .topSums(chunk, percentTop)
+      }
     }
   }
-  subsetMetrics <- lapply(stats::setNames(nm = names(subsets)), function(n) {
-    list(sum = subsetSums[[n]], detected = subsetDetected[[n]])
+  rowIndex <- stats::setNames(seq_len(nrow(mat)), rownames(mat))
+  subsetMetrics <- lapply(subsets, function(s) {
+    part <- .asSparseChunk(mat[unname(rowIndex[s]), , drop = FALSE])
+    list(sum = unname(Matrix::colSums(part)),
+         detected = as.numeric(Matrix::colSums(part > detectionLimit)))
   })
   list(sum = sums, detected = detected, top = top, subsets = subsetMetrics)
 }
 
+# A matrix as a double-precision sparse matrix (dgCMatrix).
+.asSparseChunk <- function(x) {
+  methods::as(methods::as(x, "CsparseMatrix"), "dMatrix")
+}
+
 # Sum of the largest N values in each column of a sparse matrix, for each N
 # in percentTop. Values that are not stored are zero, so only stored values
-# need sorting unless the matrix has negative values.
+# need sorting unless the matrix has negative values. Stored values are
+# sorted within each column once, and all N are read from their cumulative
+# sums.
 .topSums <- function(chunk, percentTop) {
   if (any(chunk@x < 0)) {
     dense <- as.matrix(chunk)
@@ -448,15 +461,11 @@ runPerCellQC <- function(inSCE,
   }
   stored <- diff(chunk@p)
   column <- rep.int(seq_len(ncol(chunk)), stored)
-  ord <- order(column, -chunk@x)
-  values <- chunk@x[ord]
-  rank <- sequence(stored)
+  cumulative <- c(0, cumsum(chunk@x[order(column, -chunk@x)]))
+  columnStart <- chunk@p[-length(chunk@p)]
+  before <- cumulative[columnStart + 1]
   vapply(percentTop, function(n) {
-    keep <- rank <= n
-    out <- numeric(ncol(chunk))
-    s <- rowsum(values[keep], column[ord][keep])
-    out[as.integer(rownames(s))] <- s[, 1]
-    out
+    cumulative[columnStart + pmin(n, stored) + 1] - before
   }, numeric(ncol(chunk)))
 }
 

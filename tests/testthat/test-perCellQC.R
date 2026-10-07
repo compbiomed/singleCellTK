@@ -68,3 +68,19 @@ test_that("sampleSummaryStats uses only altExps that have counts", {
   expect_false(any(grepl("altexps_scaled", names(colData(res)))))
   expect_equal(res$total, unname(colSums(counts) + colSums(spikes)))
 })
+
+test_that("QC metrics match base R for chunked, delayed, and decimal input", {
+  decimal <- counts * 0.5
+  decimal[3, 4] <- 0.25
+  delayed <- DelayedArray::DelayedArray(decimal)
+  sceDelayed <- SingleCellExperiment(list(counts = delayed))
+  qc <- .perCellQCMetrics(sceDelayed, subsets = list(mito = mito),
+                          percentTop = c(5, 50), chunkSize = 2,
+                          numThreads = 2)
+  libSize <- colSums(decimal)
+  top5 <- apply(decimal, 2, function(v) sum(sort(v, decreasing = TRUE)[1:5]))
+  expect_equal(qc$sum, unname(libSize))
+  expect_equal(qc$detected, unname(colSums(decimal > 0)))
+  expect_equal(qc$percent.top_5, unname(top5 / libSize * 100))
+  expect_equal(qc$subsets_mito_sum, unname(colSums(decimal[mito, ])))
+})

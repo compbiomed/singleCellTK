@@ -7,8 +7,11 @@ Changes in Version 2.23.2 (2026-10-07)
     scuttle::aggregateAcrossCells().
   * scaterlogNormCounts() normalizes with scrapper::normalizeRnaCounts.se().
   * runPerCellQC() and sampleSummaryStats() compute the per-cell QC metrics
-    themselves instead of calling scater::addPerCellQC(). The metadata
-    packageVersion recorded by runPerCellQC() is now singleCellTK's.
+    with scrapper::computeRnaQcMetrics() and singleCellTK code (for the
+    top-N, gene-set, and altExp columns) instead of scater::addPerCellQC().
+    This is about 4 times faster on large data. runPerCellQC() uses BPPARAM
+    to set the number of threads. The metadata packageVersion recorded by
+    runPerCellQC() is now singleCellTK's.
   * runScranSNN() builds graphs with bluster::makeSNNGraph().
   * runWilcox() uses an internal Wilcoxon rank-sum test, the same test
     scran::pairwiseWilcox() performed.

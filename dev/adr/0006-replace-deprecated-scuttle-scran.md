@@ -42,7 +42,8 @@ it in a separate PR that the maintainer reviews scientifically.
 - **Results unchanged (this PR):**
   - aggregation: scrapper, or base R `rowsum()` for TSCAN centroids;
   - `scaterlogNormCounts()`: `scrapper::normalizeRnaCounts.se()`;
-  - per-cell QC: an internal implementation of scuttle's metrics;
+  - per-cell QC: `scrapper::computeRnaQcMetrics()` for totals and detected
+    counts, with internal code for the columns it lacks;
   - SNN graphs: `bluster::makeSNNGraph()`;
   - Wilcoxon DE: an internal vectorized rank-sum test.
 - **Results change (separate PR):** `runModelGeneVar()` moves to scrapper's
