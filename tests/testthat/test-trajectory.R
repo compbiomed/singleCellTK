@@ -79,9 +79,8 @@ test_that(desc = "TSCAN cluster centroids match base R without deprecations", {
   clusters <- sceT$TSCAN_clusters
   emb <- reducedDim(sceT, "PCA")
   ids <- levels(factor(clusters))
-  expected <- t(vapply(ids,
-                       function(cl) colMeans(emb[clusters == cl, , drop = FALSE]),
-                       numeric(ncol(emb))))
+  clusterMean <- function(cl) colMeans(emb[clusters == cl, , drop = FALSE])
+  expected <- t(vapply(ids, clusterMean, numeric(ncol(emb))))
   expect_equal(.clusterCentroids(sceT, clusters, "PCA"), expected)
 })
 

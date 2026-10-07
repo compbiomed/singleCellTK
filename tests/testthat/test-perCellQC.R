@@ -60,9 +60,9 @@ test_that("sampleSummaryStats adds sum and detected without deprecations", {
 
 test_that("sampleSummaryStats uses only altExps that have counts", {
   sceAlt <- sce
-  altExp(sceAlt, "scaled") <- SingleCellExperiment(
-    list(scaledata = matrix(rnorm(30), nrow = 5,
-                            dimnames = list(NULL, colnames(counts)))))
+  scaled <- matrix(rnorm(30), nrow = 5,
+                   dimnames = list(NULL, colnames(counts)))
+  altExp(sceAlt, "scaled") <- SingleCellExperiment(list(scaledata = scaled))
   res <- sampleSummaryStats(sceAlt)
   expect_true("altexps_ERCC_sum" %in% names(colData(res)))
   expect_false(any(grepl("altexps_scaled", names(colData(res)))))
