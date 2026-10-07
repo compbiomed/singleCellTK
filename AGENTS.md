@@ -87,11 +87,14 @@ No classes of its own. Everything is built on `SingleCellExperiment`:
 
 ## Related packages
 
-- `celda` (campbio/celda): singleCellTK imports it and calls
-  `celda::decontX()`, `decontXcounts()`, and `distinctColors()`
-  (`R/celda_decontX.R` and plotting helpers). Changes to these functions in
-  celda, or to how singleCellTK calls them, should be checked in both
-  packages.
+- `decontX` (campbio/decontX): singleCellTK imports it and calls
+  `decontX::decontX()` and `decontXcounts()` in `runDecontX()`
+  (`R/celda_decontX.R`), which `runCellQC()` runs by default. Changes to
+  these functions in decontX, or to how singleCellTK calls them, should be
+  checked in both packages.
+- `celda` (campbio/celda): singleCellTK imports it for
+  `celda::distinctColors()` (plotting helpers). Since celda 1.23.0,
+  `celda::decontX()` only forwards to the decontX package.
 
 ## Overrides
 

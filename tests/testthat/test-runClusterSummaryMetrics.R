@@ -42,3 +42,14 @@ test_that(desc = "runClusterSummaryMetrics matches base R and does not warn", {
   expect_equal(colnames(res$percExpr), groups)
   expect_equal(res$featureNames, genes)
 })
+
+test_that(desc = "runClusterSummaryMetrics ignores cells without a group", {
+  data("scExample")
+  sce$typeNA <- sce$type
+  sce$typeNA[1:5] <- NA
+  res <- runClusterSummaryMetrics(sce, useAssay = "counts",
+                                  featureNames = "B2M",
+                                  displayName = "feature_name",
+                                  groupNames = "typeNA")
+  expect_equal(colnames(res$avgExpr), sort(unique(sce$type[-(1:5)])))
+})

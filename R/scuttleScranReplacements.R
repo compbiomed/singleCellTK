@@ -6,8 +6,11 @@
 # of cells. Returns a list of two features x groups matrices, with the
 # feature names as rownames and the sorted group labels as colnames, like
 # scuttle::aggregateAcrossCells() with statistics "mean" and "prop.detected".
+# Cells with a missing group are dropped, as scuttle did.
 .aggregateMeanDetected <- function(mat, ids) {
-  agg <- scrapper::aggregateAcrossCells(mat, factors = list(ids))
+  keep <- !is.na(ids)
+  agg <- scrapper::aggregateAcrossCells(mat[, keep, drop = FALSE],
+                                        factors = list(ids[keep]))
   groupNames <- as.character(agg$combinations[[1]])
   counts <- agg$counts
   avg <- sweep(agg$sums, 2, counts, "/")
@@ -19,11 +22,12 @@
 
 # Per-cluster mean of a reducedDim, with one row per cluster in factor
 # order (levels for a factor, otherwise sorted values), like reducedDim() of
-# scuttle::aggregateAcrossCells().
+# scuttle::aggregateAcrossCells(). Cells without a cluster are dropped.
 .clusterCentroids <- function(inSCE, clusters, useReducedDim) {
   emb <- SingleCellExperiment::reducedDim(inSCE, useReducedDim)
-  ids <- factor(clusters)
-  rowsum(emb, ids) / as.vector(table(ids))
+  keep <- !is.na(clusters)
+  ids <- factor(clusters[keep])
+  rowsum(emb[keep, , drop = FALSE], ids) / as.vector(table(ids))
 }
 
 # Shared-nearest-neighbor graph of cells, as scran::buildSNNGraph() built it
