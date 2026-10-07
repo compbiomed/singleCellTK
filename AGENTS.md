@@ -108,6 +108,9 @@ No classes of its own. Everything is built on `SingleCellExperiment`:
 - CI: which jobs are required, the coverage threshold, and the BiocCheck
   container/cron setup are all TODO. The existing `R-CMD-check.yaml` and
   `BioC-check.yaml` workflows are unchanged.
+- Documentation is generated with roxygen2 8.1, which writes NAMESPACE in
+  a multi-line `importFrom()` format. Use roxygen2 8.1 or later for
+  `make docs`; an older roxygen2 rewrites the whole NAMESPACE.
 - The website is served from `docs/`, which is committed. Never edit it;
   only the site owner rebuilds it with `make site`.
 - Known debt (backlog, don't fix in unrelated changes): `make lint` reports

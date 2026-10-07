@@ -70,3 +70,24 @@ test_that(desc = "Testing TSCAN", {
 })
 
 
+
+test_that(desc = "TSCAN cluster centroids match base R without deprecations", {
+  sceT <- suppressWarnings(runTSCAN(inSCE = sce, useReducedDim = "PCA",
+                                    seed = NULL))
+  expect_no_warning(plotTSCANResults(inSCE = sceT, useReducedDim = "TSNE"),
+                    class = "deprecatedWarning")
+  clusters <- sceT$TSCAN_clusters
+  emb <- reducedDim(sceT, "PCA")
+  ids <- levels(factor(clusters))
+  clusterMean <- function(cl) colMeans(emb[clusters == cl, , drop = FALSE])
+  expected <- t(vapply(ids, clusterMean, numeric(ncol(emb))))
+  expect_equal(.clusterCentroids(sceT, clusters, "PCA"), expected)
+})
+
+test_that(desc = "TSCAN cluster centroids ignore cells without a cluster", {
+  clusters <- rep(c("a", "b", NA), length.out = ncol(sce))
+  emb <- reducedDim(sce, "PCA")
+  expected <- rbind(a = colMeans(emb[which(clusters == "a"), ]),
+                    b = colMeans(emb[which(clusters == "b"), ]))
+  expect_equal(.clusterCentroids(sce, clusters, "PCA"), expected)
+})

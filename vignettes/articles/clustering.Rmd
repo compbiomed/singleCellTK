@@ -72,11 +72,11 @@ For the choices in the algorithm list, please refer to `cluster_louvain()`, `clu
 
 - Data matrix selection - selection input **"Select Input Matrix"**. Scran SNN method allows various types of data matrices. Either a full-sized or a subsetted expression matrix, technically called `assay` or `altExp`, respectively, or a reduced dimension, technically `reducedDim`, is allowed. 
 - Resolution related parameters:
-    - Numeric input **"K value"**. `K` is an integer scalar specifying the number of nearest neighbors to consider during graph construction. Considering more neighbors results in larger groups. (See parameter `k` of `scran::buildSNNGraph()`)
+    - Numeric input **"K value"**. `K` is an integer scalar specifying the number of nearest neighbors to consider during graph construction. Considering more neighbors results in larger groups. (See parameter `k` of `bluster::makeSNNGraph()`)
     - Numeric input **"Resolution"**, only seen when choosing "leiden" algorithm. Higher resolutions lead to more smaller communities, while lower resolutions lead to fewer larger communities. (See parameter `resolution_parameter` of `igraph::cluster_leiden()`)
     - Numeric input **"Steps"**, only seen when choosing "walktrap" algorithm. The length of the random walks to perform. Less steps lead to fewer larger communities, and take more time for computation. (See parameter `steps` of `igraph::cluster_walktrap()`)
 - Algorithm detail setting 
-    - selection input **"Edge Weight Type"**. Users can specify the type of weighting scheme to use for shared neighbors. (See parameter `type` of `scran::buildSNNGraph()`)
+    - selection input **"Edge Weight Type"**. Users can specify the type of weighting scheme to use for shared neighbors. (See parameter `type` of `bluster::makeSNNGraph()`)
     - Selection input **"Objective Function"**, only seen when choosing "leiden" algorithm. The objective function, "CPM" [@Ronhovde2010] or "modularity" [@Newman2004], evaluates the partitioning of the graph, and the algorithm attempts to maximize the score. 
 - Component number setting - numeric input **"Number of Components"**. If users specify a low-dimensional matrix as input, the method will be applied on the top components. When an `assay` or `altExp` is chosen, the algorithm will perform a PCA on the matrix and obtain the top PCs for downstream use. This number could be determined with the help of an Elbow plot in the ["Dimension Reduction"](dimensionality_reduction.html) section. For better visualization, we suggest generating [2D embedding](2d_embedding.html) with the same number of components from the selected reduced dimensions. 
 
@@ -203,7 +203,7 @@ plotDimRed(sce, "UMAP")
 ````
 - `k`, the number of nearest neighbors used to construct the graph. Smaller value indicates higher resolution and larger number of clusters. 
 - `nComp`, the number of components to use when `useAssay` or `useAltExp` is specified. WON'T work with `useReducedDim`. 
-- For `weightType` and `algorithm`, users should choose from a given list of options, which can be found with `?runScranSNN`. For the introduction of those options, please refer to `scran::buildSNNGraph()` and [igraph](https://rdrr.io/cran/igraph/). 
+- For `weightType` and `algorithm`, users should choose from a given list of options, which can be found with `?runScranSNN`. For the introduction of those options, please refer to `bluster::makeSNNGraph()` and [igraph](https://rdrr.io/cran/igraph/). 
 - Different algorithms, supported by [igraph](https://rdrr.io/cran/igraph/), might allows different parameters, such as `objective_function` and `resolution_parameter` for Leiden [@Traag2019], `steps` for Walktrap [@Pons2005]. Please also refer to function reference for detail. 
 ````{=html}
 </details>
