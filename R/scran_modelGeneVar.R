@@ -1,8 +1,12 @@
-#' Calculate Variable Genes with Scran modelGeneVar
+#' Calculate Variable Genes with modelGeneVar
 #' 
 #' @description Generates and stores variability data in the input 
 #' \linkS4class{SingleCellExperiment} object, using 
-#' \code{\link[scran]{modelGeneVar}} method. 
+#' \code{\link[scrapper]{modelGeneVariances}}, which replaces the deprecated
+#' \code{scran::modelGeneVar}. The mean, total variance, and biological
+#' component (the residual from the fitted mean-variance trend) of each feature
+#' are stored in \code{rowData}. The method name and \code{rowData} column
+#' names are kept from the scran implementation.
 #' 
 #' Also selects a specified number of top HVGs and store the logical selection 
 #' in \code{rowData}. 
@@ -26,10 +30,10 @@
 #' @importFrom S4Vectors metadata<-
 runModelGeneVar <- function(inSCE,
                             useAssay = "logcounts") {
-    tempDataFrame <- data.frame(scran::modelGeneVar(assay(inSCE, useAssay)))
-    rowData(inSCE)$scran_modelGeneVar_mean <- tempDataFrame$mean
-    rowData(inSCE)$scran_modelGeneVar_totalVariance <- tempDataFrame$total
-    rowData(inSCE)$scran_modelGeneVar_bio <- tempDataFrame$bio
+    fit <- scrapper::modelGeneVariances(assay(inSCE, useAssay))$statistics
+    rowData(inSCE)$scran_modelGeneVar_mean <- fit$means
+    rowData(inSCE)$scran_modelGeneVar_totalVariance <- fit$variances
+    rowData(inSCE)$scran_modelGeneVar_bio <- fit$residuals
     metadata(inSCE)$sctk$runFeatureSelection$modelGeneVar <- 
         list(useAssay = useAssay,
              rowData = c("scran_modelGeneVar_mean", 

@@ -45,3 +45,17 @@ test_that(desc = "Testing FindHVG", {
     testthat::expect_true(inherits(vm2, "ggplot"))
     testthat::expect_true(inherits(vm3, "ggplot"))
 })
+
+test_that(desc = "runModelGeneVar uses scrapper variance modelling", {
+  sceLog <- sce[, colSums(counts(sce)) > 0]
+  sceLog <- suppressWarnings(scaterlogNormCounts(sceLog,
+                                                 assayName = "logcounts"))
+  expect_no_warning(res <- runModelGeneVar(sceLog, "logcounts"),
+                    class = "deprecatedWarning")
+  logc <- as.matrix(assay(sceLog, "logcounts"))
+  fit <- scrapper::modelGeneVariances(assay(sceLog, "logcounts"))$statistics
+  expect_equal(rowData(res)$scran_modelGeneVar_mean, unname(rowMeans(logc)))
+  expect_equal(rowData(res)$scran_modelGeneVar_totalVariance,
+               unname(apply(logc, 1, stats::var)))
+  expect_equal(rowData(res)$scran_modelGeneVar_bio, fit$residuals)
+})
