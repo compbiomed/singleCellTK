@@ -102,7 +102,6 @@
 #' @return A \code{\link[ggplot2]{ggplot}} object.
 #' @export
 #' @author Yichen Wang
-#' @importFrom scuttle aggregateAcrossCells aggregateAcrossFeatures
 #' @importFrom SingleCellExperiment SingleCellExperiment
 #' @importFrom SummarizedExperiment colData assayNames<-
 #' @importFrom stringr str_replace_all str_c
@@ -280,22 +279,27 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
   if (!is.null(aggregateCol)) {
     # TODO: whether to also aggregate numeric variable that users want
     # Might need to use "coldata.merge" in aggregate function
-    colIDS <- colData(SCE)[, aggregateCol]
+    colIDS <- colData(SCE)[, aggregateCol, drop = FALSE]
+    keep <- stats::complete.cases(as.data.frame(colIDS))
+    SCE <- SCE[, keep]
+    colIDS <- colIDS[keep, , drop = FALSE]
     origRowData <- rowData(SCE)
-    SCE <- aggregateAcrossCells(SCE, ids = colIDS,
-                                use.assay.type = useData,
-                                store.number = NULL, statistics = "mean")
-    # TODO: `aggregateAcrossCells` produce duplicated variables in colData
-    # and unwanted "ncell" variable even if I set `store.number = NULL`.
-   #colData(SCE) <- colData(SCE)[,c(aggregateCol),drop=FALSE] ##change
-    
-    temp_df<-as.data.frame(colData(SCE)[,c(aggregateCol),drop=FALSE]) %>% 
-      unite("new_colnames",dplyr::everything(),sep = "_",remove = FALSE) %>% 
-      remove_rownames() %>% 
-    #  mutate(aggregated_column = new_colnames) %>%
-    #  dplyr::select(new_colnames, aggregated_column) %>%
+    agg <- scrapper::aggregateAcrossCells(assay(SCE, useData),
+                                          factors = as.list(colIDS),
+                                          compute.detected = FALSE)
+    avg <- sweep(agg$sums, 2, agg$counts, "/")
+    rownames(avg) <- rownames(SCE)
+    groups <- agg$combinations
+    for (v in aggregateCol) {
+      if (is.factor(colIDS[[v]])) {
+        groups[[v]] <- factor(groups[[v]], levels = levels(colIDS[[v]]))
+      }
+    }
+    temp_df <- as.data.frame(groups) %>%
+      unite("new_colnames", dplyr::everything(), sep = "_", remove = FALSE) %>%
+      remove_rownames() %>%
       column_to_rownames("new_colnames")
-
+    SCE <- SingleCellExperiment(assays = stats::setNames(list(avg), useData))
     colData(SCE)<-DataFrame(temp_df)
     rowData(SCE) <- origRowData
   }
@@ -303,11 +307,15 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     # `aggregateAcrossFeatures` doesn't work by with multi-var
     # Remake one single variable vector
     rowIDS <- rowData(SCE)[, aggregateRow, drop = FALSE]
-    rowIDS <- do.call(paste, c(rowIDS, list(sep = "_")))
+    rowIDS <- do.call(paste, c(as.list(rowIDS), list(sep = "_")))
     origColData <- colData(SCE)
-    SCE <- aggregateAcrossFeatures(SCE, ids = rowIDS, average = TRUE,
-                                   use.assay.type = useData)
-    colData(SCE) <- origColData
+    sets <- split(seq_along(rowIDS), rowIDS)
+    avg <- scrapper::aggregateAcrossGenes(assay(SCE, useData), sets,
+                                          average = TRUE)
+    avg <- do.call(rbind, avg)
+    colnames(avg) <- colnames(SCE)
+    SCE <- SingleCellExperiment(assays = stats::setNames(list(avg), useData),
+                                colData = origColData)
   }
   # STAGE 4: Other minor preparation for plotting ####
  
