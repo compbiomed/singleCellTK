@@ -44,3 +44,37 @@
   }
   bluster::makeSNNGraph(mat, k = k, type = weightType, BPPARAM = BPPARAM)
 }
+
+# Two-sided Wilcoxon rank-sum test of each row of mat between the cells in
+# ix1 and ix2 (logical or integer indices), with the normal approximation, tie correction, and continuity
+# correction, as in stats::wilcox.test(exact = FALSE, correct = TRUE) and
+# scran::pairwiseWilcox(), which is deprecated without a replacement. Rows
+# without variation get p = 1. Returns a DataFrame with p.value and FDR
+# (Benjamini-Hochberg), one row per row of mat. Rows are processed in chunks
+# so that only chunkSize rows are densified at a time.
+.wilcoxTest <- function(mat, ix1, ix2, chunkSize = 1000) {
+  if (is.logical(ix1)) ix1 <- which(ix1)
+  if (is.logical(ix2)) ix2 <- which(ix2)
+  n1 <- length(ix1)
+  n2 <- length(ix2)
+  n <- n1 + n2
+  pValue <- numeric(nrow(mat))
+  for (start in seq(1, nrow(mat), by = chunkSize)) {
+    rows <- seq(start, min(start + chunkSize - 1, nrow(mat)))
+    x <- as.matrix(mat[rows, c(ix1, ix2), drop = FALSE])
+    ranks <- matrixStats::rowRanks(x, ties.method = "average")
+    tieSize <- matrixStats::rowRanks(x, ties.method = "max") -
+      matrixStats::rowRanks(x, ties.method = "min") + 1
+    stat <- rowSums(ranks[, seq_len(n1), drop = FALSE]) - n1 * (n1 + 1) / 2
+    centered <- stat - n1 * n2 / 2
+    tieTerm <- rowSums(tieSize^2 - 1)
+    sigma <- sqrt((n1 * n2 / 12) * ((n + 1) - tieTerm / (n * (n - 1))))
+    z <- (centered - sign(centered) * 0.5) / sigma
+    p <- 2 * pmin(stats::pnorm(z), stats::pnorm(z, lower.tail = FALSE))
+    p[sigma == 0] <- 1
+    pValue[rows] <- p
+  }
+  S4Vectors::DataFrame(p.value = pValue,
+                       FDR = stats::p.adjust(pValue, method = "BH"),
+                       row.names = rownames(mat))
+}
