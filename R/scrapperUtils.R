@@ -24,3 +24,23 @@
   ids <- factor(clusters)
   rowsum(emb, ids) / as.vector(table(ids))
 }
+
+# Shared-nearest-neighbor graph of cells, as scran::buildSNNGraph() built it
+# before it was deprecated. For a features x cells assay, cells are first
+# projected onto the top nComp principal components of the centered data
+# (skipped when nComp is NA or not smaller than the number of features).
+# For a cells x dimensions embedding (transposed = TRUE), it is used as is.
+.snnGraph <- function(mat, k, weightType, nComp = NA, transposed = FALSE,
+                      BPPARAM = BiocParallel::SerialParam()) {
+  if (!transposed) {
+    mat <- t(mat)
+    if (!is.na(nComp) && nComp < ncol(mat)) {
+      svd <- BiocSingular::runSVD(mat, k = nComp, nu = nComp, nv = 0,
+                                  center = TRUE,
+                                  BSPARAM = BiocSingular::bsparam(),
+                                  BPPARAM = BPPARAM)
+      mat <- sweep(svd$u, 2, svd$d, "*")
+    }
+  }
+  bluster::makeSNNGraph(mat, k = k, type = weightType, BPPARAM = BPPARAM)
+}
