@@ -38,7 +38,9 @@ it in a separate PR that the maintainer reviews scientifically.
 - **Imports.** Add `scrapper (>= 1.6.0)`, `bluster`, and `BiocSingular`
   (for the centered SVD scran used before building SNN graphs). Remove
   `scuttle`, which has no direct uses left (scater still depends on it).
-  `scran` stays until the second PR decides `computeSumFactors()`.
+  `scran` stays, for `computeSumFactors()` (TSCAN size factors) and
+  `denoisePCANumber()` (number of PCs for SoupX's quick clustering). Neither
+  is deprecated.
 - **Results unchanged (this PR):**
   - aggregation: scrapper, or base R `rowsum()` for TSCAN centroids;
   - `scaterlogNormCounts()`: `scrapper::normalizeRnaCounts.se()`;
@@ -61,8 +63,9 @@ it in a separate PR that the maintainer reviews scientifically.
   and tested, but they are ours to fix.
 - Results of the replaced functions are identical, or within
   floating-point error (2e-15), on `scExample` and `sceBatches`.
-- Follow-up: the second PR covers `modelGeneVar`, `quickCluster`, and
-  whether `scran` can be dropped.
+- `runModelGeneVar()` HVG rankings and `runSoupX()`'s automatic clusters
+  change. The before/after comparison is in
+  `dev/plans/2026-10-07-scrapper-migration-results.md`.
 
 ## Alternatives considered
 

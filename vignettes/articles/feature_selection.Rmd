@@ -14,7 +14,7 @@ knitr::opts_chunk$set(warning = FALSE)
 ## Introduction
 **singleCellTK** offers a convenient way to compute and select the most variable features 
 that show the highest biological variability to use them in the downstream 
-analysis. Feature selection methods available with the toolkit include `vst`, `mean.var.plot` & `dispersion` from `Seurat` [@Butler2018][@Stuart2019][@Satija2017][@Hao2021] package and `modelGeneVar` from `Scran` [@Aaron2016] package. Users can additionally use visualization options and methods to visualize the top variable genes interactively as well as from R console. <br>
+analysis. Feature selection methods available with the toolkit include `vst`, `mean.var.plot` & `dispersion` from `Seurat` [@Butler2018][@Stuart2019][@Satija2017][@Hao2021] package and `modelGeneVar`, the method from the `Scran` [@Aaron2016] package, now computed with `scrapper`. Users can additionally use visualization options and methods to visualize the top variable genes interactively as well as from R console. <br>
 
 To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for using feature selection in shiny application or 'Console Analysis' for using these methods on R console from the tabs below:
 
