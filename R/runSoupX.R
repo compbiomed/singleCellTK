@@ -482,7 +482,8 @@ runSoupX <- function(inSCE,
             stop("Invalid cluster specification")
         }
     } else {
-        p <- paste0(date(), " ... Cluster info not supplied. Generating clusters with SNN graph")
+        p <- paste0(date(), " ... Cluster info not supplied. ",
+                    "Generating clusters with SNN graph")
         message(p)
         suppressMessages({
             c <- .quickClusterRNA(assay(inSCE, useAssay))
