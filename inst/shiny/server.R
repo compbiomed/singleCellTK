@@ -4214,18 +4214,24 @@ shinyServer(function(input, output, session) {
         vals$counts <- runSeuratFindHVG(vals$counts, useAssay = "seuratNormData",
                                         method = input$celdaseurathvgmethod, hvgNumber = input$celdafeaturenum)
         
-        g <- getTopHVG(vals$counts, method = input$celdaseurathvgmethod, n = input$celdafeaturenum)
+        g <- getTopHVG(vals$counts, method = input$celdaseurathvgmethod,
+                       hvgNumber = input$celdafeaturenum,
+                       useFeatureSubset = NULL, featureDisplay = NULL)
         altExp(vals$counts, "featureSubset") <- vals$counts[g, ]
         
         vals$counts <- selectFeatures(vals$counts[g, ], minCount = input$celdarowcountsmin,
                                       minCell = input$celdacolcountsmin, useAssay = input$celdaassayselect, altExpName = "featureSubset")
       }else if(input$celdafeatureselect == "Scran_modelGeneVar"){
         if (!("ScaterLogNormCounts" %in% names(assays(vals$counts)))){
-          vals$counts <- scater::logNormCounts(vals$counts, name = "ScaterLogNormCounts",
-                                               exprs_values = input$celdaassayselect)
+          vals$counts <- scaterlogNormCounts(vals$counts,
+                                             assayName = "ScaterLogNormCounts",
+                                             useAssay = input$celdaassayselect)
         }
-        vals$counts <- scranModelGeneVar(vals$counts, assayName = "ScaterLogNormCounts")
-        g <- getTopHVG(vals$counts, method = "modelGeneVar", n = input$celdafeaturenum)
+        vals$counts <- runModelGeneVar(vals$counts,
+                                       useAssay = "ScaterLogNormCounts")
+        g <- getTopHVG(vals$counts, method = "modelGeneVar",
+                       hvgNumber = input$celdafeaturenum,
+                       useFeatureSubset = NULL, featureDisplay = NULL)
         altExp(vals$counts, "featureSubset") <- vals$counts[g, ]
         
         vals$counts <- selectFeatures(vals$counts[g, ], minCount = input$celdarowcountsmin,
