@@ -93,6 +93,7 @@ Imports:
     circlize,
     enrichR (>= 3.2),
     celda,
+    decontX,
     shinycssloaders,
     DropletUtils,
     scds (>= 1.2.0),
