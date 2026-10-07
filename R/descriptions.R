@@ -212,8 +212,8 @@ descriptionDecontX <- function() {
         introduction = "In droplet-based single cell technologies,
             ambient RNA that may have been released from apoptotic or
             damaged cells may get incorporated into another droplet, and can
-            lead to contamination. [decontX](https://rdrr.io/bioc/celda/man/decontX.html),
-            available from the [celda](https://bioconductor.org/packages/release/bioc/html/celda.html),
+            lead to contamination. [decontX](https://bioconductor.org/packages/release/bioc/html/decontX.html),
+            available from the [decontX](https://bioconductor.org/packages/release/bioc/html/decontX.html) package,
             is a Bayesian method for the identification of the contamination 
             level at a cellular level. ",
         runDecontX = "The wrapper function `runDecontX` can be used to 

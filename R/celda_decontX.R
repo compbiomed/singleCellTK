@@ -1,11 +1,11 @@
 #' @title Detecting contamination with DecontX.
-#' @description A wrapper function for \link[celda]{decontX}. Identify
+#' @description A wrapper function for \link[decontX]{decontX}. Identify
 #'  potential contamination from experimental factors such as ambient RNA.
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @param sample A single character specifying a name that can be found in
 #' \code{colData(inSCE)} to directly use the cell annotation; or a character
 #' vector with as many elements as cells to indicates which sample each cell
-#' belongs to. Default NULL. \link[celda]{decontX} will be run on cells from
+#' belongs to. Default NULL. \link[decontX]{decontX} will be run on cells from
 #' each sample separately.
 #' @param useAssay  A string specifying which assay in the SCE to use. Default
 #' 'counts'.
@@ -113,7 +113,7 @@ runDecontX <- function(inSCE,
     uniqueSample <- unique(sample)
 
     if (!is.null(background)) {
-      ### Background must be a SCE object if the input of count is in SCE object. Required by celda::decontX. 
+      ### Background must be a SCE object if the input of count is in SCE object. Required by decontX::decontX. 
       if (!inherits(background, 'SingleCellExperiment')) {
         stop("'background' is not a SingleCellExperiment object")
       }
@@ -190,23 +190,23 @@ runDecontX <- function(inSCE,
     sample <- sample[-rm.ix]
   }
 
-  inSCE <- celda::decontX(x = inSCE,
-                          batch = sample,
-                          assayName = useAssay,
-                          background = background,
-                          bgAssayName = bgAssayName,
-                          bgBatch = bgBatch,
-                          z = z,
-                          maxIter = maxIter,
-                          delta = delta,
-                          estimateDelta = estimateDelta,
-                          convergence = convergence,
-                          iterLogLik = iterLogLik,
-                          varGenes = varGenes,
-                          dbscanEps = dbscanEps,
-                          seed = seed,
-                          logfile = logfile,
-                          verbose = verbose)
+  inSCE <- decontX::decontX(x = inSCE,
+                            batch = sample,
+                            assayName = useAssay,
+                            background = background,
+                            bgAssayName = bgAssayName,
+                            bgBatch = bgBatch,
+                            z = z,
+                            maxIter = maxIter,
+                            delta = delta,
+                            estimateDelta = estimateDelta,
+                            convergence = convergence,
+                            iterLogLik = iterLogLik,
+                            varGenes = varGenes,
+                            dbscanEps = dbscanEps,
+                            seed = seed,
+                            logfile = logfile,
+                            verbose = verbose)
 
   #argsList <- argsList[!names(argsList) %in% ("...")]
   colId <- colnames(SummarizedExperiment::colData(inSCE)) %in% c('decontX_contamination', 'decontX_clusters')
@@ -225,7 +225,7 @@ runDecontX <- function(inSCE,
   metaId <- names(S4Vectors::metadata(inSCE)) == "decontX"
   newMeta <- S4Vectors::metadata(inSCE)[metaId]
   newMeta$decontX <- S4Vectors::metadata(inSCE)$decontX$runParams #only keep runParams in metadata
-  newMeta$decontX$packageVersion <- utils::packageDescription("celda")$Version
+  newMeta$decontX$packageVersion <- utils::packageDescription("decontX")$Version
   names(newMeta) <- "runDecontX"
   S4Vectors::metadata(inSCE)[metaId] <- NULL
 

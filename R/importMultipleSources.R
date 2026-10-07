@@ -336,7 +336,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         }, silent = TRUE)
 
         try({
-          celda::decontXcounts(newSce)
+          decontX::decontXcounts(newSce)
           newSce <- expSetDataTag(
             inSCE = newSce,
             assayType = "raw",
