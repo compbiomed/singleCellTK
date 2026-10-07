@@ -1,8 +1,14 @@
 # Contributing to singleCellTK
 
-Thanks for contributing! This guide is for people. AI coding agents follow
-[`AGENTS.md`](../AGENTS.md), which contains the same rules in agent-oriented
-form.
+Thanks for contributing! This guide is for people.
+
+singleCellTK follows the Campbell lab's shared
+[R/Bioconductor development standards](https://github.com/campbio/r-bioc-dev-standards).
+Its README explains the development process, branches, commands, and coding
+rules, and why each exists; read it first. This guide covers only what is
+specific to singleCellTK. AI coding agents load the condensed standards
+automatically at session start, plus [`AGENTS.md`](../AGENTS.md) for this
+package.
 
 ## Repository layout
 
@@ -14,15 +20,16 @@ package.
 
 | File or folder | What it's for | Who edits it |
 |---|---|---|
-| `AGENTS.md` | The single source of instructions for all AI agents: commands, conventions, safety rules | People, via PR |
-| `CLAUDE.md`, `GEMINI.md` | One line (`@AGENTS.md`) so Claude Code and Gemini CLI load `AGENTS.md`. Copilot, Codex and Cursor read it directly | Nobody (fixed) |
-| `Makefile` | The sanctioned commands (`make test`, `make check`, `make lint`, ...). Agents run these instead of arbitrary R | People only |
-| `.claude/settings.json` | What Claude Code may run without asking, and what it may never touch (`man/`, `NAMESPACE`, `docs/`, ...) | People only |
-| `.lintr` | Lint rules, covering `R/` and `inst/shiny/` | People, via PR |
-| `dev/hooks/` | Scripts that run automatically after an agent edits a file (report-only lint) | People only |
+| `AGENTS.md` | Package-specific notes for AI agents: layout, tests, extra make targets, overrides of the shared standards | People, via PR |
+| `CLAUDE.md`, `GEMINI.md` | One line (`@AGENTS.md`) so Claude Code and Gemini CLI load `AGENTS.md` | Nobody (fixed) |
+| `Makefile` | The sanctioned commands. The standard targets come from the shared `standards.mk`; this file adds settings and singleCellTK's extra targets | People only |
+| `.claude/settings.json` | What Claude Code may run without asking, what always asks (push, PR), what it may never touch, and the hooks | People only |
+| `.lintr` | Lint rules, covering `R/` and `inst/shiny/` | People only |
+| `dev/hooks/` | `load-standards.sh` loads the shared standards at session start; `lint-changed.sh` lints each R file an agent edits (report-only) | People only |
 | `dev/adr/` | Architecture decision records: why structural choices were made | People or agents, via PR |
+| `dev/plans/` | Implementation plans written before each change | People or agents, via PR |
 | `dev/RELEASE.md`, `dev/ROADMAP.md`, `dev/AUDIT.md` | Release checklist, direction of the package, periodic dependency audit | Maintainers |
-| `.github/` | This guide, `SECURITY.md`, the PR template, and CI workflows | Maintainers |
+| `.github/` | This guide, `SECURITY.md`, the PR template, and CI workflows (including `sync-stable.yaml`, which keeps `master` matching the current Bioconductor release) | Maintainers |
 
 Two folders are **generated**. Never edit them by hand, whether you're a
 person or an agent: `man/` (from roxygen comments in `R/`) and `docs/` (the
@@ -68,19 +75,20 @@ singleCellTK/
 ├── _pkgdown.yml, pkgdown/      # website config and extra CSS/JS
 ├── docs/                       # GENERATED pkgdown website. Never edit by hand
 │
-├── AGENTS.md                   # instructions for AI coding agents (canonical)
+├── AGENTS.md                   # package-specific notes for AI coding agents
 ├── CLAUDE.md, GEMINI.md        # one-line pointers to AGENTS.md
-├── Makefile                    # canonical commands: make test / check / lint / ...
+├── Makefile                    # canonical commands; includes the shared standards.mk
 ├── .lintr                      # lint config (covers R/ and inst/shiny/)
 ├── .claude/settings.json       # shared Claude Code permissions and hooks
 ├── .github/
 │   ├── CONTRIBUTING.md         # this file
 │   ├── SECURITY.md             # how to report vulnerabilities
 │   ├── PULL_REQUEST_TEMPLATE.md
-│   └── workflows/              # CI: R CMD check, BiocCheck, ...
+│   └── workflows/              # CI: R CMD check, BiocCheck, stable-branch sync, PR base check
 ├── dev/                        # maintainer material (excluded from the package build)
 │   ├── adr/                    #   architecture decision records (README, template, NNNN-*.md)
-│   ├── hooks/                  #   scripts run by .claude/settings.json hooks
+│   ├── plans/                  #   implementation plans, one per change
+│   ├── hooks/                  #   load-standards.sh and lint-changed.sh (Claude Code hooks)
 │   ├── RELEASE.md              #   twice-yearly Bioconductor release checklist
 │   ├── ROADMAP.md              #   where the package is heading
 │   └── AUDIT.md                #   periodic dependency/deprecation audit
@@ -106,37 +114,49 @@ from `_pkgdown.yml` down is excluded from the package build via
 
 ## Development workflow
 
-- Commit your work on `bioc_release_2026_09` (or a topic branch created from
-  it), and open pull requests against `devel`.
-- All changes land through a reviewed pull request. Never push directly to
-  `devel` or `master`.
+The full process is in the shared standards'
+[README](https://github.com/campbio/r-bioc-dev-standards#the-development-process).
+In short:
+
+- Fetch the latest `devel` from `compbiomed/singleCellTK`, then branch as
+  `fix/<topic>` or `feature/<topic>`. Never commit directly to `devel`, a
+  `RELEASE_X_Y` branch, or `master`.
+- `master` is the GitHub default branch, but it is an automatic copy of the
+  current Bioconductor release. Open pull requests against `devel`; a check
+  fails PRs aimed at `master`.
 - Every user-facing change gets a `NEWS.md` entry. Structural or dependency
   decisions get an ADR in `dev/adr/`.
+- Only maintainers push to Bioconductor.
 
-Common commands (see `Makefile`):
+Common commands (`make help` lists them all):
 
 | Command | When |
 |---|---|
-| `make test` | after every change |
+| `make test-one FILTER=<pattern>` | while developing (the full suite is slow) |
+| `make test`, `make coverage` | before asking for review |
 | `make lint` | before committing |
 | `make docs` | after changing roxygen comments |
-| `make check` | before opening a PR |
-| `make bioccheck` | before a release, or when fixing Bioconductor warnings |
+| `make check` | quick R CMD check, any time |
+| `make check-full`, `make bioccheck` | before opening a PR |
+| `make site-check` | after adding an export |
+| `make article FILTER=<name>` | after editing a vignette or article |
 | `make app` | to try the Shiny app locally |
+| `make site` | full website rebuild into `docs/` (site owner only) |
 
 ## Pull request checklist
 
 The PR template (`.github/PULL_REQUEST_TEMPLATE.md`) fills in automatically.
-In short: `make test` and `make check` pass, no new lints in changed lines,
-`NEWS.md` updated, docs changed through roxygen only, new exports added to
-`_pkgdown.yml`, an ADR linked if the change is structural, a screenshot for UI
-changes, and a person has confirmed that analysis results are scientifically
-correct.
+In short: tests pass and coverage didn't drop, `make check-full` and
+`make bioccheck` pass, `NEWS.md` updated, docs changed through roxygen only,
+new exports added to `_pkgdown.yml`, an ADR linked if the change is
+structural, a screenshot for UI changes, and a person has confirmed that
+analysis results are scientifically correct.
 
 ## Style
 
 Bioconductor style, checked by `make lint` (config in `.lintr`):
-- 4-space indentation, no tabs, lines of at most 80 characters.
+- 2-space indentation, matching the existing code (BiocCheck's NOTE about
+  indentation is expected), no tabs, lines of at most 80 characters.
 - camelCase for functions and variables, UpperCamelCase for classes.
   Function names are verbs (`run*`, `plot*`, `import*`, `get*`).
 - Every exported function has a roxygen2 block with `@param`, `@return`, and a

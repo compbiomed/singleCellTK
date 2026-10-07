@@ -1,0 +1,26 @@
+# Keeps the stable branch identical to the current Bioconductor release
+# branch, and tags each release version. The logic lives in
+# r-bioc-dev-standards, so fixes arrive without editing this file.
+# Set stable-branch to this repo's stable branch: main or master.
+
+name: Sync stable branch
+
+on:
+  push:
+    branches: ['RELEASE_*', main, master]
+  schedule:
+    - cron: '23 7 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-stable
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    uses: campbio/r-bioc-dev-standards/.github/workflows/sync-stable.yaml@v1
+    with:
+      stable-branch: master

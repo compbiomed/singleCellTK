@@ -1,0 +1,13 @@
+# Fails any pull request aimed at the stable branch, which is updated
+# automatically from the current Bioconductor release. The logic lives in
+# r-bioc-dev-standards.
+
+name: PR base branch
+
+on:
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  wrong-base:
+    uses: campbio/r-bioc-dev-standards/.github/workflows/pr-base-devel.yaml@v1
