@@ -2,7 +2,7 @@
 % Please edit documentation in R/runPerCellQC.R
 \name{runPerCellQC}
 \alias{runPerCellQC}
-\title{Wrapper for calculating QC metrics with scater.}
+\title{Calculate per-cell QC metrics}
 \usage{
 runPerCellQC(
   inSCE,
@@ -113,8 +113,11 @@ A \link[SingleCellExperiment]{SingleCellExperiment} object with
 cell QC metrics added to the \link{colData} slot.
 }
 \description{
-A wrapper function for \link[scater]{addPerCellQC}. Calculate
-general quality control metrics for each cell in the count matrix.
+Calculates general quality control metrics for each cell in
+the count matrix: total counts, detected features, percent of counts in
+the top features, and the same metrics for gene sets (such as mitochondrial
+genes) and alternative experiments. The metrics and column names are the
+same as those of \code{scater::addPerCellQC}, which is deprecated.
 }
 \details{
 This function allows multiple ways to import mitochondrial genes and quantify 
@@ -142,6 +145,5 @@ geneSet <- list("Mito"=rownames(sce)[mito.ix])
 sce <- runPerCellQC(sce, geneSetList = geneSet)
 }
 \seealso{
-\code{\link[scater]{addPerCellQC}}, 
 \code{link{plotRunPerCellQCResults}}, \code{\link{runCellQC}}
 }

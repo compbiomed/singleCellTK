@@ -1,7 +1,7 @@
 #' Get clustering with SNN graph
 #' @description Perform SNN graph clustering on a
 #' \linkS4class{SingleCellExperiment} object, with graph
-#' construction by \code{\link[scran]{buildSNNGraph}} and graph clustering by
+#' construction by \code{\link[bluster]{makeSNNGraph}} and graph clustering by
 #' "igraph" package.
 #' @param inSCE A \linkS4class{SingleCellExperiment} object.
 #' @param useReducedDim A single \code{character}, specifying which

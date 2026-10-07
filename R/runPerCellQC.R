@@ -1,6 +1,9 @@
-#' @title Wrapper for calculating QC metrics with scater.
-#' @description A wrapper function for \link[scater]{addPerCellQC}. Calculate
-#' general quality control metrics for each cell in the count matrix.
+#' @title Calculate per-cell QC metrics
+#' @description Calculates general quality control metrics for each cell in
+#' the count matrix: total counts, detected features, percent of counts in
+#' the top features, and the same metrics for gene sets (such as mitochondrial
+#' genes) and alternative experiments. The metrics and column names are the
+#' same as those of \code{scater::addPerCellQC}, which is deprecated.
 #' @param inSCE A \linkS4class{SingleCellExperiment} object.
 #' @param useAssay A string specifying which assay in the SCE to use. Default
 #' \code{"counts"}.
@@ -90,7 +93,7 @@
 #' }
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #' cell QC metrics added to the \link{colData} slot. 
-#' @seealso \code{\link[scater]{addPerCellQC}}, 
+#' @seealso 
 #' \code{link{plotRunPerCellQCResults}}, \code{\link{runCellQC}}
 #' @examples
 #' data(scExample, package = "singleCellTK")

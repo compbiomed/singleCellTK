@@ -1,3 +1,22 @@
+Changes in Version 2.23.2 (2026-10-07)
+================================================================================
+* Replaced functions deprecated in scuttle 1.22 and scran 1.40. Results are
+  unchanged (identical, or within floating-point error):
+  * runClusterSummaryMetrics(), plotSCEHeatmap(), and the TSCAN functions
+    aggregate with scrapper or base R instead of
+    scuttle::aggregateAcrossCells().
+  * scaterlogNormCounts() normalizes with scrapper::normalizeRnaCounts.se().
+  * runPerCellQC() and sampleSummaryStats() compute the per-cell QC metrics
+    themselves instead of calling scater::addPerCellQC(). The metadata
+    packageVersion recorded by runPerCellQC() is now singleCellTK's.
+  * runScranSNN() builds graphs with bluster::makeSNNGraph().
+  * runWilcox() uses an internal Wilcoxon rank-sum test, the same test
+    scran::pairwiseWilcox() performed.
+* New dependencies: scrapper, bluster, and BiocSingular. scuttle is no longer
+  imported directly.
+* Fixed plotSCEHeatmap() with aggregateRow, which always failed.
+* Fixed runScranSNN() with useAltExp and altExpRedDim, which always failed.
+
 Changes in Version 2.23.1 (2026-10-06)
 ================================================================================
 * runDecontX() now calls the decontX package directly instead of going

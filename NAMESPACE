@@ -273,60 +273,80 @@ import(SingleCellExperiment)
 import(eds)
 importFrom(BiocParallel,SerialParam)
 importFrom(ComplexHeatmap,anno_barplot)
-importFrom(S4Vectors,"metadata<-")
-importFrom(S4Vectors,DataFrame)
-importFrom(S4Vectors,metadata)
-importFrom(SingleCellExperiment,"counts<-")
-importFrom(SingleCellExperiment,"reducedDim<-")
-importFrom(SingleCellExperiment,SingleCellExperiment)
-importFrom(SingleCellExperiment,altExp)
-importFrom(SingleCellExperiment,counts)
-importFrom(SingleCellExperiment,reducedDim)
-importFrom(SingleCellExperiment,reducedDimNames)
-importFrom(SingleCellExperiment,reducedDims)
-importFrom(SingleCellExperiment,rowSubset)
-importFrom(SummarizedExperiment,"assay<-")
-importFrom(SummarizedExperiment,"assayNames<-")
-importFrom(SummarizedExperiment,"assays<-")
-importFrom(SummarizedExperiment,"colData<-")
-importFrom(SummarizedExperiment,"rowData<-")
-importFrom(SummarizedExperiment,assay)
-importFrom(SummarizedExperiment,assayNames)
-importFrom(SummarizedExperiment,assays)
-importFrom(SummarizedExperiment,colData)
-importFrom(SummarizedExperiment,rowData)
-importFrom(dplyr,"%>%")
-importFrom(dplyr,arrange)
-importFrom(dplyr,count)
-importFrom(dplyr,desc)
-importFrom(dplyr,group_by)
-importFrom(dplyr,mutate)
-importFrom(dplyr,one_of)
-importFrom(dplyr,select)
-importFrom(dplyr,summarize)
-importFrom(dplyr,ungroup)
+importFrom(S4Vectors,
+  "metadata<-",
+  DataFrame,
+  metadata
+)
+importFrom(SingleCellExperiment,
+  "counts<-",
+  "reducedDim<-",
+  SingleCellExperiment,
+  altExp,
+  counts,
+  reducedDim,
+  reducedDimNames,
+  reducedDims,
+  rowSubset
+)
+importFrom(SummarizedExperiment,
+  "assay<-",
+  "assayNames<-",
+  "assays<-",
+  "colData<-",
+  "rowData<-",
+  assay,
+  assayNames,
+  assays,
+  colData,
+  rowData
+)
+importFrom(dplyr,
+  "%>%",
+  arrange,
+  count,
+  desc,
+  group_by,
+  mutate,
+  one_of,
+  select,
+  summarize,
+  ungroup
+)
 importFrom(grid,gpar)
-importFrom(lifecycle,deprecate_warn)
-importFrom(lifecycle,deprecated)
+importFrom(lifecycle,
+  deprecate_warn,
+  deprecated
+)
 importFrom(magrittr,"%>%")
 importFrom(methods,slot)
 importFrom(reshape2,melt)
-importFrom(reticulate,import)
-importFrom(reticulate,py_module_available)
-importFrom(reticulate,py_set_seed)
+importFrom(reticulate,
+  import,
+  py_module_available,
+  py_set_seed
+)
 importFrom(rlang,.data)
-importFrom(scuttle,aggregateAcrossCells)
-importFrom(scuttle,aggregateAcrossFeatures)
-importFrom(stats,filter)
-importFrom(stats,prcomp)
-importFrom(stats,quantile)
-importFrom(stringr,str_c)
-importFrom(stringr,str_replace_all)
-importFrom(tibble,column_to_rownames)
-importFrom(tibble,remove_rownames)
-importFrom(tibble,tibble)
-importFrom(tidyr,spread)
-importFrom(tidyr,unite)
+importFrom(stats,
+  filter,
+  prcomp,
+  quantile
+)
+importFrom(stringr,
+  str_c,
+  str_replace_all
+)
+importFrom(tibble,
+  column_to_rownames,
+  remove_rownames,
+  tibble
+)
+importFrom(tidyr,
+  spread,
+  unite
+)
 importFrom(tools,file_ext)
-importFrom(utils,head)
-importFrom(utils,packageVersion)
+importFrom(utils,
+  head,
+  packageVersion
+)

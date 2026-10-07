@@ -85,7 +85,7 @@ The input \linkS4class{SingleCellExperiment} object with
 \description{
 Perform SNN graph clustering on a
 \linkS4class{SingleCellExperiment} object, with graph
-construction by \code{\link[scran]{buildSNNGraph}} and graph clustering by
+construction by \code{\link[bluster]{makeSNNGraph}} and graph clustering by
 "igraph" package.
 }
 \details{
