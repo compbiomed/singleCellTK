@@ -37,3 +37,4 @@ self-evident from the diff.
 | [0002](0002-harmony-version-dispatch.md) | Support both harmony interfaces in runHarmony() by version dispatch | Proposed | 2026-09-20 |
 | [0003](0003-scmerge-to-suggests.md) | Move scMerge from Imports to Suggests | Proposed | 2026-09-22 |
 | [0004](0004-adopt-shared-dev-standards.md) | Adopt the shared r-bioc-dev-standards | Proposed | 2026-10-05 |
+| [0005](0005-import-decontx-directly.md) | Import decontX directly instead of through celda | Proposed | 2026-10-06 |
