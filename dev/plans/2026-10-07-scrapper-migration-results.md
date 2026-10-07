@@ -68,9 +68,10 @@ entry is 119 counts. The new rho lies inside the old estimate's interval.
 
 ## Not compared
 
-- `runSoupX()` fails on the 195-cell PBMC subset with both versions: SoupX
-  cannot estimate contamination, and singleCellTK's error handler then
-  fails while building the empty result. This is a pre-existing issue.
+- `runSoupX()` fails on the 195-cell PBMC subset with both versions. The
+  automatic clustering merges clusters below 100 cells, which leaves one
+  cluster, and SoupX needs at least two (#797). The error handler then
+  hides or re-raises the failure depending on the caller (#798).
 - Articles were not re-rendered here. The maintainer reviews the pkgdown
   articles that use `runModelGeneVar()`: feature_selection,
   dimensionality_reduction, 2d_embedding, 02_a_la_carte_workflow,
