@@ -1,22 +1,17 @@
-Changes in Version 2.21.1 (2026-01-1)
+Changes in Version 2.23.1 (2026-10-06)
 ================================================================================
-* Updated depreciated parameters in Seurat function calls
-
-Changes in Version 2.20.0 (2025-10-29)
-================================================================================
-* Updated version to match Bioconductor 3.22
-
-Changes in Version 2.19.4 (2026-09-22)
-=========================================================================
-
+* runDecontX() now calls the decontX package directly instead of going
+  through celda. Since celda 1.23.0, celda::decontX() requires decontX to be
+  installed, which made runDecontX() and runCellQC() fail where it was not.
+  decontX is now imported, and the run metadata records the decontX version.
+  Results are unchanged. Note that decontX 1.11 initializes its cell clusters
+  with scrapper, so contamination estimates can differ slightly from earlier
+  Bioconductor releases.
 * Moved scMerge from Imports to Suggests. It is only used by runSCMerge(), and
   it cannot currently be installed on all platforms (an unrelated toolchain
   problem in one of its dependencies), which blocked installing singleCellTK
   there entirely. runSCMerge() now stops with an informative message if scMerge
   is not installed.
-
-Changes in Version 2.19.3 (2026-09-20)
-================================================================================
 * Fixed runHarmony() with harmony >= 1.0.0, where HarmonyMatrix() was removed.
   The function now detects the installed harmony version and calls RunHarmony()
   on 1.0.0 and above, while keeping the original HarmonyMatrix() code path for
@@ -29,11 +24,16 @@ Changes in Version 2.19.3 (2026-09-20)
   epsilon.harmony) are no longer accepted through '...'; harmony raises an
   error for them, and they must be passed through
   .options = harmony::harmony_options(...) instead.
-
-Changes in Version 2.19.2 (2026-09-20)
-================================================================================
 * Changed `runScDblFinder()` defaults for `nNeighbors` and `simDoublets` to
   `NULL`, so scDblFinder chooses these values itself
+
+Changes in Version 2.21.1 (2026-01-1)
+================================================================================
+* Updated depreciated parameters in Seurat function calls
+
+Changes in Version 2.20.0 (2025-10-29)
+================================================================================
+* Updated version to match Bioconductor 3.22
 
 Changes in Version 2.18.1 (2025-07-01)
 ================================================================================
