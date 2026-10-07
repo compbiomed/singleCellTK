@@ -84,3 +84,11 @@ test_that(desc = "TSCAN cluster centroids match base R without deprecations", {
                        numeric(ncol(emb))))
   expect_equal(.clusterCentroids(sceT, clusters, "PCA"), expected)
 })
+
+test_that(desc = "TSCAN cluster centroids ignore cells without a cluster", {
+  clusters <- rep(c("a", "b", NA), length.out = ncol(sce))
+  emb <- reducedDim(sce, "PCA")
+  expected <- rbind(a = colMeans(emb[which(clusters == "a"), ]),
+                    b = colMeans(emb[which(clusters == "b"), ]))
+  expect_equal(.clusterCentroids(sce, clusters, "PCA"), expected)
+})

@@ -332,8 +332,10 @@ runPerCellQC <- function(inSCE,
 # scuttle::perCellQCMetrics(), which is deprecated: total counts, detected
 # features, percent of counts in the top N features, the same three metrics
 # for each subset of features and each alternative experiment, and the total
-# over the main and alternative experiments. Returns a DataFrame with one row
-# per cell, nested like scuttle's when flatten = FALSE.
+# over the main and alternative experiments. useAltExps is TRUE (all),
+# FALSE (none), NULL (those with an assay named useAssay, scuttle's default),
+# or names/indices. Returns a DataFrame with one row per cell, nested like
+# scuttle's when flatten = FALSE.
 .perCellQCMetrics <- function(inSCE, useAssay = "counts", subsets = NULL,
                               percentTop = integer(0), useAltExps = FALSE,
                               flatten = TRUE, detectionLimit = 0,
@@ -341,7 +343,14 @@ runPerCellQC <- function(inSCE,
   percentTop <- sort(as.integer(percentTop))
   if (isTRUE(useAltExps)) {
     altNames <- SingleCellExperiment::altExpNames(inSCE)
-  } else if (is.null(useAltExps) || isFALSE(useAltExps)) {
+  } else if (is.null(useAltExps)) {
+    allAlt <- SingleCellExperiment::altExpNames(inSCE)
+    hasAssay <- vapply(allAlt, function(n) {
+      useAssay %in% SummarizedExperiment::assayNames(
+        SingleCellExperiment::altExp(inSCE, n))
+    }, logical(1))
+    altNames <- allAlt[hasAssay]
+  } else if (isFALSE(useAltExps)) {
     altNames <- character(0)
   } else {
     altNames <- SingleCellExperiment::altExpNames(inSCE)[useAltExps]
