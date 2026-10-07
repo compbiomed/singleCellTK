@@ -1,5 +1,6 @@
-# Internal helpers built on scrapper. They replace functions deprecated in
-# scuttle 1.22 and scran 1.40 while keeping singleCellTK's outputs unchanged.
+# Internal replacements for functions deprecated in scuttle 1.22 and scran
+# 1.40, built on scrapper, bluster, and base R. They keep singleCellTK's outputs
+# unchanged.
 
 # Mean expression and proportion of cells with expression > 0 for each group
 # of cells. Returns a list of two features x groups matrices, with the
