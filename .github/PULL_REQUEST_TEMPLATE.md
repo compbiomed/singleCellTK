@@ -1,25 +1,39 @@
-## Summary
+<!-- Base branch: devel. Use RELEASE_X_Y only for an approved release fix.
+     Never target main/master, which is updated automatically. -->
 
-<!-- What does this PR change, and why? Link related issues. -->
+## What changed and why
+
+<!-- Link the issue if there is one. -->
+
+## How it was tested
 
 ## Checklist
 
-- [ ] `make test` passes
-- [ ] `make check` passes (no ERRORs or WARNINGs)
-- [ ] `make lint`: no new lints in changed lines
-- [ ] `NEWS.md` updated (user-facing changes)
-- [ ] roxygen edited and `make docs` run; no hand edits to `man/`, `NAMESPACE`, or `docs/`
-- [ ] New exports added to `_pkgdown.yml` (`pkgdown::check_pkgdown()` passes)
-- [ ] `/code-review` run on the diff
-- [ ] ADR added in `dev/adr/` and linked below, if this is a structural or dependency decision
-- [ ] UI changes: screenshot of the running app attached (`make app`)
+- [ ] Tests added or updated, `make test` passes, and `make coverage`
+      didn't drop
+- [ ] `make check-full` and `make bioccheck` pass with no new errors or warnings
+- [ ] `make docs` run, if roxygen comments changed
+- [ ] New exports added to `_pkgdown.yml`, and `make site-check` passes
+- [ ] NEWS.md updated for user-facing changes
+- [ ] Version bumped (z) if this will be pushed to Bioconductor
+- [ ] Plan review and `/code-review` run; findings fixed or answered
+- [ ] Related issue linked
+- [ ] Shiny only: verified with a screenshot of the running app
 
-ADR: <!-- dev/adr/NNNN-...md or "n/a" -->
+## ADR
 
-## Scientific correctness (human judgment)
+<!-- Link to dev/adr/NNNN-*.md for a structural change (file splits,
+     dependencies, class redesign), or write "N/A". -->
 
-<!-- Required for changes that affect analysis results. Who checked that the
-results are scientifically correct, and how (for example, compared outputs on
-a reference dataset)? Tests passing is not enough. -->
+## Scientific correctness
 
-- [ ] A person has checked that analysis results are scientifically correct, or this PR does not affect results
+<!-- REQUIRES HUMAN JUDGMENT. An agent must never fill this in.
+     If this PR changes numerical results, statistical methods, model
+     output, or what a plot shows, say who verified the output is still
+     scientifically correct and how. Passing tests is not enough.
+     Otherwise write "No change to results". -->
+
+## Generated content
+
+<!-- If an AI agent wrote part of this PR, say which parts, so reviewers
+     know where to focus. -->
