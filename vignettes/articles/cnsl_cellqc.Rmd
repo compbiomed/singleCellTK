@@ -121,7 +121,7 @@ tabl <- "
 | `decontX_contamination`                  | Ambient RNA contamination                                     | `runDecontX()`        | [celda](https://www.bioconductor.org/packages/release/bioc/html/celda.html)         |
 | `decontX_clusters`                       | Clusters determined in dataset based on underlying algorithm  | `runDecontX()`        | [celda](https://www.bioconductor.org/packages/release/bioc/html/celda.html)         |
 | `soupX_nUMIs` | Total number of UMI per cell  | `runSoupX()`        | [SoupX](https://github.com/constantAmateur/SoupX)      |
-| `soupX_clusters` | Quick clustering label if clustering not provided by users | `runSoupX()` | [scran](https://rdrr.io/bioc/scran/man/quickCluster.html)    |
+| `soupX_clusters` | Quick clustering label if clustering not provided by users | `runSoupX()` | [scrapper](https://bioconductor.org/packages/scrapper) and [bluster](https://bioconductor.org/packages/bluster) |
 | `soupX_contamination` | Ambient RNA contamination   | `runSoupX()`        |   [SoupX](https://github.com/constantAmateur/SoupX)     |
 "
 cat(tabl)
@@ -366,7 +366,7 @@ In droplet-based single cell technologies, ambient RNA that may have been releas
 he main outputs of `runSoupX` are `soupX_contamination`, `soupX_clusters`, and the corrected assay `SoupX`, together with other intermediate metrics that SoupX generates.
 
 - `soupX_contamination` is a numeric vector which characterizes the level of contamination in each cell. SoupX generates one global contamination estimate per sample, instead of returning cell-specific estimation.
-- Clustering is required for SoupX algorithm. It will be performed if users do not provide the label as input. `quickCluster()` method from package [scran](https://rdrr.io/bioc/scran/man/quickCluster.html) is adopted for this purpose. `soupX_clusters` is the resulting cluster assignment, which can also be labeled on the plot. For performing fine-tuned clustering in SCTK, please refer to [*Clustering* documentation](clustering.html)
+- Clustering is required for SoupX algorithm. It will be performed if users do not provide the label as input. The steps of the `quickCluster()` method from package [scran](https://rdrr.io/bioc/scran/man/quickCluster.html) are followed for this purpose, using [scrapper](https://bioconductor.org/packages/scrapper) and [bluster](https://bioconductor.org/packages/bluster). `soupX_clusters` is the resulting cluster assignment, which can also be labeled on the plot. For performing fine-tuned clustering in SCTK, please refer to [*Clustering* documentation](clustering.html)
 
 ```{r run_soupx, eval = FALSE, message=FALSE}
 pbmc.combined <- runSoupX(

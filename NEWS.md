@@ -1,3 +1,17 @@
+Changes in Version 2.23.3 (2026-10-07)
+================================================================================
+* runModelGeneVar() now models gene variances with
+  scrapper::modelGeneVariances() instead of the deprecated
+  scran::modelGeneVar(). Means and total variances are unchanged, but the
+  biological component comes from a different trend fit, so the ranking of
+  highly variable genes changes (about 90-97% of the top 500 genes are the
+  same on the test datasets). Results that depend on modelGeneVar HVGs, such
+  as PCA, UMAP, and clusters, can change.
+* runSoupX() clusters cells (when no clusters are supplied) with the steps of
+  scran::quickCluster(), computed with scrapper and bluster. The automatic
+  clusters, and therefore SoupX's contamination estimates, can change
+  slightly.
+
 Changes in Version 2.23.2 (2026-10-07)
 ================================================================================
 * Replaced functions deprecated in scuttle 1.22 and scran 1.40. Results are

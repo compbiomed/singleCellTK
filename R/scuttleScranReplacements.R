@@ -84,3 +84,66 @@
                        FDR = stats::p.adjust(pValue, method = "BH"),
                        row.names = rownames(mat))
 }
+
+# Quick clustering of cells from counts, following the steps of
+# scran::quickCluster(method = "igraph"), whose normalization, variance
+# modelling, HVG, and PCA steps are deprecated: library-size normalization,
+# variance modelling, the top max(500, 10%) HVGs with a positive biological
+# component, a PCA whose number of components is chosen from the technical
+# variance (scran::denoisePCANumber), a rank-weighted SNN graph with walktrap
+# clustering, and merging of clusters smaller than minSize. Uses scrapper for
+# normalization, variance modelling, and PCA, so results differ from scran's.
+.quickClusterRNA <- function(counts, minSize = 100, k = 10, minRank = 5,
+                             maxRank = 50) {
+  if (ncol(counts) < minSize) {
+    stop("fewer cells than the minimum cluster size")
+  }
+  sizeFactors <- scrapper::centerSizeFactors(colSums(counts))
+  logc <- scrapper::normalizeCounts(counts, sizeFactors, delayed = FALSE)
+  fit <- scrapper::modelGeneVariances(logc)$statistics
+  nTop <- max(500, round(0.1 * sum(fit$residuals > 0)))
+  hvgs <- scrapper::chooseHighlyVariableGenes(fit$residuals, top = nTop,
+                                              keep.ties = FALSE, bound = 0)
+  keep <- hvgs[fit$variances[hvgs] > fit$fitted[hvgs]]
+  nComp <- min(maxRank, length(keep) - 1, ncol(logc) - 1)
+  pca <- scrapper::runPca(logc[keep, , drop = FALSE], number = nComp)
+  nPC <- scran::denoisePCANumber(pca$variance.explained,
+                                 sum(fit$fitted[keep]),
+                                 sum(fit$variances[keep]))
+  nPC <- max(nPC, min(minRank, length(pca$variance.explained)))
+  embedding <- t(pca$components[seq_len(nPC), , drop = FALSE])
+  graph <- bluster::makeSNNGraph(embedding, k = k, type = "rank")
+  clusters <- igraph::cluster_walktrap(graph)$membership
+  factor(.mergeSmallClusters(graph, clusters, minSize))
+}
+
+# Repeatedly merge the smallest cluster below minSize into the cluster that
+# gives the highest graph modularity, as scran::quickCluster() did. Returns
+# integer cluster labels renumbered from 1.
+.mergeSmallClusters <- function(graph, clusters, minSize) {
+  repeat {
+    sizes <- table(clusters)
+    if (all(sizes >= minSize)) break
+    labels <- as.integer(names(sizes))
+    if (length(labels) == 2L) {
+      clusters[] <- 1L
+      break
+    }
+    smallest <- labels[which.min(sizes)]
+    inSmallest <- clusters == smallest
+    bestModularity <- 0
+    best <- clusters
+    for (other in setdiff(labels, smallest)) {
+      candidate <- clusters
+      candidate[inSmallest] <- other
+      m <- igraph::modularity(graph, candidate,
+                              weights = igraph::E(graph)$weight)
+      if (bestModularity < m) {
+        bestModularity <- m
+        best <- candidate
+      }
+    }
+    clusters <- best
+  }
+  as.integer(factor(clusters))
+}

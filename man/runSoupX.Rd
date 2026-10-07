@@ -61,7 +61,9 @@ Default \code{"SoupX"} when not using a background, otherwise,
 \item{cluster}{Prior knowledge of clustering labels on cells. A single
 character string for specifying clustering label stored in
 \code{colData(inSCE)}, or a character vector with as many elements as cells.
-When not supplied, \code{\link[scran]{quickCluster}} method will be applied.}
+When not supplied, cells are clustered with the steps of
+\code{scran::quickCluster} (method "igraph"), computed with scrapper and
+bluster.}
 
 \item{reducedDimName}{A single character string of the prefix of output
 corrected embedding matrix for each sample. Default \code{"SoupX_UMAP_"} when

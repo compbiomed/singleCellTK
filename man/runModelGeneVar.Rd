@@ -2,7 +2,7 @@
 % Please edit documentation in R/scran_modelGeneVar.R
 \name{runModelGeneVar}
 \alias{runModelGeneVar}
-\title{Calculate Variable Genes with Scran modelGeneVar}
+\title{Calculate Variable Genes with modelGeneVar}
 \usage{
 runModelGeneVar(inSCE, useAssay = "logcounts")
 }
@@ -18,7 +18,11 @@ features from. Default \code{"logcounts"}.}
 \description{
 Generates and stores variability data in the input 
 \linkS4class{SingleCellExperiment} object, using 
-\code{\link[scran]{modelGeneVar}} method. 
+\code{\link[scrapper]{modelGeneVariances}}, which replaces the deprecated
+\code{scran::modelGeneVar}. The mean, total variance, and biological
+component (the residual from the fitted mean-variance trend) of each feature
+are stored in \code{rowData}. The method name and \code{rowData} column
+names are kept from the scran implementation.
 
 Also selects a specified number of top HVGs and store the logical selection 
 in \code{rowData}.
