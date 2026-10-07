@@ -212,8 +212,8 @@ descriptionDecontX <- function() {
         introduction = "In droplet-based single cell technologies,
             ambient RNA that may have been released from apoptotic or
             damaged cells may get incorporated into another droplet, and can
-            lead to contamination. [decontX](https://rdrr.io/bioc/celda/man/decontX.html),
-            available from the [celda](https://bioconductor.org/packages/release/bioc/html/celda.html),
+            lead to contamination. [decontX](https://bioconductor.org/packages/release/bioc/html/decontX.html),
+            available from the [decontX](https://bioconductor.org/packages/release/bioc/html/decontX.html) package,
             is a Bayesian method for the identification of the contamination 
             level at a cellular level. ",
         runDecontX = "The wrapper function `runDecontX` can be used to 
@@ -249,9 +249,10 @@ descriptionSoupX <- function() {
             returning cell-specific estimation.",
         clustering = "Clustering is required for SoupX algorithm. It will be 
             performed if users do not provide the label as input. 
-            `quickCluster()` method from package 
-            [scran](https://rdrr.io/bioc/scran/man/quickCluster.html) is adopted
-            for this purpose. `soupX_clusters` is the resulting cluster 
+            The steps of the `quickCluster()` method from package 
+            [scran](https://rdrr.io/bioc/scran/man/quickCluster.html) are
+            followed for this purpose, computed with the scrapper and bluster
+            packages. `soupX_clusters` is the resulting cluster 
             assignment, which can also be labeled on the plot. ",
         plotSoupXResults = "The wrapper function `plotSoupXResult` can be 
             used to plot the QC outputs from the SoupX algorithm. Plots includes

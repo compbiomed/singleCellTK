@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Comprehensive and Interactive Analysis of Single Cell RNA-Seq Data
-Version: 2.23.0
+Version: 2.23.3
 Authors@R: c(person(given="Yichen", family="Wang", email="wangych@bu.edu", role=c("aut"),
                     comment = c(ORCID = "0000-0003-4347-5199")),
              person(given="Irzam", family="Sarfraz", email="isarfraz@bu.edu", role=c("aut"),
@@ -81,6 +81,9 @@ Imports:
     S4Vectors,
     scater,
     scran,
+    scrapper (>= 1.6.0),
+    bluster,
+    BiocSingular,
     Seurat (>= 3.1.3),
     shiny,
     shinyjs,
@@ -93,6 +96,7 @@ Imports:
     circlize,
     enrichR (>= 3.2),
     celda,
+    decontX,
     shinycssloaders,
     DropletUtils,
     scds (>= 1.2.0),
@@ -117,7 +121,6 @@ Imports:
     rlang,
     TSCAN,
     TrajectoryUtils,
-    scuttle,
     utils,
     stats,
     zellkonverter,

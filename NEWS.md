@@ -1,22 +1,56 @@
-Changes in Version 2.21.1 (2026-01-1)
+Changes in Version 2.23.3 (2026-10-07)
 ================================================================================
-* Updated depreciated parameters in Seurat function calls
+* runModelGeneVar() now models gene variances with
+  scrapper::modelGeneVariances() instead of the deprecated
+  scran::modelGeneVar(). Means and total variances are unchanged, but the
+  biological component comes from a different trend fit, so the ranking of
+  highly variable genes changes (about 90-97% of the top 500 genes are the
+  same on the test datasets). Results that depend on modelGeneVar HVGs, such
+  as PCA, UMAP, and clusters, can change.
+* runSoupX() clusters cells (when no clusters are supplied) with the steps of
+  scran::quickCluster(), computed with scrapper and bluster. The automatic
+  clusters, and therefore SoupX's contamination estimates, can change
+  slightly.
 
-Changes in Version 2.20.0 (2025-10-29)
+Changes in Version 2.23.2 (2026-10-07)
 ================================================================================
-* Updated version to match Bioconductor 3.22
+* Replaced functions deprecated in scuttle 1.22 and scran 1.40. Results are
+  unchanged (identical, or within floating-point error):
+  * runClusterSummaryMetrics(), plotSCEHeatmap(), and the TSCAN functions
+    aggregate with scrapper or base R instead of
+    scuttle::aggregateAcrossCells().
+  * scaterlogNormCounts() normalizes with scrapper::normalizeRnaCounts.se().
+  * runPerCellQC() and sampleSummaryStats() compute the per-cell QC metrics
+    with scrapper::computeRnaQcMetrics() and singleCellTK code (for the
+    top-N, gene-set, and altExp columns) instead of scater::addPerCellQC().
+    This is about 4 times faster on large data. runPerCellQC() uses BPPARAM
+    to set the number of threads. The metadata packageVersion recorded by
+    runPerCellQC() is now singleCellTK's.
+  * runScranSNN() builds graphs with bluster::makeSNNGraph().
+  * runWilcox() uses an internal Wilcoxon rank-sum test, the same test
+    scran::pairwiseWilcox() performed.
+* New dependencies: scrapper, bluster, and BiocSingular. scuttle is no longer
+  imported directly.
+* runMNNCorrect() hides deprecation warnings raised inside
+  batchelor::mnnCorrect(), which still calls deprecated scuttle functions.
+  Other warnings are unchanged.
+* Fixed plotSCEHeatmap() with aggregateRow, which always failed.
+* Fixed runScranSNN() with useAltExp and altExpRedDim, which always failed.
 
-Changes in Version 2.19.4 (2026-09-22)
-=========================================================================
-
+Changes in Version 2.23.1 (2026-10-06)
+================================================================================
+* runDecontX() now calls the decontX package directly instead of going
+  through celda. Since celda 1.23.0, celda::decontX() requires decontX to be
+  installed, which made runDecontX() and runCellQC() fail where it was not.
+  decontX is now imported, and the run metadata records the decontX version.
+  Results are unchanged. Note that decontX 1.11 initializes its cell clusters
+  with scrapper, so contamination estimates can differ slightly from earlier
+  Bioconductor releases.
 * Moved scMerge from Imports to Suggests. It is only used by runSCMerge(), and
   it cannot currently be installed on all platforms (an unrelated toolchain
   problem in one of its dependencies), which blocked installing singleCellTK
   there entirely. runSCMerge() now stops with an informative message if scMerge
   is not installed.
-
-Changes in Version 2.19.3 (2026-09-20)
-================================================================================
 * Fixed runHarmony() with harmony >= 1.0.0, where HarmonyMatrix() was removed.
   The function now detects the installed harmony version and calls RunHarmony()
   on 1.0.0 and above, while keeping the original HarmonyMatrix() code path for
@@ -29,11 +63,16 @@ Changes in Version 2.19.3 (2026-09-20)
   epsilon.harmony) are no longer accepted through '...'; harmony raises an
   error for them, and they must be passed through
   .options = harmony::harmony_options(...) instead.
-
-Changes in Version 2.19.2 (2026-09-20)
-================================================================================
 * Changed `runScDblFinder()` defaults for `nNeighbors` and `simDoublets` to
   `NULL`, so scDblFinder chooses these values itself
+
+Changes in Version 2.21.1 (2026-01-1)
+================================================================================
+* Updated depreciated parameters in Seurat function calls
+
+Changes in Version 2.20.0 (2025-10-29)
+================================================================================
+* Updated version to match Bioconductor 3.22
 
 Changes in Version 2.18.1 (2025-07-01)
 ================================================================================

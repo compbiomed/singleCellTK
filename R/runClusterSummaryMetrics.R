@@ -53,16 +53,11 @@ runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", featureNames, 
     useAssay <- "scaled"
   }
   
-  avgExpr <- assay(scuttle::aggregateAcrossCells(tempSCE, ids=SingleCellExperiment::colData(inSCE)[,groupNames], 
-                                                            statistics="mean", use.assay.type=useAssay, 
-                                                 subset.row=NULL))
+  groupIds <- SingleCellExperiment::colData(inSCE)[, groupNames]
+  agg <- .aggregateMeanDetected(assay(tempSCE, useAssay), groupIds)
+  avgExpr <- agg$mean
+  percExpr <- agg$prop.detected
 
-  
-  
-  percExpr <- assay(scuttle::aggregateAcrossCells(tempSCE, ids=SingleCellExperiment::colData(inSCE)[,groupNames], 
-                                                             statistics="prop.detected", use.assay.type=useAssay, 
-                                                  subset.row=NULL))
-  
 
   df <- data.frame(featureNames = featureNames)
   df$avgExpr <- avgExpr

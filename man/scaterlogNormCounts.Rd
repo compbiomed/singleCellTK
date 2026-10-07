@@ -3,7 +3,9 @@
 \name{scaterlogNormCounts}
 \alias{scaterlogNormCounts}
 \title{scaterlogNormCounts
-Uses \link{logNormCounts} to log normalize input data}
+Log-normalizes counts by library size, as \code{scater::logNormCounts}
+did, using \code{\link[scrapper]{normalizeRnaCounts.se}}. Existing
+\code{sizeFactors(inSCE)} are used (after centering) when present.}
 \usage{
 scaterlogNormCounts(
   inSCE,
@@ -23,7 +25,9 @@ inSCE Updated SingleCellExperiment object that contains the new log normalized d
 }
 \description{
 scaterlogNormCounts
-Uses \link{logNormCounts} to log normalize input data
+Log-normalizes counts by library size, as \code{scater::logNormCounts}
+did, using \code{\link[scrapper]{normalizeRnaCounts.se}}. Existing
+\code{sizeFactors(inSCE)} are used (after centering) when present.
 }
 \examples{
 data(sce_chcl, package = "scds")

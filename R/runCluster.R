@@ -1,7 +1,7 @@
 #' Get clustering with SNN graph
 #' @description Perform SNN graph clustering on a
 #' \linkS4class{SingleCellExperiment} object, with graph
-#' construction by \code{\link[scran]{buildSNNGraph}} and graph clustering by
+#' construction by \code{\link[bluster]{makeSNNGraph}} and graph clustering by
 #' "igraph" package.
 #' @param inSCE A \linkS4class{SingleCellExperiment} object.
 #' @param useReducedDim A single \code{character}, specifying which
@@ -129,25 +129,18 @@ runScranSNN <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
             if (!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
                 stop("Specified assay '", useAssay, "' not found.")
             }
-            g <- scran::buildSNNGraph(x = inSCE, k = k, assay.type = useAssay,
-                                      d = nComp, type = weightType,
-                                      use.dimred = NULL, BPPARAM = BPPARAM)
+            g <- .snnGraph(assay(inSCE, useAssay), k = k, nComp = nComp,
+                           weightType = weightType, BPPARAM = BPPARAM)
         } else if (!is.null(useReducedDim)) {
             if (!useReducedDim %in% SingleCellExperiment::reducedDimNames(inSCE)) {
                 stop("Specified reducedDim '", useReducedDim, "' not found.")
             }
-            # scran::buildSNNGraph by default use all dims of useReducedDim
-            # Need to subset it before passing to Scran, if nComp specified
-            nComp <- min(nComp,
-                         ncol(SingleCellExperiment::reducedDim(inSCE,
-                                                               useReducedDim)))
-            tempSCE <- SingleCellExperiment::SingleCellExperiment(
-                assays = list(counts = assay(inSCE)),
-                reducedDims = list(pca = reducedDim(inSCE,
-                                                    useReducedDim)[,seq(nComp)])
-            )
-            g <- scran::buildSNNGraph(x = tempSCE, k = k, use.dimred = "pca",
-                                      type = weightType, BPPARAM = BPPARAM)
+            # Use the first nComp dimensions of useReducedDim
+            emb <- SingleCellExperiment::reducedDim(inSCE, useReducedDim)
+            nComp <- min(nComp, ncol(emb))
+            g <- .snnGraph(emb[, seq(nComp), drop = FALSE], k = k,
+                           weightType = weightType, transposed = TRUE,
+                           BPPARAM = BPPARAM)
         } else if (!is.null(useAltExp)) {
             if (!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)) {
                 stop("Specified altExp '", useAltExp, "' not found.")
@@ -157,24 +150,18 @@ runScranSNN <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
                 if (!altExpRedDim %in% SingleCellExperiment::reducedDimNames(ae)) {
                   stop("altExpRedDim: '", altExpRedDim, "' not in specified altExp.")
                 }
-                nComp <- min(nComp, ncol(SingleCellExperiment::reducedDim(ae, useReducedDim)))
-                tempSCE <- SingleCellExperiment::SingleCellExperiment(
-                    assays = list(counts = assay(ae)),
-                    reducedDims = list(pca = reducedDim(ae, useReducedDim)[,seq(nComp)])
-                )
-                g <- scran::buildSNNGraph(x = tempSCE, k = k,
-                                          use.dimred = "pca",
-                                          type = weightType, BPPARAM = BPPARAM)
+                emb <- SingleCellExperiment::reducedDim(ae, altExpRedDim)
+                nComp <- min(nComp, ncol(emb))
+                g <- .snnGraph(emb[, seq(nComp), drop = FALSE], k = k,
+                               weightType = weightType, transposed = TRUE,
+                               BPPARAM = BPPARAM)
             } else {
                 if (!altExpAssay %in% SummarizedExperiment::assayNames(ae)) {
                     stop("altExpAssay: '", altExpAssay,
                          "' not in specified altExp.")
                 }
-                g <- scran::buildSNNGraph(x = ae, k = k,
-                                          assay.type = altExpAssay,
-                                          d = nComp, type = weightType,
-                                          use.dimred = NULL,
-                                          BPPARAM = BPPARAM)
+                g <- .snnGraph(assay(ae, altExpAssay), k = k, nComp = nComp,
+                               weightType = weightType, BPPARAM = BPPARAM)
             }
         }
         clustFunc = graphClustAlgoList[[algorithm]]

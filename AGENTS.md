@@ -87,11 +87,14 @@ No classes of its own. Everything is built on `SingleCellExperiment`:
 
 ## Related packages
 
-- `celda` (campbio/celda): singleCellTK imports it and calls
-  `celda::decontX()`, `decontXcounts()`, and `distinctColors()`
-  (`R/celda_decontX.R` and plotting helpers). Changes to these functions in
-  celda, or to how singleCellTK calls them, should be checked in both
-  packages.
+- `decontX` (campbio/decontX): singleCellTK imports it and calls
+  `decontX::decontX()` and `decontXcounts()` in `runDecontX()`
+  (`R/celda_decontX.R`), which `runCellQC()` runs by default. Changes to
+  these functions in decontX, or to how singleCellTK calls them, should be
+  checked in both packages.
+- `celda` (campbio/celda): singleCellTK imports it for
+  `celda::distinctColors()` (plotting helpers). Since celda 1.23.0,
+  `celda::decontX()` only forwards to the decontX package.
 
 ## Overrides
 
@@ -105,6 +108,9 @@ No classes of its own. Everything is built on `SingleCellExperiment`:
 - CI: which jobs are required, the coverage threshold, and the BiocCheck
   container/cron setup are all TODO. The existing `R-CMD-check.yaml` and
   `BioC-check.yaml` workflows are unchanged.
+- Documentation is generated with roxygen2 8.1, which writes NAMESPACE in
+  a multi-line `importFrom()` format. Use roxygen2 8.1 or later for
+  `make docs`; an older roxygen2 rewrites the whole NAMESPACE.
 - The website is served from `docs/`, which is committed. Never edit it;
   only the site owner rebuilds it with `make site`.
 - Known debt (backlog, don't fix in unrelated changes): `make lint` reports

@@ -1,6 +1,9 @@
-#' @title Wrapper for calculating QC metrics with scater.
-#' @description A wrapper function for \link[scater]{addPerCellQC}. Calculate
-#' general quality control metrics for each cell in the count matrix.
+#' @title Calculate per-cell QC metrics
+#' @description Calculates general quality control metrics for each cell in
+#' the count matrix: total counts, detected features, percent of counts in
+#' the top features, and the same metrics for gene sets (such as mitochondrial
+#' genes) and alternative experiments. The metrics and column names are the
+#' same as those of \code{scater::addPerCellQC}, which is deprecated.
 #' @param inSCE A \linkS4class{SingleCellExperiment} object.
 #' @param useAssay A string specifying which assay in the SCE to use. Default
 #' \code{"counts"}.
@@ -90,7 +93,7 @@
 #' }
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #' cell QC metrics added to the \link{colData} slot. 
-#' @seealso \code{\link[scater]{addPerCellQC}}, 
+#' @seealso
 #' \code{link{plotRunPerCellQCResults}}, \code{\link{runCellQC}}
 #' @examples
 #' data(scExample, package = "singleCellTK")
@@ -301,22 +304,22 @@ runPerCellQC <- function(inSCE,
   colData(inSCE)$percent.top_500 <- NULL
   colData(inSCE)$total <- NULL
     
-  inSCE <- scater::addPerCellQC(x = inSCE,
-                                exprs_values = useAssay,
-                                subsets = geneSets,
-                                percent_top = percent_top,
-                                use_altexps = use_altexps,
-                                flatten = flatten,
-                                detection_limit = detectionLimit,
-                                BPPARAM = BPPARAM)
+  qcMetrics <- .perCellQCMetrics(inSCE, useAssay = useAssay,
+                                 subsets = geneSets,
+                                 percentTop = percent_top,
+                                 useAltExps = use_altexps,
+                                 flatten = flatten,
+                                 detectionLimit = detectionLimit,
+                                 numThreads = BiocParallel::bpnworkers(BPPARAM))
+  colData(inSCE) <- cbind(colData(inSCE), qcMetrics)
 
   ## rename mito gene columns in colData(inSCE)
   names(colData(inSCE)) <- gsub('subsets_mito', 'mito', names(colData(inSCE)))
 
   argsList <- argsList[!names(argsList) %in% ("BPPARAM")]
   metadata(inSCE)$sctk$runPerCellQC$all_cells <- argsList[-1]
-  metadata(inSCE)$sctk$runPerCellQC$all_cells$packageVersion <- 
-    utils::packageDescription("scran")$Version
+  metadata(inSCE)$sctk$runPerCellQC$all_cells$packageVersion <-
+    utils::packageDescription("singleCellTK")$Version
 
   if(is.null(geneSets)){
     geneSets <- as.character(geneSets)
@@ -324,4 +327,162 @@ runPerCellQC <- function(inSCE,
   metadata(inSCE)$sctk$runPerCellQC$all_cells$geneSets <- geneSets
 
   return(inSCE)
+}
+
+# Per-cell QC metrics with the same columns and values as
+# scuttle::perCellQCMetrics(), which is deprecated: total counts, detected
+# features, percent of counts in the top N features, the same three metrics
+# for each subset of features and each alternative experiment, and the total
+# over the main and alternative experiments. Returns a DataFrame with one row
+# per cell, nested like scuttle's when flatten = FALSE.
+.perCellQCMetrics <- function(inSCE, useAssay = "counts", subsets = NULL,
+                              percentTop = integer(0), useAltExps = FALSE,
+                              flatten = TRUE, detectionLimit = 0,
+                              chunkSize = 5000, numThreads = 1) {
+  percentTop <- sort(as.integer(percentTop))
+  altNames <- .selectAltExps(inSCE, useAltExps, useAssay)
+  if (is.null(subsets)) subsets <- list()
+
+  main <- .countMetrics(assay(inSCE, useAssay), detectionLimit, percentTop,
+                        subsets, chunkSize, numThreads)
+  libSize <- main$sum
+  altMetrics <- lapply(altNames, function(name) {
+    alt <- SingleCellExperiment::altExp(inSCE, name)
+    .countMetrics(assay(alt, useAssay), detectionLimit, integer(0), list(),
+                  chunkSize, numThreads)
+  })
+  total <- libSize + Reduce(`+`, lapply(altMetrics, `[[`, "sum"),
+                            numeric(length(libSize)))
+
+  cells <- colnames(inSCE)
+  topPercent <- main$top / libSize * 100
+  colnames(topPercent) <- as.character(percentTop)
+  subsetDF <- S4Vectors::make_zero_col_DFrame(ncol(inSCE))
+  for (name in names(subsets)) {
+    subsetDF[[name]] <- S4Vectors::DataFrame(
+      sum = main$subsets[[name]]$sum,
+      detected = main$subsets[[name]]$detected,
+      percent = main$subsets[[name]]$sum / libSize * 100
+    )
+  }
+  altDF <- S4Vectors::make_zero_col_DFrame(ncol(inSCE))
+  for (i in seq_along(altNames)) {
+    altDF[[altNames[i]]] <- S4Vectors::DataFrame(
+      sum = altMetrics[[i]]$sum,
+      detected = altMetrics[[i]]$detected,
+      percent = altMetrics[[i]]$sum / total * 100
+    )
+  }
+  out <- S4Vectors::DataFrame(sum = libSize, detected = main$detected,
+                              row.names = cells)
+  out$percent.top <- topPercent
+  out$subsets <- subsetDF
+  out$altexps <- altDF
+  out$total <- total
+  if (isTRUE(flatten)) out <- .flattenQCMetrics(out)
+  out
+}
+
+# Names of the alternative experiments to include in QC metrics. useAltExps
+# is TRUE (all), FALSE (none), NULL (those with an assay named useAssay,
+# scuttle's default), or names or indices.
+.selectAltExps <- function(inSCE, useAltExps, useAssay) {
+  allAlt <- SingleCellExperiment::altExpNames(inSCE)
+  if (isTRUE(useAltExps)) return(allAlt)
+  if (isFALSE(useAltExps)) return(character(0))
+  if (!is.null(useAltExps)) return(allAlt[useAltExps])
+  hasAssay <- vapply(allAlt, function(n) {
+    alt <- SingleCellExperiment::altExp(inSCE, n)
+    useAssay %in% SummarizedExperiment::assayNames(alt)
+  }, logical(1))
+  allAlt[hasAssay]
+}
+
+# Column sums, detected counts, top-N sums, and per-subset sums and detected
+# counts of a features x cells matrix. With the default detectionLimit of 0,
+# sums and detected counts come from scrapper::computeRnaQcMetrics()
+# (compiled, multithreaded). Subset metrics use only the subset rows. Top-N
+# sums need every column's values sorted, so they are computed in column
+# chunks to avoid densifying sparse or DelayedArray inputs.
+.countMetrics <- function(mat, detectionLimit, percentTop, subsets,
+                          chunkSize, numThreads = 1) {
+  nCells <- ncol(mat)
+  useScrapper <- detectionLimit == 0
+  if (useScrapper) {
+    qc <- scrapper::computeRnaQcMetrics(mat, subsets = list(),
+                                        num.threads = numThreads)
+    sums <- qc$sum
+    detected <- as.numeric(qc$detected)
+  } else {
+    sums <- numeric(nCells)
+    detected <- numeric(nCells)
+  }
+  top <- matrix(0, nrow = nCells, ncol = length(percentTop))
+  if (!useScrapper || length(percentTop) > 0) {
+    for (start in seq(1, nCells, by = chunkSize)) {
+      cols <- seq(start, min(start + chunkSize - 1, nCells))
+      chunk <- .asSparseChunk(mat[, cols, drop = FALSE])
+      if (!useScrapper) {
+        sums[cols] <- Matrix::colSums(chunk)
+        detected[cols] <- Matrix::colSums(chunk > detectionLimit)
+      }
+      if (length(percentTop) > 0) {
+        top[cols, ] <- .topSums(chunk, percentTop)
+      }
+    }
+  }
+  rowIndex <- stats::setNames(seq_len(nrow(mat)), rownames(mat))
+  subsetMetrics <- lapply(subsets, function(s) {
+    part <- .asSparseChunk(mat[unname(rowIndex[s]), , drop = FALSE])
+    list(sum = unname(Matrix::colSums(part)),
+         detected = as.numeric(Matrix::colSums(part > detectionLimit)))
+  })
+  list(sum = sums, detected = detected, top = top, subsets = subsetMetrics)
+}
+
+# A matrix as a double-precision sparse matrix (dgCMatrix).
+.asSparseChunk <- function(x) {
+  methods::as(methods::as(x, "CsparseMatrix"), "dMatrix")
+}
+
+# Sum of the largest N values in each column of a sparse matrix, for each N
+# in percentTop. Values that are not stored are zero, so only stored values
+# need sorting unless the matrix has negative values. Stored values are
+# sorted within each column once, and all N are read from their cumulative
+# sums.
+.topSums <- function(chunk, percentTop) {
+  if (any(chunk@x < 0)) {
+    dense <- as.matrix(chunk)
+    return(t(apply(dense, 2, function(v) {
+      v <- sort(v, decreasing = TRUE)
+      vapply(percentTop, function(n) sum(v[seq_len(min(n, length(v)))]),
+             numeric(1))
+    })))
+  }
+  stored <- diff(chunk@p)
+  column <- rep.int(seq_len(ncol(chunk)), stored)
+  cumulative <- c(0, cumsum(chunk@x[order(column, -chunk@x)]))
+  columnStart <- chunk@p[-length(chunk@p)]
+  before <- cumulative[columnStart + 1]
+  vapply(percentTop, function(n) {
+    cumulative[columnStart + pmin(n, stored) + 1] - before
+  }, numeric(ncol(chunk)))
+}
+
+# Flatten nested QC metrics into scuttle's column names, for example
+# percent.top_50, subsets_mito_sum, and altexps_ERCC_percent.
+.flattenQCMetrics <- function(qc) {
+  out <- qc[, c("sum", "detected"), drop = FALSE]
+  top <- qc$percent.top
+  for (n in colnames(top)) out[[paste0("percent.top_", n)]] <- top[, n]
+  for (group in c("subsets", "altexps")) {
+    nested <- qc[[group]]
+    for (name in colnames(nested)) {
+      for (metric in colnames(nested[[name]])) {
+        out[[paste(group, name, metric, sep = "_")]] <- nested[[name]][[metric]]
+      }
+    }
+  }
+  out$total <- qc$total
+  out
 }

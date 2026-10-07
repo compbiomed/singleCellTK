@@ -10,3 +10,10 @@ test_that(desc = "Testing runDecontX", {
         expect_equal(class(colData(sceres)$decontX_contamination), "numeric")
 })
 
+test_that(desc = "runDecontX uses the decontX package, not celda", {
+  sceres <- runDecontX(sce)
+  runParams <- S4Vectors::metadata(sceres)$sctk$runDecontX$all_cells
+  expect_equal(runParams$packageVersion,
+               utils::packageDescription("decontX")$Version)
+})
+

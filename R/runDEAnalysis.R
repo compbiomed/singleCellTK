@@ -676,9 +676,6 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
   }
   ix1 <- resultList$select$ix1
   ix2 <- resultList$select$ix2
-  conditions <- rep(NA, ncol(inSCE))
-  conditions[ix1] <- 'cond1'
-  conditions[ix2] <- 'cond2'
   if (!is.null(useAssay)) {
     mat <- expData(inSCE, useAssay)
   } else {
@@ -688,14 +685,7 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     message(date(), " ... Running DE with wilcox, Analysis name: ",
             analysisName)
   }
-  result <- scran::pairwiseWilcox(mat, groups = conditions)
-  # result <- scran::pairwiseWilcox(inSCE, groups = conditions,
-  #                                 assay.type = useAssay)
-  if (result$pairs$first[1] == "cond1") {
-    table <- result$statistics[[1]]
-  } else {
-    table <- result$statistics[[2]]
-  }
+  table <- .wilcoxTest(mat, ix1, ix2)
   # Generate LogFC value
 
   if (!is.null(useAssay)) {

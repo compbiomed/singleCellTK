@@ -93,3 +93,32 @@ test_that(desc = "Testing findMarker", {
   hmFM <- plotFindMarkerHeatmap(sceBatches)
   testthat::expect_is(hmFM, "Heatmap")
 })
+
+test_that(desc = "Internal Wilcoxon test matches stats::wilcox.test", {
+  set.seed(1)
+  mat <- matrix(rpois(30 * 25, 2), nrow = 30,
+                dimnames = list(paste0("g", 1:30), NULL))
+  mat[1, ] <- 3
+  mat[2, ] <- c(rep(0, 20), 1:5)
+  ix1 <- 1:12
+  ix2 <- 13:25
+  res <- .wilcoxTest(mat, ix1, ix2, chunkSize = 7)
+  expected <- apply(mat, 1, function(v) {
+    p <- suppressWarnings(stats::wilcox.test(v[ix1], v[ix2], exact = FALSE,
+                                             correct = TRUE)$p.value)
+    if (is.na(p)) 1 else p
+  })
+  expect_equal(res$p.value, unname(expected))
+  expect_equal(res$FDR, stats::p.adjust(unname(expected), method = "BH"))
+  expect_equal(rownames(res), rownames(mat))
+})
+
+test_that(desc = "runWilcox runs without deprecations", {
+  expect_no_warning(
+    runWilcox(inSCE = sceBatches, class = "cell_type",
+              classGroup1 = "alpha", classGroup2 = "beta",
+              groupName1 = "a", groupName2 = "b",
+              analysisName = "aVSbWilcox2"),
+    class = "deprecatedWarning"
+  )
+})
