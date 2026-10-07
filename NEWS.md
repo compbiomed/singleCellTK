@@ -14,6 +14,9 @@ Changes in Version 2.23.2 (2026-10-07)
     scran::pairwiseWilcox() performed.
 * New dependencies: scrapper, bluster, and BiocSingular. scuttle is no longer
   imported directly.
+* runMNNCorrect() hides deprecation warnings raised inside
+  batchelor::mnnCorrect(), which still calls deprecated scuttle functions.
+  Other warnings are unchanged.
 * Fixed plotSCEHeatmap() with aggregateRow, which always failed.
 * Fixed runScranSNN() with useAltExp and altExpRedDim, which always failed.
 
