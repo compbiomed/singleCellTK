@@ -622,11 +622,20 @@ runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
   k <- as.integer(k)
 
   ## Run algorithm
-  corr.sce <- batchelor::mnnCorrect(mat, batch = batchVec, k = k,
-                                    prop.k = propK, sigma = sigma,
-                                    cos.norm.in = cosNormIn,
-                                    cos.norm.out = cosNormOut, var.adj = varAdj,
-                                    BPPARAM = BPPARAM)
+  # batchelor::mnnCorrect() (batchelor 1.28) still calls scuttle functions
+  # that scuttle 1.22 deprecated (normalizeCounts, sumCountsAcrossCells,
+  # summarizeAssayByGroup). Those deprecation warnings are about batchelor's
+  # internals, not about anything the user or singleCellTK can change, and
+  # they make R CMD check fail on the examples. Muffle only deprecation
+  # warnings raised during this call; all other warnings still reach the
+  # user. Remove this once batchelor no longer calls deprecated functions.
+  corr.sce <- withCallingHandlers(
+    batchelor::mnnCorrect(mat, batch = batchVec, k = k,
+                          prop.k = propK, sigma = sigma,
+                          cos.norm.in = cosNormIn,
+                          cos.norm.out = cosNormOut, var.adj = varAdj,
+                          BPPARAM = BPPARAM),
+    deprecatedWarning = function(w) invokeRestart("muffleWarning"))
   expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <-
     SummarizedExperiment::assay(corr.sce, "corrected")
   S4Vectors::metadata(inSCE)$batchCorr[[assayName]] <- list(useAssay = useAssay,

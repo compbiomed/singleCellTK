@@ -56,8 +56,11 @@ it in a separate PR that the maintainer reviews scientifically.
 ## Consequences
 
 - No deprecation warnings from singleCellTK's own calls into scuttle or
-  scran for the replaced functions. Warnings from inside batchelor
-  (`mnnCorrect`) and decontX 1.10 remain until those packages update.
+  scran for the replaced functions.
+- batchelor 1.28's `mnnCorrect()` still calls deprecated scuttle functions.
+  `runMNNCorrect()` muffles only `deprecatedWarning`s raised during that
+  call, with a comment saying to remove it once batchelor updates, so that
+  the examples pass R CMD check. decontX 1.10 (Bioc 3.23 only) still warns.
 - singleCellTK now maintains small numerical routines (QC metrics,
   Wilcoxon test) that scuttle and scran used to provide. They are short
   and tested, but they are ours to fix.

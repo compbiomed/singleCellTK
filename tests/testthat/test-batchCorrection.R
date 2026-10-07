@@ -83,3 +83,8 @@ if (isTRUE(reticulate::py_available(initialize = FALSE))) {
     })
   }
 }
+
+test_that(desc = "runMNNCorrect hides batchelor's internal deprecations", {
+  expect_no_warning(runMNNCorrect(inSCE = sceBatches, assayName = "MNN2"),
+                    class = "deprecatedWarning")
+})
