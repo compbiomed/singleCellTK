@@ -4209,7 +4209,7 @@ shinyServer(function(input, output, session) {
       if (input$celdafeatureselect == "None"){
         vals$counts <- selectFeatures(vals$counts, minCount = input$celdarowcountsmin,
                                       minCell = input$celdacolcountsmin, useAssay = input$celdaassayselect)
-      }else if(input$celdafeatureselect == "runSeuratFindHVG"){
+      }else if(input$celdafeatureselect == "SeuratFindHVG"){
         vals$counts <- runSeuratNormalizeData(vals$counts, useAssay = input$celdaassayselect)
         vals$counts <- runSeuratFindHVG(vals$counts, useAssay = "seuratNormData",
                                         method = input$celdaseurathvgmethod, hvgNumber = input$celdafeaturenum)
