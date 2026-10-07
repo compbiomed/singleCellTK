@@ -249,9 +249,10 @@ descriptionSoupX <- function() {
             returning cell-specific estimation.",
         clustering = "Clustering is required for SoupX algorithm. It will be 
             performed if users do not provide the label as input. 
-            `quickCluster()` method from package 
-            [scran](https://rdrr.io/bioc/scran/man/quickCluster.html) is adopted
-            for this purpose. `soupX_clusters` is the resulting cluster 
+            The steps of the `quickCluster()` method from package 
+            [scran](https://rdrr.io/bioc/scran/man/quickCluster.html) are
+            followed for this purpose, computed with the scrapper and bluster
+            packages. `soupX_clusters` is the resulting cluster 
             assignment, which can also be labeled on the plot. ",
         plotSoupXResults = "The wrapper function `plotSoupXResult` can be 
             used to plot the QC outputs from the SoupX algorithm. Plots includes
