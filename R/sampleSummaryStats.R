@@ -197,7 +197,10 @@ sampleSummaryStats <- function(inSCE,
     samples <- unique(sample)
 
     if(any(!c("sum", "detected") %in% colnames(SummarizedExperiment::colData(inSCE)))){
-        inSCE <- scater::addPerCellQC(inSCE)
+        qcMetrics <- .perCellQCMetrics(inSCE, useAssay = "counts",
+                                       useAltExps = TRUE)
+        SummarizedExperiment::colData(inSCE) <- cbind(
+            SummarizedExperiment::colData(inSCE), qcMetrics)
     }
 
     # if(simple == FALSE){

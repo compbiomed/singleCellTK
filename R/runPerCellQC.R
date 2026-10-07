@@ -301,14 +301,13 @@ runPerCellQC <- function(inSCE,
   colData(inSCE)$percent.top_500 <- NULL
   colData(inSCE)$total <- NULL
     
-  inSCE <- scater::addPerCellQC(x = inSCE,
-                                exprs_values = useAssay,
-                                subsets = geneSets,
-                                percent_top = percent_top,
-                                use_altexps = use_altexps,
-                                flatten = flatten,
-                                detection_limit = detectionLimit,
-                                BPPARAM = BPPARAM)
+  qcMetrics <- .perCellQCMetrics(inSCE, useAssay = useAssay,
+                                 subsets = geneSets,
+                                 percentTop = percent_top,
+                                 useAltExps = use_altexps,
+                                 flatten = flatten,
+                                 detectionLimit = detectionLimit)
+  colData(inSCE) <- cbind(colData(inSCE), qcMetrics)
 
   ## rename mito gene columns in colData(inSCE)
   names(colData(inSCE)) <- gsub('subsets_mito', 'mito', names(colData(inSCE)))
@@ -316,7 +315,7 @@ runPerCellQC <- function(inSCE,
   argsList <- argsList[!names(argsList) %in% ("BPPARAM")]
   metadata(inSCE)$sctk$runPerCellQC$all_cells <- argsList[-1]
   metadata(inSCE)$sctk$runPerCellQC$all_cells$packageVersion <- 
-    utils::packageDescription("scran")$Version
+    utils::packageDescription("singleCellTK")$Version
 
   if(is.null(geneSets)){
     geneSets <- as.character(geneSets)
@@ -324,4 +323,143 @@ runPerCellQC <- function(inSCE,
   metadata(inSCE)$sctk$runPerCellQC$all_cells$geneSets <- geneSets
 
   return(inSCE)
+}
+
+# Per-cell QC metrics with the same columns and values as
+# scuttle::perCellQCMetrics(), which is deprecated: total counts, detected
+# features, percent of counts in the top N features, the same three metrics
+# for each subset of features and each alternative experiment, and the total
+# over the main and alternative experiments. Returns a DataFrame with one row
+# per cell, nested like scuttle's when flatten = FALSE.
+.perCellQCMetrics <- function(inSCE, useAssay = "counts", subsets = NULL,
+                              percentTop = integer(0), useAltExps = FALSE,
+                              flatten = TRUE, detectionLimit = 0,
+                              chunkSize = 5000) {
+  percentTop <- sort(as.integer(percentTop))
+  if (isTRUE(useAltExps)) {
+    altNames <- SingleCellExperiment::altExpNames(inSCE)
+  } else if (is.null(useAltExps) || isFALSE(useAltExps)) {
+    altNames <- character(0)
+  } else {
+    altNames <- SingleCellExperiment::altExpNames(inSCE)[useAltExps]
+  }
+  if (is.null(subsets)) subsets <- list()
+
+  main <- .countMetrics(assay(inSCE, useAssay), detectionLimit, percentTop,
+                        subsets, chunkSize)
+  libSize <- main$sum
+  altMetrics <- lapply(altNames, function(name) {
+    alt <- SingleCellExperiment::altExp(inSCE, name)
+    .countMetrics(assay(alt, useAssay), detectionLimit, integer(0), list(),
+                  chunkSize)
+  })
+  total <- libSize + Reduce(`+`, lapply(altMetrics, `[[`, "sum"),
+                            numeric(length(libSize)))
+
+  cells <- colnames(inSCE)
+  topPercent <- main$top / libSize * 100
+  colnames(topPercent) <- as.character(percentTop)
+  subsetDF <- S4Vectors::make_zero_col_DFrame(ncol(inSCE))
+  for (name in names(subsets)) {
+    subsetDF[[name]] <- S4Vectors::DataFrame(
+      sum = main$subsets[[name]]$sum,
+      detected = main$subsets[[name]]$detected,
+      percent = main$subsets[[name]]$sum / libSize * 100)
+  }
+  altDF <- S4Vectors::make_zero_col_DFrame(ncol(inSCE))
+  for (i in seq_along(altNames)) {
+    altDF[[altNames[i]]] <- S4Vectors::DataFrame(
+      sum = altMetrics[[i]]$sum,
+      detected = altMetrics[[i]]$detected,
+      percent = altMetrics[[i]]$sum / total * 100)
+  }
+  out <- S4Vectors::DataFrame(sum = libSize, detected = main$detected,
+                              row.names = cells)
+  out$percent.top <- topPercent
+  out$subsets <- subsetDF
+  out$altexps <- altDF
+  out$total <- total
+  if (isTRUE(flatten)) out <- .flattenQCMetrics(out)
+  out
+}
+
+# Column sums, detected counts, top-N sums, and per-subset sums and detected
+# counts of a features x cells matrix, processed in column chunks so that
+# sparse and DelayedArray inputs are never fully densified.
+.countMetrics <- function(mat, detectionLimit, percentTop, subsets,
+                          chunkSize) {
+  nCells <- ncol(mat)
+  sums <- numeric(nCells)
+  detected <- numeric(nCells)
+  top <- matrix(0, nrow = nCells, ncol = length(percentTop))
+  subsetIndex <- lapply(subsets, function(s) {
+    idx <- seq_len(nrow(mat))
+    names(idx) <- rownames(mat)
+    unname(idx[s])
+  })
+  subsetSums <- lapply(subsets, function(s) numeric(nCells))
+  subsetDetected <- lapply(subsets, function(s) numeric(nCells))
+  for (start in seq(1, nCells, by = chunkSize)) {
+    cols <- seq(start, min(start + chunkSize - 1, nCells))
+    chunk <- methods::as(mat[, cols, drop = FALSE], "CsparseMatrix")
+    chunk <- methods::as(chunk, "dMatrix")
+    sums[cols] <- Matrix::colSums(chunk)
+    detected[cols] <- Matrix::colSums(chunk > detectionLimit)
+    if (length(percentTop) > 0) {
+      top[cols, ] <- .topSums(chunk, percentTop)
+    }
+    for (name in names(subsets)) {
+      part <- chunk[subsetIndex[[name]], , drop = FALSE]
+      subsetSums[[name]][cols] <- Matrix::colSums(part)
+      subsetDetected[[name]][cols] <- Matrix::colSums(part > detectionLimit)
+    }
+  }
+  subsetMetrics <- lapply(stats::setNames(nm = names(subsets)), function(n) {
+    list(sum = subsetSums[[n]], detected = subsetDetected[[n]])
+  })
+  list(sum = sums, detected = detected, top = top, subsets = subsetMetrics)
+}
+
+# Sum of the largest N values in each column of a sparse matrix, for each N
+# in percentTop. Values that are not stored are zero, so only stored values
+# need sorting unless the matrix has negative values.
+.topSums <- function(chunk, percentTop) {
+  if (any(chunk@x < 0)) {
+    dense <- as.matrix(chunk)
+    return(t(apply(dense, 2, function(v) {
+      v <- sort(v, decreasing = TRUE)
+      vapply(percentTop, function(n) sum(v[seq_len(min(n, length(v)))]),
+             numeric(1))
+    })))
+  }
+  stored <- diff(chunk@p)
+  column <- rep.int(seq_len(ncol(chunk)), stored)
+  ord <- order(column, -chunk@x)
+  values <- chunk@x[ord]
+  rank <- sequence(stored)
+  vapply(percentTop, function(n) {
+    keep <- rank <= n
+    out <- numeric(ncol(chunk))
+    s <- rowsum(values[keep], column[ord][keep])
+    out[as.integer(rownames(s))] <- s[, 1]
+    out
+  }, numeric(ncol(chunk)))
+}
+
+# Flatten nested QC metrics into scuttle's column names, for example
+# percent.top_50, subsets_mito_sum, and altexps_ERCC_percent.
+.flattenQCMetrics <- function(qc) {
+  out <- qc[, c("sum", "detected"), drop = FALSE]
+  top <- qc$percent.top
+  for (n in colnames(top)) out[[paste0("percent.top_", n)]] <- top[, n]
+  for (group in c("subsets", "altexps")) {
+    nested <- qc[[group]]
+    for (name in colnames(nested)) {
+      for (metric in colnames(nested[[name]])) {
+        out[[paste(group, name, metric, sep = "_")]] <- nested[[name]][[metric]]
+      }
+    }
+  }
+  out$total <- qc$total
+  out
 }
