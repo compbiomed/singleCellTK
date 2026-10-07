@@ -15,3 +15,12 @@
   dimnames(det) <- list(rownames(mat), groupNames)
   list(mean = avg, prop.detected = det)
 }
+
+# Per-cluster mean of a reducedDim, with one row per cluster in factor
+# order (levels for a factor, otherwise sorted values), like reducedDim() of
+# scuttle::aggregateAcrossCells().
+.clusterCentroids <- function(inSCE, clusters, useReducedDim) {
+  emb <- SingleCellExperiment::reducedDim(inSCE, useReducedDim)
+  ids <- factor(clusters)
+  rowsum(emb, ids) / as.vector(table(ids))
+}

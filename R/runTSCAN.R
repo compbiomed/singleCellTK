@@ -164,8 +164,7 @@ runTSCAN <- function(inSCE,
     }
     message(date(), " ... Running TSCAN to estimate pseudotime")
     inSCE <- scran::computeSumFactors(inSCE, clusters = cluster)
-    by.cluster <- scuttle::aggregateAcrossCells(inSCE, ids = cluster)
-    centroids <- SingleCellExperiment::reducedDim(by.cluster, useReducedDim)
+    centroids <- .clusterCentroids(inSCE, cluster, useReducedDim)
     mst <- TSCAN::createClusterMST(centroids, clusters = NULL)
 
     # Map each cell to the closest edge on the MST, reporting also the distance to
@@ -247,9 +246,9 @@ plotTSCANResults <- function(inSCE, useReducedDim = "UMAP") {
 
     results <- getTSCANResults(inSCE, analysisName = "Pseudotime")
     clusters <- colData(inSCE)$TSCAN_clusters
-    by.cluster <- scuttle::aggregateAcrossCells(inSCE, ids = clusters)
-    line.data <- TSCAN::reportEdges(by.cluster, mst = results$mst,
-                                    clusters = NULL, use.dimred = useReducedDim)
+    centroids <- .clusterCentroids(inSCE, clusters, useReducedDim)
+    line.data <- TSCAN::reportEdges(centroids, mst = results$mst,
+                                    clusters = NULL)
 
     scater::plotReducedDim(inSCE, dimred = useReducedDim,
                            colour_by = I(colData(inSCE)$TSCAN_pseudotime),
@@ -647,9 +646,9 @@ plotTSCANClusterPseudo <- function(inSCE, useCluster, useReducedDim = "UMAP",
     results <- getTSCANResults(inSCE, analysisName = "Pseudotime")
     combinePlot <- match.arg(combinePlot)
     clusters <- colData(inSCE)$TSCAN_clusters
-    by.cluster <- scuttle::aggregateAcrossCells(inSCE, ids = clusters)
-    line.data <- TSCAN::reportEdges(by.cluster, mst = results$mst,
-                                    clusters = NULL, use.dimred = useReducedDim)
+    centroids <- .clusterCentroids(inSCE, clusters, useReducedDim)
+    line.data <- TSCAN::reportEdges(centroids, mst = results$mst,
+                                    clusters = NULL)
     line.data.sub <- .getClustersLineData(line.data, useCluster)
 
     # Get Branch pseudotime
@@ -802,9 +801,9 @@ plotTSCANDimReduceFeatures <- function(
     results <- getTSCANResults(inSCE, analysisName = "Pseudotime")
     combinePlot <- match.arg(combinePlot)
     clusters <- colData(inSCE)$TSCAN_clusters
-    by.cluster <- scuttle::aggregateAcrossCells(inSCE, ids = clusters)
-    line.data <- TSCAN::reportEdges(by.cluster, mst = results$mst,
-                                    clusters = NULL, use.dimred = useReducedDim)
+    centroids <- .clusterCentroids(inSCE, clusters, useReducedDim)
+    line.data <- TSCAN::reportEdges(centroids, mst = results$mst,
+                                    clusters = NULL)
     if (!is.null(useCluster)) {
         line.data <- .getClustersLineData(line.data, useCluster)
         inSCE <- inSCE[, clusters %in% useCluster]
