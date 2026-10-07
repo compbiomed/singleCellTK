@@ -29,7 +29,9 @@
 #' @param cluster Prior knowledge of clustering labels on cells. A single
 #' character string for specifying clustering label stored in
 #' \code{colData(inSCE)}, or a character vector with as many elements as cells.
-#' When not supplied, \code{\link[scran]{quickCluster}} method will be applied.
+#' When not supplied, cells are clustered with the steps of
+#' \code{scran::quickCluster} (method "igraph"), computed with scrapper and
+#' bluster.
 #' @param reducedDimName A single character string of the prefix of output
 #' corrected embedding matrix for each sample. Default \code{"SoupX_UMAP_"} when
 #' not using a background, otherwise, \code{"SoupX_bg_UMAP_"}.
@@ -480,11 +482,10 @@ runSoupX <- function(inSCE,
             stop("Invalid cluster specification")
         }
     } else {
-        p <- paste0(date(), " ... Cluster info not supplied. Generating clusters with Scran SNN")
+        p <- paste0(date(), " ... Cluster info not supplied. Generating clusters with SNN graph")
         message(p)
         suppressMessages({
-            c <- scran::quickCluster(inSCE, assay.type = useAssay,
-                                     method = "igraph")
+            c <- .quickClusterRNA(assay(inSCE, useAssay))
             inSCE$SoupX_cluster <- c
         })
         sc <- SoupX::setClusters(sc, stats::setNames(inSCE$SoupX_cluster,
