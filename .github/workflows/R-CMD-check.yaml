@@ -86,6 +86,7 @@ jobs:
           brew install openssl@3
           mkdir -p ~/.R
           echo "LDFLAGS += -L$(brew --prefix openssl@3)/lib" >> ~/.R/Makevars
+          echo "CPPFLAGS += -I$(brew --prefix openssl@3)/include" >> ~/.R/Makevars
         shell: bash
 
       - uses: r-lib/actions/setup-r-dependencies@v2
