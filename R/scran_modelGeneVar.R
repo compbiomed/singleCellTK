@@ -1,7 +1,7 @@
 #' Calculate Variable Genes with modelGeneVar
 #' 
 #' @description Generates and stores variability data in the input 
-#' \linkS4class{SingleCellExperiment} object, using 
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object, using 
 #' \code{\link[scrapper]{modelGeneVariances}}, which replaces the deprecated
 #' \code{scran::modelGeneVar}. The mean, total variance, and biological
 #' component (the residual from the fitted mean-variance trend) of each feature
@@ -10,7 +10,7 @@
 #' 
 #' Also selects a specified number of top HVGs and store the logical selection 
 #' in \code{rowData}. 
-#' @param inSCE A \linkS4class{SingleCellExperiment} object
+#' @param inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object
 #' @param useAssay A character string to specify an assay to compute variable 
 #' features from. Default \code{"logcounts"}.
 #' @return \code{inSCE} updated with variable feature metrics in \code{rowData}

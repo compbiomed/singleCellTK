@@ -30,7 +30,7 @@ plotSoupXResults(
 )
 }
 \arguments{
-\item{inSCE}{A \linkS4class{SingleCellExperiment} object. With
+\item{inSCE}{A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. With
 \code{\link{runSoupX}} already applied.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.

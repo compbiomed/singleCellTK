@@ -14,7 +14,7 @@ runVAM(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{geneSetCollectionName}{Character. The name of the gene set collection
 to use. Default \code{"H"}.}
@@ -40,7 +40,7 @@ squared Mahalanobis distance (or non-central if \code{center = FALSE}).
 Default \code{TRUE}.}
 }
 \value{
-A \linkS4class{SingleCellExperiment} object with VAM metrics stored
+A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with VAM metrics stored
 in \code{reducedDim} as \code{VAM_NameOfTheGeneset_Distance} and
 \code{VAM_NameOfTheGeneset_CDF}.
 }

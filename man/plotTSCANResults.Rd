@@ -7,7 +7,7 @@
 plotTSCANResults(inSCE, useReducedDim = "UMAP")
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{useReducedDim}{Saved dimension reduction name in \code{inSCE} object.
 Required.}

@@ -30,7 +30,7 @@ ad <- NULL
 #' @name sctkPythonInstallConda
 #' @title Installs Python packages into a Conda environment
 #' @description Install all Python packages used in the \code{\link{singleCellTK}} package
-#' using \code{\link{conda_install}} from package \code{\link{reticulate}}. This
+#' using \code{\link[reticulate]{conda_install}} from package \code{\link[reticulate]{reticulate}}. This
 #' will create a new Conda environment with the name \code{envname} if not already present.
 #' Note that Anaconda or Miniconda already need to be installed on the local system.
 #' @param envname Character. Name of the conda environment to create.
@@ -42,16 +42,16 @@ ad <- NULL
 #' @param pipIgnoreInstalled Boolean. Ignore installed versions when using pip. This is TRUE by default so that specific package versions can be installed even if they are downgrades.
 #'        The FALSE option is useful for situations where you don't want a pip install to attempt an overwrite of a conda binary package (e.g. SciPy on Windows which is very difficult
 #'        to install via pip due to compilation requirements).
-#' @param pythonVersion Passed to \code{python_version} variable in \code{\link{conda_install}}. Default NULL.
-#' @param ... Other parameters to pass to \code{\link{conda_install}}.
+#' @param pythonVersion Passed to \code{python_version} variable in \code{\link[reticulate]{conda_install}}. Default NULL.
+#' @param ... Other parameters to pass to \code{\link[reticulate]{conda_install}}.
 #' @return None. Installation of Conda environment.
 #' @examples
 #' \dontrun{
 #' sctkPythonInstallConda(envname = "sctk-reticulate")
 #' }
-#' @seealso See \code{\link{conda_create}} for more information on creating a Conda environment.
-#' See \code{\link{conda_install}} for more description of the installation parameters.
-#' See \url{https://rstudio.github.io/reticulate/} for more information on package \code{\link{reticulate}}.
+#' @seealso See \code{\link[reticulate]{conda_create}} for more information on creating a Conda environment.
+#' See \code{\link[reticulate]{conda_install}} for more description of the installation parameters.
+#' See \url{https://rstudio.github.io/reticulate/} for more information on package \code{\link[reticulate]{reticulate}}.
 #' See \code{\link[singleCellTK]{selectSCTKConda}} for reloading the Conda environment if R is restarted without
 #' going through the whole installation process again.
 #' See \url{https://docs.conda.io/en/latest/} for more information on Conda environments.
@@ -88,7 +88,7 @@ sctkPythonInstallConda <- function(envname = "sctk-reticulate",
 #' @name sctkPythonInstallVirtualEnv
 #' @title Installs Python packages into a virtual environment
 #' @description Install all Python packages used in the \code{\link{singleCellTK}} package
-#' using \code{\link{virtualenv_install}} from package \code{\link{reticulate}}. This
+#' using \code{\link[reticulate]{virtualenv_install}} from package \code{\link[reticulate]{reticulate}}. This
 #' will create a new virtual environment with the name \code{envname} if not already present.
 #' @param envname Character. Name of the virtual environment to create.
 #' @param packages Character Vector. List of packages to install.
@@ -99,9 +99,9 @@ sctkPythonInstallConda <- function(envname = "sctk-reticulate",
 #' \dontrun{
 #' sctkPythonInstallVirtualEnv(envname = "sctk-reticulate")
 #' }
-#' @seealso See \code{\link{virtualenv_create}} for more information on creating a Conda environment.
-#' See \code{\link{virtualenv_install}} for more description of the installation parameters.
-#' See \url{https://rstudio.github.io/reticulate/} for more information on package \code{\link{reticulate}}.
+#' @seealso See \code{\link[reticulate]{virtualenv_create}} for more information on creating a Conda environment.
+#' See \code{\link[reticulate]{virtualenv_install}} for more description of the installation parameters.
+#' See \url{https://rstudio.github.io/reticulate/} for more information on package \code{\link[reticulate]{reticulate}}.
 #' See \code{\link[singleCellTK]{selectSCTKVirtualEnvironment}} for reloading the virtual environment if R is restarted without
 #' going through the whole installation process again.
 #' @export
@@ -132,12 +132,12 @@ sctkPythonInstallVirtualEnv <- function(envname = "sctk-reticulate",
 #' sctkPythonInstallConda(envname = "sctk-reticulate", selectConda = FALSE)
 #' selectSCTKConda(envname = "sctk-reticulate")
 #' }
-#' @seealso \code{\link[reticulate]{conda-tools}} for more information on using Conda environments with package \code{\link{reticulate}}.
-#' See \url{https://rstudio.github.io/reticulate/} for more information on package \code{\link{reticulate}}.
+#' @seealso \code{\link[reticulate]{conda-tools}} for more information on using Conda environments with package \code{\link[reticulate]{reticulate}}.
+#' See \url{https://rstudio.github.io/reticulate/} for more information on package \code{\link[reticulate]{reticulate}}.
 #' @export
 #' @seealso See \code{\link[singleCellTK]{sctkPythonInstallConda}} for installation of Python modules into a Conda environment.
-#' See\code{\link[reticulate]{conda-tools}} for more information on using Conda environments with package \code{\link{reticulate}}.
-#' See \url{https://rstudio.github.io/reticulate/} for more information on package \code{\link{reticulate}}.
+#' See\code{\link[reticulate]{conda-tools}} for more information on using Conda environments with package \code{\link[reticulate]{reticulate}}.
+#' See \url{https://rstudio.github.io/reticulate/} for more information on package \code{\link[reticulate]{reticulate}}.
 #' See \url{https://docs.conda.io/en/latest/} for more information on Conda environments.
 selectSCTKConda <- function(envname = "sctk-reticulate") {
   condaList <- reticulate::conda_list()
@@ -169,8 +169,8 @@ selectSCTKConda <- function(envname = "sctk-reticulate") {
 #' selectSCTKVirtualEnvironment(envname = "sctk-reticulate")
 #' }
 #' @seealso See \code{\link[singleCellTK]{sctkPythonInstallVirtualEnv}} for installation of Python modules into a virtual environment.
-#' See\code{\link[reticulate]{virtualenv-tools}} for more information on using virtual environments with package \code{\link{reticulate}}.
-#' See \url{https://rstudio.github.io/reticulate/} for more information on package \code{\link{reticulate}}.
+#' See\code{\link[reticulate]{virtualenv-tools}} for more information on using virtual environments with package \code{\link[reticulate]{reticulate}}.
+#' See \url{https://rstudio.github.io/reticulate/} for more information on package \code{\link[reticulate]{reticulate}}.
 #' @export
 selectSCTKVirtualEnvironment <- function(envname = "sctk-reticulate") {
   res <- reticulate::virtualenv_list()

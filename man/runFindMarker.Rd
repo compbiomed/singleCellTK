@@ -36,7 +36,7 @@ findMarkerDiffExp(
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
+\item{inSCE}{\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.}
 
 \item{useAssay}{character. A string specifying which assay to use for the
 MAST calculations. Default \code{"logcounts"}.}
@@ -81,7 +81,7 @@ treated as expressed when calculating cluster/control expression percentage.
 Default \code{0}.}
 }
 \value{
-The input \linkS4class{SingleCellExperiment} object with
+The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with
 \code{metadata(inSCE)$findMarker} updated with a data.table of the up-
 regulated DEGs for each cluster.
 }

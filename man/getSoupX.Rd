@@ -16,7 +16,7 @@ getSoupX(inSCE, sampleID = NULL, background = FALSE)
 \S4method{getSoupX}{SingleCellExperiment}(inSCE, sampleID, background = FALSE) <- value
 }
 \arguments{
-\item{inSCE}{A \linkS4class{SingleCellExperiment} object. For getter method,
+\item{inSCE}{A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. For getter method,
 \code{\link{runSoupX}} must have been already applied.}
 
 \item{sampleID}{Character vector. For getter method, the samples that should

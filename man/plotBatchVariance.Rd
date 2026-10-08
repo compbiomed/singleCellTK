@@ -16,7 +16,7 @@ plotBatchVariance(
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
+\item{inSCE}{\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.}
 
 \item{useAssay}{A single character. The name of the assay that stores the
 value to plot. For \code{useReddim} and \code{useAltExp} also. Default

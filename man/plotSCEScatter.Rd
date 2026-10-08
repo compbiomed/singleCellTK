@@ -45,7 +45,7 @@ components or a variable with saved results. Required.}
 \item{annotation}{Desired vector within the slot used for plotting. Default NULL.}
 
 \item{reducedDimName}{saved dimension reduction name in the
-\linkS4class{SingleCellExperiment} object.}
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{slot}{Desired slot of SingleCellExperiment used for plotting. Possible
 options: "assays", "colData", "metadata", "reducedDims". Default NULL.}

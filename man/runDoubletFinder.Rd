@@ -19,7 +19,7 @@ runDoubletFinder(
 )
 }
 \arguments{
-\item{inSCE}{inSCE A \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{sample}{Character vector or colData variable name. Indicates which 
 sample each cell belongs to. Default \code{NULL}.}
@@ -52,7 +52,7 @@ which adjusts the number of clusters determined via the algorithm. Default
 DoubletFinder. Default \code{FALSE}.}
 }
 \value{
-\linkS4class{SingleCellExperiment} object containing the
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object containing the
 \code{doublet_finder_doublet_score} variable in \code{colData} slot.
 }
 \description{

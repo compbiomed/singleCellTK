@@ -24,7 +24,7 @@ plotEmptyDropsResults(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results from
 \code{\link{runEmptyDrops}}. Required.}
 
@@ -77,7 +77,7 @@ list of .ggplot objects
 \description{
 A wrapper function which visualizes outputs from the
 \code{\link{runEmptyDrops}} function stored in the \code{colData} slot of the
-\linkS4class{SingleCellExperiment} object.
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 }
 \examples{
 data(scExample, package = "singleCellTK")

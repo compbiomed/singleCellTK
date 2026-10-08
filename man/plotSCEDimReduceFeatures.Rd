@@ -40,7 +40,7 @@ plotSCEDimReduceFeatures(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results. Required.}
 
 \item{features}{Name of feature stored in assay of SingleCellExperiment
@@ -49,7 +49,7 @@ object.}
 \item{feature}{Deprecated, use `features` instead.}
 
 \item{reducedDimName}{saved dimension reduction name in the
-\linkS4class{SingleCellExperiment} object. Required.}
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Required.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 

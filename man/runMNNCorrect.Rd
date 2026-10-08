@@ -20,7 +20,7 @@ runMNNCorrect(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
 batch correction. Default \code{"logcounts"}.}
@@ -30,7 +30,7 @@ annotates the batches of each cell; or a vector/factor with the same length
 as the number of cells. Default \code{"batch"}.}
 
 \item{assayName}{A single characeter. The name for the corrected assay. Will
-be saved to \code{\link{assay}}. Default
+be saved to \code{\link[SummarizedExperiment]{assay}}. Default
 \code{"MNN"}.}
 
 \item{k}{An integer scalar specifying the number of nearest neighbors to
@@ -55,11 +55,11 @@ Also". Default \code{TRUE}.}
 \item{varAdj}{A logical scalar indicating whether variance adjustment should
 be performed on the correction vectors. See "See Also". Default \code{TRUE}.}
 
-\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying whether
+\item{BPPARAM}{A \link[BiocParallel:BiocParallelParam-class]{BiocParallelParam} object specifying whether
 the PCA and nearest-neighbor searches should be parallelized.}
 }
 \value{
-The input \linkS4class{SingleCellExperiment} object with
+The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with
 \code{assay(inSCE, assayName)} updated.
 }
 \description{

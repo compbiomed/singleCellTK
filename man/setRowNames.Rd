@@ -10,7 +10,7 @@ setRowNames(x, rowNames, dedup = TRUE)
 \item{x}{Input object where the rownames will be modified.}
 
 \item{rowNames}{Character vector of the rownames. If \code{x} is an
-\linkS4class{SingleCellExperiment} object, a single character specifying a
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object, a single character specifying a
 column in \code{rowData(x)}.}
 
 \item{dedup}{Logical. Whether to deduplicate the specified rowNames. Default

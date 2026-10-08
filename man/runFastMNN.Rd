@@ -22,7 +22,7 @@ runFastMNN(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
 batch correction. Default \code{"logcounts"}.}
@@ -63,11 +63,11 @@ produce. See "See Also". Default \code{50}.}
 \item{weights}{The weighting scheme to use. Passed to
 \code{\link[batchelor]{multiBatchPCA}}. Default \code{NULL}.}
 
-\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying whether
+\item{BPPARAM}{A \link[BiocParallel:BiocParallelParam-class]{BiocParallelParam} object specifying whether
 the SVD should be parallelized.}
 }
 \value{
-The input \linkS4class{SingleCellExperiment} object with
+The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with
 \code{reducedDim(inSCE, reducedDimName)} updated.
 }
 \description{

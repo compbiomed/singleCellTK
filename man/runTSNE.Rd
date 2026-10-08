@@ -51,7 +51,7 @@ getTSNE(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{useReducedDim}{The low dimension representation to use for UMAP
 computation. Default \code{"PCA"}.}
@@ -113,7 +113,7 @@ Default \code{NULL} will use global seed in use by the R environment.}
 \item{...}{Other parameters to be passed to \code{runTSNE}}
 }
 \value{
-A \linkS4class{SingleCellExperiment} object with tSNE computation
+A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with tSNE computation
 updated in \code{reducedDim(inSCE, reducedDimName)}.
 }
 \description{

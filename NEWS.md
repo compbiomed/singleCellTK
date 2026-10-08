@@ -1,3 +1,9 @@
+Changes in Version 2.23.6 (2026-10-08)
+================================================================================
+* Help pages link to other packages' topics with package anchors (for example
+  \link[SummarizedExperiment]{colData}), as R CMD check and Bioconductor now
+  require. No change to functionality.
+
 Changes in Version 2.23.5 (2026-10-08)
 ================================================================================
 * runFastMNN() hides deprecation warnings raised inside batchelor's

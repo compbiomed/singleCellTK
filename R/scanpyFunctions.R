@@ -12,7 +12,7 @@
 #' @param scanpyAssaySlot Selected assay from annData object. Default
 #' \code{"X"}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
-#'  data from annData object appended to the \link{assay} slot.
+#'  data from annData object appended to the \link[SummarizedExperiment]{assay} slot.
 #' @importFrom SummarizedExperiment assay<-
 #' @noRd
 .updateAssaySCEFromScanpy <- function(inSCE,

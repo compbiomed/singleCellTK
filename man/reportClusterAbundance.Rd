@@ -19,10 +19,10 @@ reportClusterAbundance(
 object.}
 
 \item{cluster}{A single \code{character}, specifying the name to store the
-cluster label in \code{\link{colData}}.}
+cluster label in \code{\link[SummarizedExperiment]{colData}}.}
 
 \item{variable}{A single \code{character}, specifying the name to store the
-phenotype labels in \code{\link{colData}}.}
+phenotype labels in \code{\link[SummarizedExperiment]{colData}}.}
 
 \item{output_dir}{name of the output directory to save the rendered file. If
 \code{NULL} the file is stored to the current working directory.

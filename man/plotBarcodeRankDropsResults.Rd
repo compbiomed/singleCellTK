@@ -16,7 +16,7 @@ plotBarcodeRankDropsResults(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results from
 \code{\link{runBarcodeRankDrops}}. Required.}
 
@@ -42,7 +42,7 @@ list of .ggplot objects
 \description{
 A wrapper function which visualizes outputs from the
 \code{runBarcodeRankDrops} function stored in the \code{metadata} slot of
-the \linkS4class{SingleCellExperiment} object.
+the \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 }
 \examples{
 data(scExample, package = "singleCellTK")

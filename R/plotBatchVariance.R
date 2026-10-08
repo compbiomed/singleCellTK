@@ -75,7 +75,7 @@
 #' methods are performed in advance, this function will automatically detect
 #' necessary input. Otherwise, users can also customize the input. Future
 #' improvement might include solution to reduce redundant UMAP calculation.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.
 #' @param corrMat A single character indicating the name of the corrected matrix.
 #' @param batch A single character. The name of batch annotation column in
 #' \code{colData(inSCE)}.
@@ -208,7 +208,7 @@ plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
 #' much less than batch variation, then the batches are likely to be confounded
 #' by the conditions.
 #'
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.
 #' @param useAssay A single character. The name of the assay that stores the
 #' value to plot. For \code{useReddim} and \code{useAltExp} also. Default
 #' \code{NULL}.
@@ -329,7 +329,7 @@ plotBatchVariance <- function(inSCE, useAssay = NULL, useReddim = NULL,
 }
 
 #' Plot mean feature value in each batch of a SingleCellExperiment object
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.
 #' @param useAssay A single character. The name of the assay that stores the
 #' value to plot. For \code{useReddim} and \code{useAltExp} also. Default
 #' \code{NULL}.

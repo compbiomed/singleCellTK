@@ -14,7 +14,7 @@ runBarcodeRankDrops(
 )
 }
 \arguments{
-\item{inSCE}{A \linkS4class{SingleCellExperiment} object. Must contain a raw 
+\item{inSCE}{A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Must contain a raw 
 counts matrix before empty droplets have been removed.}
 
 \item{sample}{Character vector or colData variable name. Indicates which 
@@ -33,16 +33,16 @@ Default \code{NULL}.}
 \code{20}.}
 }
 \value{
-A \linkS4class{SingleCellExperiment} object with the
+A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with the
 \link[DropletUtils]{barcodeRanks} output table appended to the
-\link{colData} slot. The columns include
+\link[SummarizedExperiment]{colData} slot. The columns include
 \code{dropletUtils_BarcodeRank_Knee} and 
 \code{dropletUtils_barcodeRank_inflection}. Please refer to the documentation
 of \link[DropletUtils]{barcodeRanks} for details.
 }
 \description{
 Run \link[DropletUtils]{barcodeRanks} on a count matrix
-provided in a \linkS4class{SingleCellExperiment} object. Distinguish between 
+provided in a \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Distinguish between 
 droplets containing cells and ambient RNA in a droplet-based single-cell RNA 
 sequencing experiment.
 }

@@ -47,7 +47,7 @@ plotSCEHeatmap(
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
+\item{inSCE}{\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.}
 
 \item{useAssay}{character. A string indicating the assay name that
 provides the expression level to plot. Only for \code{plotSCEHeatmap}.}

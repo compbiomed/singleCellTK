@@ -6,7 +6,7 @@
 #'  is automatically thresholded to generate \code{scrublet_call}, a boolean
 #'  array that is \code{TRUE} for predicted doublets and \code{FALSE}
 #'  otherwise.
-#' @param inSCE A \linkS4class{SingleCellExperiment} object.
+#' @param inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param sample Character vector or colData variable name. Indicates which 
 #' sample each cell belongs to. Default \code{NULL}.
 #' @param useAssay  A string specifying which assay in the SCE to use. Default 
@@ -75,8 +75,8 @@
 #' \code{useApproxNeighbors} is \code{TRUE}) or 
 #' \href{https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.NearestNeighbors.html}{sklearn.neighbors.NearestNeighbors}
 #' (if \code{useApproxNeighbors} is  \code{FALSE}). 
-#' @return A \linkS4class{SingleCellExperiment} object with
-#' \code{scrub_doublets} output appended to the \link{colData} slot. The columns
+#' @return A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with
+#' \code{scrub_doublets} output appended to the \link[SummarizedExperiment]{colData} slot. The columns
 #' include \code{scrublet_score} and \code{scrublet_call}.
 #' @seealso \code{\link{plotScrubletResults}}, \code{\link{runCellQC}}
 #' @examples

@@ -5,7 +5,7 @@
 #' all cells in the specified single cell gene expression matrix. Gene sets
 #' should already be imported and stored in the meta data using functions such
 #' as \link{importGeneSetsFromList} or \link{importGeneSetsFromMSigDB}
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param geneSetCollectionName Character. The name of the gene set collection
 #' to use. Default \code{"H"}.
 #' @param useAssay Character. The name of the assay to use. This assay should
@@ -25,7 +25,7 @@
 #' squared Mahalanobis distance (or non-central if \code{center = FALSE}).
 #' Default \code{TRUE}.
 #' @importFrom methods slot
-#' @return A \linkS4class{SingleCellExperiment} object with VAM metrics stored
+#' @return A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with VAM metrics stored
 #' in \code{reducedDim} as \code{VAM_NameOfTheGeneset_Distance} and
 #' \code{VAM_NameOfTheGeneset_CDF}.
 #' @seealso \link{importGeneSetsFromList}, \link{importGeneSetsFromMSigDB},

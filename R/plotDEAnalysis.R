@@ -1,6 +1,6 @@
 #' Check if the specified MAST result in SingleCellExperiment object is
 #' complete. But does not garantee the biological correctness.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. a
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object. a
 #' differential expression analysis function has to be run in advance.
 #' @param useResult character. A string specifying the \code{analysisName}
 #' used when running a differential expression analysis function.
@@ -36,7 +36,7 @@
 #' Generate violin plot to show the expression of top DEGs
 #' @details Any of the differential expression analysis method from SCTK should
 #' be performed prior to using this function
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.
 #' @param useResult character. A string specifying the \code{analysisName}
 #' used when running a differential expression analysis function.
 #' @param threshP logical. Whether to plot threshold values from adaptive
@@ -147,7 +147,7 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' Create linear regression plot to show the expression the of top DEGs
 #' @details Any of the differential expression analysis method from SCTK should
 #' be performed prior to using this function
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.
 #' @param useResult character. A string specifying the \code{analysisName}
 #' used when running a differential expression analysis function.
 #' @param threshP logical. Whether to plot threshold values from adaptive
@@ -282,7 +282,7 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' wrapped functions of this generic function. Users can set further filters on
 #' the result. A \code{data.frame} object, with variables of \code{Gene},
 #' \code{Log2_FC}, \code{Pvalue}, and \code{FDR}, will be returned.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object, with of the
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object, with of the
 #' singleCellTK DEG method performed in advance.
 #' @param useResult character. A string specifying the \code{analysisName}
 #' used when running a differential expression analysis function.
@@ -348,7 +348,7 @@ getDEGTopTable <- function(inSCE, useResult,
 #' selection while running the analysis called \code{"condition"}, and the
 #' annotations used from \code{colData(inSCE)} while setting the condition and
 #' covariates will also be added.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.
 #' @param useResult character. A string specifying the \code{analysisName}
 #' used when running a differential expression analysis function.
 #' @param doLog Logical scalar. Whether to do \code{log(assay + 1)}
@@ -567,7 +567,7 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 #' Generate volcano plot for DEGs
 #' @details Any of the differential expression analysis method from SCTK should
 #' be performed prior to using this function to generate volcano plots.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.
 #' @param useResult character. A string specifying the \code{analysisName}
 #' used when running a differential expression analysis function.
 #' @param labelTopN Integer, label this number of top DEGs that pass the

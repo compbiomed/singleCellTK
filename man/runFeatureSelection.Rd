@@ -7,7 +7,7 @@
 runFeatureSelection(inSCE, useAssay, method = "vst")
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{useAssay}{Specify the name of the assay that should be used. Should use
 raw counts for \code{"vst"} method, or a normalized assay for other methods.}
@@ -17,7 +17,7 @@ Options include \code{"vst"}, \code{"mean.var.plot"} or \code{"dispersion"}
 from Seurat and \code{"modelGeneVar"} from Scran. Default \code{"vst"}}
 }
 \value{
-The input \linkS4class{SingleCellExperiment} object that contains 
+The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object that contains 
 the computed statistics in the \code{rowData} slot
 }
 \description{

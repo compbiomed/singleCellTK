@@ -9,13 +9,13 @@
 #' a HVG list for downstream use, users should call \code{\link{setTopHVG}} 
 #' after computing the metrics. To get the names of the variable features, users
 #' should call \code{\link{getTopHVG}} function after computing the metrics.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param useAssay Specify the name of the assay that should be used. Should use
 #' raw counts for \code{"vst"} method, or a normalized assay for other methods.
 #' @param method Specify the method to use for variable gene selection.
 #' Options include \code{"vst"}, \code{"mean.var.plot"} or \code{"dispersion"}
 #' from Seurat and \code{"modelGeneVar"} from Scran. Default \code{"vst"}
-#' @return The input \linkS4class{SingleCellExperiment} object that contains 
+#' @return The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object that contains 
 #' the computed statistics in the \code{rowData} slot
 #' @seealso \code{\link{runModelGeneVar}}, \code{\link{runSeuratFindHVG}},
 #' \code{\link{getTopHVG}}, \code{\link{plotTopHVG}}

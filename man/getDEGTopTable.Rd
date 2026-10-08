@@ -18,7 +18,7 @@ getDEGTopTable(
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object, with of the
+\item{inSCE}{\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object, with of the
 singleCellTK DEG method performed in advance.}
 
 \item{useResult}{character. A string specifying the \code{analysisName}

@@ -17,7 +17,7 @@ plotEnrichR(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 EnrichR results. Required.}
 
 \item{analysisName}{A string that identifies the specific analysis to plot.

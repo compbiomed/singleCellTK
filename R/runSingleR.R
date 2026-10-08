@@ -4,10 +4,10 @@
 #' labeling is given. Given a reference dataset of samples (single-cell or bulk)
 #' with known labels, it assigns those labels to new cells from a test dataset
 #' based on similarities in their expression profiles.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object. Required.
 #' @param useAssay character. A string specifying which assay to use for
 #' expression profile identification. Required.
-#' @param useSCERef \linkS4class{SingleCellExperiment} inherited object. An
+#' @param useSCERef \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object. An
 #' optional customized reference dataset. Default \code{NULL}.
 #' @param labelColName A single character. A string specifying the column in
 #' \code{colData(useSCERef)} that stores the cell type labeling. Default

@@ -4,7 +4,7 @@
 #' the top features, and the same metrics for gene sets (such as mitochondrial
 #' genes) and alternative experiments. The metrics and column names are the
 #' same as those of \code{scater::addPerCellQC}, which is deprecated.
-#' @param inSCE A \linkS4class{SingleCellExperiment} object.
+#' @param inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param useAssay A string specifying which assay in the SCE to use. Default
 #' \code{"counts"}.
 #' @param mitoRef Character. The species used to extract mitochondrial genes ID 
@@ -69,7 +69,7 @@
 #' \code{TRUE}.
 #' @param detectionLimit A numeric scalar specifying the lower detection limit
 #' for expression. Default \code{0}
-#' @param BPPARAM A \link{BiocParallelParam} object specifying whether the QC
+#' @param BPPARAM A \link[BiocParallel]{BiocParallelParam} object specifying whether the QC
 #' calculations should be parallelized. Default 
 #' \code{BiocParallel::SerialParam()}.
 #' @details 
@@ -92,7 +92,7 @@
 #'   in this vector will be included in the mitochondrial gene set. 
 #' }
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
-#' cell QC metrics added to the \link{colData} slot. 
+#' cell QC metrics added to the \link[SummarizedExperiment]{colData} slot. 
 #' @seealso
 #' \code{link{plotRunPerCellQCResults}}, \code{\link{runCellQC}}
 #' @examples

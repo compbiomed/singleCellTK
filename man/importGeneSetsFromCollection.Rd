@@ -13,10 +13,10 @@ importGeneSetsFromCollection(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
-\item{geneSetCollection}{A \linkS4class{GeneSetCollection} object. See
-\link{GeneSetCollection} for more details.}
+\item{geneSetCollection}{A \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} object. See
+\link[GSEABase]{GeneSetCollection} for more details.}
 
 \item{collectionName}{Character. Name of collection to add gene sets to.
 If this collection already exists in \code{inSCE}, then these gene sets will
@@ -44,20 +44,20 @@ any matching features. Default \code{TRUE}.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object
 with gene set from \code{collectionName} output stored to the
-\link{metadata} slot.
+\link[S4Vectors]{metadata} slot.
 }
 \description{
 Converts a list of gene sets stored in a
-\linkS4class{GeneSetCollection} object and stores it in the metadata of the
-\linkS4class{SingleCellExperiment} object. These gene sets can be used in
+\link[GSEABase:GeneSetCollection-class]{GeneSetCollection} object and stores it in the metadata of the
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. These gene sets can be used in
 downstream quality control and analysis functions in \link{singleCellTK}.
 }
 \details{
 The gene identifiers in gene sets in the
 \code{GeneSetCollection} will be mapped to the rownames of
 \code{inSCE} using the \code{by} parameter and
-stored in a \linkS4class{GeneSetCollection} object from package
-\link{GSEABase}. This object is stored in
+stored in a \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} object from package
+\link[GSEABase]{GSEABase}. This object is stored in
 \code{metadata(inSCE)$sctk$genesets}, which can be accessed in downstream
 analysis functions such as \link[singleCellTK]{runCellQC}.
 }

@@ -26,7 +26,7 @@ findMarkerTopTable(
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
+\item{inSCE}{\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.}
 
 \item{log2fcThreshold}{Only use DEGs with the absolute values of log2FC
 larger than this value. Default \code{1}}

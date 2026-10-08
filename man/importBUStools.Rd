@@ -43,7 +43,7 @@ files are gzip compressed. Must have length 1 or the same length as
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
 object. Can be one of "Matrix" (as returned by
-\link{readMM} function), or "matrix" (as returned by
+\link[Matrix]{readMM} function), or "matrix" (as returned by
 \link[base]{matrix} function). Default "Matrix".}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as

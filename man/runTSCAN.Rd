@@ -13,7 +13,7 @@ runTSCAN(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{useReducedDim}{Character. A low-dimension representation in
 \code{reducedDims}, will be used for both clustering if \code{cluster} not

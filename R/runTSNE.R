@@ -9,7 +9,7 @@
 #' dimension reduction all automated. Yet we still recommend having the PCA as
 #' input, so that the result can match with the clustering based on the same
 #' input PCA, and will be much faster.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param useReducedDim The low dimension representation to use for UMAP
 #' computation. Default \code{"PCA"}.
 #' @param useAssay Assay to use for tSNE computation. If \code{useAltExp} is
@@ -50,7 +50,7 @@
 #' \code{1}. \code{0} corresponds to using all available cores.
 #' @param seed Random seed for reproducibility of tSNE results.
 #' Default \code{NULL} will use global seed in use by the R environment.
-#' @return A \linkS4class{SingleCellExperiment} object with tSNE computation
+#' @return A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with tSNE computation
 #' updated in \code{reducedDim(inSCE, reducedDimName)}.
 #' @export
 #' @examples

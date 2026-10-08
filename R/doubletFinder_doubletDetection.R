@@ -347,7 +347,7 @@
 #' @title Generates a doublet score for each cell via doubletFinder
 #' @description Uses doubletFinder to determine cells within the dataset
 #'  suspected to be doublets.
-#' @param inSCE inSCE A \linkS4class{SingleCellExperiment} object.
+#' @param inSCE inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param sample Character vector or colData variable name. Indicates which 
 #' sample each cell belongs to. Default \code{NULL}.
 #' @param useAssay  A string specifying which assay in the SCE to use. Default 
@@ -368,7 +368,7 @@
 #' \code{NULL}.
 #' @param verbose Boolean. Wheter to print messages from Seurat and 
 #' DoubletFinder. Default \code{FALSE}.
-#' @return \linkS4class{SingleCellExperiment} object containing the
+#' @return \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object containing the
 #' \code{doublet_finder_doublet_score} variable in \code{colData} slot.
 #' @seealso \code{\link{runCellQC}}, \code{\link{plotDoubletFinderResults}}
 #' @examples

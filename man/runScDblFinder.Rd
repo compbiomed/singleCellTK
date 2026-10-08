@@ -15,7 +15,7 @@ runScDblFinder(
 )
 }
 \arguments{
-\item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{sample}{Character vector or colData variable name. Indicates which
 sample each cell belongs to. Default \code{NULL}.}
@@ -40,7 +40,7 @@ specifying whether the neighbour searches should be parallelized. Default
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with the
-scDblFinder QC outputs added to the \link{colData} slot.
+scDblFinder QC outputs added to the \link[SummarizedExperiment]{colData} slot.
 }
 \description{
 A wrapper function for \link[scDblFinder]{scDblFinder}. Identify
@@ -52,7 +52,7 @@ This function is a wrapper function for
 \link[scDblFinder]{scDblFinder}. \code{runScDblFinder} runs
 \link[scDblFinder]{scDblFinder} for each sample within \code{inSCE}
 iteratively. The resulting doublet scores for all cells will be appended to
-the \code{\link{colData}} of \code{inSCE}.
+the \code{\link[SummarizedExperiment]{colData}} of \code{inSCE}.
 }
 \examples{
 data(scExample, package = "singleCellTK")

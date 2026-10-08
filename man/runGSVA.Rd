@@ -2,7 +2,7 @@
 % Please edit documentation in R/runGSVA.R
 \name{runGSVA}
 \alias{runGSVA}
-\title{Run GSVA analysis on a \linkS4class{SingleCellExperiment} object}
+\title{Run GSVA analysis on a \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object}
 \usage{
 runGSVA(
   inSCE,
@@ -13,7 +13,7 @@ runGSVA(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts"}
 
@@ -29,12 +29,12 @@ to use.}
 \item{...}{Parameters to pass to gsva()}
 }
 \value{
-A \linkS4class{SingleCellExperiment} object with pathway activity 
+A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with pathway activity 
 scores from GSVA stored in \code{reducedDim} as 
 \code{GSVA_geneSetCollectionName_Scores}.
 }
 \description{
-Run GSVA analysis on a \linkS4class{SingleCellExperiment} object
+Run GSVA analysis on a \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object
 }
 \examples{
 data(scExample, package = "singleCellTK")

@@ -17,7 +17,7 @@ runKMeans(
 )
 }
 \arguments{
-\item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{nCenters}{An \code{integer}, the number of centroids (clusters).}
 
@@ -26,7 +26,7 @@ low-dimension representation to perform the clustering algorithm on. Default
 \code{"PCA"}.}
 
 \item{clusterName}{A single \code{character}, specifying the name to store
-the cluster label in \code{\link{colData}}. Default \code{"KMeans_cluster"}.}
+the cluster label in \code{\link[SummarizedExperiment]{colData}}. Default \code{"KMeans_cluster"}.}
 
 \item{nComp}{An \code{integer}. The number of components to use for K-Means.
 Default \code{10}. See Detail.}
@@ -45,13 +45,13 @@ Default \code{12345}.}
 abbreviated. Default \code{"Hartigan-Wong"}.}
 }
 \value{
-The input \linkS4class{SingleCellExperiment} object with
+The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with
 \code{factor} cluster labeling updated in
 \code{colData(inSCE)[[clusterName]]}.
 }
 \description{
 Perform KMeans clustering on a
-\linkS4class{SingleCellExperiment} object, with \code{\link[stats]{kmeans}}.
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object, with \code{\link[stats]{kmeans}}.
 }
 \examples{
 data("mouseBrainSubsetSCE")

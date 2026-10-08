@@ -1,16 +1,16 @@
 #' Helper function for differential expression analysis methods that accepts
 #' multiple ways of conditional subsetting and returns stable index format.
 #' Meanwhile it does all the input checkings.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object. Required.
 #' @param useAssay character. A string specifying which assay to use. Required.
 #' @param useReducedDim character. A string specifying which reducedDim to use
 #' for DE analysis. Usually a pathway analysis result matrix. Set
 #' \code{useAssay} to \code{NULL} when using. Required.
 #' @param index1 Any type of indices that can subset a
-#' \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object by cells. Specifies
 #' which cells are of interests. Default \code{NULL}.
 #' @param index2 Any type of indices that can subset a
-#' \linkS4class{SingleCellExperiment} inherited object by cells. specifies
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object by cells. specifies
 #' the control group against those specified by \code{index1}. If
 #' \code{NULL} when using index specification, \code{index1} cells will be
 #' compared with all other cells. Default \code{NULL}.
@@ -186,7 +186,7 @@
 #' @seealso See \code{\link{plotDEGHeatmap}}, \code{\link{plotDEGRegression}},
 #' \code{\link{plotDEGViolin}} and \code{\link{plotDEGVolcano}} for
 #' visualization method after running DE analysis.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.
 #' @param method Character. Specify which method to use when using
 #' \code{runDEAnalysis()}. Choose from \code{"wilcox"}, \code{"MAST"},
 #' \code{"DESeq2"}, \code{"Limma"}, \code{"ANOVA"}. Default \code{"wilcox"}.
@@ -196,10 +196,10 @@
 #' @param useReducedDim character. A string specifying which reducedDim to use
 #' for DE analysis. Will treat the dimensions as features. Default \code{NULL}.
 #' @param index1 Any type of indices that can subset a
-#' \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object by cells. Specifies
 #' which cells are of interests. Default \code{NULL}.
 #' @param index2 Any type of indices that can subset a
-#' \linkS4class{SingleCellExperiment} inherited object by cells. specifies
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object by cells. specifies
 #' the control group against those specified by \code{index1}. If
 #' \code{NULL} when using index specification, \code{index1} cells will be
 #' compared with all other cells. Default \code{NULL}.
@@ -253,7 +253,7 @@
 #'  groupName2 = "group2", index1 = seq(20), index2 = seq(21,40),
 #'  analysisName = "Limma")
 #'
-#' @return The input \linkS4class{SingleCellExperiment} object, where
+#' @return The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object, where
 #' \code{metadata(inSCE)$diffExp} is updated with a list named by
 #' \code{analysisName}, with elements of:
 #' \item{$groupNames}{the naming of the two conditions}

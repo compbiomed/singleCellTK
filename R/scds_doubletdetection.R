@@ -2,7 +2,7 @@
 #' @description A wrapper function for \link[scds]{cxds}. Annotate
 #' doublets/multiplets using co-expression based approach. Generate a doublet
 #' score for each cell. Infer doublets if \code{estNdbl} is \code{TRUE}.
-#' @param inSCE A \linkS4class{SingleCellExperiment} object.
+#' @param inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param sample Character vector or colData variable name. Indicates which 
 #' sample each cell belongs to. Default \code{NULL}.
 #' @param seed Seed for the random number generator, can be \code{NULL}. Default
@@ -20,8 +20,8 @@
 #' @details When the argument \code{sample} is specified, \link[scds]{cxds} will
 #' be run on cells from each sample separately. If \code{sample = NULL}, then 
 #' all cells will be processed together.
-#' @return A \linkS4class{SingleCellExperiment} object with \link[scds]{cxds} 
-#' output appended to the \link{colData} slot. The columns include 
+#' @return A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with \link[scds]{cxds} 
+#' output appended to the \link[SummarizedExperiment]{colData} slot. The columns include 
 #' \emph{cxds_score} and optionally \emph{cxds_call}. 
 #' @seealso \code{\link[scds]{cxds}}, \code{\link{plotCxdsResults}}, 
 #' \code{\link{runCellQC}}
@@ -128,7 +128,7 @@ runCxds <- function(
 #'  doublets/multiplets using a binary classification approach to discriminate
 #'  artificial doublets from original data. Generate a doublet
 #'  score for each cell. Infer doublets if \code{estNdbl} is \code{TRUE}.
-#' @param inSCE A \linkS4class{SingleCellExperiment} object.
+#' @param inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param sample Character vector or colData variable name. Indicates which 
 #' sample each cell belongs to. Default \code{NULL}.
 #' @param seed Seed for the random number generator, can be \code{NULL}. Default
@@ -146,8 +146,8 @@ runCxds <- function(
 #' \code{FALSE}.
 #' @param useAssay  A string specifying which assay in \code{inSCE} to use.
 #' Default \code{"counts"}
-#' @return A \linkS4class{SingleCellExperiment} object with \link[scds]{bcds} 
-#' output appended to the \link{colData} slot. The columns include 
+#' @return A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with \link[scds]{bcds} 
+#' output appended to the \link[SummarizedExperiment]{colData} slot. The columns include 
 #' \emph{bcds_score} and optionally \emph{bcds_call}. Please refer to the 
 #' documentation of \link[scds]{bcds} for details.
 #' @details When the argument \code{sample} is specified, \link[scds]{bcds} will
@@ -280,7 +280,7 @@ runBcds <- function(
 #' @param useAssay  A string specifying which assay in the SCE to use.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{cxds_bcds_hybrid} output appended to the
-#'  \link{colData} slot. The columns include
+#'  \link[SummarizedExperiment]{colData} slot. The columns include
 #'  \emph{hybrid_score} and optionally \emph{hybrid_call}.
 #'  Please refer to the documentation of \link[scds]{cxds_bcds_hybrid} for
 #'  details.

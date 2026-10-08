@@ -262,10 +262,10 @@
 #'  optimus_v1.4.0.
 #' @param class Character. The class of the expression matrix stored in the SCE
 #'  object. Can be one of "Matrix" (as returned by
-#'  \link{readMM} function), or "matrix" (as returned by
+#'  \link[Matrix]{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link{DelayedArray} object or not. Default \code{FALSE}.
+#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{FALSE}.
 #' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
 #'  \code{TRUE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object

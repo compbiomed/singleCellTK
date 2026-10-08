@@ -42,7 +42,7 @@ Default TRUE.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
  '' added to the
- \link{colData} slot. Additionally, the
+ \link[SummarizedExperiment]{colData} slot. Additionally, the
 decontaminated counts will be added as an assay called 'decontXCounts'.
 }
 \description{

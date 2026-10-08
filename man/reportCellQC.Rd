@@ -29,7 +29,7 @@ the filtered count matrix with the output from runCellQC function}
 \item{studyDesign}{Character. The description of the data set and experiment design. It would be shown at the top of QC HTML report. Default is NULL.}
 
 \item{useReducedDim}{Character. The name of the saved dimension reduction slot including cells
-from all samples in then\linkS4class{SingleCellExperiment} object, Default is NULL}
+from all samples in then\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object, Default is NULL}
 }
 \value{
 .html file

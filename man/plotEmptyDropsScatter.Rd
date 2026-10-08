@@ -28,7 +28,7 @@ plotEmptyDropsScatter(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results from
 \code{\link{runEmptyDrops}}. Required.}
 
@@ -89,7 +89,7 @@ a ggplot object of the scatter plot.
 \description{
 A plotting function which visualizes outputs from the
 \code{\link{runEmptyDrops}} function stored in the colData slot of the
-\linkS4class{SingleCellExperiment} object via scatter plots.
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object via scatter plots.
 }
 \examples{
 data(scExample, package = "singleCellTK")

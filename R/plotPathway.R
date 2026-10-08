@@ -2,7 +2,7 @@
 #' @details Pathway analysis results will be stored as matrices in
 #' \code{reducedDims} slot of \code{inSCE}. This function lists the result names
 #' stored in \code{metadata} slot when analysis is performed.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param stopIfNone Whether to stop and raise an error if no results found. If
 #' \code{FALSE}, will return an empty character vector.
 #' @param verbose Show warning if no result found. Default \code{FALSE}
@@ -30,7 +30,7 @@ getPathwayResultNames <- function(inSCE, stopIfNone = FALSE, verbose = FALSE){
 #' Generate violin plots for pathway analysis results
 #' @details \code{runGSVA()} or \code{runVAM()} should be applied in advance of
 #' using this function. Users can group the data by specifying \code{groupby}.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object. With
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. With
 #' \code{runGSVA()} or \code{runVAM()} applied in advance.
 #' @param resultName A single character of the name of a score matrix, which
 #' should be found in \code{getPathwayResultNames(inSCE)}.

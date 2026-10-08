@@ -24,7 +24,7 @@ plotPathway(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object. With
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. With
 \code{runGSVA()} or \code{runVAM()} applied in advance.}
 
 \item{resultName}{A single character of the name of a score matrix, which

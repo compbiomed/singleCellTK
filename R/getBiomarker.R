@@ -4,7 +4,7 @@
 #' @param gene gene list
 #' @param binary "Binary" for binary expression or "Continuous" for a gradient.
 #' Default: "Binary"
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param useAssay Indicates which assay to use. The default is "counts".
 #' @param featureLocation Indicates which column name of rowData to query gene.
 #' @param featureDisplay Indicates which column name of rowData to use

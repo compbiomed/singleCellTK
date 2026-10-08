@@ -14,7 +14,7 @@ retrieveSCEIndex(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object. Required}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Required}
 
 \item{IDs}{Character vector of identifiers for features or cells to find in
 \code{rowData} or \code{colData} of \code{inSCE}}
@@ -40,7 +40,7 @@ features/cells in \code{inSCE}.
 \description{
 Originally written in \code{\link[celda]{retrieveFeatureIndex}}.
 Modified for also retrieving cell indices and only working for
-\linkS4class{SingleCellExperiment} object. This will return indices of
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. This will return indices of
 features among the \code{rowData}/\code{colData}. Partial matching (i.e.
 grepping) can be used.
 }

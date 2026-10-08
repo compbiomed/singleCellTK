@@ -1,6 +1,6 @@
-#' Run GSVA analysis on a \linkS4class{SingleCellExperiment} object
+#' Run GSVA analysis on a \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object
 #'
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param useAssay Indicate which assay to use. The default is "logcounts"
 #' @param geneSetCollectionName Character. The name of the gene set collection 
 #' to use. 
@@ -11,7 +11,7 @@
 #' \code{NULL}.
 #' @param ... Parameters to pass to gsva()
 #'
-#' @return A \linkS4class{SingleCellExperiment} object with pathway activity 
+#' @return A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with pathway activity 
 #' scores from GSVA stored in \code{reducedDim} as 
 #' \code{GSVA_geneSetCollectionName_Scores}.
 #' @export

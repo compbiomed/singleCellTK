@@ -16,12 +16,12 @@ runSingleR(
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
+\item{inSCE}{\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object. Required.}
 
 \item{useAssay}{character. A string specifying which assay to use for
 expression profile identification. Required.}
 
-\item{useSCERef}{\linkS4class{SingleCellExperiment} inherited object. An
+\item{useSCERef}{\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object. An
 optional customized reference dataset. Default \code{NULL}.}
 
 \item{labelColName}{A single character. A string specifying the column in

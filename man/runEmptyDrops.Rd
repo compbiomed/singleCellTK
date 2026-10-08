@@ -19,7 +19,7 @@ runEmptyDrops(
 )
 }
 \arguments{
-\item{inSCE}{A \linkS4class{SingleCellExperiment} object. Must contain a raw 
+\item{inSCE}{A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Must contain a raw 
 counts matrix before empty droplets have been removed.}
 
 \item{sample}{Character vector or colData variable name. Indicates which 
@@ -53,9 +53,9 @@ Default \code{list()}.}
 Default \code{BiocParallel::SerialParam()}.}
 }
 \value{
-A \linkS4class{SingleCellExperiment} object with the
+A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with the
 \link[DropletUtils]{emptyDrops} output table appended to the
-\link{colData} slot. The columns include
+\link[SummarizedExperiment]{colData} slot. The columns include
 \code{emptyDrops_total}, \code{emptyDrops_logprob},
 \code{emptyDrops_pvalue}, \code{emptyDrops_limited}, \code{emptyDrops_fdr}.
 Please refer to the documentation of \link[DropletUtils]{emptyDrops} for
@@ -63,7 +63,7 @@ details.
 }
 \description{
 Run \link[DropletUtils]{emptyDrops} on the count matrix in the
-provided \linkS4class{SingleCellExperiment} object.
+provided \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 Distinguish between droplets containing cells and ambient RNA in a
 droplet-based single-cell RNA sequencing experiment.
 }

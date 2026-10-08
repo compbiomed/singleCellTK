@@ -2,7 +2,7 @@
 #'
 #' Use this function to run the single cell analysis app.
 #'
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param includeVersion Include the version number in the SCTK header. The
 #' default is TRUE.
 #' @param theme The bootswatch theme to use for the singleCellTK UI. The default

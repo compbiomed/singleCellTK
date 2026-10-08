@@ -5,7 +5,7 @@
 #' @param pcY User choice for the second principal component
 #' @param runPCA Run PCA if the reducedDimName does not exist. the Default is
 #' FALSE.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param useAssay Indicate which assay to use. The default is "logcounts".
 #' @param reducedDimName a name to store the results of the dimension reduction
 #' coordinates obtained from this method. This is stored in the SingleCellExperiment

@@ -7,13 +7,13 @@
 runLimmaBC(inSCE, useAssay = "logcounts", assayName = "LIMMA", batch = "batch")
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
 batch correction. Default \code{"logcounts"}.}
 
 \item{assayName}{A single characeter. The name for the corrected assay. Will
-be saved to \code{\link{assay}}. Default
+be saved to \code{\link[SummarizedExperiment]{assay}}. Default
 \code{"LIMMA"}.}
 
 \item{batch}{A single character indicating a field in \code{colData} that
@@ -21,7 +21,7 @@ annotates the batches of each cell; or a vector/factor with the same length
 as the number of cells. Default \code{"batch"}.}
 }
 \value{
-The input \linkS4class{SingleCellExperiment} object with
+The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with
 \code{assay(inSCE, assayName)} updated.
 }
 \description{

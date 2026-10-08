@@ -2,7 +2,7 @@
 #' @description A wrapper function for \link[scDblFinder]{scDblFinder}. Identify
 #'  potential doublet cells based on simulations of putative doublet expression
 #'  profiles. Generate a doublet score for each cell.
-#' @param inSCE A \linkS4class{SingleCellExperiment} object.
+#' @param inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param sample Character vector or colData variable name. Indicates which
 #' sample each cell belongs to. Default \code{NULL}.
 #' @param useAssay  A string specifying which assay in the SCE to use. Default
@@ -22,9 +22,9 @@
 #' \link[scDblFinder]{scDblFinder}. \code{runScDblFinder} runs
 #' \link[scDblFinder]{scDblFinder} for each sample within \code{inSCE}
 #' iteratively. The resulting doublet scores for all cells will be appended to
-#' the \code{\link{colData}} of \code{inSCE}.
+#' the \code{\link[SummarizedExperiment]{colData}} of \code{inSCE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with the
-#' scDblFinder QC outputs added to the \link{colData} slot.
+#' scDblFinder QC outputs added to the \link[SummarizedExperiment]{colData} slot.
 #' @references Lun ATL (2018). Detecting doublet cells with scran.
 #'  \url{https://ltla.github.io/SingleCellThoughts/software/doublet_detection/bycell.html}
 #' @seealso \code{\link[scDblFinder]{scDblFinder}},

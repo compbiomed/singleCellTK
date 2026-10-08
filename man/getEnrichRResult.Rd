@@ -16,7 +16,7 @@ getEnrichRResult(inSCE, analysisName)
 \S4method{getEnrichRResult}{SingleCellExperiment}(inSCE, analysisName) <- value
 }
 \arguments{
-\item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{analysisName}{A string that identifies each specific analysis}
 

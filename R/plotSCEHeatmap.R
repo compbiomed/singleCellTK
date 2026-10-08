@@ -1,6 +1,6 @@
 #' Plot heatmap of using data stored in SingleCellExperiment Object
 #' @rdname plotSCEHeatmap
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.
 #' @param useAssay character. A string indicating the assay name that
 #' provides the expression level to plot. Only for \code{plotSCEHeatmap}.
 #' @param useReducedDim character. A string indicating the reducedDim name that

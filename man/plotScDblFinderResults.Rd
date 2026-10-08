@@ -42,7 +42,7 @@ plotScDblFinderResults(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results from
 \code{\link{runScDblFinder}}. Required.}
 
@@ -150,7 +150,7 @@ list of .ggplot objects
 \description{
 A wrapper function which visualizes outputs from the
 \code{\link{runScDblFinder}} function stored in the colData slot of the
-\linkS4class{SingleCellExperiment} object via various plots.
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object via various plots.
 }
 \examples{
 data(scExample, package="singleCellTK")

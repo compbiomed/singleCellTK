@@ -42,7 +42,7 @@ plotScdsHybridResults(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results from
 \link{runCxdsBcdsHybrid}. Required.}
 
@@ -67,7 +67,7 @@ Default TRUE.}
 Default TRUE.}
 
 \item{reducedDimName}{Saved dimension reduction name in the
-\linkS4class{SingleCellExperiment} object. Required.}
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Required.}
 
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 

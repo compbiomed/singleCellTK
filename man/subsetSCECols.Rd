@@ -7,7 +7,7 @@
 subsetSCECols(inSCE, index = NULL, bool = NULL, colData = NULL)
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{index}{Integer vector. Vector of indicies indicating which columns
 to keep. If \code{NULL}, this will not be used for subsetting.
@@ -35,7 +35,7 @@ been subsetted by colData.
 }
 \description{
 Used to peform subsetting of a
-\linkS4class{SingleCellExperiment} object using a variety of methods that
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object using a variety of methods that
 indicate the correct columns to keep. The various methods,
 \code{index}, \code{bool}, and \code{colData}, can be used in conjunction
 with one another.
