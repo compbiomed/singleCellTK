@@ -147,3 +147,17 @@
   }
   as.integer(factor(clusters))
 }
+
+# Evaluate expr, muffling only base R deprecation warnings
+# (deprecatedWarning) raised inside it. Used around calls into batchelor
+# 1.28, whose fastMNN(), reducedMNN(), and mnnCorrect() still call scuttle
+# functions deprecated in scuttle 1.22. Those warnings are about batchelor's
+# internals, not anything the user or singleCellTK can change, and they make
+# R CMD check fail on examples. All other warnings still reach the user.
+# Remove once batchelor no longer calls deprecated functions.
+.muffleUpstreamDeprecations <- function(expr) {
+  withCallingHandlers(
+    expr,
+    deprecatedWarning = function(w) invokeRestart("muffleWarning")
+  )
+}

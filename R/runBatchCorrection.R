@@ -249,16 +249,22 @@ runFastMNN <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
   reducedDimName <- gsub(' ', '_', reducedDimName)
 
   if (!is.null(useReducedDim)) {
-    redMNN <- batchelor::reducedMNN(mat, batch = batchVec, BPPARAM = BPPARAM,
-                                    k = k, prop.k = propK, ndist = ndist,
-                                    min.batch.skip = minBatchSkip)
+    # batchelor still calls deprecated scuttle functions internally; see
+    # .muffleUpstreamDeprecations().
+    redMNN <- .muffleUpstreamDeprecations(
+      batchelor::reducedMNN(mat, batch = batchVec, BPPARAM = BPPARAM,
+                            k = k, prop.k = propK, ndist = ndist,
+                            min.batch.skip = minBatchSkip)
+    )
     newRedDim <- redMNN$corrected
   } else {
-    mnnSCE <- batchelor::fastMNN(mat, batch = batchVec, BPPARAM = BPPARAM, k = k,
-                                 prop.k = propK, ndist = ndist,
-                                 min.batch.skip = minBatchSkip,
-                                 cos.norm = cosNorm, d = nComponents,
-                                 weights = weights)
+    mnnSCE <- .muffleUpstreamDeprecations(
+      batchelor::fastMNN(mat, batch = batchVec, BPPARAM = BPPARAM, k = k,
+                         prop.k = propK, ndist = ndist,
+                         min.batch.skip = minBatchSkip,
+                         cos.norm = cosNorm, d = nComponents,
+                         weights = weights)
+    )
     newRedDim <- SingleCellExperiment::reducedDim(mnnSCE, 'corrected')
   }
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- newRedDim
@@ -622,20 +628,14 @@ runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
   k <- as.integer(k)
 
   ## Run algorithm
-  # batchelor::mnnCorrect() (batchelor 1.28) still calls scuttle functions
-  # that scuttle 1.22 deprecated (normalizeCounts, sumCountsAcrossCells,
-  # summarizeAssayByGroup). Those deprecation warnings are about batchelor's
-  # internals, not about anything the user or singleCellTK can change, and
-  # they make R CMD check fail on the examples. Muffle only deprecation
-  # warnings raised during this call; all other warnings still reach the
-  # user. Remove this once batchelor no longer calls deprecated functions.
-  corr.sce <- withCallingHandlers(
+  # batchelor still calls deprecated scuttle functions internally; see
+  # .muffleUpstreamDeprecations().
+  corr.sce <- .muffleUpstreamDeprecations(
     batchelor::mnnCorrect(mat, batch = batchVec, k = k,
                           prop.k = propK, sigma = sigma,
                           cos.norm.in = cosNormIn,
                           cos.norm.out = cosNormOut, var.adj = varAdj,
-                          BPPARAM = BPPARAM),
-    deprecatedWarning = function(w) invokeRestart("muffleWarning")
+                          BPPARAM = BPPARAM)
   )
   expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <-
     SummarizedExperiment::assay(corr.sce, "corrected")
