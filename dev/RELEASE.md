@@ -69,6 +69,8 @@ Authoritative sources:
 ## 5. After release
 
 - [ ] Check the Bioconductor build report for singleCellTK on all platforms.
+- [ ] Update `R_BIOC_VERSION` in `.github/workflows/R-CMD-check.yaml` and
+      `BioC-check.yaml` to the new devel version (ADR 0007).
 - [ ] Fix any platform-specific failures on `devel` first, then port them
       to `RELEASE_x_y` on their own branch by cherry-pick with a release z
       bump. Never merge `devel` into a release branch.

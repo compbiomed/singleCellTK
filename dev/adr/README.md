@@ -39,3 +39,4 @@ self-evident from the diff.
 | [0004](0004-adopt-shared-dev-standards.md) | Adopt the shared r-bioc-dev-standards | Proposed | 2026-10-05 |
 | [0005](0005-import-decontx-directly.md) | Import decontX directly instead of through celda | Proposed | 2026-10-06 |
 | [0006](0006-replace-deprecated-scuttle-scran.md) | Replace deprecated scuttle and scran functions | Proposed | 2026-10-07 |
+| [0007](0007-ci-against-bioc-devel.md) | Run GitHub CI against Bioconductor devel | Proposed | 2026-10-08 |
