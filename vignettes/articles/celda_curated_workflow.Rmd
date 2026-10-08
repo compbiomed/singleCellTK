@@ -52,7 +52,7 @@ NOTE: This tutorial assumes that the data has already been uploaded via the uplo
 To identify number of feature modules, there are always five essential inputs that users should be sure with:
 
 - The data matrix to use - selection input **"Choose an Assay"**. In terms of celda analysis, SCTK always requires a full-sized feature expression data (i.e. assay) as a valid input.
-- Feature selection method - selection input **"Choose Feature Selection Method"**. Select feature selection method from 'None' , 'runSeuratFindHVG' and 'Scran_modelGeneVar'. 
+- Feature selection method - selection input **"Choose Feature Selection Method"**. Select feature selection method from 'None' , 'SeuratFindHVG' and 'Scran_modelGeneVar'. 
 - Minimum number of counts required for feature selection - integer **"Keep features with this many counts"**.
 - Minimum number of cells required for feature selection - integer **"In at least this many cells"**.
 - Number of initial feature modules - integer **"Select Number of Initial Feature Modules"**. 
@@ -68,11 +68,11 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </style>
 <div class = "offset">
 <details>
-  <summary><b>runSeuratFindHVG</b></summary>
+  <summary><b>SeuratFindHVG</b></summary>
 ````  
 
 
-The method specific parameters for `runSeuratFindHVG` includes:
+The method specific parameters for `SeuratFindHVG` includes:
 
 - Select method for computation of highly variable genes - selection input **"Select HVG method"**. `Seurat` provides three methods for variable genes identification i.e. `vst` (uses local polynomial regression to fit a relationship between log of variance and log of mean), `mean.var.plot` (uses mean and dispersion to divide features into bins) and `dispersion` (uses highest dispersion values only). 
 - Select variable features - selection input **"Select number of variable features"**.Input the number of genes that should be identified as variable. Default is 2500.

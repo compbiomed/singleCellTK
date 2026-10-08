@@ -111,7 +111,7 @@ if (!is.null(getShinyOption("inputSCEset"))){
   numClusters <- 1:numSamples
   currassays <- names(assays(getShinyOption("inputSCEset")))
   currreddim <- names(reducedDims(getShinyOption("inputSCEset")))
-  curraltExps <- names(altExp(getShinyOption("inputSCEset")))
+  curraltExps <- altExpNames(getShinyOption("inputSCEset"))
   currGS <- sctkListGeneSetCollections(getShinyOption("inputSCEset"))
   ###############################################################
   #from sce

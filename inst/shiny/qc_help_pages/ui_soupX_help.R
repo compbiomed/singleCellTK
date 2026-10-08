@@ -16,7 +16,9 @@ soupXHelpModal <- function() {
                 column(4, "cluster"),
                 column(8, "Prior knowledge of clustering labels on cells. Can 
                        be specified with preloaded cell annotations. When not 
-                       supplied, scran::quickCluster method will be applied.")
+                       supplied, cells are clustered with the steps of the
+                       scran::quickCluster method, computed with the scrapper
+                       and bluster packages.")
             ),
             tags$hr(),
             fluidRow(
