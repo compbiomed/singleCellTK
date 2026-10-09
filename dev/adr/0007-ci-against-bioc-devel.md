@@ -27,10 +27,16 @@ We will:
   in `R-CMD-check.yaml` and `BioC-check.yaml`. pak, used by
   `setup-r-dependencies`, then installs Bioconductor devel packages.
 - Before installing dependencies on macOS, install Homebrew's
-  `openssl@3` and add its `lib` directory to `LDFLAGS` in
-  `~/.R/Makevars`.
+  `openssl@3` and add its `lib` and `include` directories to `LDFLAGS` and
+  `CPPFLAGS` in `~/.R/Makevars`.
 - Run BiocCheck on `ubuntu-latest` and install it with the other
   dependencies (`bioc::BiocCheck`), so it also comes from devel.
+- Run BiocCheck on the built tarball rather than on the Git checkout.
+  BiocCheck 1.49 (Bioc 3.24) errors on Git-tracked `.claude/` files, and the
+  lab standards commit `.claude/settings.json`. The tarball excludes it
+  through `.Rbuildignore`, and the Bioconductor builders also check
+  tarballs. Whether the standards should stop tracking it is raised in
+  campbio/r-bioc-dev-standards.
 - Wrap singleCellTK's calls into batchelor (`fastMNN`, `reducedMNN`,
   `mnnCorrect`) in `.muffleUpstreamDeprecations()`, which muffles only
   base R deprecation warnings raised inside batchelor.
