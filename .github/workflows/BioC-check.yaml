@@ -49,13 +49,21 @@ jobs:
             bioc::BiocCheck
           cache: true
 
+      - name: Build package tarball
+        # BiocCheck runs on the built tarball, as on the Bioconductor builders.
+        # Run on the Git checkout, BiocCheck >= 1.49 errors on the tracked
+        # .claude/settings.json that the lab standards commit; the tarball
+        # excludes it through .Rbuildignore (see ADR 0007).
+        run: R CMD build .
+        shell: bash
+
       - name: Run BiocCheck
         run: |
           library(BiocCheck)
-          BiocCheck::BiocCheck(".",
+          tarball <- Sys.glob("singleCellTK_*.tar.gz")
+          BiocCheck::BiocCheck(tarball,
               `quit-with-status` = TRUE,
               `no-check-R-ver` = TRUE,
               `no-check-bioc-help` = TRUE
           )
         shell: Rscript {0}
-
