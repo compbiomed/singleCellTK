@@ -15,4 +15,4 @@ raw_data/*
 .RDataTmp
 docs
 .worktrees/
-.claude/settings.local.json
+.claude
