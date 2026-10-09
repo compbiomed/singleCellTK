@@ -18,14 +18,17 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest,   r: 'release'}
+          - {os: ubuntu-latest, r: 'release'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      # Check against Bioconductor devel, as the Bioconductor builders do.
+      # Update at each Bioconductor release (see ADR 0007).
+      R_BIOC_VERSION: "3.24"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -35,28 +38,32 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - name: Install fftw3 on macOS
-        if: runner.os == 'macOS'
-        run: brew install fftw
+      - name: Install fftw3 on Linux
+        if: runner.os == 'Linux'
+        run: sudo apt-get install libfftw3-dev
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: |
             any::rcmdcheck
+            bioc::BiocCheck
           cache: true
 
-      - name: Install XQuartz on macOS
-        if: runner.os == 'macOS'
-        run: brew install xquartz --cask
+      - name: Build package tarball
+        # BiocCheck runs on the built tarball, as on the Bioconductor builders.
+        # Run on the Git checkout, BiocCheck >= 1.49 errors on the tracked
+        # .claude/settings.json that the lab standards commit; the tarball
+        # excludes it through .Rbuildignore (see ADR 0007).
+        run: R CMD build .
+        shell: bash
 
       - name: Run BiocCheck
         run: |
-          BiocManager::install("BiocCheck")
           library(BiocCheck)
-          BiocCheck::BiocCheck(".",
+          tarball <- Sys.glob("singleCellTK_*.tar.gz")
+          BiocCheck::BiocCheck(tarball,
               `quit-with-status` = TRUE,
               `no-check-R-ver` = TRUE,
               `no-check-bioc-help` = TRUE
           )
         shell: Rscript {0}
-

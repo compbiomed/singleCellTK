@@ -105,9 +105,10 @@ No classes of its own. Everything is built on `SingleCellExperiment`:
 
 ## Package notes
 
-- CI: which jobs are required, the coverage threshold, and the BiocCheck
-  container/cron setup are all TODO. The existing `R-CMD-check.yaml` and
-  `BioC-check.yaml` workflows are unchanged.
+- CI: `R-CMD-check.yaml` (macOS, Windows, Ubuntu) and `BioC-check.yaml`
+  (Ubuntu) install Bioconductor devel packages via `R_BIOC_VERSION`, to
+  match the Bioconductor builders (ADR 0007). Which jobs are required and
+  the coverage threshold are still TODO.
 - Documentation is generated with roxygen2 8.1, which writes NAMESPACE in
   a multi-line `importFrom()` format. Use roxygen2 8.1 or later for
   `make docs`; an older roxygen2 rewrites the whole NAMESPACE.

@@ -88,3 +88,24 @@ test_that(desc = "runMNNCorrect hides batchelor's internal deprecations", {
   expect_no_warning(runMNNCorrect(inSCE = sceBatches, assayName = "MNN2"),
                     class = "deprecatedWarning")
 })
+
+test_that(desc = "runFastMNN hides batchelor's internal deprecations", {
+  expect_no_warning(
+    res <- runFastMNN(sceBatches, useAssay = "logcounts",
+                      reducedDimName = "fastMNN"),
+    class = "deprecatedWarning"
+  )
+  expect_true("fastMNN" %in% reducedDimNames(res))
+  expect_equal(nrow(reducedDim(res, "fastMNN")), ncol(sceBatches))
+})
+
+test_that(desc = "runFastMNN on a reducedDim hides batchelor's deprecations", {
+  scePCA <- scaterPCA(sceBatches, useAssay = "logcounts",
+                      useFeatureSubset = NULL, reducedDimName = "PCA")
+  expect_no_warning(
+    res <- runFastMNN(scePCA, useAssay = NULL, useReducedDim = "PCA",
+                      reducedDimName = "reducedMNN"),
+    class = "deprecatedWarning"
+  )
+  expect_equal(nrow(reducedDim(res, "reducedMNN")), ncol(sceBatches))
+})

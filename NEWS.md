@@ -1,3 +1,10 @@
+Changes in Version 2.23.5 (2026-10-08)
+================================================================================
+* runFastMNN() hides deprecation warnings raised inside batchelor's
+  fastMNN() and reducedMNN(), as runMNNCorrect() already did for
+  mnnCorrect(). batchelor still calls deprecated scuttle functions. Other
+  warnings are unchanged.
+
 Changes in Version 2.23.4 (2026-10-07)
 ================================================================================
 * Fixed feature selection on the Celda tab of the Shiny app. Both the

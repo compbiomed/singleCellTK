@@ -27,9 +27,13 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      # Test the devel branch against Bioconductor devel, as the Bioconductor
+      # builders do, instead of the release that matches R by default.
+      # Update at each Bioconductor release (see ADR 0007).
+      R_BIOC_VERSION: "3.24"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -72,6 +76,18 @@ jobs:
       - name: Install fftw3 on macOS
         if: runner.os == 'macOS'
         run: brew install fftw
+
+      - name: Link OpenSSL for source builds on macOS
+        # alabaster.base (needed by celldex and scRNAseq) has no macOS binary
+        # for this Bioconductor release; its source build links OpenSSL,
+        # which is only available from Homebrew. See ADR 0007.
+        if: runner.os == 'macOS'
+        run: |
+          brew install openssl@3
+          mkdir -p ~/.R
+          echo "LDFLAGS += -L$(brew --prefix openssl@3)/lib" >> ~/.R/Makevars
+          echo "CPPFLAGS += -I$(brew --prefix openssl@3)/include" >> ~/.R/Makevars
+        shell: bash
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
