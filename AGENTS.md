@@ -9,6 +9,12 @@ https://raw.githubusercontent.com/campbio/r-bioc-dev-standards/v1/standards.md
 starting, and follow it; those agents also aren't bound by
 `.claude/settings.json`.
 
+In Claude Code, if the standards aren't in your context at session start,
+this clone has no `.claude/settings.json`, so neither the standards nor
+the permission guardrails are active: stop, and ask the developer to run
+`make claude-setup` in a terminal outside Claude Code (not with `!`, which
+runs inside it and is refused), then restart `claude`.
+
 ## About
 
 singleCellTK (SCTK) is a Bioconductor package for single-cell RNA-seq

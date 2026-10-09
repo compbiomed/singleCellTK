@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(make help)",
+      "Bash(make build)",
+      "Bash(make app)",
+      "Bash(make test-app)",
+      "Bash(git blame:*)",
+      "Bash(git fetch compbiomed)"
+    ],
+    "ask": [],
+    "deny": [
+      "Bash(git push --force-with-lease:*)",
+      "Bash(make site)",
+      "Bash(rm -fr:*)"
+    ]
+  },
+  "hooks": {}
+}

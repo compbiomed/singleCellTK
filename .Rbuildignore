@@ -27,3 +27,4 @@ exec/png
 ^\.lintr$
 ^\.gitattributes$
 ^\.worktrees$
+^\.worktreeinclude$
