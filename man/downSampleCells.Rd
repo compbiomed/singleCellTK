@@ -19,7 +19,7 @@ downSampleCells(
 )
 }
 \arguments{
-\item{originalData}{The \linkS4class{SingleCellExperiment} object storing all
+\item{originalData}{The \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object storing all
 assay data from the shiny app.}
 
 \item{useAssay}{Character. The name of the assay to be used for subsampling.}

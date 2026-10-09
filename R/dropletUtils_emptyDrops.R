@@ -26,10 +26,10 @@
 
 #' @title Identify empty droplets using \link[DropletUtils]{emptyDrops}.
 #' @description Run \link[DropletUtils]{emptyDrops} on the count matrix in the
-#' provided \linkS4class{SingleCellExperiment} object.
+#' provided \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' Distinguish between droplets containing cells and ambient RNA in a
 #' droplet-based single-cell RNA sequencing experiment.
-#' @param inSCE A \linkS4class{SingleCellExperiment} object. Must contain a raw 
+#' @param inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Must contain a raw 
 #' counts matrix before empty droplets have been removed.
 #' @param sample Character vector or colData variable name. Indicates which 
 #' sample each cell belongs to. Default \code{NULL}.
@@ -51,9 +51,9 @@
 #' Default \code{list()}.
 #' @param BPPARAM See \link[DropletUtils]{emptyDrops} for more information. 
 #' Default \code{BiocParallel::SerialParam()}.
-#' @return A \linkS4class{SingleCellExperiment} object with the
+#' @return A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with the
 #' \link[DropletUtils]{emptyDrops} output table appended to the
-#' \link{colData} slot. The columns include
+#' \link[SummarizedExperiment]{colData} slot. The columns include
 #' \code{emptyDrops_total}, \code{emptyDrops_logprob},
 #' \code{emptyDrops_pvalue}, \code{emptyDrops_limited}, \code{emptyDrops_fdr}.
 #' Please refer to the documentation of \link[DropletUtils]{emptyDrops} for

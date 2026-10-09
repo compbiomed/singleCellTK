@@ -4,7 +4,7 @@
 #' experimental factors such as ambient RNA. Visit
 #' \href{https://rawcdn.githack.com/constantAmateur/SoupX/204b602418df12e9fdb4b68775a8b486c6504fe4/inst/doc/pbmcTutorial.html}{their vignette}
 #' for better understanding.
-#' @param inSCE A \linkS4class{SingleCellExperiment} object.
+#' @param inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param sample A single character specifying a name that can be found in
 #' \code{colData(inSCE)} to directly use the cell annotation; or a character
 #' vector with as many elements as cells to indicates which sample each cell
@@ -13,16 +13,16 @@
 #' @param useAssay A single character string specifying which assay in
 #' \code{inSCE} to use. Default \code{'counts'}.
 #' @param background A numeric matrix of counts or a
-#' \linkS4class{SingleCellExperiment} object with the matrix in \code{assay}
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with the matrix in \code{assay}
 #' slot. It should have the same structure as \code{inSCE} except it contains
 #' the matrix including empty droplets. Default \code{NULL}.
 #' @param bgAssayName A single character string specifying which assay in
 #' \code{background} to use when \code{background} is a
-#' \linkS4class{SingleCellExperiment} object. If \code{NULL}, the function
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. If \code{NULL}, the function
 #' will use the same value as \code{useAssay}. Default \code{NULL}.
 #' @param bgBatch The same thing as \code{sample} but for \code{background}. Can
 #' be a single character only when \code{background} is a
-#' \linkS4class{SingleCellExperiment} object. Default \code{NULL}.
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Default \code{NULL}.
 #' @param assayName A single character string of the output corrected matrix.
 #' Default \code{"SoupX"} when not using a background, otherwise,
 #' \code{"SoupX_bg"}.
@@ -513,7 +513,7 @@ runSoupX <- function(inSCE,
 #' @rdname getSoupX
 #' @description S4 method for getting and setting SoupX results that cannot be
 #' appended to either \code{rowData(inSCE)} or \code{colData(inSCE)}.
-#' @param inSCE A \linkS4class{SingleCellExperiment} object. For getter method,
+#' @param inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. For getter method,
 #' \code{\link{runSoupX}} must have been already applied.
 #' @param sampleID Character vector. For getter method, the samples that should
 #' be included in the returned list. Leave this \code{NULL} for all samples.
@@ -544,7 +544,7 @@ setGeneric("getSoupX", function(inSCE, sampleID = NULL, background = FALSE)
 #' @rdname getSoupX
 #' @description S4 method for getting and setting SoupX results that cannot be
 #' appended to either \code{rowData(inSCE)} or \code{colData(inSCE)}.
-#' @param inSCE A \linkS4class{SingleCellExperiment} object. For getter method,
+#' @param inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. For getter method,
 #' \code{\link{runSoupX}} must have been already applied.
 #' @param sampleID Character vector. For getter method, the samples that should
 #' be included in the returned list. Leave this \code{NULL} for all samples.
@@ -606,7 +606,7 @@ setReplaceMethod("getSoupX",
 #' the contamination. The Soup Fraction is calculated by subtracting the gene
 #' expression value of the output corrected matrix from that of the original
 #' input matrix, and then devided by the input.
-#' @param inSCE A \linkS4class{SingleCellExperiment} object. With
+#' @param inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. With
 #' \code{\link{runSoupX}} already applied.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' Default \code{NULL}.

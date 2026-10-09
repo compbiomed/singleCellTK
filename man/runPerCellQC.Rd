@@ -24,7 +24,7 @@ runPerCellQC(
 )
 }
 \arguments{
-\item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{useAssay}{A string specifying which assay in the SCE to use. Default
 \code{"counts"}.}
@@ -104,13 +104,13 @@ used. Default \code{FALSE}.}
 \item{detectionLimit}{A numeric scalar specifying the lower detection limit
 for expression. Default \code{0}}
 
-\item{BPPARAM}{A \link{BiocParallelParam} object specifying whether the QC
+\item{BPPARAM}{A \link[BiocParallel]{BiocParallelParam} object specifying whether the QC
 calculations should be parallelized. Default 
 \code{BiocParallel::SerialParam()}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
-cell QC metrics added to the \link{colData} slot.
+cell QC metrics added to the \link[SummarizedExperiment]{colData} slot.
 }
 \description{
 Calculates general quality control metrics for each cell in

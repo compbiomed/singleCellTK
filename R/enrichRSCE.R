@@ -14,7 +14,7 @@
 #' work). When specified \code{features} are not qualified for this, users may
 #' try to specify \code{featureName} to change the identifier type to pass to
 #' EnrichR.
-#' @param inSCE A \linkS4class{SingleCellExperiment} object.
+#' @param inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param features Character vector, selected genes for enrichment analysis.
 #' @param analysisName A string that identifies each specific analysis.
 #' @param db Character vector. Selected database name(s) from the enrichR
@@ -136,7 +136,7 @@ runEnrichR <- function(inSCE,
 
 #' @title Plot EnrichR results
 #' @description Plot results of EnrichR analysis as a barplot.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' EnrichR results. Required.
 #' @param analysisName A string that identifies the specific analysis to plot.
 #' Required.
@@ -172,7 +172,7 @@ plotEnrichR <- function(inSCE,
 
 #' @title Get or Set EnrichR Result
 #' @rdname getEnrichRResult
-#' @param inSCE A \linkS4class{SingleCellExperiment} object.
+#' @param inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param analysisName A string that identifies each specific analysis
 #' @param value The EnrichR result table
 #' @return For getter method, a data.frame of the EnrichR result;

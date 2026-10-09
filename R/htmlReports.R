@@ -42,7 +42,7 @@ reportDropletQC <- function(inSCE, output_file = NULL,
 #' the filtered count matrix with the output from runCellQC function
 #' @param sample Character. The name of the saved column from the colData indicating the sample grouping variable. Default is "sample"
 #' @param useReducedDim Character. The name of the saved dimension reduction slot including cells
-#' from all samples in then\linkS4class{SingleCellExperiment} object, Default is NULL
+#' from all samples in then\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object, Default is NULL
 #' @param subTitle subtitle of the QC HTML report. Default is NULL.
 #' @param studyDesign Character. The description of the data set and experiment design. It would be shown at the top of QC HTML report. Default is NULL.
 #' @param output_file Character. The name of the generated file. If NULL/default then the output file name will be based on the name of the Rmarkdown template.
@@ -1206,9 +1206,9 @@ reportSeurat <- function(
 #' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
 #' object.
 #' @param cluster A single \code{character}, specifying the name to store the
-#' cluster label in \code{\link{colData}}.
+#' cluster label in \code{\link[SummarizedExperiment]{colData}}.
 #' @param variable A single \code{character}, specifying the name to store the
-#' phenotype labels in \code{\link{colData}}.
+#' phenotype labels in \code{\link[SummarizedExperiment]{colData}}.
 #' @param control \code{character}. Specifying one or more categories that can
 #' be found in the vector specified by \code{variable}.
 #' @param case \code{character}. Specifying one or more categories that can
@@ -1261,9 +1261,9 @@ reportDiffAbundanceFET <-
 #' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
 #' object.
 #' @param cluster A single \code{character}, specifying the name to store the
-#' cluster label in \code{\link{colData}}.
+#' cluster label in \code{\link[SummarizedExperiment]{colData}}.
 #' @param variable A single \code{character}, specifying the name to store the
-#' phenotype labels in \code{\link{colData}}.
+#' phenotype labels in \code{\link[SummarizedExperiment]{colData}}.
 #' @param output_dir name of the output directory to save the rendered file. If
 #' \code{NULL} the file is stored to the current working directory.
 #' Default \code{NULL}.

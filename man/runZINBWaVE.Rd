@@ -17,14 +17,14 @@ runZINBWaVE(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
 batch correction. Note that ZINBWaVE works for counts (integer) input rather
 than logcounts that other methods prefer. Default \code{"counts"}.}
 
 \item{batch}{A single character indicating a field in
-\code{\link{colData}} that annotates the batches.
+\code{\link[SummarizedExperiment]{colData}} that annotates the batches.
 Default \code{"batch"}.}
 
 \item{nHVG}{An integer. Number of highly variable genes to use when fitting
@@ -44,11 +44,11 @@ is often required to obtained a good low-level representation. Default
 low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
 Default \code{"zinbwave"}.}
 
-\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying whether
+\item{BPPARAM}{A \link[BiocParallel:BiocParallelParam-class]{BiocParallelParam} object specifying whether
 should be parallelized. Default \code{BiocParallel::SerialParam()}.}
 }
 \value{
-The input \linkS4class{SingleCellExperiment} object with
+The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with
 \code{reducedDim(inSCE, reducedDimName)} updated.
 }
 \description{

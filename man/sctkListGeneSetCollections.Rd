@@ -37,7 +37,7 @@ collections <- sctkListGeneSetCollections(sce)
 \seealso{
 \link{importGeneSetsFromList} for importing from lists,
 \link{importGeneSetsFromGMT} for importing from GMT files,
-\linkS4class{GeneSetCollection} objects, and \link{importGeneSetsFromMSigDB}
+\link[GSEABase:GeneSetCollection-class]{GeneSetCollection} objects, and \link{importGeneSetsFromMSigDB}
 for importing MSigDB gene sets.
 }
 \author{

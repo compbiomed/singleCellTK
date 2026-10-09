@@ -10,8 +10,8 @@ listSampleSummaryStatsTables(inSCE, ...)
 \S4method{listSampleSummaryStatsTables}{SingleCellExperiment}(inSCE, ...)
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
-table within the \link{metadata} data. Required.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
+table within the \link[S4Vectors]{metadata} data. Required.}
 
 \item{...}{Other arguments passed to the function.}
 }

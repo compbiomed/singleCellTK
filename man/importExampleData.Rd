@@ -16,12 +16,12 @@ importExampleData(
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
 object. Can be one of \code{"Matrix"} or \code{"matrix"}. \code{"Matrix"}
-will store the data as a sparse matrix from package \link{Matrix} while
+will store the data as a sparse matrix from package \link[Matrix]{Matrix} while
 \code{"matrix"} will store the data in a standard matrix. Default
 \code{"Matrix"}.}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link{DelayedArray} object or not. Default \code{FALSE}.}
+\link[DelayedArray]{DelayedArray} object or not. Default \code{FALSE}.}
 
 \item{rowNamesDedup}{Boolean. Whether to deduplicate rownames. Default 
 \code{TRUE}.}
@@ -32,7 +32,7 @@ The specified \link[SingleCellExperiment]{SingleCellExperiment} object.
 \description{
 Retrieves published example datasets stored in
 \link[SingleCellExperiment]{SingleCellExperiment} using the
-\link{scRNAseq} and
+\link[scRNAseq]{scRNAseq} and
 \link[TENxPBMCData]{TENxPBMCData} packages. See 'Details' for a
 list of available datasets.
 }
@@ -41,14 +41,14 @@ See the list below for the available datasets and their
 descriptions.
 \describe{
 \item{"fluidigm_pollen"}{Retrieved with
-\code{\link{ReprocessedFluidigmData}}. Returns a dataset of 65
+\code{\link[scRNAseq]{ReprocessedFluidigmData}}. Returns a dataset of 65
  human neural cells from Pollen et al. (2014), each sequenced at high and low
  coverage (SRA accession SRP041736).}
 \item{"allen_tasic"}{Retrieved with
-\code{\link{ReprocessedAllenData}}. Returns a dataset of 379 mouse
+\code{\link[scRNAseq]{ReprocessedAllenData}}. Returns a dataset of 379 mouse
 brain cells from Tasic et al. (2016).}
 \item{"NestorowaHSCData"}{Retrieved with
-\code{\link{NestorowaHSCData}}. Returns a dataset of 1920 mouse  
+\code{\link[scRNAseq]{NestorowaHSCData}}. Returns a dataset of 1920 mouse  
  haematopoietic stem cells from Nestorowa et al. 2015}
 \item{"pbmc3k"}{Retrieved with \code{\link[TENxPBMCData]{TENxPBMCData}}.
  2,700 peripheral blood mononuclear cells (PBMCs) from 10X Genomics.}

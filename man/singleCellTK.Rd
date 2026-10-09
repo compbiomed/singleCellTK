@@ -7,7 +7,7 @@
 singleCellTK(inSCE = NULL, includeVersion = TRUE, theme = "yeti")
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{includeVersion}{Include the version number in the SCTK header. The
 default is TRUE.}

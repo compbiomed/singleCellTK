@@ -5,9 +5,9 @@
 #' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
 #' object.
 #' @param cluster A single \code{character}, specifying the name to store the
-#' cluster label in \code{\link{colData}}.
+#' cluster label in \code{\link[SummarizedExperiment]{colData}}.
 #' @param variable A single \code{character}, specifying the name to store the
-#' phenotype labels in \code{\link{colData}}.
+#' phenotype labels in \code{\link[SummarizedExperiment]{colData}}.
 #' @param control \code{character}. Specifying one or more categories that can
 #' be found in the vector specified by \code{variable}.
 #' @param case \code{character}. Specifying one or more categories that can
@@ -163,9 +163,9 @@ setReplaceMethod("getDiffAbundanceResults",
 #' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
 #' object.
 #' @param cluster A single \code{character}, specifying the name to store the
-#' cluster label in \code{\link{colData}}.
+#' cluster label in \code{\link[SummarizedExperiment]{colData}}.
 #' @param variable A single \code{character}, specifying the name to store the
-#' phenotype labels in \code{\link{colData}}.
+#' phenotype labels in \code{\link[SummarizedExperiment]{colData}}.
 #' @param combinePlot Must be either "all" or "none". "all" will combine all 
 #' plots into a single \code{\link[ggplot2]{ggplot}} object. Default 
 #' \code{"all"}.

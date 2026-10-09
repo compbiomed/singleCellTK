@@ -13,8 +13,8 @@ sampleSummaryStats(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
-\link{assay} data and/or \link{colData} data. Required.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
+\link[SummarizedExperiment]{assay} data and/or \link[SummarizedExperiment]{colData} data. Required.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 

@@ -7,7 +7,7 @@
 runModelGeneVar(inSCE, useAssay = "logcounts")
 }
 \arguments{
-\item{inSCE}{A \linkS4class{SingleCellExperiment} object}
+\item{inSCE}{A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object}
 
 \item{useAssay}{A character string to specify an assay to compute variable 
 features from. Default \code{"logcounts"}.}
@@ -17,7 +17,7 @@ features from. Default \code{"logcounts"}.}
 }
 \description{
 Generates and stores variability data in the input 
-\linkS4class{SingleCellExperiment} object, using 
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object, using 
 \code{\link[scrapper]{modelGeneVariances}}, which replaces the deprecated
 \code{scran::modelGeneVar}. The mean, total variance, and biological
 component (the residual from the fitted mean-variance trend) of each feature

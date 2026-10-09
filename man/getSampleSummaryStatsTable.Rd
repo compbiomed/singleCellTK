@@ -16,8 +16,8 @@ setSampleSummaryStatsTable(inSCE, statsName, ...) <- value
 \S4method{setSampleSummaryStatsTable}{SingleCellExperiment}(inSCE, statsName, ...) <- value
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
-\link{assay} data and/or \link{colData} data. Required.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
+\link[SummarizedExperiment]{assay} data and/or \link[SummarizedExperiment]{colData} data. Required.}
 
 \item{statsName}{A \code{character} value indicating the slot
 that stores the stats table within the metadata of the

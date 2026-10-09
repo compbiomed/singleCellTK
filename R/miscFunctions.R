@@ -1,7 +1,7 @@
-#' Summarize an assay in a \linkS4class{SingleCellExperiment}
+#' Summarize an assay in a \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment}
 #'
 #' Creates a table of summary metrics from an input
-#' \linkS4class{SingleCellExperiment}
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment}
 #'
 #' @param inSCE Input SingleCellExperiment object.
 #' @param useAssay Indicate which assay to summarize. If \code{NULL}, then the
@@ -191,18 +191,18 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
 #' Adds '-1', '-2', ... '-i' to multiple duplicated rownames, and in place
 #' replace the unique rownames, store unique rownames in \code{rowData}, or
 #' return the unique rownames as character vecetor.
-#' @param x A matrix like or \linkS4class{SingleCellExperiment} object, on which
+#' @param x A matrix like or \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object, on which
 #' we can apply \code{rownames()} to and has duplicated rownames.
 #' @param as.rowData Only applicable when \code{x} is a
-#' \linkS4class{SingleCellExperiment} object. When set to \code{TRUE}, will
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. When set to \code{TRUE}, will
 #' insert a new column called \code{"rownames.uniq"} to \code{rowData(x)}, with
 #' the deduplicated rownames.
 #' @param return.list When set to \code{TRUE}, will return a character vector
 #' of the deduplicated rownames.
 #' @export
-#' @return By default, a matrix or \linkS4class{SingleCellExperiment} object
+#' @return By default, a matrix or \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object
 #' with rownames deduplicated.
-#' When \code{x} is a \linkS4class{SingleCellExperiment} and \code{as.rowData}
+#' When \code{x} is a \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} and \code{as.rowData}
 #' is set to \code{TRUE}, will return \code{x} with \code{rowData} updated.
 #' When \code{return.list} is set to \code{TRUE}, will return a character vector
 #' with the deduplicated rownames.
@@ -242,7 +242,7 @@ dedupRowNames <- function(x, as.rowData = FALSE, return.list = FALSE){
 #' the same identifier.
 #' @param x Input object where the rownames will be modified.
 #' @param rowNames Character vector of the rownames. If \code{x} is an
-#' \linkS4class{SingleCellExperiment} object, a single character specifying a
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object, a single character specifying a
 #' column in \code{rowData(x)}.
 #' @param dedup Logical. Whether to deduplicate the specified rowNames. Default
 #' \code{TRUE}
@@ -284,10 +284,10 @@ setRowNames <- function(x, rowNames, dedup = TRUE) {
 #'
 #' @description Originally written in \code{\link[celda]{retrieveFeatureIndex}}.
 #' Modified for also retrieving cell indices and only working for
-#' \linkS4class{SingleCellExperiment} object. This will return indices of
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. This will return indices of
 #' features among the \code{rowData}/\code{colData}. Partial matching (i.e.
 #' grepping) can be used.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object. Required
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Required
 #' @param IDs Character vector of identifiers for features or cells to find in
 #' \code{rowData} or \code{colData} of \code{inSCE}
 #' @param axis A character scalar to specify whether to search for features or
@@ -455,7 +455,7 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
 }
 
 #' List geneset names from geneSetCollection
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param geneSetCollectionName The name of an imported geneSetCollection.
 #' @return A character vector of available genesets from the collection.
 #' @export

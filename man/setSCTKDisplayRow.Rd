@@ -7,7 +7,7 @@
 setSCTKDisplayRow(inSCE, featureDisplayRow)
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results. Required.}
 
 \item{featureDisplayRow}{Indicates which column name of rowData to be used for plots.}

@@ -148,8 +148,8 @@ setMethod("listSampleSummaryStatsTables", "SingleCellExperiment", function(inSCE
 #' @description  Creates a table of QC metrics generated from
 #'  QC algorithms, which is stored within the metadata slot of the
 #'  input SingleCellExperiment object.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
-#' \link{assay} data and/or \link{colData} data. Required.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
+#' \link[SummarizedExperiment]{assay} data and/or \link[SummarizedExperiment]{colData} data. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param useAssay  A string specifying which assay in the SCE to use. Default
 #'  'counts'.

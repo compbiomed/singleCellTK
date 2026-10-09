@@ -14,7 +14,7 @@ runEnrichR(
 )
 }
 \arguments{
-\item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{features}{Character vector, selected genes for enrichment analysis.}
 

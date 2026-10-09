@@ -17,7 +17,7 @@ plotDEGRegression(
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
+\item{inSCE}{\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.}
 
 \item{useResult}{character. A string specifying the \code{analysisName}
 used when running a differential expression analysis function.}

@@ -28,7 +28,7 @@ listTSCANTerminalNodes(x)
 \S4method{listTSCANTerminalNodes}{SingleCellExperiment}(x)
 }
 \arguments{
-\item{x}{Input \linkS4class{SingleCellExperiment} object.}
+\item{x}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{analysisName}{Algorithm name implemented, should be one of
 \code{"Pseudotime"}, \code{"DEG"}, or \code{"ClusterDEAnalysis"}.}

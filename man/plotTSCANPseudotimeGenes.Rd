@@ -14,7 +14,7 @@ plotTSCANPseudotimeGenes(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{pathIndex}{Path index for which the pseudotime values should be used.
 Should have being used in \code{\link{runTSCANDEG}}.}

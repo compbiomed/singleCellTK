@@ -55,7 +55,7 @@ plotMarkerDiffExp(
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
+\item{inSCE}{\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.}
 
 \item{orderBy}{The ordering method of the clusters on the splitted heatmap.
 Can be chosen from \code{"size"} or \code{"name"}, specified with vector of

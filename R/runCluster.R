@@ -1,28 +1,28 @@
 #' Get clustering with SNN graph
 #' @description Perform SNN graph clustering on a
-#' \linkS4class{SingleCellExperiment} object, with graph
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object, with graph
 #' construction by \code{\link[bluster]{makeSNNGraph}} and graph clustering by
 #' "igraph" package.
-#' @param inSCE A \linkS4class{SingleCellExperiment} object.
+#' @param inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param useReducedDim A single \code{character}, specifying which
-#' low-dimension representation (\code{\link{reducedDim}})
+#' low-dimension representation (\code{\link[SingleCellExperiment]{reducedDim}})
 #' to perform the clustering algorithm on. Default \code{"PCA"}.
 #' @param useAssay A single \code{character}, specifying which
-#' \code{\link{assay}} to perform the clustering algorithm
+#' \code{\link[SummarizedExperiment]{assay}} to perform the clustering algorithm
 #' on. Default \code{NULL}.
 #' @param useAltExp A single \code{character}, specifying the assay which
-#' \code{\link{altExp}} to perform the clustering
+#' \code{\link[SingleCellExperiment]{altExp}} to perform the clustering
 #' algorithm on. Default \code{NULL}.
 #' @param altExpAssay A single \code{character}, specifying which
-#' \code{\link{assay}} in the chosen
-#' \code{\link{altExp}} to work on. Only used when
+#' \code{\link[SummarizedExperiment]{assay}} in the chosen
+#' \code{\link[SingleCellExperiment]{altExp}} to work on. Only used when
 #' \code{useAltExp} is set. Default \code{"counts"}.
 #' @param altExpRedDim A single \code{character}, specifying which
-#' \code{\link{reducedDim}} within the \code{\link{altExp}} specified by
+#' \code{\link[SingleCellExperiment]{reducedDim}} within the \code{\link[SingleCellExperiment]{altExp}} specified by
 #' \code{useAltExp} to use. Only used when \code{useAltExp} is set. Default
 #' \code{NULL}.
 #' @param clusterName A single \code{character}, specifying the name to store
-#' the cluster label in \code{\link{colData}}. Default
+#' the cluster label in \code{\link[SummarizedExperiment]{colData}}. Default
 #' \code{"cluster"}.
 #' @param k An \code{integer}, the number of nearest neighbors used to construct
 #' the graph. Smaller value indicates higher resolution and larger number of
@@ -41,9 +41,9 @@
 #' for processing the SNN graph generation step in parallel.
 #' @param seed Random seed for reproducibility of results. Default \code{NULL}
 #' will use global seed in use by the R environment.
-#' @param ... Other optional parameters passed to the \code{\link{igraph}}
+#' @param ... Other optional parameters passed to the \code{\link[igraph]{igraph}}
 #' clustering functions. See Details.
-#' @return The input \linkS4class{SingleCellExperiment} object with
+#' @return The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with
 #' \code{factor} cluster labeling updated in
 #' \code{colData(inSCE)[[clusterName]]}.
 #' @details Different graph based clustering algorithms have diverse sets of
@@ -174,13 +174,13 @@ runScranSNN <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
 
 #' Get clustering with KMeans
 #' @description Perform KMeans clustering on a
-#' \linkS4class{SingleCellExperiment} object, with \code{\link[stats]{kmeans}}.
-#' @param inSCE A \linkS4class{SingleCellExperiment} object.
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object, with \code{\link[stats]{kmeans}}.
+#' @param inSCE A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param useReducedDim A single \code{character}, specifying which
 #' low-dimension representation to perform the clustering algorithm on. Default
 #' \code{"PCA"}.
 #' @param clusterName A single \code{character}, specifying the name to store
-#' the cluster label in \code{\link{colData}}. Default \code{"KMeans_cluster"}.
+#' the cluster label in \code{\link[SummarizedExperiment]{colData}}. Default \code{"KMeans_cluster"}.
 #' @param nComp An \code{integer}. The number of components to use for K-Means.
 #' Default \code{10}. See Detail.
 #' @param nCenters An \code{integer}, the number of centroids (clusters).
@@ -193,7 +193,7 @@ runScranSNN <- function(inSCE, useReducedDim = "PCA", useAssay = NULL,
 #' @param algorithm A single \code{character}. Choose from
 #' \code{"Hartigan-Wong"}, \code{"Lloyd"}, \code{"MacQueen"}. May be
 #' abbreviated. Default \code{"Hartigan-Wong"}.
-#' @return The input \linkS4class{SingleCellExperiment} object with
+#' @return The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with
 #' \code{factor} cluster labeling updated in
 #' \code{colData(inSCE)[[clusterName]]}.
 #' @export

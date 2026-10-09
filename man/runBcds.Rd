@@ -19,7 +19,7 @@ runBcds(
 )
 }
 \arguments{
-\item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{sample}{Character vector or colData variable name. Indicates which 
 sample each cell belongs to. Default \code{NULL}.}
@@ -49,8 +49,8 @@ sample each cell belongs to. Default \code{NULL}.}
 Default \code{"counts"}}
 }
 \value{
-A \linkS4class{SingleCellExperiment} object with \link[scds]{bcds} 
-output appended to the \link{colData} slot. The columns include 
+A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with \link[scds]{bcds} 
+output appended to the \link[SummarizedExperiment]{colData} slot. The columns include 
 \emph{bcds_score} and optionally \emph{bcds_call}. Please refer to the 
 documentation of \link[scds]{bcds} for details.
 }

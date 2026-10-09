@@ -2,7 +2,7 @@
 #' @description A wrapper function which visualizes outputs from the
 #'  runPerCellQC function stored in the colData slot of the SingleCellExperiment
 #'  object via various plots.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runPerCellQC}}. Required.
 #' @param sample Character vector or colData variable name. Indicates which
@@ -394,8 +394,8 @@ plotRunPerCellQCResults <- function(inSCE,
 #' @title Plots for runEmptyDrops outputs.
 #' @description A wrapper function which visualizes outputs from the
 #' \code{\link{runEmptyDrops}} function stored in the \code{colData} slot of the
-#' \linkS4class{SingleCellExperiment} object.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runEmptyDrops}}. Required.
 #' @param sample Character vector or colData variable name. Indicates which
@@ -480,8 +480,8 @@ plotEmptyDropsResults <- function(inSCE,
 #' @title Plots for runBarcodeRankDrops outputs.
 #' @description A wrapper function which visualizes outputs from the
 #' \code{runBarcodeRankDrops} function stored in the \code{metadata} slot of
-#' the \linkS4class{SingleCellExperiment} object.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' the \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runBarcodeRankDrops}}. Required.
 #' @param sample Character vector or colData variable name. Indicates which
@@ -527,7 +527,7 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #' @description A wrapper function which visualizes outputs from the
 #'  runScrublet function stored in the colData slot of the SingleCellExperiment
 #'  object via various plots.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runCxds}}. Required.
 #' @param sample Character vector or colData variable name. Indicates which
@@ -846,7 +846,7 @@ plotScrubletResults <- function(
 #' @description A wrapper function which visualizes outputs from the
 #'  runDoubletFinder function stored in the colData slot of the
 #'  SingleCellExperiment object via various plots.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runDoubletFinder}}. Required.
 #' @param sample Character vector or colData variable name. Indicates which
@@ -1232,8 +1232,8 @@ plotDoubletFinderResults <- function(
 #' @title Plots for runScDblFinder outputs.
 #' @description A wrapper function which visualizes outputs from the
 #' \code{\link{runScDblFinder}} function stored in the colData slot of the
-#' \linkS4class{SingleCellExperiment} object via various plots.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object via various plots.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runScDblFinder}}. Required.
 #' @param sample Character vector or colData variable name. Indicates which
@@ -1544,8 +1544,8 @@ plotScDblFinderResults <- function(
 #' @title Plots for runCxds outputs.
 #' @description A wrapper function which visualizes outputs from the
 #' \code{\link{runCxds}} function stored in the colData slot of the
-#' \linkS4class{SingleCellExperiment} object via various plots.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object via various plots.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runCxds}}. Required.
 #' @param sample Character vector or colData variable name. Indicates which
@@ -1866,8 +1866,8 @@ plotCxdsResults <- function(
 #' @title Plots for runBcds outputs.
 #' @description A wrapper function which visualizes outputs from the
 #' \code{\link{runBcds}} function stored in the colData slot of the
-#' \linkS4class{SingleCellExperiment} object via various plots.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object via various plots.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runBcds}}. Required.
 #' @param sample Character vector or colData variable name. Indicates which
@@ -2189,7 +2189,7 @@ plotBcdsResults <- function(
 #' @description A wrapper function which visualizes outputs from the
 #'  runCxdsBcdsHybrid function stored in the colData slot of the
 #'  SingleCellExperiment object via various plots.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \link{runCxdsBcdsHybrid}. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
@@ -2204,7 +2204,7 @@ plotBcdsResults <- function(
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
 #' @param reducedDimName Saved dimension reduction name in the
-#' \linkS4class{SingleCellExperiment} object. Required.
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
@@ -2490,7 +2490,7 @@ plotScdsHybridResults <- function(inSCE,
 #' @description A wrapper function which visualizes outputs from the
 #'  runDecontX function stored in the colData slot of the
 #'  SingleCellExperiment object via various plots.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \link{runDecontX}. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
@@ -2507,7 +2507,7 @@ plotScdsHybridResults <- function(inSCE,
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
 #' @param reducedDimName Saved dimension reduction name in the
-#' \linkS4class{SingleCellExperiment} object. Required. Default = "UMAP"
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Required. Default = "UMAP"
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies

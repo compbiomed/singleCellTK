@@ -2,8 +2,8 @@
 #' @rdname getSampleSummaryStatsTable
 #' @description  Stores and returns table of QC metrics generated from
 #'  QC algorithms within the metadata slot of the SingleCellExperiment object.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
-#' \link{assay} data and/or \link{colData} data. Required.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
+#' \link[SummarizedExperiment]{assay} data and/or \link[SummarizedExperiment]{colData} data. Required.
 #' @param statsName A \code{character} value indicating the slot
 #' that stores the stats table within the metadata of the
 #' SingleCellExperiment object. Required.
@@ -29,8 +29,8 @@ setGeneric("setSampleSummaryStatsTable<-", function(inSCE, statsName, ..., value
 #' @rdname listSampleSummaryStatsTables
 #' @description  Returns a character vector of the tables
 #' within the metadata slot of the SingleCellExperiment object.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
-#' table within the \link{metadata} data. Required.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
+#' table within the \link[S4Vectors]{metadata} data. Required.
 #' @param ... Other arguments passed to the function. 
 #' @return A character vector. Contains a list of summary tables
 #' within the SingleCellExperiment object.

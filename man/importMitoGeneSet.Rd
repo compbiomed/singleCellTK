@@ -14,7 +14,7 @@ importMitoGeneSet(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{reference}{Character. Species available are "human" and "mouse".}
 
@@ -41,11 +41,11 @@ any matching features. Default \code{TRUE}.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object
 with gene set from \code{collectionName} output stored to the
-\link{metadata} slot.
+\link[S4Vectors]{metadata} slot.
 }
 \description{
 Imports mitochondrial gene sets and  stores it in the metadata of the
-\linkS4class{SingleCellExperiment} object. These gene sets can be used in
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. These gene sets can be used in
 downstream quality control and analysis functions in \link{singleCellTK}.
 }
 \details{
@@ -53,8 +53,8 @@ The gene identifiers of mitochondrial genes will be loaded with
 "data(AllMito)". Currently, it supports human and mouse references.
 Also, it supports entrez ID, gene symbol, ensemble ID and ensemble transcript ID.
 They will be mapped to the IDs in \code{inSCE} using the \code{by} parameter and
-stored in a \linkS4class{GeneSetCollection} object from package
-\link{GSEABase}. This object is stored in
+stored in a \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} object from package
+\link[GSEABase]{GSEABase}. This object is stored in
 \code{metadata(inSCE)$sctk$genesets}, which can be accessed in downstream
 analysis functions such as \link[singleCellTK]{runCellQC}.
 }
@@ -69,7 +69,7 @@ sce <- importMitoGeneSet(inSCE = sce,
 \seealso{
 \link{importGeneSetsFromList} for importing from lists,
 \link{importGeneSetsFromGMT} for importing from GMT files, and
-\linkS4class{GeneSetCollection} objects.
+\link[GSEABase:GeneSetCollection-class]{GeneSetCollection} objects.
 }
 \author{
 Rui Hong

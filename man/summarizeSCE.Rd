@@ -2,7 +2,7 @@
 % Please edit documentation in R/miscFunctions.R
 \name{summarizeSCE}
 \alias{summarizeSCE}
-\title{Summarize an assay in a \linkS4class{SingleCellExperiment}}
+\title{Summarize an assay in a \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment}}
 \usage{
 summarizeSCE(inSCE, useAssay = NULL, sampleVariableName = NULL)
 }
@@ -21,7 +21,7 @@ A data.frame object of summary metrics.
 }
 \description{
 Creates a table of summary metrics from an input
-\linkS4class{SingleCellExperiment}
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment}
 }
 \examples{
 data("mouseBrainSubsetSCE")

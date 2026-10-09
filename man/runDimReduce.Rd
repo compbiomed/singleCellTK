@@ -20,7 +20,7 @@ runDimReduce(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{method}{One from \code{"scaterPCA"}, \code{"seuratPCA"},
 \code{"seuratICA"}, \code{"rTSNE"}, \code{"seuratTSNE"}, \code{"scaterUMAP"},
@@ -57,7 +57,7 @@ Default \code{NULL} will use global seed in use by the R environment.}
 to the one you use.}
 }
 \value{
-The input \linkS4class{SingleCellExperiment} object with
+The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with
 \code{reducedDim} updated with the result.
 }
 \description{

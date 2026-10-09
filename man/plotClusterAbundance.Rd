@@ -11,10 +11,10 @@ plotClusterAbundance(inSCE, cluster, variable, combinePlot = c("all", "none"))
 object.}
 
 \item{cluster}{A single \code{character}, specifying the name to store the
-cluster label in \code{\link{colData}}.}
+cluster label in \code{\link[SummarizedExperiment]{colData}}.}
 
 \item{variable}{A single \code{character}, specifying the name to store the
-phenotype labels in \code{\link{colData}}.}
+phenotype labels in \code{\link[SummarizedExperiment]{colData}}.}
 
 \item{combinePlot}{Must be either "all" or "none". "all" will combine all 
 plots into a single \code{\link[ggplot2]{ggplot}} object. Default 

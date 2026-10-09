@@ -19,7 +19,7 @@ runComBatSeq(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
 batch correction. Default \code{"counts"}.}
@@ -54,7 +54,7 @@ estimation, only useful when \code{shrink} is set to \code{TRUE}. Default
 \code{NULL}.}
 }
 \value{
-The input \linkS4class{SingleCellExperiment} object with
+The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with
 \code{assay(inSCE, assayName)} updated.
 }
 \description{

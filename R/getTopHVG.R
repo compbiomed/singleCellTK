@@ -1,6 +1,6 @@
 #' Get or set top HVG after calculation
 #' @description Extracts or select the top variable genes from an input
-#' \linkS4class{SingleCellExperiment} object. Note that the variability metrics
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Note that the variability metrics
 #' must be computed using the \code{runFeatureSelection} method before
 #' extracting the feature names of the top variable features. \code{getTopHVG}
 #' only returns a character vector of the HVG selection, while with
@@ -8,7 +8,7 @@
 #' \code{rowData}, and optionally, a subset object for the HVGs can be stored
 #' in the \code{altExps} slot at the same time.
 #' @rdname getTopHVG
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object
 #' @param method Specify which method to use for variable gene extraction
 #' from Seurat \code{"vst"}, \code{"mean.var.plot"}, \code{"dispersion"} or
 #' Scran \code{"modelGeneVar"} or Scanpy \code{"seurat"}, \code{"cell_ranger"}, 
@@ -161,7 +161,7 @@ setTopHVG <- function(inSCE,
 
 #' Check if specified method has already been performed, and extract the metric.
 #' Will be used by `getTopHVG` to rank the top, and `plotTopHVG` for the axis
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object
 #' @param method Specify which method to use for variable gene extraction
 #' from Seurat \code{"vst"}, \code{"mean.var.plot"}, \code{"dispersion"} or
 #' Scran \code{"modelGeneVar"} or Scanpy \code{"seurat"}, \code{"cell_ranger"}, 
@@ -259,11 +259,11 @@ setTopHVG <- function(inSCE,
 #' parse `useFeatureSubset` in other functions such as `scaterPCA`, `runUMAP`..
 #' Do checks, and return logical vector. Or character vector as needed by Seurat
 #' methods
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object
 #' @param useFeatureSubset Subset of feature to use. A character string
 #' indicating a \code{rowData} variable that stores the logical vector of HVG
 #' selection, or a vector that can subset the rows of \code{inSCE}.
-#' @param altExpObj A \linkS4class{SingleCellExperiment} object, extracted from
+#' @param altExpObj A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object, extracted from
 #' \code{altExps} of \code{inSCE}, can be \code{identical()} to \code{inSCE}.
 #' Used when functions like \code{\link{scaterPCA}} allows \code{useAltExp}, so
 #' that the output vector match to the rownames of \code{altExpObj}

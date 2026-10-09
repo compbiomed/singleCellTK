@@ -22,10 +22,10 @@ reportDiffAbundanceFET(
 object.}
 
 \item{cluster}{A single \code{character}, specifying the name to store the
-cluster label in \code{\link{colData}}.}
+cluster label in \code{\link[SummarizedExperiment]{colData}}.}
 
 \item{variable}{A single \code{character}, specifying the name to store the
-phenotype labels in \code{\link{colData}}.}
+phenotype labels in \code{\link[SummarizedExperiment]{colData}}.}
 
 \item{control}{\code{character}. Specifying one or more categories that can
 be found in the vector specified by \code{variable}.}

@@ -54,7 +54,7 @@ getUMAP(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{useReducedDim}{The low dimension representation to use for UMAP
 computation. If \code{useAltExp} is specified, \code{useReducedDim} has to
@@ -124,13 +124,13 @@ Default \code{NULL} will use global seed in use by the R environment.}
 
 \item{verbose}{Logical. Whether to print log messages. Default \code{TRUE}.}
 
-\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying whether
+\item{BPPARAM}{A \link[BiocParallel:BiocParallelParam-class]{BiocParallelParam} object specifying whether
 the PCA should be parallelized.}
 
 \item{...}{Parameters passed to \code{runUMAP}}
 }
 \value{
-A \linkS4class{SingleCellExperiment} object with UMAP computation
+A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with UMAP computation
 updated in \code{reducedDim(inSCE, reducedDimName)}.
 }
 \description{

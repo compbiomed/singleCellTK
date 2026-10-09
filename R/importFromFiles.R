@@ -13,7 +13,7 @@
 
 #' Create a SingleCellExperiment object from files
 #'
-#' @details Creates a \linkS4class{SingleCellExperiment} object from a counts 
+#' @details Creates a \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object from a counts 
 #' file in various formats, and files of cell and feature annotation.
 #' @param assayFile The path to a file in .mtx, .txt, .csv, .tab, or .tsv 
 #' format.
@@ -32,7 +32,7 @@
 #' instead of file paths. The default is \code{FALSE}.
 #' @param class Character. The class of the expression matrix stored in the SCE
 #'  object. Can be one of \code{"Matrix"} (as returned by
-#'  \link{readMM} function), or \code{"matrix"} (as returned by
+#'  \link[Matrix]{readMM} function), or \code{"matrix"} (as returned by
 #'  \link[base]{matrix} function). Default \code{"Matrix"}.
 #' @param annotFileHeader Whether there's a header (colnames) in the cell 
 #' annotation file. Default is \code{FALSE}.
@@ -52,10 +52,10 @@
 #' and it will automatically detect whether the file is gzipped. Other options 
 #' are \code{TRUE} or \code{FALSE}.
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link{DelayedArray} object or not. Default \code{FALSE}.
+#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{FALSE}.
 #' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
 #'  \code{TRUE}.
-#' @return a \linkS4class{SingleCellExperiment} object
+#' @return a \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object
 #' @export
 
 importFromFiles <- function(assayFile, annotFile = NULL, featureFile = NULL,

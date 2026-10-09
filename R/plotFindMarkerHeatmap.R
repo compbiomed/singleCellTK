@@ -11,7 +11,7 @@
 #' cluster each gene belongs to. And by default we split the heatmap by these
 #' two annotations. Additional legends can be added and the splitting can be
 #' canceled.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.
 #' @param log2fcThreshold Only use DEGs with the absolute values of log2FC
 #' larger than this value. Default \code{1}
 #' @param fdrThreshold Only use DEGs with FDR value smaller than this value.

@@ -7,7 +7,7 @@
 getPathwayResultNames(inSCE, stopIfNone = FALSE, verbose = FALSE)
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{stopIfNone}{Whether to stop and raise an error if no results found. If
 \code{FALSE}, will return an empty character vector.}

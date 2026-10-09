@@ -13,7 +13,7 @@ runBBKNN(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
 batch correction. Default \code{"logcounts"}.}
@@ -33,7 +33,7 @@ combination step where the value represent the dimensionality of the updated
 reducedDim. Default \code{50L}.}
 }
 \value{
-The input \linkS4class{SingleCellExperiment} object with
+The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with
 \code{reducedDim(inSCE, reducedDimName)} updated.
 }
 \description{

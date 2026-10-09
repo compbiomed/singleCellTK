@@ -13,12 +13,12 @@ importGeneSetsFromList(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{geneSetList}{Named List. A list containing one or more gene sets.
 Each element of the list should be a character vector of gene identifiers.
 The names of the list will be become the gene set names in the
-\linkS4class{GeneSetCollection} object.}
+\link[GSEABase:GeneSetCollection-class]{GeneSetCollection} object.}
 
 \item{collectionName}{Character. Name of collection to add gene sets to.
 If this collection already exists in \code{inSCE}, then these gene sets will
@@ -43,19 +43,19 @@ any matching features. Default \code{TRUE}.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object
 with gene set from \code{collectionName} output stored to the
-\link{metadata} slot.
+\link[S4Vectors]{metadata} slot.
 }
 \description{
 Converts a list of gene sets into a
-\linkS4class{GeneSetCollection} and stores it in the metadata of the
-\linkS4class{SingleCellExperiment} object. These gene sets can be used in
+\link[GSEABase:GeneSetCollection-class]{GeneSetCollection} and stores it in the metadata of the
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. These gene sets can be used in
 downstream quality control and analysis functions in \link{singleCellTK}.
 }
 \details{
 The gene identifiers in gene sets in \code{geneSetList} will be
 mapped to the rownames of \code{inSCE} using the \code{by} parameter and
-stored in a \linkS4class{GeneSetCollection} object from package
-\link{GSEABase}. This object is stored in
+stored in a \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} object from package
+\link[GSEABase]{GSEABase}. This object is stored in
 \code{metadata(inSCE)$sctk$genesets}, which can be accessed in downstream
 analysis functions such as \link[singleCellTK]{runCellQC}.
 }
@@ -80,7 +80,7 @@ sce <- importGeneSetsFromList(inSCE = sce,
 }
 \seealso{
 \link{importGeneSetsFromCollection} for importing from
-\linkS4class{GeneSetCollection} objects,
+\link[GSEABase:GeneSetCollection-class]{GeneSetCollection} objects,
 \link{importGeneSetsFromGMT} for importing from GMT files, and
 \link{importGeneSetsFromMSigDB} for importing MSigDB gene sets.
 }

@@ -25,7 +25,7 @@ plotSCEDensity(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results. Required.}
 
 \item{slotName}{Desired slot of SingleCellExperiment used for plotting. Possible

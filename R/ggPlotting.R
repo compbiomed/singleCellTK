@@ -1,7 +1,7 @@
 #' @title Plot results of reduced dimensions data.
 #' @description Plot results of reduced dimensions data and colors the plots by
 #'  the input vector.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param colorBy If provided, colors dots in the scatterplot based on value.
@@ -11,7 +11,7 @@
 #'  class. Default NULL.
 #' @param shape If provided, add shapes based on the value.
 #' @param reducedDimName Saved dimension reduction name in the
-#' \linkS4class{SingleCellExperiment} object. Required.
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param baseSize The base font size for all text. Default 12.
@@ -306,10 +306,10 @@
 #' @title Dimension reduction plot tool for colData
 #' @description Plot results of reduced dimensions data and
 #'  colors by annotation data stored in the colData slot.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required.
 #' @param reducedDimName Saved dimension reduction matrix name in the
-#' \linkS4class{SingleCellExperiment} object. Required.
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param colorBy Color by a condition(any column of the annotation data).
 #'  Required.
@@ -458,10 +458,10 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @title Dimension reduction plot tool for assay data
 #' @description Plot results of reduced dimensions data and
 #'  colors by feature data stored in the assays slot.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required.
 #' @param reducedDimName saved dimension reduction name in the
-#' \linkS4class{SingleCellExperiment} object. Required.
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param features Name of feature stored in assay of SingleCellExperiment
 #'  object.
@@ -671,7 +671,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @param inSCE Input SingleCellExperiment object with saved dimension reduction
 #'  components or a variable with saved results. Required.
 #' @param reducedDimName saved dimension reduction name in the
-#' \linkS4class{SingleCellExperiment} object.
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param slot Desired slot of SingleCellExperiment used for plotting. Possible
 #'  options: "assays", "colData", "metadata", "reducedDims". Default NULL.
@@ -1066,7 +1066,7 @@ plotSCEScatter <- function(inSCE,
 #' @title Violin plot of colData.
 #' @description Visualizes values stored in the colData slot of a
 #'  SingleCellExperiment object via a violin plot.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param coldata colData value that will be plotted.
@@ -1268,7 +1268,7 @@ plotSCEViolinColData <- function(inSCE,
 #' @title Violin plot of assay data.
 #' @description Visualizes values stored in the assay slot of a
 #'  SingleCellExperiment object via a violin plot.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param useAssay Indicate which assay to use. Default "counts".
@@ -1489,7 +1489,7 @@ plotSCEViolinAssayData <- function(inSCE,
 #' @title Violin plot of any data stored in the SingleCellExperiment object.
 #' @description Visualizes values stored in any slot of a
 #'  SingleCellExperiment object via a violin plot.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required.
 #' @param slotName Desired slot of SingleCellExperiment used for plotting. Possible
 #'  options: "assays", "colData", "metadata", "reducedDims". Required.
@@ -1808,7 +1808,7 @@ plotSCEViolin <- function(inSCE,
 #' @title Density plot of colData.
 #' @description Visualizes values stored in the colData slot of a
 #'  SingleCellExperiment object via a density plot.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param coldata colData value that will be plotted.
@@ -1944,7 +1944,7 @@ plotSCEDensityColData <- function(inSCE,
 #' @title Density plot of assay data.
 #' @description Visualizes values stored in the assay slot of a
 #'  SingleCellExperiment object via a density plot.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param useAssay Indicate which assay to use. Default "counts".
@@ -2099,7 +2099,7 @@ plotSCEDensityAssayData <- function(inSCE,
 #' @title Density plot of any data stored in the SingleCellExperiment object.
 #' @description Visualizes values stored in any slot of a
 #'  SingleCellExperiment object via a densityn plot.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required.
 #' @param slotName Desired slot of SingleCellExperiment used for plotting. Possible
 #'  options: "assays", "colData", "metadata", "reducedDims". Required.
@@ -2272,8 +2272,8 @@ plotSCEDensity <- function(inSCE,
 #' @title Plots for runEmptyDrops outputs.
 #' @description A plotting function which visualizes outputs from the
 #' \code{\link{runEmptyDrops}} function stored in the colData slot of the
-#' \linkS4class{SingleCellExperiment} object via scatter plots.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object via scatter plots.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runEmptyDrops}}. Required.
 #' @param sample Character vector or colData variable name. Indicates which
@@ -2431,7 +2431,7 @@ plotEmptyDropsScatter <- function(inSCE,
 #' @description A plotting function which visualizes outputs from the
 #'  runBarcodeRankDrops function stored in the colData slot of the SingleCellExperiment
 #'  object via scatterplot.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
 #' \code{\link{runBarcodeRankDrops}}. Required.
 #' @param sample Character vector or colData variable name. Indicates which
@@ -2685,7 +2685,7 @@ plotBarcodeRankScatter <- function(inSCE,
 #' @title Bar plot of colData.
 #' @description Visualizes values stored in the colData slot of a
 #'  SingleCellExperiment object via a bar plot.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param coldata colData value that will be plotted.
@@ -2791,7 +2791,7 @@ plotSCEBarColData <- function(inSCE,
 #' @title Bar plot of assay data.
 #' @description Visualizes values stored in the assay slot of a
 #'  SingleCellExperiment object via a bar plot.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param useAssay Indicate which assay to use. Default "counts".
@@ -2917,7 +2917,7 @@ plotSCEBarAssayData <- function(inSCE,
 
 #' @title Indicates which rowData to use for visualization
 #' @description This function is to be used to specify which
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required.
 #' @param featureDisplayRow Indicates which column name of rowData to be used for plots.
 #' @return A SingleCellExperiment object with the specific column name of rowData

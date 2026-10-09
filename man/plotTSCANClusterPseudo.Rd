@@ -12,7 +12,7 @@ plotTSCANClusterPseudo(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{useCluster}{The cluster to be regarded as the root, has to existing in
 \code{colData(inSCE)$TSCAN_clusters}.}

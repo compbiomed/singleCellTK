@@ -7,7 +7,7 @@
 runTSCANDEG(inSCE, pathIndex, useAssay = "logcounts", discardCluster = NULL)
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{pathIndex}{Path index for which the pseudotime values should be used.
 This corresponds to the terminal node of specific path from the root

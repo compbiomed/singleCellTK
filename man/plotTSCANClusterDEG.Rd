@@ -17,7 +17,7 @@ plotTSCANClusterDEG(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{useCluster}{Choose a cluster used for identifying DEG with
 \code{\link{runTSCANClusterDEAnalysis}}. Required.}

@@ -13,7 +13,7 @@
 #' PCA created beforehand and select proper numbers of dimensions for using
 #' \code{runUMAP}, so that the result can match with the clustering based on the
 #' same input PCA. 
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param useReducedDim The low dimension representation to use for UMAP
 #' computation. If \code{useAltExp} is specified, \code{useReducedDim} has to
 #' exist in \code{reducedDims(altExp(inSCE, useAltExp))}. Default \code{"PCA"}.
@@ -63,10 +63,10 @@
 #' information.
 #' @param seed Random seed for reproducibility of UMAP results.
 #' Default \code{NULL} will use global seed in use by the R environment.
-#' @param BPPARAM A \linkS4class{BiocParallelParam} object specifying whether
+#' @param BPPARAM A \link[BiocParallel:BiocParallelParam-class]{BiocParallelParam} object specifying whether
 #' the PCA should be parallelized.
 #' @param verbose Logical. Whether to print log messages. Default \code{TRUE}.
-#' @return A \linkS4class{SingleCellExperiment} object with UMAP computation
+#' @return A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with UMAP computation
 #' updated in \code{reducedDim(inSCE, reducedDimName)}.
 #' @export
 #' @examples

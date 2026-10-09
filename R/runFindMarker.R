@@ -4,7 +4,7 @@
 #' clustering labels, this function iteratively call the differential expression
 #' analysis on each cluster against all the others. \code{\link{runFindMarker}}
 #' will be deprecated in the future.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.
 #' @param useAssay character. A string specifying which assay to use for the
 #' MAST calculations. Default \code{"logcounts"}.
 #' @param useReducedDim character. A string specifying which reducedDim to use
@@ -48,7 +48,7 @@
 #' cluster, we set all cells out of this cluster as control. Similarly,
 #' \code{"ControlExprPerc"} is the fraction of cells with marker value larger
 #' than \code{detectThresh} in the control cell group.
-#' @return The input \linkS4class{SingleCellExperiment} object with
+#' @return The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$findMarker} updated with a data.table of the up-
 #' regulated DEGs for each cluster.
 #' @seealso \code{\link{runDEAnalysis}}, \code{\link{getFindMarkerTopTable}},
@@ -217,7 +217,7 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
 #' @rdname getFindMarkerTopTable
 #' @details Users have to run \code{\link{runFindMarker}} prior to using this
 #' function to extract a top marker table.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param inSCE \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.
 #' @param log2fcThreshold Only use DEGs with the absolute values of log2FC
 #' larger than this value. Default \code{1}
 #' @param fdrThreshold Only use DEGs with FDR value smaller than this value.

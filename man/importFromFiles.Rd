@@ -45,11 +45,11 @@ instead of file paths. The default is \code{FALSE}.}
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
 object. Can be one of \code{"Matrix"} (as returned by
-\link{readMM} function), or \code{"matrix"} (as returned by
+\link[Matrix]{readMM} function), or \code{"matrix"} (as returned by
 \link[base]{matrix} function). Default \code{"Matrix"}.}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link{DelayedArray} object or not. Default \code{FALSE}.}
+\link[DelayedArray]{DelayedArray} object or not. Default \code{FALSE}.}
 
 \item{annotFileHeader}{Whether there's a header (colnames) in the cell 
 annotation file. Default is \code{FALSE}.}
@@ -79,12 +79,12 @@ are \code{TRUE} or \code{FALSE}.}
 \code{TRUE}.}
 }
 \value{
-a \linkS4class{SingleCellExperiment} object
+a \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object
 }
 \description{
 Create a SingleCellExperiment object from files
 }
 \details{
-Creates a \linkS4class{SingleCellExperiment} object from a counts 
+Creates a \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object from a counts 
 file in various formats, and files of cell and feature annotation.
 }

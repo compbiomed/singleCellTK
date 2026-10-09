@@ -134,7 +134,7 @@ runWilcox(
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
+\item{inSCE}{\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.}
 
 \item{method}{Character. Specify which method to use when using
 \code{runDEAnalysis()}. Choose from \code{"wilcox"}, \code{"MAST"},
@@ -151,11 +151,11 @@ DE regression. Ignored when \code{useReducedDim} is specified. Default
 for DE analysis. Will treat the dimensions as features. Default \code{NULL}.}
 
 \item{index1}{Any type of indices that can subset a
-\linkS4class{SingleCellExperiment} inherited object by cells. Specifies
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object by cells. Specifies
 which cells are of interests. Default \code{NULL}.}
 
 \item{index2}{Any type of indices that can subset a
-\linkS4class{SingleCellExperiment} inherited object by cells. specifies
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object by cells. specifies
 the control group against those specified by \code{index1}. If
 \code{NULL} when using index specification, \code{index1} cells will be
 compared with all other cells. Default \code{NULL}.}
@@ -219,7 +219,7 @@ Default \code{FALSE}.}
 sanity check to see if the counts are logged. Default \code{TRUE}.}
 }
 \value{
-The input \linkS4class{SingleCellExperiment} object, where
+The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object, where
 \code{metadata(inSCE)$diffExp} is updated with a list named by
 \code{analysisName}, with elements of:
 \item{$groupNames}{the naming of the two conditions}

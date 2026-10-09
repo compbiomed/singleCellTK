@@ -31,7 +31,7 @@ runScrublet(
 )
 }
 \arguments{
-\item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{sample}{Character vector or colData variable name. Indicates which 
 sample each cell belongs to. Default \code{NULL}.}
@@ -118,8 +118,8 @@ Default \code{NULL}.}
 Default \code{12345}.}
 }
 \value{
-A \linkS4class{SingleCellExperiment} object with
-\code{scrub_doublets} output appended to the \link{colData} slot. The columns
+A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with
+\code{scrub_doublets} output appended to the \link[SummarizedExperiment]{colData} slot. The columns
 include \code{scrublet_score} and \code{scrublet_call}.
 }
 \description{

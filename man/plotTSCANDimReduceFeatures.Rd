@@ -16,7 +16,7 @@ plotTSCANDimReduceFeatures(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{features}{Choose the feature of interest to explore the expression
 level on the trajectory. Required.}

@@ -14,7 +14,7 @@ plotUMAP(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with saved
 dimension reduction components. Required}
 
 \item{colorBy}{color by a condition(any column of the annotation data).}
@@ -22,7 +22,7 @@ dimension reduction components. Required}
 \item{shape}{add shapes to each condition.}
 
 \item{reducedDimName}{saved dimension reduction name in the
-\linkS4class{SingleCellExperiment} object. Required.}
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Required.}
 
 \item{runUMAP}{If the dimension reduction components are already available
 set this to FALSE, otherwise set to TRUE. Default is False.}

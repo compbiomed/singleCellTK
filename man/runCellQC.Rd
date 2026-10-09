@@ -78,7 +78,7 @@ algorithms "decontX" and "soupX". Default to NULL.}
 }
 \value{
 SingleCellExperiment object containing the outputs of the
- specified algorithms in the \link{colData}
+ specified algorithms in the \link[SummarizedExperiment]{colData}
 of \code{inSCE}.
 }
 \description{

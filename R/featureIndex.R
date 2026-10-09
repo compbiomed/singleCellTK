@@ -1,17 +1,17 @@
 #' @title Retrieve row index for a set of features
 #' @description This will return indices of features among the rownames
-#' or rowData of a data.frame, matrix, or a \linkS4class{SummarizedExperiment}
-#' object including a \linkS4class{SingleCellExperiment}.
+#' or rowData of a data.frame, matrix, or a \link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment}
+#' object including a \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment}.
 #' Partial matching (i.e. grepping) can be used by setting
 #' \code{exactMatch = FALSE}.
 #' @param features Character vector of feature names to find in the rows of
 #' \code{inSCE}.
-#' @param inSCE A data.frame, matrix, or \linkS4class{SingleCellExperiment}
+#' @param inSCE A data.frame, matrix, or \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment}
 #' object to search.
 #' @param by Character. Where to search for features in \code{inSCE}. If set to
 #' \code{"rownames"} then the features will be searched for among
 #' \code{rownames(inSCE)}. If \code{inSCE} inherits from class
-#' \linkS4class{SummarizedExperiment}, then \code{by} can be one of the
+#' \link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment}, then \code{by} can be one of the
 #' fields in the row annotation data.frame (i.e. one of
 #' \code{colnames(rowData(inSCE))}).
 #' @param exactMatch Boolean. Whether to only identify exact matches

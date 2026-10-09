@@ -10,7 +10,7 @@
 #' a custom variable or retrieve existing variable from \code{colData}. This
 #' function makes sure that the output has valid length (\code{ncol(inSCE)}),
 #' and convert vector to factor if needed.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} inherited object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.
 #' @param var A single character for \code{colData} variable or a vector of the
 #' same length as \code{ncol(inSCE)}
 #' @param as.factor Should the variable be output as \code{factor}?
@@ -76,7 +76,7 @@
 #' @details Basic rule: (1) When \code{useAltExp} is not \code{NULL}, fetch
 #' assay or reducedDim from altExp; (2) When \code{useReducedDim} is not
 #' \code{NULL}, ignore \code{useAssay}.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} inherited object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} inherited object.
 #' @param useAssay Name of assay to use
 #' @param useReducedDim Name of low-dimensional representation to use
 #' @param useAltExp Name of alt-experiment to use

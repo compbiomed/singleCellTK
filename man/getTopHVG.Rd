@@ -26,7 +26,7 @@ setTopHVG(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object}
 
 \item{method}{Specify which method to use for variable gene extraction
 from Seurat \code{"vst"}, \code{"mean.var.plot"}, \code{"dispersion"} or
@@ -69,7 +69,7 @@ added}
 }
 \description{
 Extracts or select the top variable genes from an input
-\linkS4class{SingleCellExperiment} object. Note that the variability metrics
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Note that the variability metrics
 must be computed using the \code{runFeatureSelection} method before
 extracting the feature names of the top variable features. \code{getTopHVG}
 only returns a character vector of the HVG selection, while with

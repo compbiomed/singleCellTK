@@ -14,9 +14,9 @@ importGeneSetsFromGMT(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
-\item{file}{Character. Path to GMT file. See \link{getGmt} for
+\item{file}{Character. Path to GMT file. See \link[GSEABase]{getGmt} for
 more information on reading GMT files.}
 
 \item{collectionName}{Character. Name of collection to add gene sets to.
@@ -46,19 +46,19 @@ any matching features. Default \code{TRUE}.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object
  with gene set from \code{collectionName} output stored to the
- \link{metadata} slot.
+ \link[S4Vectors]{metadata} slot.
 }
 \description{
 Converts a list of gene sets stored in a GMT file into a
-\linkS4class{GeneSetCollection} and stores it in the metadata of the
-\linkS4class{SingleCellExperiment} object. These gene sets can be used in
+\link[GSEABase:GeneSetCollection-class]{GeneSetCollection} and stores it in the metadata of the
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. These gene sets can be used in
 downstream quality control and analysis functions in \link{singleCellTK}.
 }
 \details{
 The gene identifiers in gene sets in the GMT file will be
 mapped to the rownames of \code{inSCE} using the \code{by} parameter and
-stored in a \linkS4class{GeneSetCollection} object from package
-\link{GSEABase}. This object is stored in
+stored in a \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} object from package
+\link[GSEABase]{GSEABase}. This object is stored in
 \code{metadata(inSCE)$sctk$genesets}, which can be accessed in downstream
 analysis functions such as \link[singleCellTK]{runCellQC}.
 }
@@ -77,7 +77,7 @@ sce <- importGeneSetsFromGMT(inSCE = sce, file = gmt, by = NULL)
 \seealso{
 \link{importGeneSetsFromList} for importing from lists,
 \link{importGeneSetsFromCollection} for importing from
-\linkS4class{GeneSetCollection} objects, and
+\link[GSEABase:GeneSetCollection-class]{GeneSetCollection} objects, and
 \link{importGeneSetsFromMSigDB} for importing MSigDB gene sets.
 }
 \author{

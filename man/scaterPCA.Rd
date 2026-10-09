@@ -18,7 +18,7 @@ scaterPCA(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{useAssay}{Assay to use for PCA computation. If \code{useAltExp} is
 specified, \code{useAssay} has to exist in
@@ -48,16 +48,16 @@ selected.variable features. Default \code{NULL}.}
 \item{seed}{Integer, random seed for reproducibility of PCA results.
 Default \code{NULL}.}
 
-\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying whether
+\item{BPPARAM}{A \link[BiocParallel:BiocParallelParam-class]{BiocParallelParam} object specifying whether
 the PCA should be parallelized.}
 }
 \value{
-A \linkS4class{SingleCellExperiment} object with PCA computation
+A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with PCA computation
 updated in \code{reducedDim(inSCE, reducedDimName)}.
 }
 \description{
 A wrapper to \link[scater]{runPCA} function to compute principal
-component analysis (PCA) from a given \linkS4class{SingleCellExperiment}
+component analysis (PCA) from a given \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment}
 object.
 }
 \examples{

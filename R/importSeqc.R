@@ -176,11 +176,11 @@
 #'  sparse_molecule_counts.mtx) were gzip compressed. \code{FALSE} otherwise. 
 #'  Default seqc outputs are not gzipped. Default \code{FALSE}.
 #' @param class Character. The class of the expression matrix stored in the SCE
-#'  object. Can be one of \code{"Matrix"} (as returned by \link{readMM} 
+#'  object. Can be one of \code{"Matrix"} (as returned by \link[Matrix]{readMM} 
 #'  function), or \code{"matrix"} (as returned by \link[base]{matrix} function).
 #'  Default \code{"Matrix"}.
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link{DelayedArray} object or not. Default \code{FALSE}.
+#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{FALSE}.
 #' @param feNotFirstCol Boolean. \code{TRUE} if first column of
 #'  sparse_counts_genes.csv is row index and it will be removed. \code{FALSE} 
 #'  the first column will be kept.

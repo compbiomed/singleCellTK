@@ -7,7 +7,7 @@
 #' \code{useAssay}, use the assay in an altExp by specifying both
 #' \code{useAltExp} and \code{useAssay}, or use a low-dimensionality
 #' representation by specifying \code{useReducedDim}.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param method One from \code{"scaterPCA"}, \code{"seuratPCA"},
 #' \code{"seuratICA"}, \code{"rTSNE"}, \code{"seuratTSNE"}, \code{"scaterUMAP"},
 #' \code{"seuratUMAP"}, \code{"scanpyPCA"}, \code{"scanpyUMAP"} and \code{"scanpyTSNE"}.
@@ -32,7 +32,7 @@
 #' Default \code{NULL} will use global seed in use by the R environment.
 #' @param ... The other arguments for running a specific algorithm. Please refer
 #' to the one you use.
-#' @return The input \linkS4class{SingleCellExperiment} object with
+#' @return The input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object with
 #' \code{reducedDim} updated with the result.
 #' @export
 #' @examples

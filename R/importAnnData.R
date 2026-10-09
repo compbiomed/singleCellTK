@@ -91,10 +91,10 @@
 #'   with the sample name appended to each colname in colData
 #' }
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link{DelayedArray} object. Default \code{FALSE}.
+#'  \link[DelayedArray]{DelayedArray} object. Default \code{FALSE}.
 #' @param class Character. The class of the expression matrix stored in the SCE
 #'  object. Can be one of "Matrix" (as returned by
-#'  \link{readMM} function), or "matrix" (as returned by
+#'  \link[Matrix]{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default \code{"Matrix"}.
 #' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
 #'  \code{TRUE}.

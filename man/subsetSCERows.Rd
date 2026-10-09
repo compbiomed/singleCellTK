@@ -15,7 +15,7 @@ subsetSCERows(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.}
 
 \item{index}{Integer vector. Vector of indicies indicating which rows
 to keep. If \code{NULL}, this will not be used for subsetting.
@@ -37,9 +37,9 @@ operations for subsetting. If \code{NULL}, this will not be used for
 subsetting. Default \code{NULL}.}
 
 \item{returnAsAltExp}{Boolean. If \code{TRUE}, the subsetted
-\linkS4class{SingleCellExperiment} object will be returned in the
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object will be returned in the
 \code{altExp} slot of \code{inSCE}. If \code{FALSE}, the subsetted
-\linkS4class{SingleCellExperiment} object will be directly returned.}
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object will be directly returned.}
 
 \item{altExpName}{Character. Name of the alternative experiment object to
 add if \code{returnAsAltExp = TRUE}. Default \code{subset}.}
@@ -54,13 +54,13 @@ been subsetted by rowData.
 }
 \description{
 Used to peform subsetting of a
-\linkS4class{SingleCellExperiment} object using a variety of methods that
+\link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object using a variety of methods that
 indicate the correct rows to keep. The various methods,
 \code{index}, \code{bool}, and \code{rowData}, can be used in conjunction
 with one another. If \code{returnAsAltExp} is set to \code{TRUE},
 then the returned object will have the same number of rows as the input
 \code{inSCE} as the subsetted object will be stored in the
-\code{\link{altExp}} slot.
+\code{\link[SingleCellExperiment]{altExp}} slot.
 }
 \examples{
 data(scExample)

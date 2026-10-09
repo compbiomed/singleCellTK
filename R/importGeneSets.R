@@ -1,10 +1,10 @@
 #' @title Imports gene sets from a GMT file
 #' @description Converts a list of gene sets stored in a GMT file into a
-#' \linkS4class{GeneSetCollection} and stores it in the metadata of the
-#' \linkS4class{SingleCellExperiment} object. These gene sets can be used in
+#' \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} and stores it in the metadata of the
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. These gene sets can be used in
 #' downstream quality control and analysis functions in \link{singleCellTK}.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
-#' @param file Character. Path to GMT file. See \link{getGmt} for
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
+#' @param file Character. Path to GMT file. See \link[GSEABase]{getGmt} for
 #' more information on reading GMT files.
 #' @param collectionName Character. Name of collection to add gene sets to.
 #' If this collection already exists in \code{inSCE}, then these gene sets will
@@ -28,18 +28,18 @@
 #' any matching features. Default \code{TRUE}.
 #' @details The gene identifiers in gene sets in the GMT file will be
 #' mapped to the rownames of \code{inSCE} using the \code{by} parameter and
-#' stored in a \linkS4class{GeneSetCollection} object from package
-#' \link{GSEABase}. This object is stored in
+#' stored in a \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} object from package
+#' \link[GSEABase]{GSEABase}. This object is stored in
 #' \code{metadata(inSCE)$sctk$genesets}, which can be accessed in downstream
 #' analysis functions such as \link[singleCellTK]{runCellQC}.
 #' @author Joshua D. Campbell
 #' @seealso \link{importGeneSetsFromList} for importing from lists,
 #' \link{importGeneSetsFromCollection} for importing from
-#' \linkS4class{GeneSetCollection} objects, and
+#' \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} objects, and
 #' \link{importGeneSetsFromMSigDB} for importing MSigDB gene sets.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
 #'  with gene set from \code{collectionName} output stored to the
-#'  \link{metadata} slot.
+#'  \link[S4Vectors]{metadata} slot.
 #' @examples
 #' data(scExample)
 #'
@@ -72,14 +72,14 @@ importGeneSetsFromGMT <- function(inSCE, file,
 
 #' @title Imports gene sets from a list
 #' @description Converts a list of gene sets into a
-#' \linkS4class{GeneSetCollection} and stores it in the metadata of the
-#' \linkS4class{SingleCellExperiment} object. These gene sets can be used in
+#' \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} and stores it in the metadata of the
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. These gene sets can be used in
 #' downstream quality control and analysis functions in \link{singleCellTK}.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param geneSetList Named List. A list containing one or more gene sets.
 #' Each element of the list should be a character vector of gene identifiers.
 #' The names of the list will be become the gene set names in the
-#' \linkS4class{GeneSetCollection} object.
+#' \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} object.
 #' @param collectionName Character. Name of collection to add gene sets to.
 #' If this collection already exists in \code{inSCE}, then these gene sets will
 #' be added to that collection. Any gene sets within the collection with the
@@ -99,16 +99,16 @@ importGeneSetsFromGMT <- function(inSCE, file,
 #' any matching features. Default \code{TRUE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
 #' with gene set from \code{collectionName} output stored to the
-#' \link{metadata} slot.
+#' \link[S4Vectors]{metadata} slot.
 #' @details The gene identifiers in gene sets in \code{geneSetList} will be
 #' mapped to the rownames of \code{inSCE} using the \code{by} parameter and
-#' stored in a \linkS4class{GeneSetCollection} object from package
-#' \link{GSEABase}. This object is stored in
+#' stored in a \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} object from package
+#' \link[GSEABase]{GSEABase}. This object is stored in
 #' \code{metadata(inSCE)$sctk$genesets}, which can be accessed in downstream
 #' analysis functions such as \link[singleCellTK]{runCellQC}.
 #' @author Joshua D. Campbell
 #' @seealso \link{importGeneSetsFromCollection} for importing from
-#' \linkS4class{GeneSetCollection} objects,
+#' \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} objects,
 #' \link{importGeneSetsFromGMT} for importing from GMT files, and
 #' \link{importGeneSetsFromMSigDB} for importing MSigDB gene sets.
 #' @examples
@@ -173,12 +173,12 @@ importGeneSetsFromList <- function(inSCE, geneSetList,
 
 #' @title Imports gene sets from a GeneSetCollection object
 #' @description Converts a list of gene sets stored in a
-#' \linkS4class{GeneSetCollection} object and stores it in the metadata of the
-#' \linkS4class{SingleCellExperiment} object. These gene sets can be used in
+#' \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} object and stores it in the metadata of the
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. These gene sets can be used in
 #' downstream quality control and analysis functions in \link{singleCellTK}.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
-#' @param geneSetCollection A \linkS4class{GeneSetCollection} object. See
-#' \link{GeneSetCollection} for more details.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
+#' @param geneSetCollection A \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} object. See
+#' \link[GSEABase]{GeneSetCollection} for more details.
 #' @param collectionName Character. Name of collection to add gene sets to.
 #' If this collection already exists in \code{inSCE}, then these gene sets will
 #' be added to that collection. Any gene sets within the collection with the
@@ -201,12 +201,12 @@ importGeneSetsFromList <- function(inSCE, geneSetList,
 #' any matching features. Default \code{TRUE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
 #' with gene set from \code{collectionName} output stored to the
-#' \link{metadata} slot.
+#' \link[S4Vectors]{metadata} slot.
 #' @details The gene identifiers in gene sets in the
 #' \code{GeneSetCollection} will be mapped to the rownames of
 #' \code{inSCE} using the \code{by} parameter and
-#' stored in a \linkS4class{GeneSetCollection} object from package
-#' \link{GSEABase}. This object is stored in
+#' stored in a \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} object from package
+#' \link[GSEABase]{GSEABase}. This object is stored in
 #' \code{metadata(inSCE)$sctk$genesets}, which can be accessed in downstream
 #' analysis functions such as \link[singleCellTK]{runCellQC}.
 #' @author Joshua D. Campbell
@@ -310,9 +310,9 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
 
 #' @title Imports gene sets from MSigDB
 #' @description Gets a list of MSigDB gene sets stores it in the metadata of the
-#' \linkS4class{SingleCellExperiment} object. These gene sets can be used in
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. These gene sets can be used in
 #' downstream quality control and analysis functions in \link{singleCellTK}.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param categoryIDs Character vector containing the MSigDB gene set ids.
 #' The column \code{ID} in the table returned by \code{getMSigDBTable()} shows
 #' the list of possible gene set IDs that can be obtained.
@@ -336,19 +336,19 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
 #' any matching features. Default \code{TRUE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
 #' with gene set from \code{collectionName} output stored to the
-#' \link{metadata} slot.
+#' \link[S4Vectors]{metadata} slot.
 #' @details The gene identifiers in gene sets from MSigDB will be retrieved
-#' using the \code{\link{msigdbr}} package. They will be mapped to the IDs in
+#' using the \code{\link[msigdbr]{msigdbr}} package. They will be mapped to the IDs in
 #' \code{inSCE} using the \code{by} parameter and
-#' stored in a \linkS4class{GeneSetCollection} object from package
-#' \link{GSEABase}. This object is stored in
+#' stored in a \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} object from package
+#' \link[GSEABase]{GSEABase}. This object is stored in
 #' \code{metadata(inSCE)$sctk$genesets}, which can be accessed in downstream
 #' analysis functions such as \link[singleCellTK]{runCellQC}.
 #' @author Joshua D. Campbell
 #' @seealso \link{importGeneSetsFromList} for importing from lists,
 #' \link{importGeneSetsFromGMT} for importing from GMT files, and
 # \link{importGeneSetsFromCollection} for importing from
-#' \linkS4class{GeneSetCollection} objects.
+#' \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} objects.
 #' @examples
 #' data(scExample)
 #' sce <- importGeneSetsFromMSigDB(inSCE = sce,
@@ -462,9 +462,9 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs = "H",
 
 #' @title Import mitochondrial gene sets
 #' @description Imports mitochondrial gene sets and  stores it in the metadata of the
-#' \linkS4class{SingleCellExperiment} object. These gene sets can be used in
+#' \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. These gene sets can be used in
 #' downstream quality control and analysis functions in \link{singleCellTK}.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
 #' @param reference Character. Species available are "human" and "mouse".
 #' @param by Character. Describes the location within \code{inSCE} where the gene
 #' identifiers in the mitochondrial gene sets should be mapped.
@@ -484,20 +484,20 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs = "H",
 #' any matching features. Default \code{TRUE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
 #' with gene set from \code{collectionName} output stored to the
-#' \link{metadata} slot.
+#' \link[S4Vectors]{metadata} slot.
 #' @details The gene identifiers of mitochondrial genes will be loaded with
 #' "data(AllMito)". Currently, it supports human and mouse references.
 #' Also, it supports entrez ID, gene symbol, ensemble ID and ensemble transcript ID.
 #' They will be mapped to the IDs in \code{inSCE} using the \code{by} parameter and
-#' stored in a \linkS4class{GeneSetCollection} object from package
-#' \link{GSEABase}. This object is stored in
+#' stored in a \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} object from package
+#' \link[GSEABase]{GSEABase}. This object is stored in
 #' \code{metadata(inSCE)$sctk$genesets}, which can be accessed in downstream
 #' analysis functions such as \link[singleCellTK]{runCellQC}.
 #' @author Rui Hong
 #' @seealso \link{importGeneSetsFromList} for importing from lists,
 #' \link{importGeneSetsFromGMT} for importing from GMT files, and
 # \link{importGeneSetsFromCollection} for importing from
-#' \linkS4class{GeneSetCollection} objects.
+#' \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} objects.
 #' @examples
 #' data(scExample)
 #' sce <- importMitoGeneSet(inSCE = sce,
@@ -544,7 +544,7 @@ importMitoGeneSet <- function(inSCE, reference = "human", id = "ensembl",
 #' @seealso \link{importGeneSetsFromList} for importing from lists,
 #' \link{importGeneSetsFromGMT} for importing from GMT files,
 # \link{importGeneSetsFromCollection} for importing from
-#' \linkS4class{GeneSetCollection} objects, and \link{importGeneSetsFromMSigDB}
+#' \link[GSEABase:GeneSetCollection-class]{GeneSetCollection} objects, and \link{importGeneSetsFromMSigDB}
 #' for importing MSigDB gene sets.
 #' @examples
 #' data(scExample)
